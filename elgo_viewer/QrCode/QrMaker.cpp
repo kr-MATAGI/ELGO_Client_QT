@@ -1,6 +1,24 @@
 // Todo auth description
 
 #include "QrMaker.h"
+#include <QObject>
+#include <QQuickView>
+#include <QDebug>
+
+//========================================================
+QrMaker::QrMaker(QQuickItem *parent)
+    : QQuickPaintedItem(parent)
+//========================================================
+{
+
+}
+
+//========================================================
+QrMaker::~QrMaker()
+//========================================================
+{
+
+}
 
 //========================================================
 void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, QColor color)
@@ -33,4 +51,38 @@ void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, 
                }
            }
        }
+}
+
+//========================================================
+void QrMaker::paint(QPainter *painter)
+//========================================================
+{
+    // QQuickItem's paint override
+    QQuickView view;
+    view.setSource(QUrl("qrc:/contentPlayer.qml"));
+    QObject *QRItem = view.rootObject();
+
+    QSize qSize(0, 0);
+    QString url = "http://www.naver.com"; // get ip from shared memory
+    QColor color = Qt::black;
+    if(QRItem)
+    {
+        const QVariant width = QRItem->property("width");
+        const QVariant height = QRItem->property("height");
+        qSize.setWidth(width.toInt());
+        qSize.setHeight(height.toInt());
+
+        qDebug("QR Size - width : %d, height : %d", width.toInt(), height.toInt());
+    }
+    else
+    {
+        qSize.setWidth(400);
+        qSize.setHeight(400);
+
+        qDebug("Not Connected QRItem (deafult size)");
+    }
+
+    DrawQrCode(*painter, qSize, url, color);
+
+    delete QRItem;
 }

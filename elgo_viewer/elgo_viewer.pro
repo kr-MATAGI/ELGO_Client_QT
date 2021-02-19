@@ -4,12 +4,15 @@ CONFIG += c++11
 
 
 HEADERS += \
-        ext_libs/ \
+        ext_libs/QrCode/QRCode.h \
+        QRCode/QrMaker.h
 
 
 SOURCES += \
         main.cpp \
-        QrCode/  \
+        ext_libs/QrCode/QRCode.cpp \
+        QRCode/QrMaker.cpp
+
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
