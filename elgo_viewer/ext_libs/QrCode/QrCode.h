@@ -1,7 +1,5 @@
-
 #ifndef QRCODE_H
 #define QRCODE_H
-
 #pragma once
 
 

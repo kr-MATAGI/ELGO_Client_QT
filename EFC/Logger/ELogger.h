@@ -5,4 +5,12 @@
 
 #include <QString>
 
-void ELOG_Print(const QString &str);
+namespace ELogger
+{
+    /* brief */
+    void ELOG_Print(const QString &str);
+
+    /* brief */
+    void ELOG_TH_PRINT(const QString &str);
+};
+

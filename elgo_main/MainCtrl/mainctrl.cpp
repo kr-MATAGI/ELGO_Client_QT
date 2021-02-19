@@ -31,7 +31,7 @@ void MainCtrl::LoadCurrentDeviceInfo()
     m_deviceInfo.os = ::DEVICE::OSString2Enum(os);
     m_deviceInfo.hostName = QHostInfo::localHostName();;
 
-    // Get Current Device Network Info
+    // Get Network Address Info
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
     foreach (const QHostAddress& address, hostList) {
         if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
