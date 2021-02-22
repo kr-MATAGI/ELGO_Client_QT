@@ -65,6 +65,12 @@ namespace DEVICE
                                            "Debian", "another" };
     DEVICE::OS OSString2Enum(QString &str);
 
+    struct Stroage
+    {
+        int totalStorage; // Mbyte
+        int freeStorage; // Mbyte
+    };
+
     struct Info
     {
         Architec architec;
@@ -74,5 +80,7 @@ namespace DEVICE
         QString ip;
         QString mac;
         QString netMask;
-    };
+
+        Stroage storage;
+    }; 
 };

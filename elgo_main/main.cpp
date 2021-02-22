@@ -3,7 +3,8 @@
 #include <QProcess>
 
 #include "Definition/DeviceDef.h"
-#include "MainCtrl/mainctrl.h"
+#include "MainCtrl/MainCtrl.h"
+#include "DB/MainDBCtrl.h"
 
 static MainCtrl *g_MainCtrl = NULL;
 
@@ -26,10 +27,8 @@ bool StartProcess(::ELGO_PROC::Proc proc)
     return retValue;
 }
 
-bool Initialize()
+void Initialize()
 {
-    bool retValue = false;
-
     // Get This Device Info
     // to do : save ip to shared mem, checking network connection
     g_MainCtrl->LoadCurrentDeviceInfo();
@@ -39,14 +38,14 @@ bool Initialize()
             deviceInfo.hostName.toUtf8().constData(), deviceInfo.ip.toUtf8().constData(),
             deviceInfo.mac.toUtf8().constData(), deviceInfo.netMask.toUtf8().constData());
 
+    // Get DB info
+    g_MainCtrl->GetMainDBCtrl().ConnectionDB();
 
     // Start Process
-    // TODO : except code about 'false' result
+    // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
     const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
     qDebug("%d %d", bIsStaredControl, bIsStaredViewer);
-
-    return retValue;
 }
 
 int main(int argc, char *argv[])
@@ -56,7 +55,6 @@ int main(int argc, char *argv[])
     g_MainCtrl = new MainCtrl();
 
     Initialize();
-
 
     return a.exec();
 }

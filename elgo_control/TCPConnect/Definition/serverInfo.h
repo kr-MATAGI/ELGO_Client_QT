@@ -15,7 +15,8 @@ struct CONNECT_INFO
     QString TUNNELING_HOST; // Remote Control Server
     int TUNNELING_PORT;
 
-    QString version;
+    QString remoteVersion;
+    QString deviceVersion;
 };
 
 enum CONN_TIMEOUT

@@ -2,6 +2,7 @@
 #define MAINCTRL_H
 
 #include "Definition/DeviceDef.h"
+#include "DB/MainDBCtrl.h"
 
 class MainCtrl
 {
@@ -12,14 +13,23 @@ public:
 public:
     /** brief */
     void LoadCurrentDeviceInfo();
+
+    /** brief */
+    QString MakeProcessPath(::ELGO_PROC::Proc proc);   
+
+public:
     /** brief */
     const DEVICE::Info& GetDeviceInfo();
+
+public:
     /** brief */
-    QString MakeProcessPath(::ELGO_PROC::Proc proc);
+    MainDBCtrl& GetMainDBCtrl();
 
 private:
     DEVICE::Info m_deviceInfo;
     bool m_procStatus[2]; // 0 : elgo_cotrol, 1 : elgo_viewer
+
+    MainDBCtrl *m_dbCtrl;
 };
 
 #endif // MAINCTRL_H

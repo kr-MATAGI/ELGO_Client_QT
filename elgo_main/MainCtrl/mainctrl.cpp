@@ -1,15 +1,17 @@
-#include "mainctrl.h"
+#include "MainCtrl.h"
 
 #include <QSysInfo>
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QHostInfo>
+#include <QStorageInfo>
 
 //========================================================
 MainCtrl::MainCtrl()
 //========================================================
 {
     memset(m_procStatus, false, sizeof(m_procStatus));
+    m_dbCtrl = new MainDBCtrl;
 }
 
 //========================================================
@@ -31,6 +33,15 @@ void MainCtrl::LoadCurrentDeviceInfo()
     m_deviceInfo.os = ::DEVICE::OSString2Enum(os);
     m_deviceInfo.hostName = QHostInfo::localHostName();;
 
+    // Get Device Storage Info
+    // TODO : Move to ETC.pro
+    QStorageInfo storageInfo= QStorageInfo::root();
+    const qint64 totalByte = storageInfo.bytesTotal(); // unit : byte
+    const qint64 freeByte = storageInfo.bytesFree(); // unit : byte
+    m_deviceInfo.storage.totalStorage = totalByte / 1024 / 1024; // MByte
+    m_deviceInfo.storage.freeStorage = freeByte / 1024/ 1024; // MByte
+    qDebug() << "total Strogage : " << m_deviceInfo.storage.totalStorage << "free Storage : " << m_deviceInfo.storage.freeStorage;
+
     // Get Network Address Info
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
     foreach (const QHostAddress& address, hostList) {
@@ -48,7 +59,8 @@ void MainCtrl::LoadCurrentDeviceInfo()
                 break;
             }
         }
-    }
+    } // end Get Network Address Info
+
 }
 
 //========================================================
@@ -59,10 +71,19 @@ const DEVICE::Info& MainCtrl::GetDeviceInfo()
 }
 
 //========================================================
+MainDBCtrl& MainCtrl::GetMainDBCtrl()
+//========================================================
+{
+    return *m_dbCtrl;
+}
+
+//========================================================
 QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
-    QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_64_bit-Release/EFC/release/";
+    QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Release/";
+    basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
+    basePath += "/release/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += ".exe";
     return basePath;
