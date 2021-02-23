@@ -20,14 +20,7 @@ public:
     void ConnectionDB();
 
     /** brief */
-    void CreateDeviceDBTable();
-    /** brief */
-    void CreateAccountDBTable();
-
-    /** brief */
-    void GetAllInfoFromDeviceTable();
-    /** brief */
-    void GetAllInfoFromAccountTable();
+    void CheckingDefaultTables();
 
 private:
     QMutex *m_mutex;

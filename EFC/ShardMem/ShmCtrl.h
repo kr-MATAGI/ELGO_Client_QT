@@ -4,10 +4,10 @@
 #include <QSharedMemory>
 #include <QBuffer>
 
-class ShardMemory
+class ShmCtrl
 {
 public:
-    explicit ShardMemory(const QString &key);
+    explicit ShmCtrl(const QString &key);
 
 public:
     /** brief */

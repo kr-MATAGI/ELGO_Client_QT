@@ -1,6 +1,7 @@
 #ifndef MAINCTRL_H
 #define MAINCTRL_H
 
+#include "Common/Deifinition.h"
 #include "Definition/DeviceDef.h"
 #include "DB/MainDBCtrl.h"
 

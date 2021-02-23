@@ -1,10 +1,10 @@
-#include "ShardMemory.h"
+#include "ShmCtrl.h"
 
 #include <QDebug>
 #include <QDataStream>
 
 //========================================================
-ShardMemory::ShardMemory(const QString &key)
+ShmCtrl::ShmCtrl(const QString &key)
 //========================================================
 {
     m_key = key;
@@ -12,7 +12,7 @@ ShardMemory::ShardMemory(const QString &key)
 }
 
 //========================================================
-void ShardMemory::ShmWrite(QBuffer &buffer)
+void ShmCtrl::ShmWrite(QBuffer &buffer)
 //========================================================
 {
     if(m_sharedMem->isAttached())
@@ -26,7 +26,6 @@ void ShardMemory::ShmWrite(QBuffer &buffer)
 
     buffer.open(QBuffer::ReadWrite);
     QDataStream out(&buffer);
-    // <<
     const int bufSize = buffer.size();
 
     if(false == m_sharedMem->create(bufSize))
@@ -46,7 +45,7 @@ void ShardMemory::ShmWrite(QBuffer &buffer)
 }
 
 //========================================================
-void ShardMemory::ShmRead(QBuffer &buffer)
+void ShmCtrl::ShmRead(QBuffer &buffer)
 //========================================================
 {
     if(false == m_sharedMem->attach())

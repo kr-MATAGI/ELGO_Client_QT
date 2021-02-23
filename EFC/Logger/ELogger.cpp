@@ -2,7 +2,7 @@
 #include "ELogger.h"
 
 //========================================================
-void ELogger::ELOG_Print(const QString &str)
+void ELogger::ELOG_PRINT(const QString &str)
 //========================================================
 {
     qDebug("[%s:%d] %s", __FUNCTION__, __LINE__, str.toUtf8().constData());

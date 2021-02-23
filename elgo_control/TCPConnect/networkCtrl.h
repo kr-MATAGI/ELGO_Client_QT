@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QtCore>
 #include <QNetworkReply>
-#include "TCPConnect/Definition/serverInfo.h"
+#include "TCPConnect/Definition/ServerInfo.h"
 
 class NetworkCtrl : public QObject
 {

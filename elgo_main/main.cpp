@@ -6,6 +6,9 @@
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
 
+#include "LocalSocketEvent/LocalSocketServer.h"
+#include "LocalSocketEvent/LocalSocketClient.h"
+
 static MainCtrl *g_MainCtrl = NULL;
 
 void testSlot()
@@ -21,7 +24,7 @@ bool StartProcess(::ELGO_PROC::Proc proc)
     QStringList args;
     QString program = g_MainCtrl->MakeProcessPath(proc);
     qDebug("%s", program.toUtf8().constData());
-    process->start(program, args);
+    process->startDetached(program, args);
     retValue = process->waitForStarted(3000);
 
     return retValue;
@@ -44,8 +47,8 @@ void Initialize()
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
-    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-    qDebug("%d %d", bIsStaredControl, bIsStaredViewer);
+//    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
+//    qDebug("%d %d", bIsStaredControl, bIsStaredViewer);
 }
 
 int main(int argc, char *argv[])

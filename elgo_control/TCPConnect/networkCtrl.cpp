@@ -34,20 +34,6 @@ NetworkCtrl::~NetworkCtrl()
 }
 
 //========================================================
-void NetworkCtrl::replyRemoteVersionFinished(QNetworkReply *reply)
-//========================================================
-{
-    QString src = reply->readAll();
-    m_connecInfo.remoteVersion = JsonParser::RemoteVersionParse(src);
-
-    if(0 != qstrcmp(m_connecInfo.remoteVersion.toUtf8().constData(),
-                    m_connecInfo.deviceVersion.toUtf8().constData()))
-    {
-        // TODO : Update Current Device
-    }
-}
-
-//========================================================
 CONNECT_INFO NetworkCtrl::GetConnectInfo()
 //========================================================
 {
@@ -88,6 +74,20 @@ void NetworkCtrl::GetActiveWirelessInternetList()
 //========================================================
 {
     // TODO : Test
+}
+
+//========================================================
+void NetworkCtrl::replyRemoteVersionFinished(QNetworkReply *reply)
+//========================================================
+{
+    QString src = reply->readAll();
+    m_connecInfo.remoteVersion = JsonParser::RemoteVersionParse(src);
+
+    if(0 != qstrcmp(m_connecInfo.remoteVersion.toUtf8().constData(),
+                    m_connecInfo.deviceVersion.toUtf8().constData()))
+    {
+        // TODO : Update Current Device
+    }
 }
 
 //========================================================

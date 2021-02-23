@@ -3,7 +3,8 @@
 
 #include <QString>
 
-static const QString DEVICE_DB_PATH = "C:/Project/Qt/device.db";
+// for test
+static const QString DEVICE_DB = "C:/Project/Qt/device.db";
 
 namespace ClientDB
 {
@@ -58,6 +59,8 @@ namespace DB_Query
                                                     "expirDate VARCHAR(30) NOT NULL,"
                                                     "rule NUMBER NOT NULL,"
                                                     "command VARCHAR(30) NOT NULL);";
+
+    const static QString SELECT_ALL_SCHEDULE = "SELECT * FROM schedule;";
 };
 
 #endif // DBDEFINITION_H

@@ -1,5 +1,7 @@
 #include "MainDBCtrl.h"
 
+#include <QSqlQuery>
+
 //========================================================
 MainDBCtrl::MainDBCtrl(QObject *parent)
     : QObject(parent)
@@ -21,69 +23,53 @@ void MainDBCtrl::ConnectionDB()
 //========================================================
 {
     m_mutex->lock();
-
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(DEVICE_DB_PATH);
+    db.setDatabaseName(DEVICE_DB);
 
     bool bIsOpenedDB = db.open();
     if(false == bIsOpenedDB)
     {
-        qDebug() << "DB Open ERROR : " << DEVICE_DB_PATH;
+        qDebug() << DEVICE_DB << " Open Error" ;
+        db.close();
+
+        return;
     }
+
+    CheckingDefaultTables();
 
     m_mutex->unlock();
 }
 
 //========================================================
-void MainDBCtrl::CreateDeviceDBTable()
+void MainDBCtrl::CheckingDefaultTables()
 //========================================================
 {
-    m_mutex->lock();
+    QSqlQuery query(QSqlDatabase::database(DEVICE_DB));
+    query.prepare(DB_Query::SELECT_ALL_INFO_DEVICE);
+    query.exec();
 
-    QSqlQuery query;
-    bool bIsOK = query.exec(DB_Query::CREATE_TABLE_DEVICE);
-    if(false == bIsOK)
+    // device table
+    if(-1 == query.numRowsAffected())
     {
-        qDebug() << "query error - " << DB_Query::CREATE_TABLE_DEVICE;
+        query.prepare(DB_Query::CREATE_TABLE_DEVICE);
+        query.exec();
     }
 
-    m_mutex->unlock();
-}
-
-//========================================================
-void MainDBCtrl::CreateAccountDBTable()
-//========================================================
-{
-    m_mutex->lock();
-
-    QSqlQuery query;
-    bool bIsOk = query.exec(DB_Query::CREATE_TABLE_ACCOUNT);
-    if(false == bIsOk)
+    // account table
+    query.prepare(DB_Query::SELECT_ALL_INFO_ACCOUNT);
+    query.exec();
+    if(-1 == query.numRowsAffected())
     {
-        qDebug() << "querry error - " << DB_Query::CREATE_TABLE_ACCOUNT;
+        query.prepare(DB_Query::CREATE_TABLE_ACCOUNT);
+        query.exec();
     }
 
-    m_mutex->unlock();
-}
-
-//========================================================
-void MainDBCtrl::GetAllInfoFromDeviceTable()
-//========================================================
-{
-    m_mutex->lock();
-
-
-
-    m_mutex->unlock();
-}
-
-//========================================================
-void MainDBCtrl::GetAllInfoFromAccountTable()
-//========================================================
-{
-    m_mutex->lock();
-
-
-
-    m_mutex->unlock();
+    // schedule table
+    query.prepare(DB_Query::SELECT_ALL_SCHEDULE);
+    query.exec();
+    if(-1 == query.numRowsAffected())
+    {
+        query.prepare(DB_Query::CREATE_TABLE_SCHEDULE);
+        query.exec();
+    }
 }

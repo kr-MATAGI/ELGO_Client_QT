@@ -34,7 +34,6 @@ void MainCtrl::LoadCurrentDeviceInfo()
     m_deviceInfo.hostName = QHostInfo::localHostName();;
 
     // Get Device Storage Info
-    // TODO : Move to ETC.pro
     QStorageInfo storageInfo= QStorageInfo::root();
     const qint64 totalByte = storageInfo.bytesTotal(); // unit : byte
     const qint64 freeByte = storageInfo.bytesFree(); // unit : byte

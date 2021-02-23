@@ -21,6 +21,9 @@ SOURCES += \
         MainCtrl/MainCtrl.cpp \
         main.cpp
 
+INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"
+LIBS += "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Release/EFC/release/libEFC.a"
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
