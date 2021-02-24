@@ -41,7 +41,7 @@ void MainCtrl::LoadCurrentDeviceInfo()
     m_deviceInfo.storage.freeStorage = freeByte / 1024/ 1024; // MByte
     qDebug() << "total Strogage : " << m_deviceInfo.storage.totalStorage << "free Storage : " << m_deviceInfo.storage.freeStorage;
 
-    // Get Network Address Info
+    // Get Network Address Info (Wired Internet)
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
     foreach (const QHostAddress& address, hostList) {
         if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
@@ -59,7 +59,17 @@ void MainCtrl::LoadCurrentDeviceInfo()
             }
         }
     } // end Get Network Address Info
+}
 
+//========================================================
+bool MainCtrl::CheckingWirelessInternet()
+//========================================================
+{
+    bool retValue = false;
+
+    // Todo : Wireless Internet Checking code
+
+    return retValue;
 }
 
 //========================================================
@@ -80,9 +90,9 @@ MainDBCtrl& MainCtrl::GetMainDBCtrl()
 QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
-    QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Release/";
+    QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
-    basePath += "/release/";
+    basePath += "/debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += ".exe";
     return basePath;

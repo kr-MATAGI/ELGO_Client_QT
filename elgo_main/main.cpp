@@ -1,15 +1,19 @@
 #include <QCoreApplication>
+#include <QByteArray>
 #include <QObject>
 #include <QProcess>
 
+// inner
 #include "Definition/DeviceDef.h"
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
 
-#include "LocalSocketEvent/LocalSocketServer.h"
-#include "LocalSocketEvent/LocalSocketClient.h"
+// EFC
+#include "Logger/ELogger.h"
+#include "Event/MainEventHandler.h"
 
 static MainCtrl *g_MainCtrl = NULL;
+static EventHandler *g_EventHandler = NULL;
 
 void testSlot()
 {
@@ -20,12 +24,12 @@ bool StartProcess(::ELGO_PROC::Proc proc)
 {
     bool retValue = false;
 
-    QProcess *process = new QProcess;
+    QProcess process;
     QStringList args;
     QString program = g_MainCtrl->MakeProcessPath(proc);
-    qDebug("%s", program.toUtf8().constData());
-    process->startDetached(program, args);
-    retValue = process->waitForStarted(3000);
+    qDebug("[elgo_main] procPath :%s", program.toUtf8().constData());
+    retValue = process.startDetached(program, args);
+    process.waitForStarted(1000);
 
     return retValue;
 }
@@ -44,20 +48,38 @@ void Initialize()
     // Get DB info
     g_MainCtrl->GetMainDBCtrl().ConnectionDB();
 
+    // Check Wireless Internet
+    g_MainCtrl->CheckingWirelessInternet();
+
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
-//    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-//    qDebug("%d %d", bIsStaredControl, bIsStaredViewer);
+    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
+//    qDebug("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
+
+struct TESTST
+{
+    int a;
+    QString b;
+};
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
     g_MainCtrl = new MainCtrl();
+    g_EventHandler = new EventHandler(ELGO_PROC::Proc::ELGO_MAIN);
 
     Initialize();
+
+    QByteArray sendBytes;
+    const bool bSendQrEvent = g_EventHandler->SendEvent(ELGO_PROC::Proc::ELGO_VIEWER, VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
+    if(false == bSendQrEvent)
+    {
+        qDebug() << "[elgo_main] bSendQrEvent : " << bSendQrEvent;
+    }
+
 
     return a.exec();
 }

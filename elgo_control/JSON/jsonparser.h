@@ -5,7 +5,7 @@
 
 namespace JsonParser
 {
-    /** brief */
+    /** @brief */
     QString RemoteVersionParse(const QString &src);
 };
 

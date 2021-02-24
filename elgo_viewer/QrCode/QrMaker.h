@@ -15,9 +15,9 @@ public :
     virtual ~QrMaker();
 
 public:
-    /** brief */
+    /** @brief */
     void DrawQrCode(QPainter &painter, const QSize size, const QString &url, QColor color);
-    /** brief */
+    /** @brief */
     void paint(QPainter *painter) override;
 };
 #endif // QRMAKER_H

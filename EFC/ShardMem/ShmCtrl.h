@@ -10,10 +10,10 @@ public:
     explicit ShmCtrl(const QString &key);
 
 public:
-    /** brief */
+    /** @brief */
     void ShmWrite(QBuffer &buffer);
 
-    /** brief */
+    /** @brief */
     void ShmRead(QBuffer &buffer);
 
 private :

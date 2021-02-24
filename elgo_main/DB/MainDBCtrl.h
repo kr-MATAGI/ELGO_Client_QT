@@ -16,10 +16,10 @@ public:
     virtual ~MainDBCtrl();
 
 public:
-    /** brief */
+    /** @brief */
     void ConnectionDB();
 
-    /** brief */
+    /** @brief */
     void CheckingDefaultTables();
 
 private:

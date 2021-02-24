@@ -35,6 +35,7 @@ void MainDBCtrl::ConnectionDB()
         return;
     }
 
+    // Checking device.db's tables
     CheckingDefaultTables();
 
     m_mutex->unlock();
@@ -44,12 +45,14 @@ void MainDBCtrl::ConnectionDB()
 void MainDBCtrl::CheckingDefaultTables()
 //========================================================
 {
+    const int ZERO_RESULT = -1;
+
     QSqlQuery query(QSqlDatabase::database(DEVICE_DB));
     query.prepare(DB_Query::SELECT_ALL_INFO_DEVICE);
     query.exec();
 
     // device table
-    if(-1 == query.numRowsAffected())
+    if(ZERO_RESULT == query.numRowsAffected())
     {
         query.prepare(DB_Query::CREATE_TABLE_DEVICE);
         query.exec();
@@ -58,7 +61,7 @@ void MainDBCtrl::CheckingDefaultTables()
     // account table
     query.prepare(DB_Query::SELECT_ALL_INFO_ACCOUNT);
     query.exec();
-    if(-1 == query.numRowsAffected())
+    if(ZERO_RESULT == query.numRowsAffected())
     {
         query.prepare(DB_Query::CREATE_TABLE_ACCOUNT);
         query.exec();
@@ -67,9 +70,18 @@ void MainDBCtrl::CheckingDefaultTables()
     // schedule table
     query.prepare(DB_Query::SELECT_ALL_SCHEDULE);
     query.exec();
-    if(-1 == query.numRowsAffected())
+    if(ZERO_RESULT == query.numRowsAffected())
     {
         query.prepare(DB_Query::CREATE_TABLE_SCHEDULE);
+        query.exec();
+    }
+
+    // network table
+    query.prepare(DB_Query::SELECT_ALL_NETWORK_TABLE);
+    query.exec();
+    if(ZERO_RESULT == query.numRowsAffected())
+    {
+        query.prepare(DB_Query::CREATE_NETWORK_TABLE);
         query.exec();
     }
 }

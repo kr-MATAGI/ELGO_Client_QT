@@ -12,18 +12,20 @@ public:
     virtual ~MainCtrl();
 
 public:
-    /** brief */
+    /** @brief */
     void LoadCurrentDeviceInfo();
 
-    /** brief */
+    /** @brief */
     QString MakeProcessPath(::ELGO_PROC::Proc proc);   
 
-public:
-    /** brief */
+    /** @brief */
+    bool CheckingWirelessInternet();
+
+    /** @brief */
     const DEVICE::Info& GetDeviceInfo();
 
 public:
-    /** brief */
+    /** @brief */
     MainDBCtrl& GetMainDBCtrl();
 
 private:

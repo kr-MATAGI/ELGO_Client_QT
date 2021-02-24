@@ -18,14 +18,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     Common/Deifinition.h \
-    LocalSocketEvent/LocalSocketClient.h \
+    Common/EventList.h \
+    LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \
     Logger/ELogger.h \
     ShardMem/ShmCtrl.h
 
 
 SOURCES += \
-    LocalSocketEvent/LocalSocketClient.cpp \
+    LocalSocketEvent/EventState.cpp \
     LocalSocketEvent/LocalSocketServer.cpp \
     Logger/ELogger.cpp \
     ShardMem/ShmCtrl.cpp
