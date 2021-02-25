@@ -5,7 +5,7 @@
 #include <QNetworkReply>
 #include <QByteArray>
 
-#include <JSON/JsonParser.h>
+#include "JSON/JsonParser.h"
 
 //========================================================
 NetworkCtrl::NetworkCtrl(QObject *parent)

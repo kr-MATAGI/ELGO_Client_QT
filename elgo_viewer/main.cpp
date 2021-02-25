@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include <QRCode/QrMaker.h>
+#include <QrCode/QrMaker.h>
 #include <QQuickView>
 #include <QGuiApplication>
 

@@ -7,8 +7,8 @@ HEADERS += \
         Event/ViewerEventState.h \
         ViewerCtrl/ViewerCtrl.h \
         ViewerThread/ViewerThread.h \
-        ext_libs/QrCode/QRCode.h \
-        QRCode/QrMaker.h
+        ext_libs/QrCode/QrCode.h \
+        QrCode/QrMaker.h
 
 
 SOURCES += \
@@ -17,8 +17,8 @@ SOURCES += \
         ViewerCtrl/ViewerCtrl.cpp \
         ViewerThread/ViewerThread.cpp \
         main.cpp \
-        ext_libs/QrCode/QRCode.cpp \
-        QRCode/QrMaker.cpp
+        ext_libs/QrCode/QrCode.cpp \
+        QrCode/QrMaker.cpp
 
 
 

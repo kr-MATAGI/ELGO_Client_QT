@@ -1,7 +1,10 @@
+
 #include "JsonParser.h"
 
+//QT
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDebug>
 
 //========================================================
 QString JsonParser::RemoteVersionParse(const QString &src)

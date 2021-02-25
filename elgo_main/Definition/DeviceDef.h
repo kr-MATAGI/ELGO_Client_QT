@@ -67,5 +67,5 @@ namespace DEVICE
 
         Stroage storage;
     }; 
-};
+}
 #endif // DEFINITION_H

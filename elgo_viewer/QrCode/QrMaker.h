@@ -3,7 +3,7 @@
 
 #include <QPainter>
 #include <QQuickPaintedItem>
-#include "ext_libs/QRCode/QrCode.h"
+#include "ext_libs/QrCode/QrCode.h"
 
 
 class QrMaker : public QQuickPaintedItem

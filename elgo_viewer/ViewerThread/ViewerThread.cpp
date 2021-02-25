@@ -3,7 +3,7 @@
 // QT
 #include <QQuickView>
 
-#include <QRCode/QrMaker.h>
+#include "QrCode/QrMaker.h"
 
 //========================================================
 ViewerThread::ViewerThread()

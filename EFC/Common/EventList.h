@@ -10,7 +10,7 @@ namespace COMM_EVENT
 
         MAX_COMM_EVENT = 255
     };
-};
+}
 
 namespace MAIN_EVENT
 {
@@ -26,7 +26,7 @@ namespace MAIN_EVENT
 
         MAX_VIEWER_EVENT = 511
     };
-};
+}
 
 namespace CONTROL_EVENT
 {
@@ -36,7 +36,7 @@ namespace CONTROL_EVENT
 
         MAX_CONTROL_EVENT = 767
     };
-};
+}
 
 namespace VIEWER_EVENT
 {
@@ -55,6 +55,6 @@ namespace VIEWER_EVENT
 
         MAX_VIEWER_EVENT = 1023
     };
-};
+}
 
 #endif // EVENTLIST_H

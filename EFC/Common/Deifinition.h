@@ -15,11 +15,11 @@ namespace ELGO_PROC
     };
     static const char *ELGOProc_enum2str[] = { "none", "elgo_main", "elgo_control",
                                              "elgo_viewer", "unkown"};
-};
+}
 
 namespace SHM_NAME
 {
     static QString SHM_IP = "ipAddress";
-};
+}
 
 #endif // DEIFINITION_H

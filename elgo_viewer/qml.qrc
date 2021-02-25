@@ -3,8 +3,5 @@
         <file>main.qml</file>
         <file>contentPlayer.qml</file>
     </qresource>
-    <qresource prefix="/test">
-        <file>images/apple.png</file>
-        <file>images/cat_1.png</file>
-    </qresource>
+    <qresource prefix="/test"/>
 </RCC>
