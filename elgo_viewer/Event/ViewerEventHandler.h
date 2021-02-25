@@ -1,18 +1,25 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
-#include <LocalSocketEvent/LocalSocketServer.h>
+#include "LocalSocketEvent/LocalSocketServer.h"
+#include "ViewerEventState.h"
 
-class EventHandler : public LocalSocketServer
+class ViewerEventHandler : public LocalSocketServer
 {
 
 public:
-    EventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
-    virtual ~EventHandler();
+    ViewerEventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
+    virtual ~ViewerEventHandler();
+
+public:
+    /** @brief  notify process status */
+    void SendViewerIsReady();
+
+private slots:
+    void readEvent() override;
 
 private:
-
-
+    ViewerEventState m_state;
 };
 
 #endif // EVENTHANDLER_H

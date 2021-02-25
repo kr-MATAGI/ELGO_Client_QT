@@ -7,18 +7,14 @@
 class ShmCtrl
 {
 public:
-    explicit ShmCtrl(const QString &key);
+    explicit ShmCtrl();
 
 public:
     /** @brief */
-    void ShmWrite(QBuffer &buffer);
+    void ShmWrite(const QString &key, QBuffer &buffer);
 
     /** @brief */
-    void ShmRead(QBuffer &buffer);
-
-private :
-    QString m_key;
-    QSharedMemory *m_sharedMem;
+    void ShmRead(const QString &key, QBuffer &buffer);
 
 };
 

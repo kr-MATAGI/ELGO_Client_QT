@@ -1,7 +1,7 @@
 #include "ControlEventHandler.h"
 
 //========================================================
-EventHandler::EventHandler(ELGO_PROC::Proc proc, QObject *parent)
+ControlEventHandler::ControlEventHandler(ELGO_PROC::Proc proc, QObject *parent)
     : LocalSocketServer(proc, parent)
 //========================================================
 {
@@ -9,7 +9,14 @@ EventHandler::EventHandler(ELGO_PROC::Proc proc, QObject *parent)
 }
 
 //========================================================
-EventHandler::~EventHandler()
+ControlEventHandler::~ControlEventHandler()
+//========================================================
+{
+
+}
+
+//========================================================
+void ControlEventHandler::readEvent()
 //========================================================
 {
 

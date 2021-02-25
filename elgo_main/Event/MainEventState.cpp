@@ -1,49 +1,51 @@
-#include "ViewerEventState.h"
-#include "ViewerThread/ViewerThread.h"
+#include "MainEventState.h"
+#include "MainThread/MainThread.h"
 
 #include <QDataStream>
 
 //========================================================
-ViewerEventState::ViewerEventState()
+MainEventState::MainEventState()
 //========================================================
 {
     m_threadPool = new QThreadPool;
     m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 
-    m_state.ReigsterEvent(VIEWER_EVENT::Event::MAKE_QRCODE, &ViewerEventState::MakeQrCodeState);
+    // enroll event
+    m_state.ReigsterEvent(VIEWER_EVENT::Event::MAKE_QRCODE, &MainEventState::RecvProcecssReady);
 }
 
 //========================================================
-ViewerEventState::~ViewerEventState()
+MainEventState::~MainEventState()
 //========================================================
 {
-    delete m_threadPool;
-    m_threadPool = NULL;
+
 }
 
 //========================================================
-void ViewerEventState::ExecState(VIEWER_EVENT::Event event, QByteArray &src)
+void MainEventState::ExecState(MAIN_EVENT::Event event, QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);;
 }
 
 //========================================================
-void ViewerEventState::MakeQrCodeState(QByteArray &src)
+void MainEventState::RecvProcecssReady(QByteArray &src)
 //========================================================
 {
     /**
-    *   @note
-    *       VIEWER_EVENT::MAKE_QRCODE
-    *   @param
-    *       NONE
-    */
-    VIEWER_EVENT::Event event = VIEWER_EVENT::Event::NONE_VIEWER_EVENT;
+     *  @brief  receive status of process started
+     *  @param  ELGO_PROC::Proc proc
+     */
+
     QDataStream out(&src, QIODevice::ReadOnly);
     out.setVersion(QDataStream::Qt_5_12);
+    MAIN_EVENT::Event event = MAIN_EVENT::Event::NONE_MAIN_EVENT;
+    QByteArray recv;
     out >> event;
+    out >> recv;
 
-    ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(event);
+    MainThread *thread = new MainThread;
+    thread->SetMainEvent(event);
+    thread->SetRecvBytes(recv);
     m_threadPool->start(thread);
 }

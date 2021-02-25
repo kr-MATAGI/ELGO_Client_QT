@@ -19,6 +19,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     Common/Deifinition.h \
     Common/EventList.h \
+    LocalSocketEvent/EFCEvent.h \
     LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \
     Logger/ELogger.h \
@@ -26,7 +27,7 @@ HEADERS += \
 
 
 SOURCES += \
-    LocalSocketEvent/EventState.cpp \
+    LocalSocketEvent/EFCEvent.cpp \
     LocalSocketEvent/LocalSocketServer.cpp \
     Logger/ELogger.cpp \
     ShardMem/ShmCtrl.cpp

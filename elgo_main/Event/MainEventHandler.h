@@ -1,15 +1,20 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
-
 #include "LocalSocketEvent/LocalSocketServer.h"
+#include "MainEventState.h"
 
-
-class EventHandler : public LocalSocketServer
+class MainEventHandler : public LocalSocketServer
 {
 public:
-    EventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
-    virtual ~EventHandler();
+    MainEventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
+    virtual ~MainEventHandler();
+
+private:
+    void readEvent() override;
+
+private:
+    MainEventState m_state;
 };
 
 #endif // EVENTHANDLER_H

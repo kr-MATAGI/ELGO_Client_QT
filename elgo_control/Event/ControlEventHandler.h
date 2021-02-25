@@ -3,11 +3,14 @@
 
 #include "LocalSocketEvent/LocalSocketServer.h"
 
-class EventHandler : public LocalSocketServer
+class ControlEventHandler : public LocalSocketServer
 {
 public:
-    EventHandler(ELGO_PROC::Proc proc, QObject *parent = nullptr);
-    virtual ~EventHandler();
+    ControlEventHandler(ELGO_PROC::Proc proc, QObject *parent = nullptr);
+    virtual ~ControlEventHandler();
+
+private slots:
+    void readEvent() override;
 
 private:
     QList<quint16> m_enrolledEventList;

@@ -18,6 +18,12 @@ namespace MAIN_EVENT
     {
         NONE_MAIN_EVENT = 256,
 
+        /**
+         *  @brief  receive status of process started
+         *  @param  ELGO_PROC::Proc proc
+         */
+        PROCESS_IS_READY = 257,
+
         MAX_VIEWER_EVENT = 511
     };
 };

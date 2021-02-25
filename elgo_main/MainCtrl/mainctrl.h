@@ -1,7 +1,10 @@
 #ifndef MAINCTRL_H
 #define MAINCTRL_H
 
+//EFC
 #include "Common/Deifinition.h"
+#include "ShardMem/ShmCtrl.h"
+
 #include "Definition/DeviceDef.h"
 #include "DB/MainDBCtrl.h"
 
@@ -25,14 +28,13 @@ public:
     const DEVICE::Info& GetDeviceInfo();
 
 public:
-    /** @brief */
-    MainDBCtrl& GetMainDBCtrl();
+    MainDBCtrl& GetDBCtrl();
 
 private:
     DEVICE::Info m_deviceInfo;
-    bool m_procStatus[2]; // 0 : elgo_cotrol, 1 : elgo_viewer
 
     MainDBCtrl *m_dbCtrl;
+    ShmCtrl *m_shmCtrl;
 };
 
 #endif // MAINCTRL_H

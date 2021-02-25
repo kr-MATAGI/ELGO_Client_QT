@@ -1,9 +1,13 @@
-// Todo auth description
-
 #include "QrMaker.h"
+
+// QT
 #include <QObject>
 #include <QQuickView>
 #include <QDebug>
+
+// EFC
+#include "ShardMem/ShmCtrl.h"
+#include "Common/Deifinition.h"
 
 //========================================================
 QrMaker::QrMaker(QQuickItem *parent)
@@ -63,7 +67,6 @@ void QrMaker::paint(QPainter *painter)
     QObject *QRItem = view.rootObject();
 
     QSize qSize(0, 0);
-    QString url = "http://www.naver.com"; // get ip from shared memory
     QColor color = Qt::black;
     if(QRItem)
     {
@@ -82,6 +85,16 @@ void QrMaker::paint(QPainter *painter)
         qDebug("Not Connected QRItem (deafult size)");
     }
 
+    // shared Mem
+
+    ShmCtrl shmCtrl;
+    QBuffer ipBuffer;
+    shmCtrl.ShmRead(SHM_NAME::SHM_IP, ipBuffer);
+    QString ip = ipBuffer.readAll();
+
+    QString url = "http://";
+    url += ip;
+    url += ":3000/device-login";
     DrawQrCode(*painter, qSize, url, color);
 
     delete QRItem;

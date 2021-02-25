@@ -10,15 +10,26 @@
 MainCtrl::MainCtrl()
 //========================================================
 {
-    memset(m_procStatus, false, sizeof(m_procStatus));
     m_dbCtrl = new MainDBCtrl;
+    m_shmCtrl = new ShmCtrl;
 }
 
 //========================================================
 MainCtrl::~MainCtrl()
 //========================================================
 {
+    delete m_dbCtrl;
+    m_dbCtrl = NULL;
 
+    delete m_shmCtrl;
+    m_shmCtrl = NULL;
+}
+
+//========================================================
+MainDBCtrl& MainCtrl::GetDBCtrl()
+//========================================================
+{
+    return *m_dbCtrl;
 }
 
 //========================================================
@@ -58,7 +69,16 @@ void MainCtrl::LoadCurrentDeviceInfo()
                 break;
             }
         }
-    } // end Get Network Address Info
+    }
+
+    QBuffer buffer;
+    QByteArray ipBytes;
+    QDataStream ipStream(&ipBytes, QIODevice::WriteOnly);
+    ipStream << m_deviceInfo.ip;
+
+    buffer.write(ipBytes);
+    m_shmCtrl->ShmWrite(SHM_NAME::SHM_IP, buffer);
+    // end Get Network Address Info
 }
 
 //========================================================
@@ -80,16 +100,10 @@ const DEVICE::Info& MainCtrl::GetDeviceInfo()
 }
 
 //========================================================
-MainDBCtrl& MainCtrl::GetMainDBCtrl()
-//========================================================
-{
-    return *m_dbCtrl;
-}
-
-//========================================================
 QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
+    // test path
     QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += "/debug/";

@@ -3,9 +3,10 @@ QT += quick
 CONFIG += c++11
 
 HEADERS += \
-        Event/EventList.h \
         Event/ViewerEventHandler.h \
         Event/ViewerEventState.h \
+        ViewerCtrl/ViewerCtrl.h \
+        ViewerThread/ViewerThread.h \
         ext_libs/QrCode/QRCode.h \
         QRCode/QrMaker.h
 
@@ -13,6 +14,8 @@ HEADERS += \
 SOURCES += \
         Event/ViewerEventHandler.cpp \
         Event/ViewerEventState.cpp \
+        ViewerCtrl/ViewerCtrl.cpp \
+        ViewerThread/ViewerThread.cpp \
         main.cpp \
         ext_libs/QrCode/QRCode.cpp \
         QRCode/QrMaker.cpp
@@ -36,7 +39,6 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../EFC/release/ -lEFC

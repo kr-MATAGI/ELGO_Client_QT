@@ -11,14 +11,10 @@
 // EFC
 #include "Logger/ELogger.h"
 #include "Event/MainEventHandler.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 static MainCtrl *g_MainCtrl = NULL;
-static EventHandler *g_EventHandler = NULL;
-
-void testSlot()
-{
-    qDebug("started");
-}
+static MainEventHandler *g_EventHandler = NULL;
 
 bool StartProcess(::ELGO_PROC::Proc proc)
 {
@@ -46,7 +42,7 @@ void Initialize()
             deviceInfo.mac.toUtf8().constData(), deviceInfo.netMask.toUtf8().constData());
 
     // Get DB info
-    g_MainCtrl->GetMainDBCtrl().ConnectionDB();
+    g_MainCtrl->GetDBCtrl().ConnectionDB();
 
     // Check Wireless Internet
     g_MainCtrl->CheckingWirelessInternet();
@@ -55,31 +51,17 @@ void Initialize()
     // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
     const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-//    qDebug("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+    qDebug("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
-
-struct TESTST
-{
-    int a;
-    QString b;
-};
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
     g_MainCtrl = new MainCtrl();
-    g_EventHandler = new EventHandler(ELGO_PROC::Proc::ELGO_MAIN);
+    g_EventHandler = new MainEventHandler(ELGO_PROC::Proc::ELGO_MAIN);
 
     Initialize();
-
-    QByteArray sendBytes;
-    const bool bSendQrEvent = g_EventHandler->SendEvent(ELGO_PROC::Proc::ELGO_VIEWER, VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
-    if(false == bSendQrEvent)
-    {
-        qDebug() << "[elgo_main] bSendQrEvent : " << bSendQrEvent;
-    }
-
 
     return a.exec();
 }

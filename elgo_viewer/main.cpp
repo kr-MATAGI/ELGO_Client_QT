@@ -8,18 +8,12 @@
 // EFC
 #include "Event/ViewerEventHandler.h"
 
-static EventHandler *g_EventHandler = NULL;
+static ViewerEventHandler *g_EventHandler = NULL;
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    g_EventHandler = new EventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
-
-    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
-
-    QQuickView view;
-    view.setSource(QUrl("qrc:/contentPlayer.qml"));
-    view.show();
+    g_EventHandler = new ViewerEventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
 
     return app.exec();
 }

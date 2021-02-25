@@ -14,13 +14,17 @@ HEADERS += \
     DB/MainDBCtrl.h \
     Definition/Definition.h \
     Event/MainEventHandler.h \
-    MainCtrl/MainCtrl.h
+    Event/MainEventState.h \
+    MainCtrl/MainCtrl.h \
+    MainThread/MainThread.h
 
 SOURCES += \
         DB/MainDBCtrl.cpp \
         Definition/DeviceDef.cpp \
         Event/MainEventHandler.cpp \
+        Event/MainEventState.cpp \
         MainCtrl/MainCtrl.cpp \
+        MainThread/MainThread.cpp \
         main.cpp
 
 #INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"

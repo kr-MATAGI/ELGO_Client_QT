@@ -4,22 +4,23 @@
 #include <QDataStream>
 
 //========================================================
-ShmCtrl::ShmCtrl(const QString &key)
+ShmCtrl::ShmCtrl()
 //========================================================
 {
-    m_key = key;
-    m_sharedMem = new QSharedMemory(m_key);
+
 }
 
 //========================================================
-void ShmCtrl::ShmWrite(QBuffer &buffer)
+void ShmCtrl::ShmWrite(const QString &key, QBuffer &buffer)
 //========================================================
 {
-    if(m_sharedMem->isAttached())
+    QSharedMemory shmem(key);
+
+    if(shmem.isAttached())
     {
-        if(false == m_sharedMem->detach())
+        if(false == shmem.detach())
         {
-            qDebug() << __FUNCTION__ <<" Not Connected SHM";
+            qDebug() << __FUNCTION__ <<"Not Connected SHM";
             return;
         }
     }
@@ -28,37 +29,38 @@ void ShmCtrl::ShmWrite(QBuffer &buffer)
     QDataStream out(&buffer);
     const int bufSize = buffer.size();
 
-    if(false == m_sharedMem->create(bufSize))
+    if(false == shmem.create(bufSize))
     {
-        qDebug() << __FUNCTION__ <<" Not created SHM Segment";
+        qDebug() << __FUNCTION__ <<"Not created SHM Segment";
         return;
     }
 
-    m_sharedMem->lock();
+    shmem.lock();
 
-    char *to = (char*)m_sharedMem->data();
+    char *to = (char*)shmem.data();
     const char *from = buffer.data().data();
-    memcpy(to, from, qMin(m_sharedMem->size(), bufSize));
+    memcpy(to, from, qMin(shmem.size(), bufSize));
 
-    m_sharedMem->unlock();
+    shmem.unlock();
 
 }
 
 //========================================================
-void ShmCtrl::ShmRead(QBuffer &buffer)
+void ShmCtrl::ShmRead(const QString &key, QBuffer &buffer)
 //========================================================
 {
-    if(false == m_sharedMem->attach())
+    QSharedMemory shmem(key);
+
+    if(false == shmem.attach())
     {
         qDebug() << __FUNCTION__ <<" Not Connected SHM";
         return;
     }
-
     QDataStream in(&buffer);
 
-    m_sharedMem->lock();
-    buffer.setData((char*)m_sharedMem->constData(), m_sharedMem->size());
+    shmem.lock();
+    buffer.setData((char*)shmem.constData(), shmem.size());
     buffer.open(QBuffer::ReadOnly);
-    m_sharedMem->unlock();
-    m_sharedMem->detach();
+    shmem.unlock();
+    shmem.detach();
 }
