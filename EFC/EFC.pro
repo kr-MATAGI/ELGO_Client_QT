@@ -23,7 +23,8 @@ HEADERS += \
     LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \
     Logger/ELogger.h \
-    ShardMem/ShmCtrl.h
+    ShardMem/ShmCtrl.h \
+    ShardMem/ShmDefinition.h
 
 
 SOURCES += \

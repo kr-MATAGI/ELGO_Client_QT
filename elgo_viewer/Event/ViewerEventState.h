@@ -22,10 +22,10 @@ public:
 
 public:
     /** @brief */
-    void ExecState(VIEWER_EVENT::Event event, QByteArray &src);
+    void ExecState(quint16 event, QByteArray &src);
 
     /** @brief */
-    void MakeQrCodeState(QByteArray& src);
+    void MakeQrCodeAndDisplay(QByteArray& src);
 
 public:
     QThreadPool *m_threadPool;

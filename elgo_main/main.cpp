@@ -25,7 +25,7 @@ bool StartProcess(::ELGO_PROC::Proc proc)
     QString program = g_MainCtrl->MakeProcessPath(proc);
     qDebug("[elgo_main] procPath :%s", program.toUtf8().constData());
     retValue = process.startDetached(program, args);
-    process.waitForStarted(1000);
+    process.waitForStarted();
 
     return retValue;
 }
@@ -36,10 +36,11 @@ void Initialize()
     // to do : save ip to shared mem, checking network connection
     g_MainCtrl->LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainCtrl->GetDeviceInfo();
-    qDebug("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s, netMask : %s",
-           ::DEVICE::OS_enum2str[deviceInfo.os], ::DEVICE::Arch_enum2str[deviceInfo.architec],
-            deviceInfo.hostName.toUtf8().constData(), deviceInfo.ip.toUtf8().constData(),
-            deviceInfo.mac.toUtf8().constData(), deviceInfo.netMask.toUtf8().constData());
+    qDebug("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
+           ::DEVICE::OS_enum2str[deviceInfo.os],
+            ::DEVICE::Arch_enum2str[deviceInfo.architec],
+            deviceInfo.hostName.toUtf8().constData(), deviceInfo.ipAddr.ip.toUtf8().constData(),
+            deviceInfo.ipAddr.mac.toUtf8().constData());
 
     // Get DB info
     g_MainCtrl->GetDBCtrl().ConnectionDB();

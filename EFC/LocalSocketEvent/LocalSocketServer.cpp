@@ -9,10 +9,16 @@ LocalSocketServer::LocalSocketServer(::ELGO_PROC::Proc proc, QObject *parent)
 //========================================================
 {
     m_procName = ::ELGO_PROC::ELGOProc_enum2str[proc];
+
+    m_server.removeServer(m_procName);
     if(m_server.listen(m_procName))
     {
         qDebug() << m_procName <<"Socket is Listening...";
         connect(&m_server, SIGNAL(newConnection()), this, SLOT(clientConnection()));
+    }
+    else
+    {
+        qDebug() << "[" + m_procName + "] is LocalSocketServer listen error !";
     }
 }
 
@@ -25,6 +31,7 @@ LocalSocketServer::~LocalSocketServer()
         socket->close();
         socket->deleteLater();
     }
+    m_server.close();
 }
 
 //========================================================

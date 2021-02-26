@@ -10,7 +10,9 @@ ViewerEventState::ViewerEventState()
     m_threadPool = new QThreadPool;
     m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 
-    m_state.ReigsterEvent(VIEWER_EVENT::Event::MAKE_QRCODE, &ViewerEventState::MakeQrCodeState);
+    // enorll Event
+    m_state.RegisterEvent(VIEWER_EVENT::Event::MAKE_QRCODE,
+                          &ViewerEventState::MakeQrCodeAndDisplay);
 }
 
 //========================================================
@@ -22,14 +24,14 @@ ViewerEventState::~ViewerEventState()
 }
 
 //========================================================
-void ViewerEventState::ExecState(VIEWER_EVENT::Event event, QByteArray &src)
+void ViewerEventState::ExecState(quint16 event, QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);;
 }
 
 //========================================================
-void ViewerEventState::MakeQrCodeState(QByteArray &src)
+void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
 //========================================================
 {
     /**
@@ -38,12 +40,10 @@ void ViewerEventState::MakeQrCodeState(QByteArray &src)
     *   @param
     *       NONE
     */
-    VIEWER_EVENT::Event event = VIEWER_EVENT::Event::NONE_VIEWER_EVENT;
     QDataStream out(&src, QIODevice::ReadOnly);
     out.setVersion(QDataStream::Qt_5_12);
-    out >> event;
 
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(event);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::MAKE_QRCODE);
     m_threadPool->start(thread);
 }

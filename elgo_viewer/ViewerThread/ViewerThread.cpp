@@ -1,9 +1,12 @@
-#include "ViewerThread.h"
-
 // QT
 #include <QQuickView>
 
+// EFC
+#include "ShardMem/ShmCtrl.h"
+
+// Viewer
 #include "QrCode/QrMaker.h"
+#include "ViewerThread.h"
 
 //========================================================
 ViewerThread::ViewerThread()
@@ -41,15 +44,30 @@ void ViewerThread::run()
     {
         ExecMakeQrCodeThread();
     }
+    else
+    {
+        qDebug() << __FUNCTION__ << "Unkwon Event" ;
+    }
 }
 
 //========================================================
 void ViewerThread::ExecMakeQrCodeThread()
 //========================================================
 {
-    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
+    qDebug() << __FUNCTION__;
+//    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
 
-    QQuickView view;
-    view.setSource(QUrl("qrc:/contentPlayer.qml"));
-    view.show();
+//    QQuickView view;
+//    view.setSource(QUrl("qrc:/contentPlayer.qml"));
+//    view.show();
+
+    // Read IP from shared memory
+    QString ip;
+    ShmCtrl shmCtrl;
+    QByteArray shmBytes;
+    QDataStream shmRead(&shmBytes, QIODevice::ReadWrite);
+    shmRead.setVersion(QDataStream::Qt_5_12);
+    shmCtrl.ShmRead(SHM_NAME::SHM_IP, shmBytes);
+    shmRead >> ip;
+    qDebug() << ip.toUtf8().constData();
 }

@@ -34,6 +34,12 @@ namespace CONTROL_EVENT
     {
         NONE_CONTROL_EVENT = 512,
 
+        /**
+         *  @brief  receive WIFI information from main process
+         *  @param  TODO
+         */
+        RECV_WIFI_INFO_FROM_MAIN = 513,
+
         MAX_CONTROL_EVENT = 767
     };
 }

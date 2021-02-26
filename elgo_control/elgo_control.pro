@@ -18,7 +18,9 @@ unix {
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        ControlThread/ControlThread.cpp \
         Event/ContorlEventHandler.cpp \
+        Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
         TCPConnect/NetworkCtrl.cpp \
         main.cpp
@@ -29,7 +31,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    ControlThread/ControlThread.h \
     Event/ControlEventHandler.h \
+    Event/ControlEventState.h \
     JSON/JsonParser.h \
     TCPConnect/Definition/ServerInfo.h \
     TCPConnect/NetworkCtrl.h

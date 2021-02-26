@@ -41,12 +41,13 @@ namespace DEVICE
         TV_OS = 8,
         WATCH_OS = 9,
         DARWIN = 10,
+        UBUNTU = 11,
         ANOTHER_OS = 255
     };
-    static const char *OS_enum2str[] = { "UNKOWN", "Windows", "winRT", "Linux",
+    static const char *OS_enum2str[] = { "UNKOWN", "Windows", "WinRT", "Linux",
                                            "Android", "Mac", "debian",
                                            "ios", "tvos", "watchos",
-                                           "Debian", "another" };
+                                           "DarWin", "Ubuntu", "another" };
     DEVICE::OS OSString2Enum(QString &str);
 
     struct Stroage
@@ -55,16 +56,19 @@ namespace DEVICE
         int freeStorage; // Mbyte
     };
 
+    struct IPADDR
+    {
+        QString ip;
+        QString mac;
+    };
+
     struct Info
     {
         Architec architec;
         OS os;
         QString hostName;
 
-        QString ip;
-        QString mac;
-        QString netMask;
-
+        IPADDR ipAddr;
         Stroage storage;
     }; 
 }

@@ -1,10 +1,15 @@
-#include "MainCtrl.h"
-
+// QT
 #include <QSysInfo>
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QHostInfo>
 #include <QStorageInfo>
+
+// EFC
+#include "ShardMem/ShmCtrl.h"
+
+// Main
+#include "MainCtrl.h"
 
 //========================================================
 MainCtrl::MainCtrl()
@@ -56,29 +61,32 @@ void MainCtrl::LoadCurrentDeviceInfo()
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
     foreach (const QHostAddress& address, hostList) {
         if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
-            m_deviceInfo.ip = address.toString();
+            m_deviceInfo.ipAddr.ip = address.toString();
         }
     }
 
     foreach (const QNetworkInterface& networkInterface, QNetworkInterface::allInterfaces()) {
         foreach (const QNetworkAddressEntry& entry, networkInterface.addressEntries()) {
-            if (entry.ip().toString() == m_deviceInfo.ip) {
-                m_deviceInfo.mac = networkInterface.hardwareAddress();
-                m_deviceInfo.netMask = entry.netmask().toString();
-
+            if (entry.ip().toString() == m_deviceInfo.ipAddr.ip) {
+                m_deviceInfo.ipAddr.mac = networkInterface.hardwareAddress();
                 break;
             }
         }
     }
 
-    QBuffer buffer;
-    QByteArray ipBytes;
-    QDataStream ipStream(&ipBytes, QIODevice::WriteOnly);
-    ipStream << m_deviceInfo.ip;
+    // for test
+    m_deviceInfo.ipAddr.ip = "210.217.109.238";
 
-    buffer.write(ipBytes);
-    m_shmCtrl->ShmWrite(SHM_NAME::SHM_IP, buffer);
-    // end Get Network Address Info
+    // Save IP addres into shared Memory
+    // below code may be move to main.cpp
+    QByteArray shmBytes;
+    QDataStream shmDataStream(&shmBytes, QIODevice::ReadWrite);
+    shmDataStream << m_deviceInfo.ipAddr.ip;
+    const bool bWriteShmIP = m_shmCtrl->ShmWrite(SHM_NAME::SHM_IP, shmBytes);
+    if(false == bWriteShmIP)
+    {
+        qDebug() << __FUNCTION__ << "Error Write ShmIP";
+    }
 }
 
 //========================================================
@@ -104,10 +112,19 @@ QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
     // test path
-    QString basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
+    QString basePath;
+#if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
+    basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";
+    basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
+    basePath += "/";
+    basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
+#elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
+    basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += "/debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += ".exe";
+#endif
+
     return basePath;
 }

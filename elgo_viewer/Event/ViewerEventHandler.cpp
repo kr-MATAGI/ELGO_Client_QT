@@ -27,7 +27,7 @@ void ViewerEventHandler::readEvent()
     QByteArray recvBytes = socket->readAll();
     QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
 
-    VIEWER_EVENT::Event event = VIEWER_EVENT::Event::NONE_VIEWER_EVENT;
+    quint16 event = VIEWER_EVENT::Event::NONE_VIEWER_EVENT;
     QByteArray innerBytes;
     recvStream >> event;
     recvStream >> innerBytes;

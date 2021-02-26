@@ -17,9 +17,4 @@ namespace ELGO_PROC
                                              "elgo_viewer", "unkown"};
 }
 
-namespace SHM_NAME
-{
-    static QString SHM_IP = "ipAddress";
-}
-
 #endif // DEIFINITION_H

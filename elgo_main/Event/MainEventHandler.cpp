@@ -25,8 +25,9 @@ void MainEventHandler::readEvent()
     QLocalSocket *socket = (QLocalSocket *)sender();
     QByteArray recvBytes = socket->readAll();
     QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+    recvStream.setVersion(QDataStream::Qt_5_12);
 
-    MAIN_EVENT::Event event = MAIN_EVENT::Event::NONE_MAIN_EVENT;
+    quint16 event = MAIN_EVENT::Event::NONE_MAIN_EVENT;
     QByteArray innerBytes;
     recvStream >> event;
     recvStream >> innerBytes;

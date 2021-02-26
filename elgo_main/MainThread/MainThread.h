@@ -18,7 +18,7 @@ public:
     ~MainThread();
 
 public:
-    /** @brief QRunnable run() overrid */
+    /** @brief QRunnable run() override */
     void run() override;
 
     /** @brief */
@@ -26,7 +26,7 @@ public:
 
 public:
     /** @brief */
-    void SetMainEvent(MAIN_EVENT::Event event);
+    void SetMainEvent(const MAIN_EVENT::Event event);
 
     /** @brief */
     void SetRecvBytes(const QByteArray &src);

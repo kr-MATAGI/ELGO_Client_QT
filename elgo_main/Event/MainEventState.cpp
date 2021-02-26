@@ -1,7 +1,9 @@
+// QT
+#include <QDataStream>
+
+// Main
 #include "MainEventState.h"
 #include "MainThread/MainThread.h"
-
-#include <QDataStream>
 
 //========================================================
 MainEventState::MainEventState()
@@ -11,7 +13,8 @@ MainEventState::MainEventState()
     m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 
     // enroll event
-    m_state.ReigsterEvent(VIEWER_EVENT::Event::MAKE_QRCODE, &MainEventState::RecvProcecssReady);
+    m_state.RegisterEvent(MAIN_EVENT::Event::PROCESS_IS_READY,
+                          &MainEventState::RecvProcecssReady);
 }
 
 //========================================================
@@ -22,7 +25,7 @@ MainEventState::~MainEventState()
 }
 
 //========================================================
-void MainEventState::ExecState(MAIN_EVENT::Event event, QByteArray &src)
+void MainEventState::ExecState(quint16 event, QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);;
@@ -37,15 +40,8 @@ void MainEventState::RecvProcecssReady(QByteArray &src)
      *  @param  ELGO_PROC::Proc proc
      */
 
-    QDataStream out(&src, QIODevice::ReadOnly);
-    out.setVersion(QDataStream::Qt_5_12);
-    MAIN_EVENT::Event event = MAIN_EVENT::Event::NONE_MAIN_EVENT;
-    QByteArray recv;
-    out >> event;
-    out >> recv;
-
     MainThread *thread = new MainThread;
-    thread->SetMainEvent(event);
-    thread->SetRecvBytes(recv);
+    thread->SetMainEvent(MAIN_EVENT::Event::PROCESS_IS_READY);
+    thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

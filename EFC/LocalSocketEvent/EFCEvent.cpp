@@ -23,7 +23,7 @@ bool EFCEvent::SendEvent(ELGO_PROC::Proc proc, quint16 event, QByteArray &src)
             out << src;
 
             const qint64 result = socket->write(bytes);
-            socket->waitForBytesWritten(100);
+            socket->waitForBytesWritten();
             if(-1 == result)
             {
                 retValue = false;

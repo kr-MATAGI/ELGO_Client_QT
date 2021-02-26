@@ -1,5 +1,5 @@
-#ifndef MAINEVENTSTATE_H
-#define MAINEVENTSTATE_H
+#ifndef CONTROLEVENTSTATE_H
+#define CONTROLEVENTSTATE_H
 
 #define MAX_THREAD_COUNT 4
 
@@ -11,22 +11,23 @@
 #include "Common/EventList.h"
 #include "LocalSocketEvent/EventState.h"
 
-class MainEventState
+class ControlEventState
 {
 public:
-    MainEventState();
-    ~MainEventState();
+    ControlEventState();
+    ~ControlEventState();
 
 public:
     /** @brief */
     void ExecState(quint16 event, QByteArray &src);
 
     /** @brief */
-    void RecvProcecssReady(QByteArray& src);
+    void RecvWifiInfoFromMain(QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;
-    EventState<MainEventState> m_state;
+    EventState<ControlEventState> m_state;
+
 };
 
-#endif // MAINEVENTSTATE_H
+#endif // CONTROLEVENTSTATE_H
