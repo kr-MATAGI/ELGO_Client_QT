@@ -13,10 +13,11 @@ void ELogger::ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const
     va_list ap;
     va_start(ap, format);
 
+    QString customFileName = QString(fileName).split("/", Qt::SkipEmptyParts).back();
     QString formatLog = QString::vasprintf(format, ap);
     QString printLog = QString("[%1][%2:%3:%4] %5")
                         .arg(procName)
-                        .arg(fileName)
+                        .arg(customFileName)
                         .arg(funcName)
                         .arg(line)
                         .arg(formatLog);
