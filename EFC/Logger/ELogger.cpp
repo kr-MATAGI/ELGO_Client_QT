@@ -1,27 +1,25 @@
-#include "pthread.h"
 #include "ELogger.h"
 
+#include <QString>
+#include <QDebug>
 
-// TODO : Templete
+#include <cstdarg>
 
 //========================================================
-void ELogger::ELOG_PRINT(const QString &str)
+void ELogger::ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const int line, const char *funcName,
+                      const char *format, ...)
 //========================================================
 {
-    qDebug("[%s:%d] %s", __FUNCTION__, __LINE__, str.toUtf8().constData());
-}
+    va_list ap;
+    va_start(ap, format);
 
-//========================================================
-void ELogger::ELOG_TH_PRINT(const QString &str)
-//========================================================
-{
-    pthread_t id = pthread_self();
-    qDebug("[TID:%d][%s:%d] %s", (int)id, __FUNCTION__, __LINE__, str.toUtf8().constData());
-}
-
-//========================================================
-void ELogger::ELOG_FILE_PRINT(const QString &str)
-//========================================================
-{
-    qDebug("[%s:%s:%d] %s", __FILE__, __FUNCTION__, __LINE__, str.toUtf8().constData());
+    QString formatLog = QString::vasprintf(format, ap);
+    QString printLog = QString("[%1][%2:%3:%4] %5")
+                        .arg(procName)
+                        .arg(fileName)
+                        .arg(funcName)
+                        .arg(line)
+                        .arg(formatLog);
+    qDebug() << printLog;
+    va_end(ap);
 }

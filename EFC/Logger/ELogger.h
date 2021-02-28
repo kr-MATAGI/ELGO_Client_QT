@@ -1,19 +1,11 @@
 #ifndef ELOGGER_H
 #define ELOGGER_H
 
-#endif // ELOGGER_H
-
-#include <QString>
-
 namespace ELogger
 {
-    /** @brief */
-    void ELOG_PRINT(const QString &str);
-
-    /** @brief */
-    void ELOG_TH_PRINT(const QString &str);
-
-    /** @brief */
-    void ELOG_FILE_PRINT(const QString &str);
+    /** @brief Print Log to Console */
+    void ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const int line, const char *funcName,
+                          const char *format, ...);
 };
 
+#endif // ELOGGER_H

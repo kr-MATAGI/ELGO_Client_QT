@@ -15,6 +15,7 @@ HEADERS += \
     Definition/Definition.h \
     Event/MainEventHandler.h \
     Event/MainEventState.h \
+    Logger/MainLogger.h \
     MainCtrl/MainCtrl.h \
     MainThread/MainThread.h
 

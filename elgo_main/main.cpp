@@ -7,6 +7,7 @@
 #include "Definition/DeviceDef.h"
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
+#include "Logger/MainLogger.h"
 
 // EFC
 #include "Logger/ELogger.h"
@@ -57,12 +58,12 @@ void Initialize()
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
     g_MainCtrl = new MainCtrl();
     g_EventHandler = new MainEventHandler(ELGO_PROC::Proc::ELGO_MAIN);
 
     Initialize();
 
-    return a.exec();
+    return app.exec();
 }
