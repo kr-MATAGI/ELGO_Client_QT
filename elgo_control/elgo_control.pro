@@ -35,6 +35,7 @@ HEADERS += \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
+    Logger/ControlLogger.h \
     TCPConnect/Definition/ServerInfo.h \
     TCPConnect/NetworkCtrl.h
 

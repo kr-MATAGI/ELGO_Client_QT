@@ -5,6 +5,7 @@ CONFIG += c++11
 HEADERS += \
         Event/ViewerEventHandler.h \
         Event/ViewerEventState.h \
+        Logger/ViewerLogger.h \
         ViewerCtrl/ViewerCtrl.h \
         ViewerThread/ViewerThread.h \
         ext_libs/QrCode/QrCode.h \
