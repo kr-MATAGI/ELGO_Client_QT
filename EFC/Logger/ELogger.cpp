@@ -17,15 +17,19 @@ void ELogger::ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const
     va_start(ap, format);
 
     QDateTime dateTime = QDateTime::currentDateTime();
+
+    // hh:mm::ss.msec
     QString timeStr = dateTime.time().toString();
     timeStr.append(".");
     timeStr.append(QString::number(dateTime.time().msec()));
 
+    //date
     QDate date = dateTime.date();
     QString year = QString::number(date.year());
     QString month = QString::number(date.month());
     QString day = QString::number(date.day());
 
+    // yyyy-mm-dd
     QString dateStr;
     dateStr.append(year);
     dateStr.append("-");
