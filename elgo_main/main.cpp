@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QProcess>
 
-// inner
+// Main
 #include "Definition/DeviceDef.h"
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
@@ -37,7 +37,7 @@ void Initialize()
     // to do : save ip to shared mem, checking network connection
     g_MainCtrl->LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainCtrl->GetDeviceInfo();
-    qDebug("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
+    ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
            ::DEVICE::OS_enum2str[deviceInfo.os],
             ::DEVICE::Arch_enum2str[deviceInfo.architec],
             deviceInfo.hostName.toUtf8().constData(), deviceInfo.ipAddr.ip.toUtf8().constData(),
@@ -53,7 +53,7 @@ void Initialize()
     // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
     const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-    qDebug("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+    ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
 
 int main(int argc, char *argv[])

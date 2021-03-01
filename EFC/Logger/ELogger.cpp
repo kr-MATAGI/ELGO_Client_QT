@@ -18,6 +18,8 @@ void ELogger::ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const
 
     QDateTime dateTime = QDateTime::currentDateTime();
     QString timeStr = dateTime.time().toString();
+    timeStr.append(".");
+    timeStr.append(QString::number(dateTime.time().msec()));
 
     QDate date = dateTime.date();
     QString year = QString::number(date.year());
