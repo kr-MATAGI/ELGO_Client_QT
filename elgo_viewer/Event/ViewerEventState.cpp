@@ -45,5 +45,6 @@ void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
 
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::MAKE_QRCODE);
+    thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

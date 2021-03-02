@@ -9,7 +9,8 @@ public:
     ~ViewerCtrl();
 
 public:
-
+    /** @brief  notify process status */
+    void SendViewerIsReady();
 
 private:
 

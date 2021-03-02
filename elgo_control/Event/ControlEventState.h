@@ -22,7 +22,7 @@ public:
     void ExecState(quint16 event, QByteArray &src);
 
     /** @brief */
-    void RecvWifiInfoFromMain(QByteArray& src);
+    void RecvServerInfoFromMain(QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

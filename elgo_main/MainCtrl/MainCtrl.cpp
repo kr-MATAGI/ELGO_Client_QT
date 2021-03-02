@@ -10,13 +10,15 @@
 
 // Main
 #include "MainCtrl.h"
+#include "XML/XMLParser.h"
+#include "Logger/MainLogger.h"
 
 //========================================================
 MainCtrl::MainCtrl()
 //========================================================
 {
     m_dbCtrl = new MainDBCtrl;
-    m_shmCtrl = new ShmCtrl;
+    m_ipShm = new ShmCtrl;
 }
 
 //========================================================
@@ -26,8 +28,8 @@ MainCtrl::~MainCtrl()
     delete m_dbCtrl;
     m_dbCtrl = NULL;
 
-    delete m_shmCtrl;
-    m_shmCtrl = NULL;
+    delete m_ipShm;
+    m_ipShm = NULL;
 }
 
 //========================================================
@@ -55,7 +57,7 @@ void MainCtrl::LoadCurrentDeviceInfo()
     const qint64 freeByte = storageInfo.bytesFree(); // unit : byte
     m_deviceInfo.storage.totalStorage = totalByte / 1024 / 1024; // MByte
     m_deviceInfo.storage.freeStorage = freeByte / 1024/ 1024; // MByte
-    qDebug() << "total Strogage : " << m_deviceInfo.storage.totalStorage << "free Storage : " << m_deviceInfo.storage.freeStorage;
+    ELGO_MAIN_LOG("Device - totalStorage : %d, freeStorage : %d", m_deviceInfo.storage.totalStorage, m_deviceInfo.storage.freeStorage);
 
     // Get Network Address Info (Wired Internet)
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
@@ -75,17 +77,15 @@ void MainCtrl::LoadCurrentDeviceInfo()
     }
 
     // Save IP addres into shared Memory
-    // Not Using, because NEW Client will use fixed URL for device config.
-#if 0
+    m_deviceInfo.ipAddr.ip = "localhost"; // test
     QByteArray shmBytes;
-    QDataStream shmDataStream(&shmBytes, QIODevice::ReadWrite);
+    QDataStream shmDataStream(&shmBytes, QIODevice::WriteOnly);
     shmDataStream << m_deviceInfo.ipAddr.ip;
-    const bool bWriteShmIP = m_shmCtrl->ShmWrite(SHM_NAME::SHM_IP, shmBytes);
+    const bool bWriteShmIP = m_ipShm->ShmWrite(SHM_NAME::SHM_IP, shmBytes);
     if(false == bWriteShmIP)
     {
-        qDebug() << __FUNCTION__ << "Error Write ShmIP";
+        ELGO_MAIN_LOG("Error Write IP into SHM");
     }
-#endif
 }
 
 //========================================================
@@ -100,6 +100,17 @@ bool MainCtrl::CheckingWirelessInternet()
 }
 
 //========================================================
+void MainCtrl::LoadConfigurationInfo()
+//========================================================
+{
+    // Load Init Configuration XML File
+    const bool bIsLoadXML = XMLParser::LoadInitConfigurationXML(m_initConfig);
+    ELGO_MAIN_LOG("Result - Load InitConfig XML : %d", bIsLoadXML);
+
+    // TODO : will be share Config Info
+}
+
+//========================================================
 const DEVICE::Info& MainCtrl::GetDeviceInfo()
 //========================================================
 {
@@ -110,7 +121,7 @@ const DEVICE::Info& MainCtrl::GetDeviceInfo()
 QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
-    // test path
+    // TODO : load configuration path
     QString basePath;
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
     basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";

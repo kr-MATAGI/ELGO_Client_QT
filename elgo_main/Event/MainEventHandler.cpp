@@ -1,7 +1,9 @@
-#include "MainEventHandler.h"
-
+// QT
 #include <QLocalSocket>
 #include <QDataStream>
+
+// Main
+#include "MainEventHandler.h"
 
 //========================================================
 MainEventHandler::MainEventHandler(ELGO_PROC::Proc name, QObject *parent)

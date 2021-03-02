@@ -4,6 +4,7 @@
 #include <QProcess>
 
 // Main
+#include "MainCtrl/MainController.h"
 #include "Definition/DeviceDef.h"
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
@@ -14,9 +15,7 @@
 #include "Event/MainEventHandler.h"
 #include "LocalSocketEvent/EFCEvent.h"
 
-// test
-#include "XML/XMLParser.h"
-
+static MainController *g_MainController = MainController::GetInstance();
 static MainCtrl *g_MainCtrl = NULL;
 static MainEventHandler *g_EventHandler = NULL;
 
@@ -27,7 +26,7 @@ bool StartProcess(::ELGO_PROC::Proc proc)
     QProcess process;
     QStringList args;
     QString program = g_MainCtrl->MakeProcessPath(proc);
-    qDebug("[elgo_main] procPath :%s", program.toUtf8().constData());
+    ELGO_MAIN_LOG("procPath : %s", program.toUtf8().constData());
     retValue = process.startDetached(program, args);
     process.waitForStarted();
 
@@ -52,16 +51,14 @@ void Initialize()
     // Check Wireless Internet
     g_MainCtrl->CheckingWirelessInternet();
 
-    // Load Init Configuration XML File
-    DEVICE::INIT_CONFIG initConfigInfo;
-    const bool bIsLoadXML = XMLParser::LoadInitConfigurationXML(initConfigInfo);
-    ELGO_MAIN_LOG("Result - Load InitConfig XML : %d", bIsLoadXML);
+    // Load Configuration
+    g_MainCtrl->LoadConfigurationInfo();
 
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
-//    const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
-//    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-//    ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+    const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
+    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
+    ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
 
 int main(int argc, char *argv[])

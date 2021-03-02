@@ -36,9 +36,13 @@ namespace CONTROL_EVENT
 
         /**
          *  @brief  receive WIFI information from main process
-         *  @param  TODO
+         *  @param
+         *          QString wasHost,
+         *          int wasHostPort,
+         *          QString mainSocket,
+         *          int mainSocketPort
          */
-        RECV_WIFI_INFO_FROM_MAIN = 513,
+        RECV_SERVER_INFO_FROM_MAIN = 513,
 
         MAX_CONTROL_EVENT = 767
     };
@@ -55,7 +59,7 @@ namespace VIEWER_EVENT
         *       ELGO_MAIN -> ELGO_VIEWER
         *       Viewer will make qr code image and display.
         * @param
-        *       NONE
+        *       QString ip
         */
         MAKE_QRCODE = 769,
 

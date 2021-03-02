@@ -11,10 +11,6 @@ public:
     ViewerEventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
     virtual ~ViewerEventHandler();
 
-public:
-    /** @brief  notify process status */
-    void SendViewerIsReady();
-
 private slots:
     void readEvent() override;
 

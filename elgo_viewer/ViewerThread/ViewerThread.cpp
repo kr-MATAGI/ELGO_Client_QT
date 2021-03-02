@@ -1,10 +1,13 @@
 // QT
 #include <QQuickView>
 
+#include <QThread>
+
 // EFC
 #include "ShardMem/ShmCtrl.h"
 
 // Viewer
+#include "Logger/ViewerLogger.h"
 #include "QrCode/QrMaker.h"
 #include "ViewerThread.h"
 
@@ -54,20 +57,24 @@ void ViewerThread::run()
 void ViewerThread::ExecMakeQrCodeThread()
 //========================================================
 {
-    qDebug() << __FUNCTION__;
-//    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
+    /**
+    * @note
+    *       ELGO_MAIN -> ELGO_VIEWER
+    *       Viewer will make qr code image and display.
+    * @param
+    *       QString ip
+    */
 
-//    QQuickView view;
-//    view.setSource(QUrl("qrc:/contentPlayer.qml"));
-//    view.show();
-
-    // Read IP from shared memory
+    QByteArray recvBytes = m_bytes;
+    QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
     QString ip;
-    ShmCtrl shmCtrl;
-    QByteArray shmBytes;
-    QDataStream shmRead(&shmBytes, QIODevice::ReadWrite);
-    shmRead.setVersion(QDataStream::Qt_5_12);
-    shmCtrl.ShmRead(SHM_NAME::SHM_IP, shmBytes);
-    shmRead >> ip;
-    qDebug() << ip.toUtf8().constData();
+    recvStream >> ip;
+    ELGO_VIEWER_LOG("IP : %s", ip.toUtf8().constData());
+
+    // test
+    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
+
+    QQuickView view;
+    view.setSource(QUrl("qrc:/QrCodeDispay.qml"));
+    view.show();
 }

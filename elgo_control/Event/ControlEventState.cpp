@@ -16,8 +16,8 @@ ControlEventState::ControlEventState()
     m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 
     // enroll Event
-    m_state.RegisterEvent(CONTROL_EVENT::Event::RECV_WIFI_INFO_FROM_MAIN,
-                          &ControlEventState::RecvWifiInfoFromMain);
+    m_state.RegisterEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN,
+                          &ControlEventState::RecvServerInfoFromMain);
 
 }
 
@@ -38,16 +38,20 @@ void ControlEventState::ExecState(quint16 event, QByteArray &src)
 
 
 //========================================================
-void ControlEventState::RecvWifiInfoFromMain(QByteArray &src)
+void ControlEventState::RecvServerInfoFromMain(QByteArray &src)
 //========================================================
 {
     /**
      *  @brief  receive WIFI information from main process
-     *  @param  TODO
+     *  @param
+     *          QString wasHost,
+     *          int wasHostPort,
+     *          QString mainSocket,
+     *          int mainSocketPort
      */
 
     ControlThread *thread = new ControlThread;
-    thread->SetControlEvent(CONTROL_EVENT::Event::RECV_WIFI_INFO_FROM_MAIN);
+    thread->SetControlEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN);
     thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

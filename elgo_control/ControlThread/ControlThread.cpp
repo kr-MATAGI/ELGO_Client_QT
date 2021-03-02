@@ -1,11 +1,13 @@
 // QT
 #include <QDebug>
+#include <QDataStream>
 
 // EFC
 #include "Common/Deifinition.h"
 #include "LocalSocketEvent/EFCEvent.h"
 
 // Control
+#include "Logger/ControlLogger.h"
 #include "ControlThread.h"
 
 //========================================================
@@ -40,9 +42,9 @@ void ControlThread::SetRecvBytes(const QByteArray &src)
 void ControlThread::run()
 //========================================================
 {
-    if(CONTROL_EVENT::Event::RECV_WIFI_INFO_FROM_MAIN == m_event)
+    if(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN == m_event)
     {
-        ExecRecvWifiInfoFromMain();
+        ExecRecvServerInfoFromMain();
     }
     else
     {
@@ -51,8 +53,27 @@ void ControlThread::run()
 }
 
 //========================================================
-void ControlThread::ExecRecvWifiInfoFromMain()
+void ControlThread::ExecRecvServerInfoFromMain()
 //========================================================
 {
+    /**
+     *  @brief  receive WIFI information from main process
+     *  @param
+     *          QString wasHost,
+     *          int wasHostPort,
+     *          QString mainSocket,
+     *          int mainSocketPort
+     */
+
+    QByteArray recvBytes = m_bytes;
+    QDataStream out(&recvBytes, QIODevice::ReadOnly);
+    out.setVersion(QDataStream::Qt_5_12);
+    QString str;
+    int value;
+    out >> str;
+    out >> value;
+    ELGO_CONTROL_LOG("%s %d", str.toStdString().c_str(), value);
+
+
 
 }

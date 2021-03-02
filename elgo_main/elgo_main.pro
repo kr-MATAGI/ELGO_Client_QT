@@ -16,6 +16,7 @@ HEADERS += \
     Event/MainEventHandler.h \
     Event/MainEventState.h \
     Logger/MainLogger.h \
+    MainCtrl/MainController.h \
     MainCtrl/MainCtrl.h \
     MainThread/MainThread.h \
     XML/XMLParser.h
@@ -25,6 +26,7 @@ SOURCES += \
         Definition/DeviceDef.cpp \
         Event/MainEventHandler.cpp \
         Event/MainEventState.cpp \
+        MainCtrl/MainController.cpp \
         MainCtrl/MainCtrl.cpp \
         MainThread/MainThread.cpp \
         XML/XMLParser.cpp \

@@ -34,22 +34,3 @@ void ViewerEventHandler::readEvent()
 
     m_state.ExecState(event, innerBytes);
 }
-
-//========================================================
-void ViewerEventHandler::SendViewerIsReady()
-//========================================================
-{
-    QByteArray bytes;
-    QDataStream outStream(&bytes, QIODevice::ReadOnly);
-    outStream << ELGO_PROC::Proc::ELGO_VIEWER;
-
-    /**
-     *  @brief  receive status of process started
-     *  @param  ELGO_PROC::Proc proc
-     */
-    const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN, MAIN_EVENT::Event::PROCESS_IS_READY, bytes);
-    if(false == bSendEvent)
-    {
-        qDebug() << "Error - " << MAIN_EVENT::Event::PROCESS_IS_READY << " SendEvent()";
-    }
-}

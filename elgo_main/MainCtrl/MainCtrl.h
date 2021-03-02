@@ -27,14 +27,18 @@ public:
     /** @brief */
     const DEVICE::Info& GetDeviceInfo();
 
+    /** @brief */
+    void LoadConfigurationInfo();
+
 public:
     MainDBCtrl& GetDBCtrl();
 
 private:
     DEVICE::Info m_deviceInfo;
+    DEVICE::INIT_CONFIG m_initConfig;
 
     MainDBCtrl *m_dbCtrl;
-    ShmCtrl *m_shmCtrl;
+    ShmCtrl *m_ipShm;
 };
 
 #endif // MAINCTRL_H

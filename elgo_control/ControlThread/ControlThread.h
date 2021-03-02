@@ -20,7 +20,7 @@ public:
     void run() override;
 
     /** @brief */
-    void ExecRecvWifiInfoFromMain();
+    void ExecRecvServerInfoFromMain();
 
 public:
     /** @brief */

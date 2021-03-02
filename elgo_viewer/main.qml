@@ -31,55 +31,6 @@ Window {
             id: mainLayout
             width: parent.width
             height: parent.height
-
-/*
-            Image {
-                id: elgoLgo
-                width: (parent.width) / 5
-                height: (parent.height) / 5
-                anchors.horizontalCenter: parent.horizontalCenter
-                source: "/test/images/cat_1.png"
-            }
-
-            Text {
-                id: qrTextBox
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: qsTr("QR Code 생성 중...")
-                FontLoader {
-                    id:cutsomFont
-                    name:"Courier"
-                }
-
-                color: "black"
-            }
-
-
-
-            Image {
-                width: (parent.width) /2
-                height: (parent.height) / 2
-                anchors.horizontalCenter: parent.horizontalCenter
-                id: qrImagea
-                source: "/test/images/apple.png"
-            }
-
-
-            Loader {
-                id: testPageLoader
-                anchors.top: parent.bottom
-                onStatusChanged: {
-                    console.log(testPageLoader.status);
-                }
-            }
-
-            MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                    testPageLoader.source = "contentPlayer.qml"
-                }
-            }
-*/
         }
     }
-
 }

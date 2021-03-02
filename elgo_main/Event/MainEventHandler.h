@@ -1,7 +1,10 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
+// EFC
 #include "LocalSocketEvent/LocalSocketServer.h"
+
+// Main
 #include "MainEventState.h"
 
 class MainEventHandler : public LocalSocketServer

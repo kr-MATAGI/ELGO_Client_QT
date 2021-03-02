@@ -1,7 +1,11 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
+// EFC
 #include "LocalSocketEvent/LocalSocketServer.h"
+
+// Control
+#include "ControlEventState.h"
 
 class ControlEventHandler : public LocalSocketServer
 {
@@ -13,7 +17,7 @@ private slots:
     void readEvent() override;
 
 private:
-    QList<quint16> m_enrolledEventList;
+    ControlEventState m_state;
 };
 
 #endif // EVENTHANDLER_H
