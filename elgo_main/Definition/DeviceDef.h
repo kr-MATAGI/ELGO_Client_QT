@@ -4,6 +4,8 @@
 #pragma once
 #include <QString>
 
+#define INIT_CONFIG_FILE_PATH "/home/jaehoon/바탕화면/ELGO/config.xml"
+
 namespace DEVICE
 {
     enum Architec
@@ -71,5 +73,29 @@ namespace DEVICE
         IPADDR ipAddr;
         Stroage storage;
     }; 
+
+    // init configuration
+    struct InternetConfig
+    {
+        QString ssid;
+        QString pw;
+    };
+
+    struct ServerConfig
+    {
+        QString wasHost;
+        int wasHostPort;
+
+        QString mainSocket;
+        int mainSocketPort;
+    };
+
+    struct INIT_CONFIG
+    {
+        QString binaryPath;
+        InternetConfig internet;
+        ServerConfig server;
+    };
 }
+
 #endif // DEFINITION_H

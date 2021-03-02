@@ -14,6 +14,9 @@
 #include "Event/MainEventHandler.h"
 #include "LocalSocketEvent/EFCEvent.h"
 
+// test
+#include "XML/XMLParser.h"
+
 static MainCtrl *g_MainCtrl = NULL;
 static MainEventHandler *g_EventHandler = NULL;
 
@@ -49,11 +52,16 @@ void Initialize()
     // Check Wireless Internet
     g_MainCtrl->CheckingWirelessInternet();
 
+    // Load Init Configuration XML File
+    DEVICE::INIT_CONFIG initConfigInfo;
+    const bool bIsLoadXML = XMLParser::LoadInitConfigurationXML(initConfigInfo);
+    ELGO_MAIN_LOG("Result - Load InitConfig XML : %d", bIsLoadXML);
+
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
-    const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
-    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
-    ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+//    const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
+//    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
+//    ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
 
 int main(int argc, char *argv[])

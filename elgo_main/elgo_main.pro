@@ -1,6 +1,6 @@
 QT -= gui
 
-QT += network sql
+QT += network sql xml
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -17,7 +17,8 @@ HEADERS += \
     Event/MainEventState.h \
     Logger/MainLogger.h \
     MainCtrl/MainCtrl.h \
-    MainThread/MainThread.h
+    MainThread/MainThread.h \
+    XML/XMLParser.h
 
 SOURCES += \
         DB/MainDBCtrl.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
         Event/MainEventState.cpp \
         MainCtrl/MainCtrl.cpp \
         MainThread/MainThread.cpp \
+        XML/XMLParser.cpp \
         main.cpp
 
 #INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"

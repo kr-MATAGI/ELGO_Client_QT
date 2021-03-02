@@ -59,7 +59,6 @@ void NetworkCtrl::LoadServerInfoFromXML(QString &path)
 
         m_connecInfo.MAIN_SOCKET_HOST = "3.36.160.203";
         m_connecInfo.MAIN_SOCKET_PORT = 9000;
-        m_connecInfo.SUB_SOCKET_PROT = 9500;
 
         m_connecInfo.TUNNELING_HOST = "3.36.160.203";
         m_connecInfo.TUNNELING_PORT = 4500;
@@ -67,13 +66,6 @@ void NetworkCtrl::LoadServerInfoFromXML(QString &path)
         m_connecInfo.remoteVersion = "1.0";
         m_connecInfo.deviceVersion = "1.0";
     }
-}
-
-//========================================================
-void NetworkCtrl::GetActiveWirelessInternetList()
-//========================================================
-{
-    // TODO : Test
 }
 
 //========================================================

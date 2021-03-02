@@ -21,15 +21,12 @@ public:
     void GetRemoteVersionFromWAS();
     /** brief */
     CONNECT_INFO GetConnectInfo();
-    /** brief */
-    void GetActiveWirelessInternetList();
 
 private slots:
     void replyRemoteVersionFinished(QNetworkReply *reply);
 
 private:
     CONNECT_INFO m_connecInfo;
-    QStringList m_wifiList;
 
     QNetworkAccessManager *m_netManager;
 };

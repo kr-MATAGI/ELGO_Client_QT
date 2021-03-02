@@ -74,11 +74,9 @@ void MainCtrl::LoadCurrentDeviceInfo()
         }
     }
 
-    // for test
-    m_deviceInfo.ipAddr.ip = "210.217.109.238";
-
     // Save IP addres into shared Memory
-    // below code may be move to main.cpp
+    // Not Using, because NEW Client will use fixed URL for device config.
+#if 0
     QByteArray shmBytes;
     QDataStream shmDataStream(&shmBytes, QIODevice::ReadWrite);
     shmDataStream << m_deviceInfo.ipAddr.ip;
@@ -87,6 +85,7 @@ void MainCtrl::LoadCurrentDeviceInfo()
     {
         qDebug() << __FUNCTION__ << "Error Write ShmIP";
     }
+#endif
 }
 
 //========================================================

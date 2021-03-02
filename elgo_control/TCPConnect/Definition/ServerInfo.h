@@ -10,7 +10,6 @@ struct CONNECT_INFO
 
     QString MAIN_SOCKET_HOST; // Main Socket Server
     int MAIN_SOCKET_PORT;
-    int SUB_SOCKET_PROT;
 
     QString TUNNELING_HOST; // Remote Control Server
     int TUNNELING_PORT;

@@ -77,6 +77,8 @@ void MainDBCtrl::CheckingDefaultTables()
     }
 
     // network table
+    // not using, below code will be replaced XML
+#if 0
     query.prepare(DB_Query::SELECT_ALL_NETWORK_TABLE);
     query.exec();
     if(ZERO_RESULT == query.numRowsAffected())
@@ -84,4 +86,5 @@ void MainDBCtrl::CheckingDefaultTables()
         query.prepare(DB_Query::CREATE_NETWORK_TABLE);
         query.exec();
     }
+#endif
 }
