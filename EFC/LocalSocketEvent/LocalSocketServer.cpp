@@ -1,7 +1,10 @@
-#include "LocalSocketServer.h"
-
+// QT
 #include <QLocalSocket>
 #include <QDataStream>
+
+// EFC
+#include "LocalSocketServer.h"
+#include "Logger/ELogger.h"
 
 //========================================================
 LocalSocketServer::LocalSocketServer(::ELGO_PROC::Proc proc, QObject *parent)

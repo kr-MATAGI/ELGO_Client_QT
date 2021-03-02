@@ -10,6 +10,9 @@
 
 // Main
 #include "DB/MainDBCtrl.h"
+#include "MainCtrl/MainController.h"
+
+class MainController;
 
 class MainThread : public QRunnable
 {
@@ -34,8 +37,6 @@ public:
 private:
     MAIN_EVENT::Event m_event;
     QByteArray m_bytes;
-
-    MainDBCtrl *m_dbCtrl;
 };
 
 #endif // MAINTHREAD_H

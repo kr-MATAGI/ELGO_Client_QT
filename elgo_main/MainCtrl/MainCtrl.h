@@ -25,20 +25,17 @@ public:
     bool CheckingWirelessInternet();
 
     /** @brief */
+    void LoadConfigurationInfo();
+
+    /** @brief */
     const DEVICE::Info& GetDeviceInfo();
 
     /** @brief */
-    void LoadConfigurationInfo();
-
-public:
-    MainDBCtrl& GetDBCtrl();
+    const DEVICE::INIT_CONFIG& GetInitConfig();
 
 private:
     DEVICE::Info m_deviceInfo;
     DEVICE::INIT_CONFIG m_initConfig;
-
-    MainDBCtrl *m_dbCtrl;
-    ShmCtrl *m_ipShm;
 };
 
 #endif // MAINCTRL_H

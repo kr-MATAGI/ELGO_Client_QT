@@ -70,10 +70,4 @@ void ControlThread::ExecRecvServerInfoFromMain()
     out.setVersion(QDataStream::Qt_5_12);
     QString str;
     int value;
-    out >> str;
-    out >> value;
-    ELGO_CONTROL_LOG("%s %d", str.toStdString().c_str(), value);
-
-
-
 }

@@ -14,15 +14,14 @@
 MainThread::MainThread()
 //========================================================
 {
-    m_dbCtrl = new MainDBCtrl;
+
 }
 
 //========================================================
 MainThread::~MainThread()
 //========================================================
 {
-    delete m_dbCtrl;
-    m_dbCtrl = NULL;
+
 }
 
 //========================================================
@@ -82,8 +81,14 @@ void MainThread::ExecRecvProcecssReady()
          *          int mainSocketPort
          */
 
+        DEVICE::INIT_CONFIG initConfig = MainController::GetInstance()->GetMainCtrl().GetInitConfig();
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+        sendStream << initConfig.server.wasHost;
+        sendStream << initConfig.server.wasHostPort;
+        sendStream << initConfig.server.mainSocket;
+        sendStream << initConfig.server.mainSocketPort;
+
         const bool bContorlEvent = EFCEvent::SendEvent(ELGO_PROC::ELGO_CONTROL,
                             CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN, sendBytes);
         if(false == bContorlEvent)
@@ -102,13 +107,7 @@ void MainThread::ExecRecvProcecssReady()
         *       QString ip
         */
 
-        QString ip;
-        ShmCtrl shmctrl;
-        QByteArray shmBytes;
-        QDataStream shmRead(&shmBytes, QIODevice::ReadOnly);
-        shmctrl.ShmRead(SHM_NAME::SHM_IP, shmBytes);
-        shmRead >> ip;
-
+        QString ip = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().ipAddr.ip;
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
         sendStream << ip;

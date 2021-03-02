@@ -5,9 +5,6 @@
 #include <QHostInfo>
 #include <QStorageInfo>
 
-// EFC
-#include "ShardMem/ShmCtrl.h"
-
 // Main
 #include "MainCtrl.h"
 #include "XML/XMLParser.h"
@@ -17,26 +14,14 @@
 MainCtrl::MainCtrl()
 //========================================================
 {
-    m_dbCtrl = new MainDBCtrl;
-    m_ipShm = new ShmCtrl;
+
 }
 
 //========================================================
 MainCtrl::~MainCtrl()
 //========================================================
 {
-    delete m_dbCtrl;
-    m_dbCtrl = NULL;
 
-    delete m_ipShm;
-    m_ipShm = NULL;
-}
-
-//========================================================
-MainDBCtrl& MainCtrl::GetDBCtrl()
-//========================================================
-{
-    return *m_dbCtrl;
 }
 
 //========================================================
@@ -60,6 +45,7 @@ void MainCtrl::LoadCurrentDeviceInfo()
     ELGO_MAIN_LOG("Device - totalStorage : %d, freeStorage : %d", m_deviceInfo.storage.totalStorage, m_deviceInfo.storage.freeStorage);
 
     // Get Network Address Info (Wired Internet)
+    // TODO : Move to CheckingWirelessInternet()
     QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
     foreach (const QHostAddress& address, hostList) {
         if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
@@ -74,17 +60,6 @@ void MainCtrl::LoadCurrentDeviceInfo()
                 break;
             }
         }
-    }
-
-    // Save IP addres into shared Memory
-    m_deviceInfo.ipAddr.ip = "localhost"; // test
-    QByteArray shmBytes;
-    QDataStream shmDataStream(&shmBytes, QIODevice::WriteOnly);
-    shmDataStream << m_deviceInfo.ipAddr.ip;
-    const bool bWriteShmIP = m_ipShm->ShmWrite(SHM_NAME::SHM_IP, shmBytes);
-    if(false == bWriteShmIP)
-    {
-        ELGO_MAIN_LOG("Error Write IP into SHM");
     }
 }
 
@@ -106,8 +81,6 @@ void MainCtrl::LoadConfigurationInfo()
     // Load Init Configuration XML File
     const bool bIsLoadXML = XMLParser::LoadInitConfigurationXML(m_initConfig);
     ELGO_MAIN_LOG("Result - Load InitConfig XML : %d", bIsLoadXML);
-
-    // TODO : will be share Config Info
 }
 
 //========================================================
@@ -118,18 +91,33 @@ const DEVICE::Info& MainCtrl::GetDeviceInfo()
 }
 
 //========================================================
+const DEVICE::INIT_CONFIG& MainCtrl::GetInitConfig()
+//========================================================
+{
+    return m_initConfig;
+}
+
+//========================================================
 QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 //========================================================
 {
     // TODO : load configuration path
-    QString basePath;
+    QString basePath = m_initConfig.binaryPath;
+    ELGO_MAIN_LOG("basePath size : %d", basePath.size());
+    if(0 >= basePath.size())
+    {
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-    basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";
+        basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";
+#elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
+        basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
+#endif
+    }
+
+#if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += "/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
-    basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += "/debug/";
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];

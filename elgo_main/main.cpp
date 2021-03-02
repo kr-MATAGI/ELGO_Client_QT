@@ -16,7 +16,6 @@
 #include "LocalSocketEvent/EFCEvent.h"
 
 static MainController *g_MainController = MainController::GetInstance();
-static MainCtrl *g_MainCtrl = NULL;
 static MainEventHandler *g_EventHandler = NULL;
 
 bool StartProcess(::ELGO_PROC::Proc proc)
@@ -25,7 +24,7 @@ bool StartProcess(::ELGO_PROC::Proc proc)
 
     QProcess process;
     QStringList args;
-    QString program = g_MainCtrl->MakeProcessPath(proc);
+    QString program = g_MainController->GetMainCtrl().MakeProcessPath(proc);
     ELGO_MAIN_LOG("procPath : %s", program.toUtf8().constData());
     retValue = process.startDetached(program, args);
     process.waitForStarted();
@@ -37,8 +36,8 @@ void Initialize()
 {
     // Get This Device Info
     // to do : save ip to shared mem, checking network connection
-    g_MainCtrl->LoadCurrentDeviceInfo();
-    ::DEVICE::Info deviceInfo = g_MainCtrl->GetDeviceInfo();
+    g_MainController->GetMainCtrl().LoadCurrentDeviceInfo();
+    ::DEVICE::Info deviceInfo = g_MainController->GetMainCtrl().GetDeviceInfo();
     ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
            ::DEVICE::OS_enum2str[deviceInfo.os],
             ::DEVICE::Arch_enum2str[deviceInfo.architec],
@@ -46,13 +45,13 @@ void Initialize()
             deviceInfo.ipAddr.mac.toUtf8().constData());
 
     // Get DB info
-    g_MainCtrl->GetDBCtrl().ConnectionDB();
+    g_MainController->GetDBCtrl().ConnectionDB();
 
     // Check Wireless Internet
-    g_MainCtrl->CheckingWirelessInternet();
+    g_MainController->GetMainCtrl().CheckingWirelessInternet();
 
     // Load Configuration
-    g_MainCtrl->LoadConfigurationInfo();
+    g_MainController->GetMainCtrl().LoadConfigurationInfo();
 
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
@@ -65,7 +64,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    g_MainCtrl = new MainCtrl();
+    // IPC Event Litenner
     g_EventHandler = new MainEventHandler(ELGO_PROC::Proc::ELGO_MAIN);
 
     Initialize();
