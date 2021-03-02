@@ -22,7 +22,8 @@ SOURCES += \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
-        TCPConnect/NetworkCtrl.cpp \
+        NetworkCtrl/NetworkController.cpp \
+        NetworkCtrl/NetworkCtrl.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -36,8 +37,9 @@ HEADERS += \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
     Logger/ControlLogger.h \
-    TCPConnect/Definition/ServerInfo.h \
-    TCPConnect/NetworkCtrl.h
+    NetworkCtrl/NetworkController.h \
+    NetworkCtrl/Definition/ServerInfo.h \
+    NetworkCtrl/NetworkCtrl.h
 
 
 #INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"
