@@ -6,6 +6,7 @@ HEADERS += \
         Event/ViewerEventHandler.h \
         Event/ViewerEventState.h \
         Logger/ViewerLogger.h \
+        ViewerCtrl/ViewerController.h \
         ViewerCtrl/ViewerCtrl.h \
         ViewerThread/ViewerThread.h \
         ext_libs/QrCode/QrCode.h \
@@ -15,6 +16,7 @@ HEADERS += \
 SOURCES += \
         Event/ViewerEventHandler.cpp \
         Event/ViewerEventState.cpp \
+        ViewerCtrl/ViewerController.cpp \
         ViewerCtrl/ViewerCtrl.cpp \
         ViewerThread/ViewerThread.cpp \
         main.cpp \

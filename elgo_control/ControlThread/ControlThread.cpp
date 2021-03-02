@@ -48,7 +48,7 @@ void ControlThread::run()
     }
     else
     {
-        qDebug() << __FUNCTION__ << "Unkwon Event";
+        ELGO_CONTROL_LOG("Unkwon Event %d", m_event);
     }
 }
 
@@ -68,6 +68,4 @@ void ControlThread::ExecRecvServerInfoFromMain()
     QByteArray recvBytes = m_bytes;
     QDataStream out(&recvBytes, QIODevice::ReadOnly);
     out.setVersion(QDataStream::Qt_5_12);
-    QString str;
-    int value;
 }

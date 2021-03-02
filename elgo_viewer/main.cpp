@@ -11,18 +11,18 @@
 // Viewer
 #include "Event/ViewerEventHandler.h"
 #include "ViewerCtrl/ViewerCtrl.h"
+#include "ViewerCtrl/ViewerController.h"
 
+static ViewerController *g_ViewerController = ViewerController::GetInstance();
 static ViewerEventHandler *g_EventHandler = NULL;
-static ViewerCtrl *g_ViewerCtrl = NULL;
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     g_EventHandler = new ViewerEventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
-    g_ViewerCtrl = new ViewerCtrl();
 
     // Send proccess ready status to MAIN
-    g_ViewerCtrl->SendViewerIsReady();
+    g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
     // Display Viewer
     QQmlApplicationEngine engine;
