@@ -67,14 +67,12 @@ void ViewerThread::ExecMakeQrCodeThread()
 
     QByteArray recvBytes = m_bytes;
     QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+    QString url = "https://";
     QString ip;
     recvStream >> ip;
-    ELGO_VIEWER_LOG("IP : %s", ip.toUtf8().constData());
-
-    // test
-    qmlRegisterType<QrMaker>("QRCode", 1, 0, "QRMaker");
-
-    QQuickView view;
-    view.setSource(QUrl("qrc:/QrCodeDispay.qml"));
-    view.show();
+    url.append(ip);
+    url.append(":3000/display/qr");
+    ViewerController::GetInstance()->GetViewerCtrl().SetQRCodeURL(url);
+    emit MainWindow::GetInstance()->DrawQRCode();
+    ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());
 }

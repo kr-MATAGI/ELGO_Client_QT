@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>QrCodeDispay.qml</file>
-        <file>MediaPlayer.qml</file>
-    </qresource>
-    <qresource prefix="/test"/>
-</RCC>

@@ -1,7 +1,5 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-
-#include <QrCode/QrMaker.h>
+// QT
+#include <QApplication>
 #include <QQuickView>
 #include <QGuiApplication>
 
@@ -9,26 +7,30 @@
 #include "LocalSocketEvent/EFCEvent.h"
 
 // Viewer
+#include "MainWindow.h"
 #include "Event/ViewerEventHandler.h"
 #include "ViewerCtrl/ViewerCtrl.h"
 #include "ViewerCtrl/ViewerController.h"
 
 static ViewerController *g_ViewerController = ViewerController::GetInstance();
+static MainWindow *g_MainWindow = NULL;
 static ViewerEventHandler *g_EventHandler = NULL;
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    g_MainWindow = MainWindow::GetInstance();
+//    g_MainWindow->setStyleSheet("background-color: rgb(255, 255, 0);");
+
+    // Event Listenner
     g_EventHandler = new ViewerEventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
 
     // Send proccess ready status to MAIN
+    // TODO : IF socket is not opened, occured App crush.
     g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
-    // Display Viewer
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
-            return -1;
+    // Display Main Window
+    g_MainWindow->show();
 
     return app.exec();
 }

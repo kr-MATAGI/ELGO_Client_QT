@@ -1,17 +1,12 @@
-#include "QrMaker.h"
-
-// QT
-#include <QObject>
-#include <QQuickView>
-#include <QDebug>
-
 // EFC
-#include "ShardMem/ShmCtrl.h"
 #include "Common/Deifinition.h"
 
+// Viewer
+#include "Logger/ViewerLogger.h"
+#include "QrMaker.h"
+
 //========================================================
-QrMaker::QrMaker(QQuickItem *parent)
-    : QQuickPaintedItem(parent)
+QrMaker::QrMaker()
 //========================================================
 {
 
@@ -28,7 +23,7 @@ QrMaker::~QrMaker()
 void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, QColor color)
 //========================================================
 {
-    qDebug("url {%s} Size {width : %d, height : %d}", url.toUtf8().constData(), sz.width(), sz.height());
+    ELGO_VIEWER_LOG("url {%s} Size {width : %d, height : %d}", url.toUtf8().constData(), sz.width(), sz.height());
 
     // NOTE: At this point you will use the API to get the encoding and format you want, instead of my hardcoded stuff:
     char *str = url.toUtf8().data();
@@ -38,7 +33,7 @@ void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, 
     const double height = sz.height();
     const double aspect = width / height;
     const double size = ((aspect>1.0) ? height : width);
-    const double scale = size/(qrSize+2);
+    const double scale = size/(qrSize + 1);
 
     // NOTE: For performance reasons my implementation only draws the foreground parts in supplied color.
     // It expects background to be prepared already (in white or whatever is preferred).
@@ -58,49 +53,4 @@ void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, 
             }
         }
     }
-}
-
-//========================================================
-void QrMaker::paint(QPainter *painter)
-//========================================================
-{
-    // QQuickItem's paint override
-    QQuickView view;
-    view.setSource(QUrl("qrc:/contentPlayer.qml"));
-    QObject *QRItem = view.rootObject();
-
-    QSize qSize(0, 0);
-    QColor color = Qt::black;
-    if(QRItem)
-    {
-        const QVariant width = QRItem->property("width");
-        const QVariant height = QRItem->property("height");
-        qSize.setWidth(width.toInt());
-        qSize.setHeight(height.toInt());
-
-        qDebug("QR Size - width : %d, height : %d", width.toInt(), height.toInt());
-    }
-    else
-    {
-        qSize.setWidth(400);
-        qSize.setHeight(400);
-
-        qDebug("Not Connected QRItem (deafult size)");
-    }
-
-    // Read IP from shared memory
-    QString ip;
-    ShmCtrl shmCtrl;
-    QByteArray shmBytes;
-    QDataStream shmRead(&shmBytes, QIODevice::ReadOnly);
-    shmRead.setVersion(QDataStream::Qt_5_12);
-    shmCtrl.ShmRead(SHM_NAME::SHM_IP, shmBytes);
-    shmRead >> ip;
-
-    QString url = "http://";
-    url += ip;
-    url += ":3000/setting/config_login";
-    DrawQrCode(*painter, qSize, url, color);
-
-    delete QRItem;
 }

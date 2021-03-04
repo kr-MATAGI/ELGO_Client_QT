@@ -28,6 +28,9 @@ NetworkCtrl::NetworkCtrl(QObject *parent)
 
     // Get remote version info from server
     GetRemoteVersionFromWAS();
+
+
+    tcpSocket = new QTcpSocket(this);
 }
 
 //========================================================
@@ -118,4 +121,17 @@ void NetworkCtrl::GetRemoteVersionFromWAS()
     connect(m_netManager, &QNetworkAccessManager::finished, this, &NetworkCtrl::replyRemoteVersionFinished);
     QNetworkRequest request(url);
     m_netManager->get(request);
+}
+
+
+void NetworkCtrl::TCPSenderTest()
+{
+    tcpSocket->connectToHost("3.36.160.203", 9000);
+
+    if(false == tcpSocket->waitForConnected(3000))
+    {
+        ELGO_CONTROL_LOG("ERROR - TCP SOcket");
+    }
+
+    QString data = "{}";
 }

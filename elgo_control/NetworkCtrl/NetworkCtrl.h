@@ -27,6 +27,9 @@ public:
     /** brief */
     CONNECT_INFO GetConnectInfo();
 
+    // For TCP Socket Test
+    void TCPSenderTest();
+
 private slots:
     void replyRemoteVersionFinished(QNetworkReply *reply);
 
@@ -34,6 +37,9 @@ private:
     CONNECT_INFO m_connecInfo;
 
     QNetworkAccessManager *m_netManager;
+
+
+    QTcpSocket *tcpSocket;
 };
 
 #endif // WEBSOCKETCTRL_H

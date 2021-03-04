@@ -1,23 +1,23 @@
 #ifndef QRMAKER_H
 #define QRMAKER_H
 
+// QT
+#include <QObject>
 #include <QPainter>
-#include <QQuickPaintedItem>
+
+// ext_libs
 #include "ext_libs/QrCode/QrCode.h"
 
 
-class QrMaker : public QQuickPaintedItem
+class QrMaker
 {
-    Q_OBJECT
 
 public :
-    explicit QrMaker(QQuickItem *parent = nullptr);
+    explicit QrMaker();
     virtual ~QrMaker();
 
 public:
     /** @brief */
     void DrawQrCode(QPainter &painter, const QSize size, const QString &url, QColor color);
-    /** @brief */
-    void paint(QPainter *painter) override;
 };
 #endif // QRMAKER_H

@@ -24,6 +24,7 @@ SOURCES += \
         JSON/JsonParser.cpp \
         NetworkCtrl/NetworkController.cpp \
         NetworkCtrl/NetworkCtrl.cpp \
+        TCP/TCPHandler.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -39,7 +40,8 @@ HEADERS += \
     Logger/ControlLogger.h \
     NetworkCtrl/NetworkController.h \
     NetworkCtrl/Definition/ServerInfo.h \
-    NetworkCtrl/NetworkCtrl.h
+    NetworkCtrl/NetworkCtrl.h \
+    TCP/TCPHandler.h
 
 
 #INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"

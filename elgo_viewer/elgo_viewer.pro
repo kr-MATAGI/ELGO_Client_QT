@@ -6,6 +6,7 @@ HEADERS += \
         Event/ViewerEventHandler.h \
         Event/ViewerEventState.h \
         Logger/ViewerLogger.h \
+        MainWindow.h \
         ViewerCtrl/ViewerController.h \
         ViewerCtrl/ViewerCtrl.h \
         ViewerThread/ViewerThread.h \
@@ -16,6 +17,7 @@ HEADERS += \
 SOURCES += \
         Event/ViewerEventHandler.cpp \
         Event/ViewerEventState.cpp \
+        MainWindow.cpp \
         ViewerCtrl/ViewerController.cpp \
         ViewerCtrl/ViewerCtrl.cpp \
         ViewerThread/ViewerThread.cpp \
@@ -23,20 +25,12 @@ SOURCES += \
         ext_libs/QrCode/QrCode.cpp \
         QrCode/QrMaker.cpp
 
-
+FORMS += \
+    MainWindow.ui
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
-
-RESOURCES += qml.qrc
-
-# Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
-
-# Additional import path used to resolve QML modules just for Qt Quick Designer
-QML_DESIGNER_IMPORT_PATH =
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -56,3 +50,6 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/release/EFC.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/debug/EFC.lib
 else:unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../EFC/libEFC.a
+
+RESOURCES += \
+    resource.qrc

@@ -61,6 +61,9 @@ void MainCtrl::LoadCurrentDeviceInfo()
             }
         }
     }
+
+    // FOR TEST
+    m_deviceInfo.ipAddr.ip = "192.168.0.83";
 }
 
 //========================================================
@@ -103,9 +106,9 @@ QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
 {
     // TODO : load configuration path
     QString basePath = m_initConfig.binaryPath;
-    ELGO_MAIN_LOG("basePath size : %d", basePath.size());
     if(0 >= basePath.size())
     {
+        ELGO_MAIN_LOG("Not Loaded basepath, use the default path");
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
         basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)

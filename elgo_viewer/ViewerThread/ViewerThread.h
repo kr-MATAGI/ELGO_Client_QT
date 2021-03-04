@@ -8,6 +8,13 @@
 // EFC
 #include "Common/EventList.h"
 
+// Viewer
+#include "MainWindow.h"
+#include "ViewerCtrl/ViewerController.h"
+
+class MainWindow;
+class ViewerController;
+
 class ViewerThread : public QRunnable
 {
 

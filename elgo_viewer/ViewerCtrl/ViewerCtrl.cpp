@@ -25,7 +25,6 @@ ViewerCtrl::~ViewerCtrl()
 
 }
 
-
 //========================================================
 void ViewerCtrl::SendViewerIsReady()
 //========================================================
@@ -44,4 +43,18 @@ void ViewerCtrl::SendViewerIsReady()
     {
         ELGO_VIEWER_LOG("SendEvent Error %s", MAIN_EVENT::Event::PROCESS_IS_READY);
     }
+}
+
+//========================================================
+void ViewerCtrl::SetQRCodeURL(const QString& url)
+//========================================================
+{
+    m_qrCodeUrl = url;
+}
+
+//========================================================
+QString& ViewerCtrl::GetQRCodeURL()
+//========================================================
+{
+    return m_qrCodeUrl;
 }

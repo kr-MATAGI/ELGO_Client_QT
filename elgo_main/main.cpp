@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    // IPC Event Litenner
+    // IPC Event Listenner
     g_EventHandler = new MainEventHandler(ELGO_PROC::Proc::ELGO_MAIN);
 
     Initialize();

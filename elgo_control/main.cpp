@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
     // control -> main
     g_NetworkController->GetNetworkCtrl().SendControlIsReady();
 
+    g_NetworkController->GetNetworkCtrl().TCPSenderTest();
+
     return a.exec();
 }
 
