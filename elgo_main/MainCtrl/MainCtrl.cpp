@@ -42,14 +42,17 @@ void MainCtrl::LoadCurrentDeviceInfo()
     const qint64 freeByte = storageInfo.bytesFree(); // unit : byte
     m_deviceInfo.storage.totalStorage = totalByte / 1024 / 1024; // MByte
     m_deviceInfo.storage.freeStorage = freeByte / 1024/ 1024; // MByte
-    ELGO_MAIN_LOG("Device - totalStorage : %d, freeStorage : %d", m_deviceInfo.storage.totalStorage, m_deviceInfo.storage.freeStorage);
+    ELGO_MAIN_LOG("Device - totalStorage : %d MB, freeStorage : %d MB",
+                  m_deviceInfo.storage.totalStorage, m_deviceInfo.storage.freeStorage);
 
-    // Get Network Address Info (Wired Internet)
-    // TODO : Move to CheckingWirelessInternet()
-    QList<QHostAddress> hostList = QHostInfo::fromName(m_deviceInfo.hostName).addresses();
-    foreach (const QHostAddress& address, hostList) {
-        if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
-            m_deviceInfo.ipAddr.ip = address.toString();
+    // Get Network Address Info
+    QList<QHostAddress> allAddr = QNetworkInterface::allAddresses();
+    for(int idx = 0; idx < allAddr.count(); idx++)
+    {
+        if(QAbstractSocket::IPv4Protocol == allAddr[idx].protocol()
+                && false == allAddr[idx].isLoopback())
+        {
+            m_deviceInfo.ipAddr.ip = allAddr[idx].toString();
         }
     }
 
@@ -61,9 +64,6 @@ void MainCtrl::LoadCurrentDeviceInfo()
             }
         }
     }
-
-    // FOR TEST
-    m_deviceInfo.ipAddr.ip = "192.168.0.83";
 }
 
 //========================================================

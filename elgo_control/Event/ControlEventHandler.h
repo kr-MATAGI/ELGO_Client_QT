@@ -14,7 +14,7 @@ public:
     virtual ~ControlEventHandler();
 
 private slots:
-    void readEvent() override;
+    void ReadEventSlot() override;
 
 private:
     ControlEventState m_state;

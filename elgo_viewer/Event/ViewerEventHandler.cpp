@@ -20,7 +20,7 @@ ViewerEventHandler::~ViewerEventHandler()
 }
 
 //========================================================
-void ViewerEventHandler::readEvent()
+void ViewerEventHandler::ReadEventSlot()
 //========================================================
 {
     QLocalSocket *socket = (QLocalSocket *)sender();

@@ -1,9 +1,12 @@
 #ifndef WEBSOCKETCTRL_H
 #define WEBSOCKETCTRL_H
 
+// QT
 #include <QObject>
 #include <QtCore>
 #include <QNetworkReply>
+
+// control
 #include "NetworkCtrl/Definition/ServerInfo.h"
 
 class NetworkCtrl : public QObject
@@ -18,28 +21,20 @@ public:
     /** @brief */
     void SendControlIsReady();
 
-    /** brief */
-    void LoadServerInfoFromXML(QString &path);
-
-    /** brief */
+    /** @brief */
     void GetRemoteVersionFromWAS();
 
-    /** brief */
+    /** @brief */
+    void SetConnectInfo(const CONNECT_INFO& newValue);
+
+    /** @brief */
     CONNECT_INFO GetConnectInfo();
 
-    // For TCP Socket Test
-    void TCPSenderTest();
-
 private slots:
-    void replyRemoteVersionFinished(QNetworkReply *reply);
+    void ReplyRemoteVersionFinishedSlot(QNetworkReply *reply);
 
 private:
     CONNECT_INFO m_connecInfo;
-
-    QNetworkAccessManager *m_netManager;
-
-
-    QTcpSocket *tcpSocket;
 };
 
 #endif // WEBSOCKETCTRL_H

@@ -21,9 +21,9 @@ private:
     void AddToList(QLocalSocket *socket);
 
 protected slots:
-    virtual void readEvent() = 0;
-    void clientConnection();
-    void discardSocket();
+    virtual void ReadEventSlot() = 0;
+    void ClientConnectionSlot();
+    void DiscardSocketSlot();
 
 protected:
     QString m_procName;

@@ -38,9 +38,8 @@ namespace CONTROL_EVENT
          *  @brief  receive WIFI information from main process
          *  @param
          *          QString wasHost,
-         *          int wasHostPort,
-         *          QString mainSocket,
-         *          int mainSocketPort
+         *          quint16 wasHostPort,
+         *          QString remoteTCPHost
          */
         RECV_SERVER_INFO_FROM_MAIN = 513,
 

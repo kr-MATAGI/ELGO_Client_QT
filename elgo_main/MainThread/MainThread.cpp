@@ -77,17 +77,16 @@ void MainThread::ExecRecvProcecssReady()
          *  @param
          *          QString wasHost,
          *          int wasHostPort,
-         *          QString mainSocket,
-         *          int mainSocketPort
+         *          QString remoteTCPHost
          */
 
-        DEVICE::INIT_CONFIG initConfig = MainController::GetInstance()->GetMainCtrl().GetInitConfig();
+        const DEVICE::INIT_CONFIG &initConfig = MainController::GetInstance()->GetMainCtrl().GetInitConfig();
+        const DEVICE::IPADDR &hostAddr = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().ipAddr;
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
         sendStream << initConfig.server.wasHost;
         sendStream << initConfig.server.wasHostPort;
-        sendStream << initConfig.server.mainSocket;
-        sendStream << initConfig.server.mainSocketPort;
+        sendStream << hostAddr.ip;
 
         const bool bContorlEvent = EFCEvent::SendEvent(ELGO_PROC::ELGO_CONTROL,
                             CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN, sendBytes);

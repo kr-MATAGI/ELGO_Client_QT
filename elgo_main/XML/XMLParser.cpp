@@ -163,43 +163,26 @@ bool XMLParser::GetServerfromInitConfig(QDomElement &element, DEVICE::INIT_CONFI
             {
                 if(false == serverUrlElement.isNull())
                 {
-                    retValue = true;
-
                     QDomElement wasHostChild = serverUrlElement.firstChildElement();
-                    dest.server.wasHost = wasHostChild.firstChild().toText().data();
+                    if(false == wasHostChild.isNull() && "url" == wasHostChild.tagName())
+                    {
+                        retValue = true;
+                        dest.server.wasHost = wasHostChild.firstChild().toText().data();
+                        wasHostChild = wasHostChild.nextSiblingElement();
+                    }
 
-                    wasHostChild = wasHostChild.nextSiblingElement();
-                    dest.server.wasHostPort = wasHostChild.firstChild().toText().data().toInt();
+                    if( true == retValue && false == wasHostChild.isNull() && "port" == wasHostChild.tagName())
+                    {
+                        dest.server.wasHostPort = wasHostChild.firstChild().toText().data().toInt();
+                    }
+                    else
+                    {
+                        retValue = false;
+                    }
                 }
                 else
                 {
                     ELGO_MAIN_LOG("ERORR - network is NULL");
-                }
-            }
-            else
-            {
-                ELGO_MAIN_LOG("ERORR - deviceConfig tagName : %s",
-                              serverUrlElement.tagName().toUtf8().constData());
-            }
-
-            // socketServer
-            serverUrlElement = serverUrlElement.nextSiblingElement();
-            if("mainSocket" == serverUrlElement.tagName())
-            {
-                if(false == serverUrlElement.isNull())
-                {
-                    retValue = true;
-
-                    QDomElement mainSocketChild = serverUrlElement.firstChildElement();
-                    dest.server.mainSocket = mainSocketChild.firstChild().toText().data();
-
-                    mainSocketChild = mainSocketChild.nextSiblingElement();
-                    dest.server.mainSocketPort = mainSocketChild.firstChild().toText().data().toInt();
-                }
-                else
-                {
-                    retValue = false;
-                    ELGO_MAIN_LOG("ERROR - socketServer is NULL");
                 }
             }
             else

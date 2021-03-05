@@ -6,6 +6,9 @@
 #include <QJsonObject>
 #include <QDebug>
 
+// Control
+#include "Logger/ControlLogger.h"
+
 //========================================================
 QString JsonParser::RemoteVersionParse(const QString &src)
 //========================================================
@@ -13,7 +16,7 @@ QString JsonParser::RemoteVersionParse(const QString &src)
     QJsonDocument doc = QJsonDocument::fromJson(src.toUtf8());
     QJsonObject jsonObj = doc.object();
     QString version = jsonObj["version"].toString();
-    qDebug() << "Remote Version : " << version;
+    ELGO_CONTROL_LOG("Remote Version : %s", version.toUtf8().constData());
 
     return version;
 }

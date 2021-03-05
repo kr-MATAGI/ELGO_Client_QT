@@ -14,7 +14,7 @@ public:
     virtual ~MainEventHandler();
 
 private:
-    void readEvent() override;
+    void ReadEventSlot() override;
 
 private:
     MainEventState m_state;

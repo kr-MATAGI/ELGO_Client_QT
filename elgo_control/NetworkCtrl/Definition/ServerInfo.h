@@ -1,18 +1,25 @@
 #ifndef SERVERINFO_H
 #define SERVERINFO_H
 
+// QT
 #include <QString>
+
+#define REMOTE_TCP_PORT 9412
 
 struct CONNECT_INFO
 {
+    CONNECT_INFO(const QString &wasHost = NULL, const quint16 wasPort = 4500,
+                 const QString &remoteTCPHost = NULL)
+    {
+        WAS_HOST = wasHost;
+        WAS_PORT = wasPort;
+        REMOTE_TCP_HOST = remoteTCPHost;
+    }
+
     QString WAS_HOST; // Web Backend Server
-    int WAS_PORT;
+    quint16 WAS_PORT;
 
-    QString MAIN_SOCKET_HOST; // Main Socket Server
-    int MAIN_SOCKET_PORT;
-
-    QString TUNNELING_HOST; // Remote Control Server (Maybe Not Use)
-    int TUNNELING_PORT;
+    QString REMOTE_TCP_HOST; // TCP Server
 
     QString remoteVersion;
     QString deviceVersion;

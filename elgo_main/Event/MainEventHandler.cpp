@@ -21,7 +21,7 @@ MainEventHandler::~MainEventHandler()
 }
 
 //========================================================
-void MainEventHandler::readEvent()
+void MainEventHandler::ReadEventSlot()
 //========================================================
 {
     QLocalSocket *socket = (QLocalSocket *)sender();

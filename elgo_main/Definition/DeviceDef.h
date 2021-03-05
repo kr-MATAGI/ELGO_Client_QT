@@ -84,10 +84,10 @@ namespace DEVICE
     struct ServerConfig
     {
         QString wasHost;
-        int wasHostPort;
+        quint16 wasHostPort;
 
-        QString mainSocket;
-        int mainSocketPort;
+        QString remoteTCPHost;
+        quint16 remoteTCPPort;;
     };
 
     struct INIT_CONFIG

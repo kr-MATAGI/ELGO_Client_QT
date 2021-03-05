@@ -19,26 +19,14 @@ NetworkCtrl::NetworkCtrl(QObject *parent)
     : QObject(parent)
 //========================================================
 {
-    // init QNetworkAccessMananger
-    m_netManager = new QNetworkAccessManager(this);
 
-    // load server info
-    QString xmlInfoPath;
-    LoadServerInfoFromXML(xmlInfoPath);
-
-    // Get remote version info from server
-    GetRemoteVersionFromWAS();
-
-
-    tcpSocket = new QTcpSocket(this);
 }
 
 //========================================================
 NetworkCtrl::~NetworkCtrl()
 //========================================================
 {
-    delete m_netManager;
-    m_netManager = NULL;
+
 }
 
 //========================================================
@@ -64,6 +52,13 @@ void NetworkCtrl::SendControlIsReady()
 }
 
 //========================================================
+void NetworkCtrl::SetConnectInfo(const CONNECT_INFO& newValue)
+//========================================================
+{
+    m_connecInfo = newValue;
+}
+
+//========================================================
 CONNECT_INFO NetworkCtrl::GetConnectInfo()
 //========================================================
 {
@@ -71,34 +66,7 @@ CONNECT_INFO NetworkCtrl::GetConnectInfo()
 }
 
 //========================================================
-void NetworkCtrl::LoadServerInfoFromXML(QString &path)
-//========================================================
-{
-    bool bExistedXML = false;
-    QString xmlPath = path;
-
-    if(bExistedXML)
-    {
-        // is recv info from elgo_main?
-    }
-    else
-    {
-        m_connecInfo.WAS_HOST = "demo.elgo.co.kr";
-        m_connecInfo.WAS_PORT = 443;
-
-        m_connecInfo.MAIN_SOCKET_HOST = "3.36.160.203";
-        m_connecInfo.MAIN_SOCKET_PORT = 9000;
-
-        m_connecInfo.TUNNELING_HOST = "3.36.160.203";
-        m_connecInfo.TUNNELING_PORT = 4500;
-
-        m_connecInfo.remoteVersion = "1.0";
-        m_connecInfo.deviceVersion = "1.0";
-    }
-}
-
-//========================================================
-void NetworkCtrl::replyRemoteVersionFinished(QNetworkReply *reply)
+void NetworkCtrl::ReplyRemoteVersionFinishedSlot(QNetworkReply *reply)
 //========================================================
 {
     QString src = reply->readAll();
@@ -118,20 +86,9 @@ void NetworkCtrl::GetRemoteVersionFromWAS()
     QUrl url = "https://"+ m_connecInfo.WAS_HOST + "/client/version/socket";
     ELGO_CONTROL_LOG("%s", url.toString().toUtf8().constData());
 
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &NetworkCtrl::replyRemoteVersionFinished);
+    /*
+    connect(m_netManager, &QNetworkAccessManager::finished, this, &NetworkCtrl::ReplyRemoteVersionFinishedSlot);
     QNetworkRequest request(url);
     m_netManager->get(request);
-}
-
-
-void NetworkCtrl::TCPSenderTest()
-{
-    tcpSocket->connectToHost("3.36.160.203", 9000);
-
-    if(false == tcpSocket->waitForConnected(3000))
-    {
-        ELGO_CONTROL_LOG("ERROR - TCP SOcket");
-    }
-
-    QString data = "{}";
+    */
 }

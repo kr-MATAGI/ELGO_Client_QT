@@ -1,4 +1,3 @@
-#pragma once
 #ifndef MAINCONTROLLER_H
 #define MAINCONTROLLER_H
 
@@ -8,6 +7,10 @@
 // Main
 #include "MainCtrl.h"
 #include "DB/MainDBCtrl.h"
+
+class MainCtrl;
+class MainDBCtrl;
+class ShmCtrl;
 
 class MainController
 {

@@ -12,7 +12,7 @@ public:
     virtual ~ViewerEventHandler();
 
 private slots:
-    void readEvent() override;
+    void ReadEventSlot() override;
 
 private:
     ViewerEventState m_state;

@@ -10,8 +10,10 @@
 
 // Contorl
 #include "NetworkCtrl/NetworkController.h"
+#include "NetworkCtrl/TCP/RemoteTCPServer.h"
 
 static NetworkController *g_NetworkController = NetworkController::GetInstance();
+static RemoteTCPServer *g_RemoteTCPServer = RemoteTCPServer::GetInstance();
 static ControlEventHandler *g_EventHandler = NULL;
 
 int main(int argc, char *argv[])
@@ -21,8 +23,7 @@ int main(int argc, char *argv[])
 
     // control -> main
     g_NetworkController->GetNetworkCtrl().SendControlIsReady();
-
-    g_NetworkController->GetNetworkCtrl().TCPSenderTest();
+    g_NetworkController->GetNetworkCtrl().GetRemoteVersionFromWAS();
 
     return a.exec();
 }

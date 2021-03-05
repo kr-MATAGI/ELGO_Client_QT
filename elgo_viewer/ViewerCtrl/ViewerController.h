@@ -1,4 +1,3 @@
-#pragma once
 #ifndef VIEWERCONTROLLER_H
 #define VIEWERCONTROLLER_H
 
@@ -7,6 +6,8 @@
 
 // Viewer
 #include "ViewerCtrl.h"
+
+class ViewerCtrl;
 
 class ViewerController
 {

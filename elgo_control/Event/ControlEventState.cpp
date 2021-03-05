@@ -46,8 +46,7 @@ void ControlEventState::RecvServerInfoFromMain(QByteArray &src)
      *  @param
      *          QString wasHost,
      *          int wasHostPort,
-     *          QString mainSocket,
-     *          int mainSocketPort
+     *          QString remoteTCPHost
      */
 
     ControlThread *thread = new ControlThread;

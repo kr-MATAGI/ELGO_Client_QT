@@ -17,7 +17,7 @@ LocalSocketServer::LocalSocketServer(::ELGO_PROC::Proc proc, QObject *parent)
     if(m_server.listen(m_procName))
     {
         qDebug() << m_procName <<"Socket is Listening...";
-        connect(&m_server, SIGNAL(newConnection()), this, SLOT(clientConnection()));
+        connect(&m_server, SIGNAL(newConnection()), this, SLOT(ClientConnectionSlot()));
     }
     else
     {
@@ -43,12 +43,12 @@ void LocalSocketServer::AddToList(QLocalSocket *socket)
 {
 
     m_connectedList.push_back(socket);
-    connect(socket, &QLocalSocket::readyRead, this, &LocalSocketServer::readEvent);
-    connect(socket, &QLocalSocket::disconnected, this, &LocalSocketServer::discardSocket);
+    connect(socket, &QLocalSocket::readyRead, this, &LocalSocketServer::ReadEventSlot);
+    connect(socket, &QLocalSocket::disconnected, this, &LocalSocketServer::DiscardSocketSlot);
 }
 
 //========================================================
-void LocalSocketServer::clientConnection()
+void LocalSocketServer::ClientConnectionSlot()
 //========================================================
 {
     while(m_server.hasPendingConnections())
@@ -58,7 +58,7 @@ void LocalSocketServer::clientConnection()
 }
 
 //========================================================
-void LocalSocketServer::discardSocket()
+void LocalSocketServer::DiscardSocketSlot()
 //========================================================
 {
 

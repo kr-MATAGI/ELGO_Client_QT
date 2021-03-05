@@ -1,4 +1,3 @@
-#pragma once
 #ifndef NETWORKCONTROLLER_H
 #define NETWORKCONTROLLER_H
 
@@ -7,6 +6,10 @@
 
 // Control
 #include "NetworkCtrl.h"
+#include "TCP/RemoteTCPServer.h"
+
+class NetworkCtrl;
+class RemoteTCPServer;
 
 class NetworkController
 {

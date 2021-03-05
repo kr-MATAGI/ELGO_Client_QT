@@ -61,11 +61,25 @@ void ControlThread::ExecRecvServerInfoFromMain()
      *  @param
      *          QString wasHost,
      *          int wasHostPort,
-     *          QString mainSocket,
-     *          int mainSocketPort
+     *          QString remoteTCPHost
      */
 
     QByteArray recvBytes = m_bytes;
     QDataStream out(&recvBytes, QIODevice::ReadOnly);
-    out.setVersion(QDataStream::Qt_5_12);
+    QString wasHost;
+    quint16 wasHostPort;
+    QString remoteTCPHost;
+
+    out >> wasHost;
+    out >> wasHostPort;
+    out >> remoteTCPHost;
+    ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteTCPHost : %s",
+                     wasHost.toUtf8().constData(), wasHostPort, remoteTCPHost.toUtf8().constData());
+
+    // Set Info into NetCtrl
+    CONNECT_INFO connectInfo(wasHost, wasHostPort, remoteTCPHost);
+    NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(connectInfo);
+
+    // TCP Server Start
+    RemoteTCPServer::GetInstance()->TCPServerStartSignal();
 }

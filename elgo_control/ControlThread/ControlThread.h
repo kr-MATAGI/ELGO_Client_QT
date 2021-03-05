@@ -8,6 +8,11 @@
 // EFC
 #include "Common/EventList.h"
 
+// Control
+#include "NetworkCtrl/NetworkController.h"
+#include "NetworkCtrl/TCP/RemoteTCPServer.h"
+
+class NetworkController;
 
 class ControlThread : public QRunnable
 {
