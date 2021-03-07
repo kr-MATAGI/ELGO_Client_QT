@@ -10,10 +10,10 @@
 
 // Contorl
 #include "NetworkCtrl/NetworkController.h"
-#include "NetworkCtrl/TCP/RemoteTCPServer.h"
+#include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
 static NetworkController *g_NetworkController = NetworkController::GetInstance();
-static RemoteTCPServer *g_RemoteTCPServer = RemoteTCPServer::GetInstance();
+static RemoteControlServer *g_RemoteTCPServer = RemoteControlServer::GetInstance();
 static ControlEventHandler *g_EventHandler = NULL;
 
 int main(int argc, char *argv[])

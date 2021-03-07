@@ -81,5 +81,5 @@ void ControlThread::ExecRecvServerInfoFromMain()
     NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(connectInfo);
 
     // TCP Server Start
-    RemoteTCPServer::GetInstance()->TCPServerStartSignal();
+    RemoteControlServer::GetInstance()->TCPServerStartSignal();
 }

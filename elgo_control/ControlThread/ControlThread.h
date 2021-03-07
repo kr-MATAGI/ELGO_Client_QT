@@ -10,7 +10,7 @@
 
 // Control
 #include "NetworkCtrl/NetworkController.h"
-#include "NetworkCtrl/TCP/RemoteTCPServer.h"
+#include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
 class NetworkController;
 

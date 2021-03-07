@@ -1,28 +1,30 @@
 // control
-#include "RemoteTCPServer.h"
+#include "RemoteControlServer.h"
 #include "Logger/ControlLogger.h"
 
-RemoteTCPServer* RemoteTCPServer::pInstance = nullptr;
+RemoteControlServer* RemoteControlServer::pInstance = nullptr;
 
 //========================================================
-RemoteTCPServer::RemoteTCPServer(QObject *parent)
+RemoteControlServer::RemoteControlServer(QObject *parent)
     :QObject(parent)
-    , m_connectedCount(0)
+    , m_bIsConnected(false)
 //========================================================
 {
-    m_server = new QTcpServer(this);
+    m_server = new QWebSocketServer("RemoteServer", QWebSocketServer::NonSecureMode, this);
     m_server->setMaxPendingConnections(1); // recv only one elgo_remote
 
     // connect
-    connect(this, SIGNAL(TCPServerStartSignal()), SLOT(TCPServerStartSlot()));
     connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
     connect(m_server, SIGNAL(acceptError(QAbstractSocket::SocketError)),
             this, SLOT(AcceptErrorSlot(QAbstractSocket::SocketError)));
 
+    // custom signals
+    connect(this, SIGNAL(TCPServerStartSignal()), SLOT(TCPServerStartSlot()));
+
 }
 
 //========================================================
-RemoteTCPServer::~RemoteTCPServer()
+RemoteControlServer::~RemoteControlServer()
 //========================================================
 {
     delete m_server;
@@ -30,18 +32,18 @@ RemoteTCPServer::~RemoteTCPServer()
 }
 
 //========================================================
-RemoteTCPServer* RemoteTCPServer::GetInstance()
+RemoteControlServer* RemoteControlServer::GetInstance()
 //========================================================
 {
     if(nullptr == pInstance)
     {
-        pInstance = new RemoteTCPServer();
+        pInstance = new RemoteControlServer();
     }
     return pInstance;
 }
 
 //========================================================
-void RemoteTCPServer::DestoryInstance()
+void RemoteControlServer::DestoryInstance()
 //========================================================
 {
     if(nullptr != pInstance)
@@ -53,16 +55,25 @@ void RemoteTCPServer::DestoryInstance()
 }
 
 //========================================================
-void RemoteTCPServer::newConnectionSlot()
+void RemoteControlServer::newConnectionSlot()
 //========================================================
 {
-    if(0 == m_connectedCount)
+    if(false == m_bIsConnected)
     {
-        m_connectedCount++;
+        ELGO_CONTROL_LOG("New Remote Client Access !");
+
+        m_bIsConnected = true;
         m_cliecnt = m_server->nextPendingConnection();
 
-        connect(m_cliecnt, SIGNAL(readyRead()), this, SLOT(ReadEventSlot()));
-        connect(m_cliecnt, SIGNAL(disconnected()), this, SLOT(DisconnectedSlot()));
+        // connect
+        connect(m_cliecnt, SIGNAL(textMessageReceived(const QString&)),
+                this, SLOT(TextMsgRecvSlot(const QString&)));
+        connect(m_cliecnt, SIGNAL(binaryMessageReceived(const QByteArray&)),
+                this, SLOT(BinaryMsgRecvSlot(const QByteArray&)));
+        connect(m_cliecnt, SIGNAL(disconnected()),
+                this, SLOT(RemoteClientDisconnectedSlot()));
+
+        // server mush connect only one client
         disconnect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
     }
     else
@@ -72,41 +83,65 @@ void RemoteTCPServer::newConnectionSlot()
 }
 
 //========================================================
-void RemoteTCPServer::ReadEventSlot()
+void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 //========================================================
 {
-    if(0 <= m_cliecnt->bytesAvailable())
+    if(NULL != m_cliecnt)
     {
-        QByteArray recvBytes = m_cliecnt->readAll();
-        QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
-
-        ELGO_CONTROL_LOG("Read Event Slot TEST : %s", recvBytes.toStdString().c_str());
+        ELGO_CONTROL_LOG("%s", msg.toUtf8().constData());
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
     }
 }
 
 //========================================================
-void RemoteTCPServer::AcceptErrorSlot(QAbstractSocket::SocketError socketError)
+void RemoteControlServer::BinaryMsgRecvSlot(const QByteArray& bytes)
+//========================================================
+{
+    if(NULL != m_cliecnt)
+    {
+        ELGO_CONTROL_LOG("%s", bytes.toStdString().c_str());
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
+    }
+}
+
+//========================================================
+void RemoteControlServer::AcceptErrorSlot(QAbstractSocket::SocketError socketError)
 //========================================================
 {
     ELGO_CONTROL_LOG("Emit SIGAL - acceptError : %d", socketError);
 }
 
 //========================================================
-void RemoteTCPServer::DisconnectedSlot()
+void RemoteControlServer::RemoteClientDisconnectedSlot()
 //========================================================
 {
     ELGO_CONTROL_LOG("Remote Client Disconnted");
-    m_cliecnt->close();
-    m_connectedCount--;
 
-    if(0 == m_connectedCount)
+    if(NULL != m_cliecnt)
     {
-        connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
+        m_cliecnt->close();
+        m_cliecnt->deleteLater();
+        m_bIsConnected = false;
+
+        if(false == m_bIsConnected)
+        {
+            connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
     }
 }
 
 //========================================================
-void RemoteTCPServer::TCPServerStartSlot()
+void RemoteControlServer::TCPServerStartSlot()
 //========================================================
 {
     CONNECT_INFO connInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();

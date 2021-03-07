@@ -1,6 +1,6 @@
 QT -= gui
 
-QT += network core
+QT += network core websockets
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -24,7 +24,7 @@ SOURCES += \
         JSON/JsonParser.cpp \
         NetworkCtrl/NetworkController.cpp \
         NetworkCtrl/NetworkCtrl.cpp \
-        NetworkCtrl/TCP/RemoteTCPServer.cpp \
+        NetworkCtrl/RemoteControl/RemoteControlServer.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -41,7 +41,7 @@ HEADERS += \
     NetworkCtrl/NetworkController.h \
     NetworkCtrl/Definition/ServerInfo.h \
     NetworkCtrl/NetworkCtrl.h \
-    NetworkCtrl/TCP/RemoteTCPServer.h
+    NetworkCtrl/RemoteControl/RemoteControlServer.h
 
 
 #INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"
