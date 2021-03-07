@@ -114,9 +114,8 @@ void RemoteTCPServer::TCPServerStartSlot()
     QHostAddress host(connInfo.REMOTE_TCP_HOST);
     quint16 port = REMOTE_TCP_PORT;
 
-    ELGO_CONTROL_LOG("REMOTE TCP - host : %s, port : %u",
-                     host.toString().toUtf8().constData(), port);
-
     bool bIsListen = m_server->listen(host, port);
-    ELGO_CONTROL_LOG("TCP Server Listen : %d", bIsListen);
+    ELGO_CONTROL_LOG("Remote TCP Server Listen : %d, addr : %s, port : %u", bIsListen,
+                     m_server->serverAddress().toString().toUtf8().constData(), m_server->serverPort());
+
 }
