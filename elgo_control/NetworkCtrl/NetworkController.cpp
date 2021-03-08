@@ -8,6 +8,7 @@ NetworkController::NetworkController()
 //========================================================
 {
     m_netCtrl = new NetworkCtrl;
+    m_dbCtrl = new NetworkDBCtrl;
 }
 
 //========================================================
@@ -16,6 +17,9 @@ NetworkController::~NetworkController()
 {
     delete m_netCtrl;
     m_netCtrl = NULL;
+
+    delete m_dbCtrl;
+    m_dbCtrl = NULL;
 }
 
 //========================================================
@@ -46,4 +50,11 @@ NetworkCtrl& NetworkController::GetNetworkCtrl()
 //========================================================
 {
     return *m_netCtrl;
+}
+
+//========================================================
+NetworkDBCtrl& NetworkController::GetDBCtrl()
+//========================================================
+{
+    return *m_dbCtrl;
 }

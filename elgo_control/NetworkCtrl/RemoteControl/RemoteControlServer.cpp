@@ -1,6 +1,7 @@
 // control
 #include "RemoteControlServer.h"
 #include "Logger/ControlLogger.h"
+#include "JSON/JsonParser.h"
 
 RemoteControlServer* RemoteControlServer::pInstance = nullptr;
 
@@ -10,13 +11,18 @@ RemoteControlServer::RemoteControlServer(QObject *parent)
     , m_bIsConnected(false)
 //========================================================
 {
+    m_handler = new RemoteControlActionHandler;
     m_server = new QWebSocketServer("RemoteServer", QWebSocketServer::NonSecureMode, this);
     m_server->setMaxPendingConnections(1); // recv only one elgo_remote
 
     // connect
-    connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
+    connect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
     connect(m_server, SIGNAL(acceptError(QAbstractSocket::SocketError)),
             this, SLOT(AcceptErrorSlot(QAbstractSocket::SocketError)));
+    connect(m_server, SIGNAL(peerVerifyError(const QSslError&)),
+            this, SLOT(PeerVerifyErrorSlot(const QSslError&)));
+    connect(m_server, SIGNAL(serverError(QWebSocketProtocol::CloseCode)),
+            this, SLOT(RemoteServerErrorSlot(QWebSocketProtocol::CloseCode)));
 
     // custom signals
     connect(this, SIGNAL(TCPServerStartSignal()), SLOT(TCPServerStartSlot()));
@@ -55,7 +61,7 @@ void RemoteControlServer::DestoryInstance()
 }
 
 //========================================================
-void RemoteControlServer::newConnectionSlot()
+void RemoteControlServer::NewClientConnectedSlot()
 //========================================================
 {
     if(false == m_bIsConnected)
@@ -66,15 +72,18 @@ void RemoteControlServer::newConnectionSlot()
         m_cliecnt = m_server->nextPendingConnection();
 
         // connect
+        connect(m_cliecnt, SIGNAL(connected()), this, SLOT(RemoteClientSocketConnectedSlot()));
         connect(m_cliecnt, SIGNAL(textMessageReceived(const QString&)),
                 this, SLOT(TextMsgRecvSlot(const QString&)));
         connect(m_cliecnt, SIGNAL(binaryMessageReceived(const QByteArray&)),
                 this, SLOT(BinaryMsgRecvSlot(const QByteArray&)));
+        connect(m_cliecnt, SIGNAL(error(QAbstractSocket::SocketError)),
+                this, SLOT(RemoteClientError(QAbstractSocket::SocketError)));
         connect(m_cliecnt, SIGNAL(disconnected()),
                 this, SLOT(RemoteClientDisconnectedSlot()));
 
         // server mush connect only one client
-        disconnect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
+        disconnect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
     }
     else
     {
@@ -83,12 +92,76 @@ void RemoteControlServer::newConnectionSlot()
 }
 
 //========================================================
+void RemoteControlServer::AcceptErrorSlot(QAbstractSocket::SocketError socketError)
+//========================================================
+{
+    ELGO_CONTROL_LOG("Error - AcceptError : %d", socketError);
+}
+
+//========================================================
+void RemoteControlServer::PeerVerifyErrorSlot(const QSslError& error)
+//========================================================
+{
+    ELGO_CONTROL_LOG("Error - PeerVerifyError : %s (%d)",
+                     error.errorString().toUtf8().constData(), error.error());
+}
+
+//========================================================
+void RemoteControlServer::RemoteServerErrorSlot(QWebSocketProtocol::CloseCode closeCode)
+//========================================================
+{
+    ELGO_CONTROL_LOG("Error - RemoteServerError : %d", closeCode);
+}
+
+//========================================================
+void RemoteControlServer::RemoteClientDisconnectedSlot()
+//========================================================
+{
+    ELGO_CONTROL_LOG("Remote Client Disconnted");
+
+    if(NULL != m_cliecnt)
+    {
+        m_cliecnt->close();
+        m_cliecnt->deleteLater();
+        m_bIsConnected = false;
+
+        if(false == m_bIsConnected)
+        {
+            connect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
+    }
+}
+
+//========================================================
+void RemoteControlServer::TCPServerStartSlot()
+//========================================================
+{
+    CONNECT_INFO connInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();
+
+    QHostAddress host(connInfo.REMOTE_TCP_HOST);
+    quint16 port = REMOTE_TCP_PORT;
+
+    bool bIsListen = m_server->listen(host, port);
+    ELGO_CONTROL_LOG("Remote TCP Server Listen : %d, addr : %s, port : %u", bIsListen,
+                     m_server->serverAddress().toString().toUtf8().constData(), m_server->serverPort());
+
+}
+
+//========================================================
 void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 //========================================================
 {
     if(NULL != m_cliecnt)
     {
-        ELGO_CONTROL_LOG("%s", msg.toUtf8().constData());
+        const Remote::Action recvAction = JsonParser::RemoteContorlActionTextPase(msg);
+        ELGO_CONTROL_LOG("Recv From Client : %s, action : %d", msg.toUtf8().constData(), recvAction);
+
+        // Run Action
+        m_handler->RunAction(recvAction, msg);
     }
     else
     {
@@ -111,46 +184,15 @@ void RemoteControlServer::BinaryMsgRecvSlot(const QByteArray& bytes)
 }
 
 //========================================================
-void RemoteControlServer::AcceptErrorSlot(QAbstractSocket::SocketError socketError)
+void RemoteControlServer::RemoteClientSocketConnectedSlot()
 //========================================================
 {
-    ELGO_CONTROL_LOG("Emit SIGAL - acceptError : %d", socketError);
+    ELGO_CONTROL_LOG("Remote Client Connected - %s", m_cliecnt->peerAddress().toString().toUtf8().constData());
 }
 
 //========================================================
-void RemoteControlServer::RemoteClientDisconnectedSlot()
+void RemoteControlServer::RemoteClientError(QAbstractSocket::SocketError error)
 //========================================================
 {
-    ELGO_CONTROL_LOG("Remote Client Disconnted");
-
-    if(NULL != m_cliecnt)
-    {
-        m_cliecnt->close();
-        m_cliecnt->deleteLater();
-        m_bIsConnected = false;
-
-        if(false == m_bIsConnected)
-        {
-            connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnectionSlot()));
-        }
-    }
-    else
-    {
-        ELGO_CONTROL_LOG("NULL == Remote Client");
-    }
-}
-
-//========================================================
-void RemoteControlServer::TCPServerStartSlot()
-//========================================================
-{
-    CONNECT_INFO connInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();
-
-    QHostAddress host(connInfo.REMOTE_TCP_HOST);
-    quint16 port = REMOTE_TCP_PORT;
-
-    bool bIsListen = m_server->listen(host, port);
-    ELGO_CONTROL_LOG("Remote TCP Server Listen : %d, addr : %s, port : %u", bIsListen,
-                     m_server->serverAddress().toString().toUtf8().constData(), m_server->serverPort());
-
+    ELGO_CONTROL_LOG("Error - RemoteClientError: %d", error);
 }

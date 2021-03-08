@@ -18,6 +18,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     Common/Deifinition.h \
+    Common/DBDefinition.h \
     Common/EventList.h \
     LocalSocketEvent/EFCEvent.h \
     LocalSocketEvent/EventState.h \

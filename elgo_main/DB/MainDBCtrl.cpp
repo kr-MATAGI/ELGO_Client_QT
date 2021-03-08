@@ -1,6 +1,8 @@
-#include "MainDBCtrl.h"
-
+// QT
 #include <QSqlQuery>
+
+// Main
+#include "MainDBCtrl.h"
 
 //========================================================
 MainDBCtrl::MainDBCtrl(QObject *parent)

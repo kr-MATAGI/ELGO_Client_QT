@@ -6,9 +6,11 @@
 #include <QWebSocket>
 
 // control
-#include "../NetworkController.h"
+#include "NetworkCtrl/NetworkController.h"
+#include "RemoteControlActionHandler.h"
 
 class NetworkController;
+class RemoteControlActionHandler;
 
 class RemoteControlServer : public QObject
 {
@@ -30,17 +32,26 @@ public:
 private slots:
     // Server
     /** @brief */
-    void newConnectionSlot();
+    void NewClientConnectedSlot();
     /** @brief */
     void AcceptErrorSlot(QAbstractSocket::SocketError socketError);
     /** @brief */
+    void PeerVerifyErrorSlot(const QSslError& error);
+    /** @brief */
+    void RemoteServerErrorSlot(QWebSocketProtocol::CloseCode closeCode);
+
+    /** @brief  Custom Signal */
     void TCPServerStartSlot();
 
     // Client
     /** @brief */
+    void RemoteClientSocketConnectedSlot();
+    /** @brief */
     void TextMsgRecvSlot(const QString& msg);
     /** @brief */
     void BinaryMsgRecvSlot(const QByteArray& bytes);
+    /** @brief */
+    void RemoteClientError(QAbstractSocket::SocketError error);
     /** @brief */
     void RemoteClientDisconnectedSlot();
 
@@ -51,6 +62,7 @@ signals:
 private:
     QWebSocketServer *m_server;
     QWebSocket *m_cliecnt;
+    RemoteControlActionHandler *m_handler;
 
     bool m_bIsConnected;
 };

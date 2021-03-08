@@ -70,7 +70,7 @@ void NetworkCtrl::ReplyRemoteVersionFinishedSlot(QNetworkReply *reply)
 //========================================================
 {
     QString src = reply->readAll();
-    m_connecInfo.remoteVersion = JsonParser::RemoteVersionParse(src);
+    m_connecInfo.remoteVersion = JsonParser::LatestVersionParse(src);
 
     if(0 != qstrcmp(m_connecInfo.remoteVersion.toUtf8().constData(),
                     m_connecInfo.deviceVersion.toUtf8().constData()))

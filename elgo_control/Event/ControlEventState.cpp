@@ -15,9 +15,12 @@ ControlEventState::ControlEventState()
     m_threadPool = new QThreadPool;
     m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 
-    // enroll Event
+    // proc Event
     m_state.RegisterEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN,
                           &ControlEventState::RecvServerInfoFromMain);
+
+    // inner Event
+
 
 }
 

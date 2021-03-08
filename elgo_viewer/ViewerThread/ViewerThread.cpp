@@ -67,11 +67,11 @@ void ViewerThread::ExecMakeQrCodeThread()
 
     QByteArray recvBytes = m_bytes;
     QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
-    QString url = "https://";
+    QString url = "http://";
     QString ip;
     recvStream >> ip;
     url.append(ip);
-    url.append(":3000/display/qr");
+    url.append(":3000/remote");
     ViewerController::GetInstance()->GetViewerCtrl().SetQRCodeURL(url);
     emit MainWindow::GetInstance()->DrawQRCode();
     ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());

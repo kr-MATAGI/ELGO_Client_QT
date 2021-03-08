@@ -1,11 +1,12 @@
 #ifndef MAINDBCTRL_H
 #define MAINDBCTRL_H
 
+// QT
 #include <QObject>
 #include <QtSql>
 #include <QMutex>
 
-#include "DBDefinition.h"
+#include "Common/DBDefinition.h"
 
 class MainDBCtrl : public QObject
 {

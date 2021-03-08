@@ -6,6 +6,7 @@
 
 // Control
 #include "NetworkCtrl.h"
+#include "DB/NetworkDBCtrl.h"
 #include "RemoteControl/RemoteControlServer.h"
 
 class NetworkCtrl;
@@ -29,8 +30,12 @@ public:
     /** @brief */
     NetworkCtrl& GetNetworkCtrl();
 
+    /** @brief */
+    NetworkDBCtrl& GetDBCtrl();
+
 private:
     NetworkCtrl *m_netCtrl;
+    NetworkDBCtrl *m_dbCtrl;
 };
 
 #endif // NETWORKCONTROLLER_H

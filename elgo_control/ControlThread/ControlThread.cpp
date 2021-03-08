@@ -12,6 +12,7 @@
 
 //========================================================
 ControlThread::ControlThread()
+    : m_event(CONTROL_EVENT::Event::NONE_CONTROL_EVENT)
 //========================================================
 {
 
