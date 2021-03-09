@@ -15,8 +15,8 @@ public:
     RemoteControlActionHandler();
     ~RemoteControlActionHandler();
 
-    /** @brief */
-    void RunAction(Remote::Action action, const QString& src);
+    /** @brief  RunAction() will be return inner method result */
+    bool RunAction(Remote::Action action, const QString& src);
 
     /** @brief */
     bool GetDeviceLoginInfoValidation(const QString& src);

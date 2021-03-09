@@ -58,9 +58,21 @@ void MainDBCtrl::CheckingDefaultTables()
     {
         query.prepare(DB_Query::CREATE_TABLE_DEVICE);
         query.exec();
+
+        // id: root, pw : root, name : elgo
+        const int randMax = 1000000;
+        const int randMin = 1;
+        int randomValue = (double)std::rand() / RAND_MAX * (randMax - randMin) + randMin;
+        query.prepare(DB_Query::INSERT_VALUES_DEVICE);
+
+        query.bindValue(":id", "root");
+        query.bindValue(":pw", "root");
+        query.bindValue(":name", QString("elgo_d_" + QString::number(randomValue)));
+        query.exec();
     }
 
-    // account table
+    // account table - NOT USING
+#if 0
     query.prepare(DB_Query::SELECT_ALL_INFO_ACCOUNT);
     query.exec();
     if(ZERO_RESULT == query.numRowsAffected())
@@ -77,9 +89,10 @@ void MainDBCtrl::CheckingDefaultTables()
         query.prepare(DB_Query::CREATE_TABLE_SCHEDULE);
         query.exec();
     }
+#endif
 
     // network table
-    // not using, below code will be replaced XML
+    // NOT USING, below code will be replaced XML
 #if 0
     query.prepare(DB_Query::SELECT_ALL_NETWORK_TABLE);
     query.exec();

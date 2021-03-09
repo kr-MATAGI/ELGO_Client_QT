@@ -19,12 +19,14 @@ RemoteControlActionHandler::~RemoteControlActionHandler()
 }
 
 //========================================================
-void RemoteControlActionHandler::RunAction(Remote::Action action, const QString& src)
+bool RemoteControlActionHandler::RunAction(Remote::Action action, const QString& src)
 //========================================================
 {
+    bool retValue = false;
+
     if(Remote::Action::DEVICE_LOGIN == action)
     {
-        GetDeviceLoginInfoValidation(src);
+        retValue = GetDeviceLoginInfoValidation(src);
     }
     else
     {
@@ -39,18 +41,17 @@ bool RemoteControlActionHandler::GetDeviceLoginInfoValidation(const QString& src
 {
     bool retValue = false;
 
-    Remote::Summary recvSummary;
-    const bool bIsParsing = JsonParser::RemoteControlDeviceLoginParse(src, recvSummary);
+    Remote::Summary deviceLoginInfo;
+    const bool bIsParsing = JsonParser::RemoteControlDeviceLoginParse(src, deviceLoginInfo);
     if(true == bIsParsing)
     {
-        ELGO_CONTROL_LOG("Device {ID : %s, PW : %s}",
-                         recvSummary.device.id.toUtf8().constData(), recvSummary.device.pw.toUtf8().constData());
-
         // Checking id, pw in device Table
+        retValue = NetworkController::GetInstance()->GetDBCtrl().CheckDeviceLogingInfo(deviceLoginInfo.device);
+        ELGO_CONTROL_LOG("Device {ID : %s, PW : %s}, verify result : %d",
+                         deviceLoginInfo.device.id.toUtf8().constData(), deviceLoginInfo.device.pw.toUtf8().constData(), retValue);
     }
     else
     {
-        return retValue;
         ELGO_CONTROL_LOG("Error - Device Login json was not parsed");
     }
 

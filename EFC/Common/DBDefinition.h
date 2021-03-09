@@ -34,17 +34,18 @@ namespace DB_Query
 {
     // device table
     const static QString CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
-                                                    "uuid VARCHAR(30) NOT NULL,"
-                                                    "user_id INTEGER NOT NULL,"
-                                                    "deviceName VARCHAR(30));";
+                                                    "id VARCHAR(30) DEFAULT 'root' NOT NULL,"
+                                                    "pw INTEGER DEFAULT 'root' NOT NULL,"
+                                                    "name VARCHAR(30) DEFAULT 'ELGO');";
 
-    const static QString INSERT_VALUES_DEVICE = "INSERT INTO device(device_id, user_id, deviceName)"
-                                                    "VALUES(?, ?, ?);";
+    const static QString INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
+                                                    "VALUES(:id, :pw, :name);";
 
     const static QString SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
 
 
-    // account table
+    // account table - NOT USING
+    /*
     const static QString CREATE_TABLE_ACCOUNT = "CREATE TABLE account ("
                                                     "type VARCHAR(30) NOT NULL,"
                                                     "id VARCHAR(30) NOT NULL,"
@@ -55,6 +56,7 @@ namespace DB_Query
                                                     "VALUES(?, ?, ?, ?);";
 
     const static QString SELECT_ALL_INFO_ACCOUNT = "SELECT * FROM account;";
+    */
 
 
     // schedule table

@@ -54,7 +54,7 @@ HEADERS += \
 
 
 
-
+#EFC
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../EFC/release/ -lEFC
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../EFC/debug/ -lEFC
 else:unix:!macx: LIBS += -L$$OUT_PWD/../EFC/ -lEFC
@@ -62,7 +62,6 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../EFC/ -lEFC
 INCLUDEPATH += $$PWD/../EFC
 DEPENDPATH += $$PWD/../EFC
 
-#EFC
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/release/libEFC.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/debug/libEFC.a
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/release/EFC.lib
@@ -70,6 +69,8 @@ else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/
 else:unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../EFC/libEFC.a
 
 #libcurl
+
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/release/ -lcurl
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/debug/ -lcurl
 else:unix:!macx: LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/ -lcurl
