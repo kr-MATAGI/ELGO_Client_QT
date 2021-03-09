@@ -39,6 +39,7 @@ void MainDBCtrl::ConnectionDB()
 
     // Checking device.db's tables
     CheckingDefaultTables();
+    db.close();
 
     m_mutex->unlock();
 }

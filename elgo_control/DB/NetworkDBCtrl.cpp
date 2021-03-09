@@ -27,7 +27,13 @@ bool NetworkDBCtrl::CheckDeviceLogingInfo(Remote::DeviceJson& deviceInfo)
     bool retValue = false;
 
     // get id, pw from db
-    QSqlQuery query(QSqlDatabase::database(DEVICE_DB));
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(DEVICE_DB);
+    db.open();
+
+    QSqlQuery query;
     query.prepare(DB_Query::SELECT_ALL_INFO_DEVICE);
     query.exec();
 
@@ -41,7 +47,7 @@ bool NetworkDBCtrl::CheckDeviceLogingInfo(Remote::DeviceJson& deviceInfo)
     }
 
     // compare db, json
-    const int idCmpResult = std::strcmp(deviceInfo.id.toUtf8().constData(), pw.toUtf8().constData());
+    const int idCmpResult = std::strcmp(deviceInfo.id.toUtf8().constData(), id.toUtf8().constData());
     const int pwCmpResult = std::strcmp(deviceInfo.pw.toUtf8().constData(), pw.toUtf8().constData());
 
     if(0 == idCmpResult && 0 == pwCmpResult)
@@ -50,9 +56,12 @@ bool NetworkDBCtrl::CheckDeviceLogingInfo(Remote::DeviceJson& deviceInfo)
     }
     else
     {
-        ELGO_CONTROL_LOG("{id : %s, pw : %s} is NOT Valid",
-                         deviceInfo.id.toUtf8().constData(), deviceInfo.pw.toUtf8().constData());
+        ELGO_CONTROL_LOG("remote {id : %s, pw : %s} db {id : %s, pw : %s} is NOT Valid",
+                         deviceInfo.id.toUtf8().constData(), deviceInfo.pw.toUtf8().constData(),
+                         id.toUtf8().constData(), pw.toUtf8().constData());
     }
+    db.close();
+    m_mutex->unlock();
 
     return retValue;
 }
