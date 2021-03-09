@@ -161,9 +161,9 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
         ELGO_CONTROL_LOG("Recv From Client : %s, action : %d", msg.toUtf8().constData(), recvAction);
 
         // Run Action
-        const bool bIsOkResult = m_handler->RunAction(recvAction, msg);
+//        const bool bIsOkResult = m_handler->RunAction(recvAction, msg);
 
-        QString sendData = QString::number(bIsOkResult);
+//        QString sendData = QString::number(bIsOkResult);
         m_cliecnt->sendTextMessage(QString("{ \"sendData\" : 1"));
     }
     else
