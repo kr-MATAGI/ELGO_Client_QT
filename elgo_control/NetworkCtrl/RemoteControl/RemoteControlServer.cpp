@@ -35,6 +35,12 @@ RemoteControlServer::~RemoteControlServer()
 {
     delete m_server;
     m_server = NULL;
+
+    delete  m_handler;
+    m_handler = NULL;
+
+    delete m_cliecnt;
+    m_cliecnt = NULL;
 }
 
 //========================================================
@@ -152,19 +158,45 @@ void RemoteControlServer::TCPServerStartSlot()
 }
 
 //========================================================
+void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, const Remote::Result::Contents contents, QString& dest)
+//========================================================
+{
+    if(Remote::Action::DEVICE_LOGIN == action)
+    {
+        JsonParser::WriteDeviceLoginResponse(contents, dest);
+    }
+    else if(Remote::Action::LOAD_WIFI_LIST == action)
+    {
+
+    }
+    else if(Remote::Action::MANAGE_DEVICE == action)
+    {
+        JsonParser::WriteManageDeviceResponse(contents, dest);
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon Action : %d", action);
+    }
+}
+
+//========================================================
 void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 //========================================================
 {
     if(NULL != m_cliecnt)
     {
-        const Remote::Action recvAction = JsonParser::RemoteContorlActionTextPase(msg);
+        const Remote::Action recvAction = JsonParser::PaseRemoteContorlActionText(msg);
         ELGO_CONTROL_LOG("Recv From Client : %s, action : %d", msg.toUtf8().constData(), recvAction);
 
         // Run Action
-//        const bool bIsOkResult = m_handler->RunAction(recvAction, msg);
+        Remote::Result::Contents resultContents;
+        m_handler->RunAction(recvAction, msg, resultContents);
 
-//        QString sendData = QString::number(bIsOkResult);
-        m_cliecnt->sendTextMessage(QString("{ \"sendData\" : 1"));
+        QString sendJson;
+        MakeResponseJsonString(recvAction, resultContents, sendJson);
+        m_cliecnt->sendTextMessage(sendJson);
+
+        ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s", sendJson.toUtf8().constData());
     }
     else
     {

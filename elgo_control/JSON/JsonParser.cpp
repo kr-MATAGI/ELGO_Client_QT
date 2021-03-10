@@ -1,12 +1,10 @@
-
-#include "JsonParser.h"
-
 //QT
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QDebug>
+#include <QString>
 
 // Control
+#include "JsonParser.h"
 #include "Logger/ControlLogger.h"
 
 //========================================================
@@ -22,7 +20,7 @@ QString JsonParser::LatestVersionParse(const QString &src)
 }
 
 //========================================================
-Remote::Action JsonParser::RemoteContorlActionTextPase(const QString &src)
+Remote::Action JsonParser::PaseRemoteContorlActionText(const QString &src)
 //========================================================
 {
     Remote::Action action = Remote::Action::NONE_ACTION;
@@ -42,7 +40,7 @@ Remote::Action JsonParser::RemoteContorlActionTextPase(const QString &src)
 }
 
 //========================================================
-bool JsonParser::RemoteControlDeviceLoginParse(const QString &src, Remote::Summary& dest)
+bool JsonParser::ParseRemoteControlDeviceLogin(const QString &src, Remote::DeviceLogin & dest)
 //========================================================
 {
     bool retValue = true;
@@ -50,30 +48,16 @@ bool JsonParser::RemoteControlDeviceLoginParse(const QString &src, Remote::Summa
     QJsonDocument doc = QJsonDocument::fromJson(src.toUtf8());
     QJsonObject jsonObj = doc.object();
 
-    // action Parse
-    Remote::Action action = Remote::Action::NONE_ACTION;
-    if(jsonObj.end() != jsonObj.find("action"))
-    {
-        action = static_cast<Remote::Action>(jsonObj["action"].toInt());
-        dest.action = action;
-    }
-    else
-    {
-        retValue = false;
-        ELGO_CONTROL_LOG("Error - Action Object is not existed");
-    }
-
     // deviceLogin
     if(jsonObj.end() != jsonObj.find("deviceLogin"))
     {
-        Remote::DeviceJson deviceJson;
         QJsonObject deviceObj = jsonObj["deviceLogin"].toObject();
 
         // id
         if(deviceObj.end() != deviceObj.find("id"))
         {
             QString deviceId = deviceObj["id"].toString();
-            deviceJson.id = deviceId;
+            dest.id = deviceId;
         }
         else
         {
@@ -85,21 +69,149 @@ bool JsonParser::RemoteControlDeviceLoginParse(const QString &src, Remote::Summa
         if(deviceObj.end() != deviceObj.find("pw"))
         {
             QString devicePw = deviceObj["pw"].toString();
-            deviceJson.pw = devicePw;
+            dest.pw = devicePw;
         }
         else
         {
             retValue = false;
             ELGO_CONTROL_LOG("Error - deviceLogin.pw is not existed");
         }
-
-        dest.device = deviceJson;
     }
     else
     {
         retValue = false;
-        ELGO_CONTROL_LOG("Error - DeviceLogin Object is not existed");
+        ELGO_CONTROL_LOG("Error - deviceLogin Object is not existed");
     }
 
     return retValue;
+}
+
+//========================================================
+bool JsonParser::ParseRemoteControlManageDevice(const QString &src, Remote::MangeDevice& dest)
+//========================================================
+{
+    bool retValue = true;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    QJsonObject jsonObj = jsonDoc.object();
+
+    // manageDevice
+    if(jsonObj.end() != jsonObj.find("manageDevice"))
+    {
+        QJsonObject manageDevie = jsonObj["manageDevice"].toObject();
+
+        // oldPassword
+        if(manageDevie.end() != manageDevie.find("oldPassword"))
+        {
+            QString oldPw = manageDevie["oldPassword"].toString();
+            dest.oldPw = oldPw;
+        }
+        else
+        {
+            retValue = false;
+            ELGO_CONTROL_LOG("Error - manageDevice.oldPassword is not existed");
+        }
+
+        // newPassword
+        if(manageDevie.end() != manageDevie.find("newPassword"))
+        {
+            QString newPw = manageDevie["newPassword"].toString();
+            dest.newPw = newPw;
+        }
+        else
+        {
+            retValue = false;
+            ELGO_CONTROL_LOG("Error - manageDevice.newPassword is not existed");
+        }
+    }
+    else
+    {
+        retValue = false;
+        ELGO_CONTROL_LOG("Error - manageDevice Object is not existed");
+    }
+
+    return retValue;
+}
+
+//========================================================
+void JsonParser::MakeDateTimeString(QString& dest)
+//========================================================
+{
+    // date - yyyy-mm-dd_hh:mm:ss.msec
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QDate date = dateTime.date();
+    QString year = QString::number(date.year());
+    QString month = QString::number(date.month());
+    QString day = QString::number(date.day());
+
+    // yyyy-mm-dd
+    QString dateStr;
+    dateStr.append(year);
+    dateStr.append("-");
+    dateStr.append(month);
+    dateStr.append("-");
+    dateStr.append(day);
+
+    // hh:mm::ss.msec
+    QString timeStr = dateTime.time().toString();
+    timeStr.append(".");
+    timeStr.append(QString::number(dateTime.time().msec()));
+
+    QString dateTimeStr = dateStr + '_' + timeStr;
+    dest = dateTimeStr;
+}
+
+//========================================================
+void JsonParser::WriteDeviceLoginResponse(const Remote::Result::Contents& results, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // date
+    QString dateTimeStr;
+    JsonParser::MakeDateTimeString(dateTimeStr);
+    jsonObj["date"] = dateTimeStr;
+
+    // result
+    bool bResult = false;
+    if( Remote::Result::Status::DEVICE_LOGIN_OK == results.status)
+    {
+        bResult = true;
+    }
+    QJsonValue jsonValue(bResult);
+    jsonObj["result"] = jsonValue.toBool();
+
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
+}
+
+//========================================================
+void JsonParser::WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // date
+    QString dateTimeStr;
+    JsonParser::MakeDateTimeString(dateTimeStr);
+    jsonObj["date"] = dateTimeStr;
+
+    // result
+    bool bResult = false;
+    if(Remote::Result::Status::MANAGE_DEVICE_OK == results.status)
+    {
+        bResult = true;
+    }
+    QJsonValue jsonValue(bResult);
+    jsonObj["result"] = jsonValue.toBool();
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
 }

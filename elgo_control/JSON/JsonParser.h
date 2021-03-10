@@ -13,12 +13,25 @@ namespace JsonParser
     QString LatestVersionParse(const QString &src);
 
     // elgo_remote -> elgo_control
+    // Parse
     /** @brief */
-    Remote::Action RemoteContorlActionTextPase(const QString &src);
+    Remote::Action PaseRemoteContorlActionText(const QString &src);
 
     /** @brief */
-    bool RemoteControlDeviceLoginParse(const QString &src, Remote::Summary& dest);
+    bool ParseRemoteControlDeviceLogin(const QString &src, Remote::DeviceLogin& dest);
 
+    /** @brief */
+    bool ParseRemoteControlManageDevice(const QString &src, Remote::MangeDevice& dest);
+
+    // Write
+    /** @brief */
+    void MakeDateTimeString(QString& dest);
+
+    /** @brief */
+    void WriteDeviceLoginResponse(const Remote::Result::Contents& results, QString& dest);
+
+    /** @brief */
+    void WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest);
 }
 
 #endif // JSONPARSER_H

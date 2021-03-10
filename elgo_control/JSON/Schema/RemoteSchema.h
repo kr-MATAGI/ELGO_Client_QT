@@ -6,33 +6,64 @@
 
 namespace Remote
 {
-    // elgo_remote -> elgo_control
+    /** @brief */
+    namespace Result
+    {
+
+        enum Status
+        {
+            NONE_RESULT = 0,
+            DEVICE_LOGIN_OK = 1,
+            DEVIEC_LOGIN_FAIL = 2,
+            MANAGE_DEVICE_OK = 3,
+            MANAGE_DEVICE_FAIL = 4
+        };
+
+        struct Contents
+        {
+            Contents()
+                : status(NONE_RESULT)
+            {
+
+            }
+            Status status;
+            QString wifiList; // temp
+        };
+    }
+
+
+    /**
+     * @brief   elgo_remote -> elgo_control
+     */
     enum Action
     {
         NONE_ACTION = 0,
         DEVICE_LOGIN = 1,
+        LOAD_WIFI_LIST = 2,
+        MANAGE_DEVICE = 3
     };
 
-    struct DeviceJson
+    /** @brief  Device Login */
+    struct DeviceLogin
     {
         QString id;
         QString pw;
     };
 
-    struct UserJson
+    /** @brief  Mange Device */
+    struct MangeDevice
     {
-        QString id;
-        QString pw;
+        QString oldPw;
+        QString newPw;
     };
 
+    /** @brief  */
     struct Summary
     {
         Action action;
-        DeviceJson device;
-        UserJson user;
+        DeviceLogin deviceLogin;
+        MangeDevice mangeDevice;
     };
-
-    // elgo_control -> elgo_remote
 }
 
 #endif // REMOTESCHEMA_H

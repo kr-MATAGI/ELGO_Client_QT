@@ -15,11 +15,18 @@ public:
     RemoteControlActionHandler();
     ~RemoteControlActionHandler();
 
+public:
     /** @brief  RunAction() will be return inner method result */
-    bool RunAction(Remote::Action action, const QString& src);
+    void RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results);
 
     /** @brief */
     bool GetDeviceLoginInfoValidation(const QString& src);
+
+    /** @brief */
+    bool GetAvailableWifiList(const QString& src);
+
+    /** @brief */
+    bool ManageDeviceInfo(const QString& src);
 
 };
 

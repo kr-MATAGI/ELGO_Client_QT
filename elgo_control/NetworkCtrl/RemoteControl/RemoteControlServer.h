@@ -28,6 +28,9 @@ public:
     /** @brief */
     void DestoryInstance();
 
+public:
+    /** @brief */
+    void MakeResponseJsonString(const Remote::Action action, const Remote::Result::Contents contents, QString& dest);
 
 private slots:
     // Server

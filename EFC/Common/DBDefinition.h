@@ -43,6 +43,8 @@ namespace DB_Query
 
     const static QString SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
 
+    const static QString UPDATE_PW_INFO_DEVICE = "UPDATE device SET pw=:pw;";
+
 
     // account table - NOT USING
     /*

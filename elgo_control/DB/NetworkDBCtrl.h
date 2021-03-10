@@ -20,8 +20,12 @@ public:
     /** @brief */
     ~NetworkDBCtrl();
 
-    /** @brief*/
-    bool CheckDeviceLogingInfo(Remote::DeviceJson& deviceInfo);
+public:
+    /** @brief */
+    bool CheckDeviceLogingInfo(Remote::DeviceLogin& deviceInfo);
+
+    /** @brief */
+    bool ChangeDevicePassword(Remote::MangeDevice& manageDeviceInfo);
 
 private:
     QMutex *m_mutex;
