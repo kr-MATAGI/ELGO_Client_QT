@@ -173,6 +173,10 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
     {
         JsonParser::WriteManageDeviceResponse(contents, dest);
     }
+    else if(Remote::Action::ROTATE_DISPLAY == action)
+    {
+        JsonParser::WriteRotateDisplayResponse(contents, dest);
+    }
     else
     {
         ELGO_CONTROL_LOG("Error - Unkwon Action : %d", action);

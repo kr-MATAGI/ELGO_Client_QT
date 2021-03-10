@@ -1,7 +1,6 @@
 #ifndef REMOTECONTROLACTIONHANDLER_H
 #define REMOTECONTROLACTIONHANDLER_H
 
-
 // Control
 #include "JSON/Schema/RemoteSchema.h"
 #include "NetworkCtrl/NetworkController.h"
@@ -20,13 +19,16 @@ public:
     void RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results);
 
     /** @brief */
-    bool GetDeviceLoginInfoValidation(const QString& src);
+    Remote::Result::Status GetDeviceLoginInfoValidation(const QString& src);
 
     /** @brief */
-    bool GetAvailableWifiList(const QString& src);
+    Remote::Result::Status GetAvailableWifiList(const QString& src);
 
     /** @brief */
-    bool ManageDeviceInfo(const QString& src);
+    Remote::Result::Status ManageDeviceInfo(const QString& src);
+
+    /** @brief */
+    Remote::Result::Status RotateDeviceDisplay(const QString& src);
 
 };
 

@@ -87,7 +87,7 @@ bool JsonParser::ParseRemoteControlDeviceLogin(const QString &src, Remote::Devic
 }
 
 //========================================================
-bool JsonParser::ParseRemoteControlManageDevice(const QString &src, Remote::MangeDevice& dest)
+bool JsonParser::ParseRemoteControlManageDevice(const QString &src, Remote::ManageDevice& dest)
 //========================================================
 {
     bool retValue = true;
@@ -128,6 +128,41 @@ bool JsonParser::ParseRemoteControlManageDevice(const QString &src, Remote::Mang
     {
         retValue = false;
         ELGO_CONTROL_LOG("Error - manageDevice Object is not existed");
+    }
+
+    return retValue;
+}
+
+//========================================================
+bool JsonParser::ParseRemoteControlRotateDevice(const QString &src, Remote::RotateDisplay& dest)
+//========================================================
+{
+    bool retValue = true;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    QJsonObject jsonObj = jsonDoc.object();
+
+    // Rotate Display
+    if(jsonObj.end() != jsonObj.find("rotateDisplay"))
+    {
+        QJsonObject rotateDisplay = jsonObj["rotateDisplay"].toObject();
+
+        // newHeading
+        if(rotateDisplay.end() != rotateDisplay.find("newHeading"))
+        {
+            Remote::Heading heading = static_cast<Remote::Heading>(rotateDisplay["newHeading"].toInt());
+            dest.heading = heading;
+        }
+        else
+        {
+            retValue = false;
+            ELGO_CONTROL_LOG("Error - rotateDisplay.newHeading is not existed");
+        }
+    }
+    else
+    {
+        retValue = false;
+        ELGO_CONTROL_LOG("Error - rotateDisplay Object is not existed");
     }
 
     return retValue;
@@ -204,6 +239,33 @@ void JsonParser::WriteManageDeviceResponse(const Remote::Result::Contents& resul
     // result
     bool bResult = false;
     if(Remote::Result::Status::MANAGE_DEVICE_OK == results.status)
+    {
+        bResult = true;
+    }
+    QJsonValue jsonValue(bResult);
+    jsonObj["result"] = jsonValue.toBool();
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
+}
+
+//========================================================
+void JsonParser::WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // date
+    QString dateTimeStr;
+    JsonParser::MakeDateTimeString(dateTimeStr);
+    jsonObj["date"] = dateTimeStr;
+
+    // result
+    bool bResult = false;
+    if(Remote::Result::Status::ROTATE_DISPLAY_OK == results.status)
     {
         bResult = true;
     }

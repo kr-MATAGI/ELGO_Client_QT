@@ -68,7 +68,7 @@ bool NetworkDBCtrl::CheckDeviceLogingInfo(Remote::DeviceLogin& deviceInfo)
 }
 
 //========================================================
-bool NetworkDBCtrl::ChangeDevicePassword(Remote::MangeDevice& manageDeviceInfo)
+bool NetworkDBCtrl::ChangeDevicePassword(Remote::ManageDevice& manageDeviceInfo)
 //========================================================
 {
     bool retValue = false;

@@ -25,7 +25,7 @@ public:
     bool CheckDeviceLogingInfo(Remote::DeviceLogin& deviceInfo);
 
     /** @brief */
-    bool ChangeDevicePassword(Remote::MangeDevice& manageDeviceInfo);
+    bool ChangeDevicePassword(Remote::ManageDevice& manageDeviceInfo);
 
 private:
     QMutex *m_mutex;

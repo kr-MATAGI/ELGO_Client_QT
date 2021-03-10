@@ -21,7 +21,10 @@ namespace JsonParser
     bool ParseRemoteControlDeviceLogin(const QString &src, Remote::DeviceLogin& dest);
 
     /** @brief */
-    bool ParseRemoteControlManageDevice(const QString &src, Remote::MangeDevice& dest);
+    bool ParseRemoteControlManageDevice(const QString &src, Remote::ManageDevice& dest);
+
+    /** @brief */
+    bool ParseRemoteControlRotateDevice(const QString &src, Remote::RotateDisplay& dest);
 
     // Write
     /** @brief */
@@ -32,6 +35,9 @@ namespace JsonParser
 
     /** @brief */
     void WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest);
+
+    /** @brief */
+    void WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest);
 }
 
 #endif // JSONPARSER_H

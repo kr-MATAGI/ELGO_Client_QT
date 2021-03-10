@@ -24,15 +24,7 @@ void RemoteControlActionHandler::RunAction(Remote::Action action, const QString&
 {
     if(Remote::Action::DEVICE_LOGIN == action)
     {
-        const bool bResult = GetDeviceLoginInfoValidation(src);
-        if(true == bResult)
-        {
-            results.status = Remote::Result::Status::DEVICE_LOGIN_OK;
-        }
-        else
-        {
-            results.status = Remote::Result::Status::DEVIEC_LOGIN_FAIL;
-        }
+        results.status = GetDeviceLoginInfoValidation(src);
     }
     else if(Remote::Action::LOAD_WIFI_LIST == action)
     {
@@ -41,15 +33,11 @@ void RemoteControlActionHandler::RunAction(Remote::Action action, const QString&
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
-        const bool bResult = ManageDeviceInfo(src);
-        if(true == bResult)
-        {
-            results.status = Remote::Result::Status::MANAGE_DEVICE_OK;
-        }
-        else
-        {
-            results.status = Remote::Result::Status::MANAGE_DEVICE_FAIL;
-        }
+        results.status = ManageDeviceInfo(src);
+    }
+    else if(Remote::Action::ROTATE_DISPLAY == action)
+    {
+        results.status = RotateDeviceDisplay(src);
     }
     else
     {
@@ -59,20 +47,24 @@ void RemoteControlActionHandler::RunAction(Remote::Action action, const QString&
 
 
 //========================================================
-bool RemoteControlActionHandler::GetDeviceLoginInfoValidation(const QString& src)
+Remote::Result::Status RemoteControlActionHandler::GetDeviceLoginInfoValidation(const QString& src)
 //========================================================
 {
-    bool retValue = false;
+    Remote::Result::Status retValue = Remote::Result::Status::DEVIEC_LOGIN_FAIL;
 
     Remote::DeviceLogin deviceLoginInfo;
     const bool bIsParsing = JsonParser::ParseRemoteControlDeviceLogin(src, deviceLoginInfo);
     if(true == bIsParsing)
     {
         // Checking id, pw in device table
-        retValue = NetworkController::GetInstance()->GetDBCtrl().CheckDeviceLogingInfo(deviceLoginInfo);
+        const bool bIsOk = NetworkController::GetInstance()->GetDBCtrl().CheckDeviceLogingInfo(deviceLoginInfo);
         ELGO_CONTROL_LOG("Device {ID : %s, PW : %s}, verify result : %d",
                          deviceLoginInfo.id.toUtf8().constData(),
                          deviceLoginInfo.pw.toUtf8().constData(), retValue);
+        if(true == bIsOk)
+        {
+            retValue = Remote::Result::Status::DEVICE_LOGIN_OK;
+        }
     }
     else
     {
@@ -83,10 +75,10 @@ bool RemoteControlActionHandler::GetDeviceLoginInfoValidation(const QString& src
 }
 
 //========================================================
-bool RemoteControlActionHandler::GetAvailableWifiList(const QString& src)
+Remote::Result::Status RemoteControlActionHandler::GetAvailableWifiList(const QString& src)
 //========================================================
 {
-    bool retValue = false;
+    Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
 
     // TODO : load wifi list
 
@@ -95,18 +87,19 @@ bool RemoteControlActionHandler::GetAvailableWifiList(const QString& src)
 }
 
 //========================================================
-bool RemoteControlActionHandler::ManageDeviceInfo(const QString& src)
+Remote::Result::Status RemoteControlActionHandler::ManageDeviceInfo(const QString& src)
 //========================================================
 {
-    bool retValue = false;
+    Remote::Result::Status retValue = Remote::Result::Status::MANAGE_DEVICE_FAIL;
 
-    Remote::MangeDevice manageDevice;
+    Remote::ManageDevice manageDevice;
     const bool bIsParsing = JsonParser::ParseRemoteControlManageDevice(src, manageDevice);
     if(true == bIsParsing)
     {
-        retValue = NetworkController::GetInstance()->GetDBCtrl().ChangeDevicePassword(manageDevice);
-        if( true == retValue)
+        const bool bIsOk = NetworkController::GetInstance()->GetDBCtrl().ChangeDevicePassword(manageDevice);
+        if( true == bIsOk)
         {
+            retValue = Remote::Result::Status::MANAGE_DEVICE_OK;
             ELGO_CONTROL_LOG("Changed device password { %s -> %s }",
                              manageDevice.oldPw.toUtf8().constData(), manageDevice.newPw.toUtf8().constData());
         }
@@ -116,6 +109,26 @@ bool RemoteControlActionHandler::ManageDeviceInfo(const QString& src)
         ELGO_CONTROL_LOG("Error - Manage Device json was not parsed");
     }
 
+
+    return retValue;
+}
+
+//========================================================
+Remote::Result::Status RemoteControlActionHandler::RotateDeviceDisplay(const QString& src)
+//========================================================
+{
+    Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
+
+    Remote::RotateDisplay rotateDisplay;
+    const bool bIsParsing = JsonParser::ParseRemoteControlRotateDevice(src, rotateDisplay);
+    if(true == bIsParsing)
+    {
+
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Rotate Display json was not parsed");
+    }
 
     return retValue;
 }
