@@ -8,6 +8,9 @@
 
 // control
 #include "NetworkCtrl/Definition/ServerInfo.h"
+#include "ContentWebSocket/ContentWebSocket.h"
+
+class ContentWebSocket;
 
 class NetworkCtrl : public QObject
 {
@@ -22,19 +25,35 @@ public:
     void SendControlIsReady();
 
     /** @brief */
-    void GetRemoteVersionFromWAS();
+    void ConnectContentWebSocketToServer();
+
+    /** @brief */
+    bool GetAccessibleJwtFromServer(QString& dest);
 
     /** @brief */
     void SetConnectInfo(const CONNECT_INFO& newValue);
 
     /** @brief */
+    void GetBeautifyUDID(const QString& src, QString& dest);
+
+    /** @brief */
     CONNECT_INFO GetConnectInfo();
 
-private slots:
-    void ReplyRemoteVersionFinishedSlot(QNetworkReply *reply);
+    /** @brief */
+    QString& GetJWTString();
+
+    /** @brief */
+    ContentWebSocket& GetContentWebSocket();
 
 private:
+    /** @brief */
+    size_t WriteCallBack(char *contents, size_t size, size_t nmemb, void *userData);
+
+private:
+    ContentWebSocket *m_socket;
+
     CONNECT_INFO m_connecInfo;
+    QString m_jwt;
 };
 
 #endif // WEBSOCKETCTRL_H

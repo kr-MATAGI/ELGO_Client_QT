@@ -23,6 +23,7 @@ SOURCES += \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
+        NetworkCtrl/ContentWebSocket/ContentWebSocket.cpp \
         NetworkCtrl/NetworkController.cpp \
         NetworkCtrl/NetworkCtrl.cpp \
         NetworkCtrl/RemoteControl/RemoteControlActionHandler.cpp \
@@ -42,15 +43,13 @@ HEADERS += \
     JSON/JsonParser.h \
     JSON/Schema/RemoteSchema.h \
     Logger/ControlLogger.h \
+    NetworkCtrl/ContentWebSocket/ContentWebSocket.h \
     NetworkCtrl/NetworkController.h \
     NetworkCtrl/Definition/ServerInfo.h \
     NetworkCtrl/NetworkCtrl.h \
     NetworkCtrl/RemoteControl/RemoteControlActionHandler.h \
     NetworkCtrl/RemoteControl/RemoteControlServer.h
 
-
-#INCLUDEPATH += "C:/Project/Qt/ELGO_Client/EFC"
-#LIBS += "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Release/EFC/release/libEFC.a"
 
 
 
@@ -68,16 +67,17 @@ else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PW
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../EFC/debug/EFC.lib
 else:unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../EFC/libEFC.a
 
+
 #libcurl
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/release/ -lcurl
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/debug/ -lcurl
-else:unix:!macx: LIBS += -L$$PWD/../EFC/Common/ext_libs/curl/lib/ -lcurl
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ext_libs/libcurl/lib/release/ -lcurl
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ext_libs/libcurl/lib/debug/ -lcurl
+else:unix:!macx: LIBS += -L$$PWD/ext_libs/libcurl/lib/ -lcurl
 
-INCLUDEPATH += $$PWD/../EFC/Common/ext_libs/curl/include
-DEPENDPATH += $$PWD/../EFC/Common/ext_libs/curl/include
+INCLUDEPATH += $$PWD/ext_libs/libcurl/include
+DEPENDPATH += $$PWD/ext_libs/libcurl/include
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../EFC/Common/ext_libs/curl/lib/release/libcurl.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../EFC/Common/ext_libs/curl/lib/debug/libcurl.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../EFC/Common/ext_libs/curl/lib/release/curl.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../EFC/Common/ext_libs/curl/lib/debug/curl.lib
-else:unix:!macx: PRE_TARGETDEPS += $$PWD/../EFC/Common/ext_libs/curl/lib/libcurl.a
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/release/libcurl.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/debug/libcurl.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/release/curl.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/debug/curl.lib
+else:unix:!macx: PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/libcurl.a

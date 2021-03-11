@@ -60,7 +60,7 @@ private slots:
 
 signals:
     /** @brief */
-    void TCPServerStartSignal();
+    void RemoteControlServerStartSignal();
 
 private:
     QWebSocketServer *m_server;

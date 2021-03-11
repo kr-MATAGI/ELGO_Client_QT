@@ -20,6 +20,22 @@ QString JsonParser::LatestVersionParse(const QString &src)
 }
 
 //========================================================
+void JsonParser::ParseGetJwtResponse(const QString& src, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    QJsonObject jsonObj = jsonDoc.object();
+    if(jsonObj.end() != jsonObj.find("newToken"))
+    {
+        dest = jsonObj["newToken"].toString();
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - newToken Object is no existed");
+    }
+}
+
+//========================================================
 Remote::Action JsonParser::PaseRemoteContorlActionText(const QString &src)
 //========================================================
 {
@@ -194,6 +210,22 @@ void JsonParser::MakeDateTimeString(QString& dest)
 
     QString dateTimeStr = dateStr + '_' + timeStr;
     dest = dateTimeStr;
+}
+
+//========================================================
+void JsonParser::WriteGetJwtRequest(const QString& uuid, const QString& os, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // uuid & os
+    jsonObj["uuid"] = uuid;
+    jsonObj["os"] = os;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
 }
 
 //========================================================

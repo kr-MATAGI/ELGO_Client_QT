@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
 
     // control -> main
     g_NetworkController->GetNetworkCtrl().SendControlIsReady();
-    g_NetworkController->GetNetworkCtrl().GetRemoteVersionFromWAS();
 
     return a.exec();
 }

@@ -81,6 +81,9 @@ void ControlThread::ExecRecvServerInfoFromMain()
     CONNECT_INFO connectInfo(wasHost, wasHostPort, remoteTCPHost);
     NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(connectInfo);
 
-    // TCP Server Start
-    RemoteControlServer::GetInstance()->TCPServerStartSignal();
+    // Remote Server Start
+    emit RemoteControlServer::GetInstance()->RemoteControlServerStartSignal();
+
+    // Connect Content Server
+    NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
 }

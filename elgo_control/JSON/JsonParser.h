@@ -12,6 +12,12 @@ namespace JsonParser
     /** @brief */
     QString LatestVersionParse(const QString &src);
 
+    /** @brief */
+    void ParseGetJwtResponse(const QString& src, QString& dest);
+
+    /** @brief */
+    void WriteGetJwtRequest(const QString& uuid, const QString& os, QString& dest);
+
     // elgo_remote -> elgo_control
     // Parse
     /** @brief */

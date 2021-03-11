@@ -25,7 +25,7 @@ RemoteControlServer::RemoteControlServer(QObject *parent)
             this, SLOT(RemoteServerErrorSlot(QWebSocketProtocol::CloseCode)));
 
     // custom signals
-    connect(this, SIGNAL(TCPServerStartSignal()), SLOT(TCPServerStartSlot()));
+    connect(this, SIGNAL(RemoteControlServerStartSignal()), SLOT(TCPServerStartSlot()));
 
 }
 

@@ -10,6 +10,7 @@
 #include "RemoteControl/RemoteControlServer.h"
 
 class NetworkCtrl;
+class NetworkDBCtrl;
 class RemoteControlServer;
 
 class NetworkController

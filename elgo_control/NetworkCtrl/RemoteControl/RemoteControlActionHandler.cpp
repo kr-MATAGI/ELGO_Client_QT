@@ -30,8 +30,8 @@ void RemoteControlActionHandler::RunAction(Remote::Action action, const QString&
     }
     else if(Remote::Action::LOAD_WIFI_LIST == action)
     {
-        // TODO : modified param
-        GetAvailableWifiList(src);
+        // TODO : make Code
+        results.status = GetAvailableWifiList(src);
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
