@@ -122,7 +122,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         url += JWT_URL;
         ELGO_CONTROL_LOG("URL : %s", url.toUtf8().constData());
 
-        char dataBuffer[JWT_STR_SIZE] = {'\0',};
+        std::string dataBuffer;
         char errorBuffer[CURL_ERROR_SIZE] = {'\0', };
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_URL, url.toUtf8().constData());
@@ -130,7 +130,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         curl_easy_setopt(curl ,CURLOPT_POST, 1L);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, sendJson.toUtf8().constData());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, sendJson.size());
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, dataBuffer);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &dataBuffer);
         curl_easy_setopt(curl ,CURLOPT_WRITEFUNCTION, &NetworkCtrl::WriteCallBack);
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
 
@@ -142,7 +142,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         if(CURLE_OK == res)
         {
             retValue = true;
-            dest = dataBuffer;
+            dest = dataBuffer.c_str();
 
             long resCode;
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);

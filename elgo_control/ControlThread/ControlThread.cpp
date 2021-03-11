@@ -85,5 +85,5 @@ void ControlThread::ExecRecvServerInfoFromMain()
     emit RemoteControlServer::GetInstance()->RemoteControlServerStartSignal();
 
     // Connect Content Server
-//    NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
+    NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
 }
