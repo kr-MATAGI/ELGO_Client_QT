@@ -1,12 +1,12 @@
 // QT
 #include <QQuickView>
-
 #include <QThread>
 
 // EFC
 #include "ShardMem/ShmCtrl.h"
 
 // Viewer
+#include "Definition/ViewerDefinition.h"
 #include "Logger/ViewerLogger.h"
 #include "QrCode/QrMaker.h"
 #include "ViewerThread.h"
@@ -47,6 +47,10 @@ void ViewerThread::run()
     {
         ExecMakeQrCodeThread();
     }
+    else if(VIEWER_EVENT::Event::ROTATE_DISPLAY == m_event)
+    {
+        ExecRotateDeviceDisplay();
+    }
     else
     {
         qDebug() << __FUNCTION__ << "Unkwon Event" ;
@@ -75,4 +79,28 @@ void ViewerThread::ExecMakeQrCodeThread()
     ViewerController::GetInstance()->GetViewerCtrl().SetQRCodeURL(url);
     emit MainWindow::GetInstance()->DrawQRCode();
     ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());
+}
+
+//========================================================
+void ViewerThread::ExecRotateDeviceDisplay()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Rotate Display accroding to heading enum value.
+    * @param
+    *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
+    */
+
+    QByteArray recvBytes = m_bytes;
+    QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+    VIEWER_DEF::HEADING heading;
+    quint8 data;
+    recvStream >> data;
+    heading = static_cast<VIEWER_DEF::HEADING>(data);
+    ELGO_VIEWER_LOG("Rotate device display : %d", heading);
+
+    // TODO : rotate content display window accroding to heading degree.
+
 }

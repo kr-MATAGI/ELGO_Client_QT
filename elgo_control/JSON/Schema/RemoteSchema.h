@@ -62,9 +62,9 @@ namespace Remote
     enum Heading
     {
         HEAD_TOP = 1,
-        HEAD_BOTTOM = 2,
-        HEAD_LEFT = 3,
-        HEAD_RIGHT = 4
+        HEAD_RIGHT = 2,
+        HEAD_BOTTOM = 3,
+        HEAD_LEFT = 4
     };
 
     struct RotateDisplay

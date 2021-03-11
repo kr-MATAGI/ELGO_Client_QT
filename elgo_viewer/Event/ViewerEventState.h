@@ -27,6 +27,9 @@ public:
     /** @brief */
     void MakeQrCodeAndDisplay(QByteArray& src);
 
+    /** @brief */
+    void RotateDeviceDisplay(QByteArray& src);
+
 public:
     QThreadPool *m_threadPool;
     EventState<ViewerEventState> m_state;

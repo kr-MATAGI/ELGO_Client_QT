@@ -62,6 +62,15 @@ namespace VIEWER_EVENT
         */
         MAKE_QRCODE = 769,
 
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Rotate Display accroding to heading enum value.
+        * @param
+        *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
+        */
+        ROTATE_DISPLAY = 770,
+
         MAX_VIEWER_EVENT = 1023
     };
 }

@@ -1,3 +1,5 @@
+// EFC
+#include "LocalSocketEvent/EFCEvent.h"
 
 // Control
 #include "Logger/ControlLogger.h"
@@ -123,7 +125,23 @@ Remote::Result::Status RemoteControlActionHandler::RotateDeviceDisplay(const QSt
     const bool bIsParsing = JsonParser::ParseRemoteControlRotateDevice(src, rotateDisplay);
     if(true == bIsParsing)
     {
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Rotate Display accroding to heading enum value.
+        * @param
+        *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
+        */
+        QByteArray bytes;
+        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+        quint8 heading = static_cast<quint8>(rotateDisplay.heading);
+        dataStream << heading;
 
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER, VIEWER_EVENT::Event::ROTATE_DISPLAY, bytes);
+        if(true == bSendEvent)
+        {
+            retValue = Remote::Result::Status::ROTATE_DISPLAY_OK;
+        }
     }
     else
     {

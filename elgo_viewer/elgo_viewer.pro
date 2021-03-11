@@ -3,6 +3,7 @@ QT += quick multimedia svg
 CONFIG += c++11
 
 HEADERS += \
+        Definition/ViewerDefinition.h \
         Event/ViewerEventHandler.h \
         Event/ViewerEventState.h \
         Logger/ViewerLogger.h \

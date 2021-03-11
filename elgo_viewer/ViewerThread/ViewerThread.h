@@ -29,6 +29,9 @@ public:
     /** @brief  Make and dispay QrCode */
     void ExecMakeQrCodeThread();
 
+    /** @brief */
+    void ExecRotateDeviceDisplay();
+
 public:
     /** @brief */
     void SetViewerEvent(VIEWER_EVENT::Event event);
