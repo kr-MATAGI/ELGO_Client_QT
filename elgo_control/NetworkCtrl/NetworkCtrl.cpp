@@ -17,14 +17,14 @@
 #include "Definition/ServerInfo.h"
 
 // ext_libs
-#include <curl/curl.h>
+#include "ext_libs/libcurl/include/curl/curl.h"
 
 //========================================================
 NetworkCtrl::NetworkCtrl(QObject *parent)
     : QObject(parent)
 //========================================================
 {
-    m_socket = new ContentWebSocket;
+    m_socket = new ContentWebSocket(this);
 }
 
 //========================================================
@@ -44,11 +44,8 @@ void NetworkCtrl::ConnectContentWebSocketToServer()
     if(true == bIsGetJwt)
     {
         JsonParser::ParseGetJwtResponse(recvStr, m_jwt);
-        const bool bIsConnected = m_socket->ConnectContentWebSocket();
-        if(false == bIsConnected)
-        {
-            ELGO_CONTROL_LOG("Error - Websocket is not connected with server");
-        }
+        emit m_socket->ConnectContentServerSignal();
+        ELGO_CONTROL_LOG("EMIT Signal - ConnectContentServer()");
     }
     else
     {
@@ -79,20 +76,14 @@ void NetworkCtrl::SendControlIsReady()
 }
 
 //========================================================
-void NetworkCtrl::GetBeautifyUDID(const QString& src, QString& dest)
+size_t NetworkCtrl::WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data)
 //========================================================
 {
-    const int hyphenIdx[] = {8,12,16,20};
-    int cnt = 0;
-    for(int idx = 0; idx < src.length(); idx++)
-    {
-        dest.append(src[idx]);
-        if(idx == hyphenIdx[cnt])
-        {
-            dest.append('-');
-            cnt++;
-        }
-    }
+    data->append((char*) ptr, size * nmemb);
+
+    ELGO_CONTROL_LOG(data->c_str());
+
+    return size * nmemb;
 }
 
 //========================================================
@@ -101,13 +92,11 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
 {
     bool retValue = false;
 
-    QString sendJson;
-    QString udid;
-    QString machineId = QSysInfo::machineUniqueId().toStdString().c_str();
-    GetBeautifyUDID(machineId, udid);
+    std::string sendJson;
+    QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
     QString os = QSysInfo::productType();
     JsonParser::WriteGetJwtRequest(udid, os, sendJson);
-    ELGO_CONTROL_LOG("sendJson : %s", sendJson.toUtf8().constData());
+    ELGO_CONTROL_LOG("sendJson : %s", sendJson.c_str());
 
     CURL *curl = curl_easy_init();
     if(curl)
@@ -128,25 +117,25 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         curl_easy_setopt(curl, CURLOPT_URL, url.toUtf8().constData());
         curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CONN_TIMEOUT::GET_JWT_TIMEOUT);
         curl_easy_setopt(curl ,CURLOPT_POST, 1L);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, sendJson.toUtf8().constData());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, sendJson.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, sendJson.size());
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &dataBuffer);
-        curl_easy_setopt(curl ,CURLOPT_WRITEFUNCTION, &NetworkCtrl::WriteCallBack);
+        curl_easy_setopt(curl ,CURLOPT_WRITEFUNCTION, &NetworkCtrl::WriteFunction);
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
 
         // for debug
         // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-        // qDebug () << curl_version(;
+        long resCode;
+        ELGO_CONTROL_LOG("curl_version() : %s", curl_version());
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);
 
         CURLcode res = curl_easy_perform(curl);
+        ELGO_CONTROL_LOG("cURL Response Code : %ld", resCode);
         if(CURLE_OK == res)
         {
             retValue = true;
             dest = dataBuffer.c_str();
 
-            long resCode;
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);
-            ELGO_CONTROL_LOG("response Code : %ld, %s", resCode, dest.toUtf8().constData());
             ELGO_CONTROL_LOG("jwt : %s", dest.toUtf8().constData());
         }
         else
@@ -157,7 +146,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         curl_slist_free_all(headers);
     }
     curl_easy_cleanup(curl);
-
+    curl = NULL;
 
     return retValue;
 }
@@ -190,10 +179,4 @@ QString& NetworkCtrl::GetJWTString()
     return m_jwt;
 }
 
-//========================================================
-size_t NetworkCtrl::WriteCallBack(char *contents, size_t size, size_t nmemb, void *userData)
-//========================================================
-{
-    ((std::string*)userData)->append((char*)contents, size * nmemb);
-    return size&nmemb;
-}
+

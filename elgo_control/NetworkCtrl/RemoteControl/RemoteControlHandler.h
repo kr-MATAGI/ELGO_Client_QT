@@ -1,5 +1,5 @@
-#ifndef REMOTECONTROLACTIONHANDLER_H
-#define REMOTECONTROLACTIONHANDLER_H
+#ifndef REMOTECONTROLHANDLER_H
+#define REMOTECONTROLHANDLER_H
 
 // Control
 #include "JSON/Schema/RemoteSchema.h"
@@ -7,12 +7,12 @@
 
 class NetworkController;
 
-class RemoteControlActionHandler
+class RemoteControlHandler
 {
 public:
     /** @brief */
-    RemoteControlActionHandler();
-    ~RemoteControlActionHandler();
+    RemoteControlHandler();
+    ~RemoteControlHandler();
 
 public:
     /** @brief  RunAction() will be return inner method result */
@@ -32,4 +32,4 @@ public:
 
 };
 
-#endif // REMOTECONTROLACTIONHANDLER_H
+#endif // REMOTECONTROLHANDLER_H

@@ -7,10 +7,10 @@
 
 // control
 #include "NetworkCtrl/NetworkController.h"
-#include "RemoteControlActionHandler.h"
+#include "RemoteControlHandler.h"
 
 class NetworkController;
-class RemoteControlActionHandler;
+class RemoteControlHandler;
 
 class RemoteControlServer : public QObject
 {
@@ -65,7 +65,7 @@ signals:
 private:
     QWebSocketServer *m_server;
     QWebSocket *m_cliecnt;
-    RemoteControlActionHandler *m_handler;
+    RemoteControlHandler *m_handler;
 
     bool m_bIsConnected;
 };

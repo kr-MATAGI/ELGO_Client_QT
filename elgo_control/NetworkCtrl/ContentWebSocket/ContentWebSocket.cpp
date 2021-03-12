@@ -1,5 +1,6 @@
 
 // Control
+#include "JSON/JsonParser.h"
 #include "ContentWebSocket.h"
 #include "Logger/ControlLogger.h"
 
@@ -9,8 +10,13 @@ ContentWebSocket::ContentWebSocket(QObject *parent)
 //========================================================
 {
     m_socket = new QWebSocket;
+    m_handler = new ContentWebSocketHandler;
 
     // connect
+    // custion singal
+    connect(this, SIGNAL(ConnectContentServerSignal()),
+            this, SLOT(ConnectContentSocketSlot()));
+
     connect(m_socket, SIGNAL(connected()), this, SLOT(ConnectedSocketSlot()));
     connect(m_socket, SIGNAL(disconnected()), this, SLOT(DisconnectedSocketSlot()));
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
@@ -29,14 +35,15 @@ ContentWebSocket::~ContentWebSocket()
 {
     delete m_socket;
     m_socket = NULL;
+
+    delete m_handler;
+    m_handler = NULL;
 }
 
 //========================================================
-bool ContentWebSocket::ConnectContentWebSocket()
+void ContentWebSocket::ConnectContentSocketSlot()
 //========================================================
 {
-    bool retValue = false;
-
     QNetworkRequest netRequest;
     QUrl url(CONTENT_SERVER_URL);
     QByteArray jwtBytes;
@@ -46,23 +53,30 @@ bool ContentWebSocket::ConnectContentWebSocket()
     netRequest.setUrl(url);
     netRequest.setRawHeader("Authorization", jwtBytes);
     m_socket->open(netRequest);
-    retValue = m_socket->isValid();
-
-    return retValue;
 }
 
 //========================================================
 void ContentWebSocket::ConnectedSocketSlot()
 //========================================================
 {
-
+    if(NULL != m_socket)
+    {
+        const bool bIsValid = m_socket->isValid();
+        ELGO_CONTROL_LOG("Content WebSocket Valid Value : %d, host : %s",
+                         bIsValid, m_socket->peerAddress().toString().toUtf8().constData());
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == m_socket");
+    }
 }
 
 //========================================================
 void ContentWebSocket::DisconnectedSocketSlot()
 //========================================================
 {
-
+    // TODO
+    ELGO_CONTROL_LOG("");
 }
 
 //========================================================
@@ -86,12 +100,36 @@ void ContentWebSocket::SslErrorsOccurredSocketSlot(const QList<QSslError> sslErr
 void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
 //========================================================
 {
-    ELGO_CONTROL_LOG("");
+    ELGO_CONTROL_LOG("%s", message.toUtf8().constData());
+    if(NULL != m_socket)
+    {
+        ContentSchema::Summary response;
+        const bool bIsParsing = JsonParser::ParseContentServerJsonResponse(message, response);
+        if(true == bIsParsing)
+        {
+            QString request;
+            m_handler->RunEvent(response, request);
+            if(0 < request.length())
+            {
+                m_socket->sendTextMessage(request);
+                ELGO_CONTROL_LOG("Send Request : %s", request.toUtf8().constData());
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Content Server Response parsing failed");
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == m_socket");
+    }
 }
 
 //========================================================
 void ContentWebSocket::BinaryMessageReceivedSlot(const QByteArray &message)
 //========================================================
 {
+    // TODO
     ELGO_CONTROL_LOG("");
 }

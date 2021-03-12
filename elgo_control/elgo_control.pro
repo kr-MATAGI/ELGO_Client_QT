@@ -5,14 +5,6 @@ QT += network core websockets sql
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
-win32 {
-    LIBS += -LD:/OpenSSL-Win32/lib -lopenssl
-    INCLUDEPATH += D:/OpenSSL-Win32/include
-}
-unix {
-    PKGCONFIG += openssl
-}
-
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -23,10 +15,12 @@ SOURCES += \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
+        JSON/JsonStringConverter.cpp \
         NetworkCtrl/ContentWebSocket/ContentWebSocket.cpp \
+        NetworkCtrl/ContentWebSocket/ContentWebSocketHandler.cpp \
         NetworkCtrl/NetworkController.cpp \
         NetworkCtrl/NetworkCtrl.cpp \
-        NetworkCtrl/RemoteControl/RemoteControlActionHandler.cpp \
+        NetworkCtrl/RemoteControl/RemoteControlHandler.cpp \
         NetworkCtrl/RemoteControl/RemoteControlServer.cpp \
         main.cpp
 
@@ -41,17 +35,24 @@ HEADERS += \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
+    JSON/JsonStringConverter.h \
+    JSON/Schema/ContentServerSchema.h \
     JSON/Schema/RemoteSchema.h \
     Logger/ControlLogger.h \
     NetworkCtrl/ContentWebSocket/ContentWebSocket.h \
+    NetworkCtrl/ContentWebSocket/ContentWebSocketHandler.cpp \
+    NetworkCtrl/ContentWebSocket/ContentWebSocketHandler.h \
     NetworkCtrl/NetworkController.h \
     NetworkCtrl/Definition/ServerInfo.h \
     NetworkCtrl/NetworkCtrl.h \
-    NetworkCtrl/RemoteControl/RemoteControlActionHandler.h \
+    NetworkCtrl/RemoteControl/RemoteControlHandler.h \
     NetworkCtrl/RemoteControl/RemoteControlServer.h
 
 
-
+#openssl
+unix {
+    PKGCONFIG += openssl
+}
 
 #EFC
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../EFC/release/ -lEFC

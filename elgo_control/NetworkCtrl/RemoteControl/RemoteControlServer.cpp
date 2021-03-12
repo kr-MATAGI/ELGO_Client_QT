@@ -11,7 +11,7 @@ RemoteControlServer::RemoteControlServer(QObject *parent)
     , m_bIsConnected(false)
 //========================================================
 {
-    m_handler = new RemoteControlActionHandler;
+    m_handler = new RemoteControlHandler;
     m_server = new QWebSocketServer("RemoteServer", QWebSocketServer::NonSecureMode, this);
     m_server->setMaxPendingConnections(1); // recv only one elgo_remote
 

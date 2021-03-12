@@ -3,25 +3,25 @@
 
 // Control
 #include "Logger/ControlLogger.h"
-#include "RemoteControlActionHandler.h"
+#include "RemoteControlHandler.h"
 #include "JSON/JsonParser.h"
 
 //========================================================
-RemoteControlActionHandler::RemoteControlActionHandler()
+RemoteControlHandler::RemoteControlHandler()
 //========================================================
 {
 
 }
 
 //========================================================
-RemoteControlActionHandler::~RemoteControlActionHandler()
+RemoteControlHandler::~RemoteControlHandler()
 //========================================================
 {
 
 }
 
 //========================================================
-void RemoteControlActionHandler::RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results)
+void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results)
 //========================================================
 {
     if(Remote::Action::DEVICE_LOGIN == action)
@@ -49,7 +49,7 @@ void RemoteControlActionHandler::RunAction(Remote::Action action, const QString&
 
 
 //========================================================
-Remote::Result::Status RemoteControlActionHandler::GetDeviceLoginInfoValidation(const QString& src)
+Remote::Result::Status RemoteControlHandler::GetDeviceLoginInfoValidation(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::DEVIEC_LOGIN_FAIL;
@@ -77,7 +77,7 @@ Remote::Result::Status RemoteControlActionHandler::GetDeviceLoginInfoValidation(
 }
 
 //========================================================
-Remote::Result::Status RemoteControlActionHandler::GetAvailableWifiList(const QString& src)
+Remote::Result::Status RemoteControlHandler::GetAvailableWifiList(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
@@ -89,7 +89,7 @@ Remote::Result::Status RemoteControlActionHandler::GetAvailableWifiList(const QS
 }
 
 //========================================================
-Remote::Result::Status RemoteControlActionHandler::ManageDeviceInfo(const QString& src)
+Remote::Result::Status RemoteControlHandler::ManageDeviceInfo(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::MANAGE_DEVICE_FAIL;
@@ -116,7 +116,7 @@ Remote::Result::Status RemoteControlActionHandler::ManageDeviceInfo(const QStrin
 }
 
 //========================================================
-Remote::Result::Status RemoteControlActionHandler::RotateDeviceDisplay(const QString& src)
+Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;

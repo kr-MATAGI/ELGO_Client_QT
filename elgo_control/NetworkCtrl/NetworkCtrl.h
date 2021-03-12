@@ -1,4 +1,4 @@
-#ifndef WEBSOCKETCTRL_H
+﻿#ifndef WEBSOCKETCTRL_H
 #define WEBSOCKETCTRL_H
 
 // QT
@@ -34,9 +34,6 @@ public:
     void SetConnectInfo(const CONNECT_INFO& newValue);
 
     /** @brief */
-    void GetBeautifyUDID(const QString& src, QString& dest);
-
-    /** @brief */
     CONNECT_INFO GetConnectInfo();
 
     /** @brief */
@@ -47,7 +44,7 @@ public:
 
 private:
     /** @brief */
-    size_t WriteCallBack(char *contents, size_t size, size_t nmemb, void *userData);
+    static size_t WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data);
 
 private:
     ContentWebSocket *m_socket;

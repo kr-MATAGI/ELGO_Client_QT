@@ -21,7 +21,7 @@ LocalSocketServer::LocalSocketServer(::ELGO_PROC::Proc proc, QObject *parent)
     }
     else
     {
-        qDebug() << "[" + m_procName + "] is LocalSocketServer listen error !";
+        qDebug() << "Error - [" + m_procName + "] is LocalSocketServer :" << m_server.errorString();
     }
 }
 

@@ -3,9 +3,13 @@
 
 // QT
 #include <QString>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QString>
 
 // Control
 #include "Schema/RemoteSchema.h"
+#include "Schema/ContentServerSchema.h"
 
 namespace JsonParser
 {
@@ -16,7 +20,7 @@ namespace JsonParser
     void ParseGetJwtResponse(const QString& src, QString& dest);
 
     /** @brief */
-    void WriteGetJwtRequest(const QString& uuid, const QString& os, QString& dest);
+    void WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest);
 
     // elgo_remote -> elgo_control
     // Parse
@@ -44,6 +48,25 @@ namespace JsonParser
 
     /** @brief */
     void WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest);
+
+
+    // Content Server -> elgo_control
+    // Parse
+    /** @brief */
+    bool ParseContentServerJsonResponse(const QString& src, ContentSchema::Summary& dest);
+    /** @brief */
+    bool ParsePayloadResponse(const QJsonObject& payloadObj, ContentSchema::Payload& dest);
+
+
+    // Write
+    /** @brief */
+    void WriteContentServerAccessRequest(const ContentSchema::Summary& src, QString& dest);
+    /** @brief */
+    void WriteContentServerPayloadRequest(const ContentSchema::Payload& src, QJsonObject& dest);
+
+    // etc
+    /** @brief */
+    void GetBeautifyUDID(const QString& src, QString& dest);
 }
 
 #endif // JSONPARSER_H

@@ -12,8 +12,6 @@
 #include "NetworkCtrl/NetworkController.h"
 #include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
-#include <curl/curl.h>
-
 static NetworkController *g_NetworkController = NetworkController::GetInstance();
 static RemoteControlServer *g_RemoteTCPServer = RemoteControlServer::GetInstance();
 static ControlEventHandler *g_EventHandler = NULL;

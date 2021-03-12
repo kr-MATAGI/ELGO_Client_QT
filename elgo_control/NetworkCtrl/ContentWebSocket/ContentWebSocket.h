@@ -6,21 +6,27 @@
 #include <QObject>
 
 // Control
-#include "NetworkCtrl/NetworkController.h";
+#include "NetworkCtrl/NetworkController.h"
+#include "ContentWebSocketHandler.h"
 
 class NetworkController;
+class ContentWebSocketHandler;
 
 class ContentWebSocket : public QObject
 {
     Q_OBJECT
 public:
+    /** @brief */
     ContentWebSocket(QObject *parent = nullptr);
+    /** @brief */
     ~ContentWebSocket();
 
-    /** @brief */
-    bool ConnectContentWebSocket();
+signals:
+    void ConnectContentServerSignal();
 
 private slots:
+    /** @brief */
+    void ConnectContentSocketSlot();
     /** @brief */
     void ConnectedSocketSlot();
     /** @brief */
@@ -37,7 +43,7 @@ private slots:
 
 private:
     QWebSocket *m_socket;
-    QString token;
+    ContentWebSocketHandler *m_handler;
 };
 
 #endif // CONTENTWEBSOCKET_H
