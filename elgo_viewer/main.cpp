@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
     // Display Main Window
+//    g_MainWindow->showFullScreen();
     g_MainWindow->show();
 
     return app.exec();

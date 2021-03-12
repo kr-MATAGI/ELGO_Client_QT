@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setStyleSheet("background-color: rgb(255, 255, 0);");
     ui->verticalLayout->setAlignment(Qt::AlignCenter);
 
-
     // ELGO Logo
     m_logoScene = new QGraphicsScene;
     m_logoWidget = new QSvgWidget(QString(":/img/Images/logo.svg"));
