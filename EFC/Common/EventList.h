@@ -52,6 +52,12 @@ namespace CONTROL_EVENT
          */
         RECV_SERVER_INFO_FROM_MAIN = 513,
 
+        /**
+         *  @brief  Update display sleep status
+         *  @param  bool isDisplaySleep
+         */
+        UPDATE_DISPLAY_SLEEP_STATUS = 514,
+
         MAX_CONTROL_EVENT = 767
     };
 }

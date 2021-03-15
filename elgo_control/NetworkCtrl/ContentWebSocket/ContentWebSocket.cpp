@@ -62,7 +62,7 @@ void ContentWebSocket::ConnectedSocketSlot()
     if(NULL != m_socket)
     {
         const bool bIsValid = m_socket->isValid();
-        ELGO_CONTROL_LOG("Content WebSocket Valid Value : %d, host : %s",
+        ELGO_CONTROL_LOG("Content WebSocket Valid : %d, host : %s",
                          bIsValid, m_socket->peerAddress().toString().toUtf8().constData());
     }
     else

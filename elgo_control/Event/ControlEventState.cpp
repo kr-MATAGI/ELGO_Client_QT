@@ -19,7 +19,8 @@ ControlEventState::ControlEventState()
     m_state.RegisterEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN,
                           &ControlEventState::RecvServerInfoFromMain);
 
-    // inner Event
+    m_state.RegisterEvent(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS,
+                          &ControlEventState::RecvUpdateDisplaySleepStatus);
 
 
 }
@@ -54,6 +55,21 @@ void ControlEventState::RecvServerInfoFromMain(QByteArray &src)
 
     ControlThread *thread = new ControlThread;
     thread->SetControlEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN);
+    thread->SetRecvBytes(src);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
+//========================================================
+{
+    /**
+     *  @brief  Update display sleep status
+     *  @param  bool isDisplaySleep
+     */
+
+    ControlThread *thread = new ControlThread;
+    thread->SetControlEvent(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS);
     thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

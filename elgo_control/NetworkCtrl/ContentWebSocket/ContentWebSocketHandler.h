@@ -3,6 +3,9 @@
 
 // Control
 #include "JSON/Schema/ContentServerSchema.h"
+#include "NetworkCtrl/NetworkController.h"
+
+class NetworkController;
 
 class ContentWebSocketHandler
 {

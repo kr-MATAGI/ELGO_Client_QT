@@ -24,6 +24,9 @@ public:
     /** @brief */
     void RecvServerInfoFromMain(QByteArray& src);
 
+    /** @brief */
+    void RecvUpdateDisplaySleepStatus(QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<ControlEventState> m_state;

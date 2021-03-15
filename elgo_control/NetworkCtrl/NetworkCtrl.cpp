@@ -22,6 +22,7 @@
 //========================================================
 NetworkCtrl::NetworkCtrl(QObject *parent)
     : QObject(parent)
+    , m_bDisplaySleep(false)
 //========================================================
 {
     m_socket = new ContentWebSocket(this);
@@ -73,17 +74,6 @@ void NetworkCtrl::SendControlIsReady()
     {
         ELGO_CONTROL_LOG("SendEvent Error - %d", MAIN_EVENT::PROCESS_IS_READY);
     }
-}
-
-//========================================================
-size_t NetworkCtrl::WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data)
-//========================================================
-{
-    data->append((char*) ptr, size * nmemb);
-
-    ELGO_CONTROL_LOG(data->c_str());
-
-    return size * nmemb;
 }
 
 //========================================================
@@ -179,4 +169,25 @@ QString& NetworkCtrl::GetJWTString()
     return m_jwt;
 }
 
+//========================================================
+void NetworkCtrl::SetDisplaySleepStatus(const bool newValue)
+//========================================================
+{
+    m_bDisplaySleep = newValue;
+}
 
+//========================================================
+bool NetworkCtrl::GetDisplaySleepStatus()
+//========================================================
+{
+    return m_bDisplaySleep;
+}
+
+//========================================================
+size_t NetworkCtrl::WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data)
+//========================================================
+{
+    data->append((char*) ptr, size * nmemb);
+
+    return size * nmemb;
+}

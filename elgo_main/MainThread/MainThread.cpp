@@ -147,5 +147,26 @@ void MainThread::ExecChangeDeviceOptions()
     out >> deviceMute;
     out >> contentPause;
 
+    // Set Display Sleep to Main Ctrl
+    const bool bCurDisplaySleepStatus = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
+    if(bCurDisplaySleepStatus != displayOnOff)
+    {
+        /**
+         *  @brief  Update display sleep status
+         *  @param  bool isDisplaySleep
+         */
+        QByteArray sendBytes;
+        QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+        sendStream << displayOnOff;
+
+        MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displayOnOff);
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_CONTROL,
+                                                    CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS, sendBytes);
+        if(false == bSendEvent)
+        {
+            ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS);
+        }
+    }
+
     ELGO_MAIN_LOG("TEST RECV : %d %d %d", displayOnOff, deviceMute, contentPause);
 }

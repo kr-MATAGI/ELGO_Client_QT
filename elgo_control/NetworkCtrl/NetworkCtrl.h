@@ -42,6 +42,12 @@ public:
     /** @brief */
     ContentWebSocket& GetContentWebSocket();
 
+    /** @brief  Set/Get DPMS */
+    void SetDisplaySleepStatus(const bool newValue);
+
+    /** @brief */
+    bool GetDisplaySleepStatus();
+
 private:
     /** @brief */
     static size_t WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data);
@@ -51,6 +57,7 @@ private:
 
     CONNECT_INFO m_connecInfo;
     QString m_jwt;
+    bool m_bDisplaySleep;
 };
 
 #endif // WEBSOCKETCTRL_H

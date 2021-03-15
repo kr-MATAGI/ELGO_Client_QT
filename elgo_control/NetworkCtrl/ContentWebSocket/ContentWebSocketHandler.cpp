@@ -24,8 +24,9 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& response, Q
 {
     if(ContentSchema::Event::READY == response.event)
     {
-        // to respond in 10 sec
-        JsonParser::WriteContentServerAccessRequest(response, request);
+        ContentSchema::Summary modifiedResponse = response;
+        modifiedResponse.payload.displayPower = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+        JsonParser::WriteContentServerAccessRequest(modifiedResponse, request);
     }
     else if(ContentSchema::Event::ERROR == response.event)
     {

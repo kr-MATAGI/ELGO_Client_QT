@@ -506,7 +506,7 @@ void JsonParser::WriteContentServerPayloadRequest(const ContentSchema::Payload& 
     jsonObj["type"] = type;
 
     // displayPower - Required on ACCESS Event
-    bool displayPower = 0; // temp
+    bool displayPower = src.displayPower;
     QJsonValue displayPowerValue(displayPower);
     jsonObj["displayPower"] = displayPowerValue.toInt();
 
