@@ -27,6 +27,9 @@ public:
     /** @brief */
     void ExecRecvProcecssReady();
 
+    /** @brief */
+    void ExecChangeDeviceOptions();
+
 public:
     /** @brief */
     void SetMainEvent(const MAIN_EVENT::Event event);

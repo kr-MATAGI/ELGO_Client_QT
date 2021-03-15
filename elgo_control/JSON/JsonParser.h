@@ -25,16 +25,19 @@ namespace JsonParser
     // elgo_remote -> elgo_control
     // Parse
     /** @brief */
-    Remote::Action PaseRemoteContorlActionText(const QString &src);
+    Remote::Action PaseRemoteActionText(const QString &src);
 
     /** @brief */
-    bool ParseRemoteControlDeviceLogin(const QString &src, Remote::DeviceLogin& dest);
+    bool ParseRemoteDeviceLogin(const QString &src, Remote::DeviceLogin& dest);
 
     /** @brief */
-    bool ParseRemoteControlManageDevice(const QString &src, Remote::ManageDevice& dest);
+    bool ParseRemoteManageDevice(const QString &src, Remote::ManageDevice& dest);
 
     /** @brief */
-    bool ParseRemoteControlRotateDevice(const QString &src, Remote::RotateDisplay& dest);
+    bool ParseRemoteRotateDevice(const QString &src, Remote::RotateDisplay& dest);
+
+    /** @brief */
+    bool ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOptions& dest);
 
     // Write
     /** @brief */
@@ -48,6 +51,9 @@ namespace JsonParser
 
     /** @brief */
     void WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest);
+
+    /** @brief */
+    void WriteDeviceOptionsResponse(const Remote::Result::Contents& results, QString& dest);
 
 
     // Content Server -> elgo_control

@@ -46,9 +46,13 @@ void MainThread::run()
     {
         ExecRecvProcecssReady();
     }
+    else if(MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS == m_event)
+    {
+        ExecChangeDeviceOptions();
+    }
     else
     {
-        qDebug() << __FUNCTION__ << "Unkwon Event";
+        ELGO_MAIN_LOG("Error - Unkown Event (%d)", m_event);
     }
 }
 
@@ -63,7 +67,6 @@ void MainThread::ExecRecvProcecssReady()
      */
     QByteArray recvBytes = m_bytes;
     QDataStream out(&recvBytes, QIODevice::ReadOnly);
-    out.setVersion(QDataStream::Qt_5_12);
 
     ELGO_PROC::Proc proc = ELGO_PROC::Proc::NONE_PROC;
     out >> proc;
@@ -121,4 +124,28 @@ void MainThread::ExecRecvProcecssReady()
     {
         ELGO_MAIN_LOG("Unkwon ELGO_PROC %d", proc);
     }
+}
+
+//========================================================
+void MainThread::ExecChangeDeviceOptions()
+//========================================================
+{
+    /**
+     *  @brief  Change Device Options
+     *  @param
+     *          bool displayOnOff
+     *          bool deviceMute
+     *          bool contentPause
+     */
+    QByteArray recvBytes = m_bytes;
+    QDataStream out(&recvBytes, QIODevice::ReadOnly);
+    bool displayOnOff = false;
+    bool deviceMute = false;
+    bool contentPause = false;
+
+    out >> displayOnOff;
+    out >> deviceMute;
+    out >> contentPause;
+
+    ELGO_MAIN_LOG("TEST RECV : %d %d %d", displayOnOff, deviceMute, contentPause);
 }

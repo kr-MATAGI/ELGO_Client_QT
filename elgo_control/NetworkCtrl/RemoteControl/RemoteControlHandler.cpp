@@ -41,6 +41,10 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
     {
         results.status = RotateDeviceDisplay(src);
     }
+    else if(Remote::Action::DEVICE_OPTIONS == action)
+    {
+        results.status = ChangeDeviceOptions(src);
+    }
     else
     {
         ELGO_CONTROL_LOG("Unkwon Action : %d", action);
@@ -55,7 +59,7 @@ Remote::Result::Status RemoteControlHandler::GetDeviceLoginInfoValidation(const 
     Remote::Result::Status retValue = Remote::Result::Status::DEVIEC_LOGIN_FAIL;
 
     Remote::DeviceLogin deviceLoginInfo;
-    const bool bIsParsing = JsonParser::ParseRemoteControlDeviceLogin(src, deviceLoginInfo);
+    const bool bIsParsing = JsonParser::ParseRemoteDeviceLogin(src, deviceLoginInfo);
     if(true == bIsParsing)
     {
         // Checking id, pw in device table
@@ -95,11 +99,11 @@ Remote::Result::Status RemoteControlHandler::ManageDeviceInfo(const QString& src
     Remote::Result::Status retValue = Remote::Result::Status::MANAGE_DEVICE_FAIL;
 
     Remote::ManageDevice manageDevice;
-    const bool bIsParsing = JsonParser::ParseRemoteControlManageDevice(src, manageDevice);
+    const bool bIsParsing = JsonParser::ParseRemoteManageDevice(src, manageDevice);
     if(true == bIsParsing)
     {
         const bool bIsOk = NetworkController::GetInstance()->GetDBCtrl().ChangeDevicePassword(manageDevice);
-        if( true == bIsOk)
+        if( true == bIsOk )
         {
             retValue = Remote::Result::Status::MANAGE_DEVICE_OK;
             ELGO_CONTROL_LOG("Changed device password { %s -> %s }",
@@ -122,7 +126,7 @@ Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& 
     Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
 
     Remote::RotateDisplay rotateDisplay;
-    const bool bIsParsing = JsonParser::ParseRemoteControlRotateDevice(src, rotateDisplay);
+    const bool bIsParsing = JsonParser::ParseRemoteRotateDevice(src, rotateDisplay);
     if(true == bIsParsing)
     {
         /**
@@ -137,15 +141,63 @@ Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& 
         quint8 heading = static_cast<quint8>(rotateDisplay.heading);
         dataStream << heading;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER, VIEWER_EVENT::Event::ROTATE_DISPLAY, bytes);
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
+                                                    VIEWER_EVENT::Event::ROTATE_DISPLAY, bytes);
         if(true == bSendEvent)
         {
             retValue = Remote::Result::Status::ROTATE_DISPLAY_OK;
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - SendEvent : %d", VIEWER_EVENT::Event::ROTATE_DISPLAY);
         }
     }
     else
     {
         ELGO_CONTROL_LOG("Error - Rotate Display json was not parsed");
+    }
+
+    return retValue;
+}
+
+//========================================================
+Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& src)
+//========================================================
+{
+    Remote::Result::Status retValue = Remote::Result::Status::DEVICE_OPTIONS_FAIL;
+
+    Remote::DeviceOptions deviceOptions;
+    const bool bIsParsing = JsonParser::ParseRemoteDeviceOptions(src, deviceOptions);
+    if(true == bIsParsing)
+    {
+        /**
+         *  @brief  Change Device Options
+         *  @param
+         *          bool displayOnOff
+         *          bool deviceMute
+         *          bool contentPause
+         */
+
+        QByteArray bytes;
+        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+        dataStream << deviceOptions.displayOnOff;
+        dataStream << deviceOptions.deviceMute;
+        dataStream << deviceOptions.contentPause;
+
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN,
+                                                    MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS, bytes);
+        if(true == bSendEvent)
+        {
+            retValue = Remote::Result::Status::DEVICE_OPTIONS_OK;
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS);
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Change Device options json was not parsed");
     }
 
     return retValue;

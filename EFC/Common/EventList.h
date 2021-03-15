@@ -24,6 +24,15 @@ namespace MAIN_EVENT
          */
         PROCESS_IS_READY = 257,
 
+        /**
+         *  @brief  Change Device Options
+         *  @param
+         *          bool displayOnOff
+         *          bool deviceMute
+         *          bool contentPause
+         */
+        CHANGE_DEVICE_OPTIONS = 258,
+
         MAX_VIEWER_EVENT = 511
     };
 }

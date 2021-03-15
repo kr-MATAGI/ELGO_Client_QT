@@ -17,7 +17,9 @@ namespace Remote
             MANAGE_DEVICE_OK = 3,
             MANAGE_DEVICE_FAIL = 4,
             ROTATE_DISPLAY_OK =5,
-            ROTATE_DISPLAY_FAIL = 6
+            ROTATE_DISPLAY_FAIL = 6,
+            DEVICE_OPTIONS_OK = 7,
+            DEVICE_OPTIONS_FAIL = 8
         };
 
         struct Contents
@@ -41,7 +43,8 @@ namespace Remote
         DEVICE_LOGIN = 1,
         LOAD_WIFI_LIST = 2,
         MANAGE_DEVICE = 3,
-        ROTATE_DISPLAY = 4
+        ROTATE_DISPLAY = 4,
+        DEVICE_OPTIONS = 5
     };
 
     /** @brief  Device Login */
@@ -75,6 +78,21 @@ namespace Remote
 
         }
         Heading heading;
+    };
+
+    /** @brief  Change Device Options */
+    struct DeviceOptions
+    {
+        DeviceOptions()
+            : displayOnOff(true)
+            , deviceMute(false)
+            , contentPause(false)
+        {
+
+        }
+        bool displayOnOff;
+        bool deviceMute;
+        bool contentPause;
     };
 
     /** @brief  */

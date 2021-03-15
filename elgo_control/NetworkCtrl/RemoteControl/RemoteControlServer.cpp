@@ -167,7 +167,7 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
     }
     else if(Remote::Action::LOAD_WIFI_LIST == action)
     {
-
+        // TODO : Json Writer
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
@@ -176,6 +176,10 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
     else if(Remote::Action::ROTATE_DISPLAY == action)
     {
         JsonParser::WriteRotateDisplayResponse(contents, dest);
+    }
+    else if(Remote::Action::DEVICE_OPTIONS == action)
+    {
+        JsonParser::WriteDeviceOptionsResponse(contents, dest);
     }
     else
     {
@@ -189,7 +193,7 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 {
     if(NULL != m_cliecnt)
     {
-        const Remote::Action recvAction = JsonParser::PaseRemoteContorlActionText(msg);
+        const Remote::Action recvAction = JsonParser::PaseRemoteActionText(msg);
         ELGO_CONTROL_LOG("Recv From Client : %s, action : %d", msg.toUtf8().constData(), recvAction);
 
         // Run Action

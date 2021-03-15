@@ -24,6 +24,9 @@ public:
     /** @brief */
     void RecvProcecssReady(QByteArray& src);
 
+    /** @brief */
+    void RecvChangeDeviceOptions(QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;
