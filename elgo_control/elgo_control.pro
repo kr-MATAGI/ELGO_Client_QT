@@ -35,6 +35,7 @@ HEADERS += \
     ControlThread/ControlThread.h \
     DB/NetworkDBCtrl.h \
     DownloadThread/CurlDownloader.h \
+    DownloadThread/DownloadDef.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \

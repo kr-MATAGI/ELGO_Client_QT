@@ -1,3 +1,6 @@
+// QT
+#include <QDateTime>
+
 // Control
 #include "JsonParser.h"
 #include "JsonStringConverter.h"
@@ -337,6 +340,111 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
+bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::Weather::Response& dest)
+//========================================================
+{
+    bool retValue = false;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
+    if(jsonObj.end() != jsonObj.find("response"))
+    {
+        const QJsonObject& responseObj = jsonObj["response"].toObject();
+        if(responseObj.end() != responseObj.find("body"))
+        {
+            const QJsonObject& bodyObj = responseObj["body"].toObject();
+            if(bodyObj.end() != bodyObj.find("items"))
+            {
+                const QJsonObject& itmesObj = bodyObj["items"].toObject();
+                retValue = JsonParser::ParseWeatherItemsJsonResponse(itmesObj, dest);
+            }
+            else
+            {
+                ELGO_CONTROL_LOG("Error - Not existed items object");
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Not existed body object");
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Not existed response object");
+    }
+
+    return retValue;
+}
+
+//========================================================
+bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, DownloadDef::Weather::Response& dest)
+//========================================================
+{
+    bool retValue = true;
+
+    if(false == itemsObj.isEmpty())
+    {
+        const QJsonArray& itemArray = itemsObj["item"].toArray();
+        const int itemArraySize = itemArray.size();
+        for(int idx = 0; idx < itemArraySize; idx++)
+        {
+            const QJsonObject& itemObj = itemArray[idx].toObject();
+            std::string category = itemObj["category"].toString().toStdString();
+            if(0 == strcmp("POP", category.c_str()))
+            {
+                const int pop = itemObj["fcstValue"].toInt();
+                dest.SetPop(pop);
+            }
+            else if(0 == strcmp("PTY", category.c_str()))
+            {
+                const DownloadDef::Weather::PTY pty =
+                        static_cast<DownloadDef::Weather::PTY>(itemObj["fcstValue"].toInt());
+                dest.SetPty(pty);
+            }
+            else if(0 == strcmp("REH", category.c_str()))
+            {
+                const int reh = itemObj["fcstValue"].toInt();
+                dest.SetReh(reh);
+            }
+            else if(0 == strcmp("SKY", category.c_str()))
+            {
+                const DownloadDef::Weather::SKY sky =
+                        static_cast<DownloadDef::Weather::SKY>(itemObj["fcstValue"].toInt());
+                dest.SetSky(sky);
+            }
+            else if(0 == strcmp("TMN", category.c_str()))
+            {
+                const QString tmn = itemObj["fcstValue"].toString();
+                dest.SetTmn(tmn);
+            }
+            else if(0 == strcmp("TMX", category.c_str()))
+            {
+                const QString tmx = itemObj["fcstValue"].toString();
+                dest.SetTmx(tmx);
+            }
+            else if(0 == strcmp("VEC", category.c_str()))
+            {
+                const QString vec = itemObj["fcstValue"].toString();
+                dest.SetVec(vec);
+            }
+            else if(0 == strcmp("WSD", category.c_str()))
+            {
+                const QString wsd = itemObj["fcstValue"].toString();
+                dest.SetWsd(wsd);
+            }
+        }
+    }
+    else
+    {
+        retValue = false;
+        ELGO_CONTROL_LOG("Error - Items Object is Empty");
+    }
+
+    return retValue;
+}
+
+//========================================================
 void JsonParser::WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest)
 //========================================================
 {
@@ -528,6 +636,21 @@ void JsonParser::GetBeautifyUDID(const QString& src, QString& dest)
             cnt++;
         }
     }
+}
+
+//========================================================
+void JsonParser::GetWeatherRequestBaseDateTime(QString& baseDate, QString baseTime)
+//========================================================
+{
+    const QDateTime dateTime = QDateTime::currentDateTime();
+
+    // date
+    baseDate.append(QString::number(dateTime.date().year()));
+    baseDate.append(QString::number(dateTime.date().month()));
+    baseDate.append(QString::number(dateTime.date().day()));
+
+    // time - fixed
+    baseTime = "0800";
 }
 
 //========================================================

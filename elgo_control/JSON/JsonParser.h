@@ -5,11 +5,13 @@
 #include <QString>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QString>
 
 // Control
 #include "Schema/RemoteSchema.h"
 #include "Schema/ContentServerSchema.h"
+#include "DownloadThread/DownloadDef.h"
 
 namespace JsonParser
 {
@@ -22,7 +24,7 @@ namespace JsonParser
     /** @brief */
     void WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest);
 
-    // elgo_remote -> elgo_control
+    /// elgo_remote -> elgo_control
     // Parse
     /** @brief */
     Remote::Action PaseRemoteActionText(const QString &src);
@@ -56,7 +58,7 @@ namespace JsonParser
     void WriteDeviceOptionsResponse(const Remote::Result::Contents& results, QString& dest);
 
 
-    // Content Server -> elgo_control
+    /// Content Server -> elgo_control
     // Parse
     /** @brief */
     bool ParseContentServerJsonResponse(const QString& src, ContentSchema::Summary& dest);
@@ -70,9 +72,18 @@ namespace JsonParser
     /** @brief */
     void WriteContentServerPayloadRequest(const ContentSchema::Payload& src, QJsonObject& dest);
 
+    /// Weather Info Parser
+    // Parse
+    /** @brief */
+    bool ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::Weather::Response& dest);
+    /** @brief */
+    bool ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, DownloadDef::Weather::Response& dest);
+
     // etc
     /** @brief */
     void GetBeautifyUDID(const QString& src, QString& dest);
+    /** @brief */
+    void GetWeatherRequestBaseDateTime(QString& baseDate, QString baseTime);
 }
 
 #endif // JSONPARSER_H
