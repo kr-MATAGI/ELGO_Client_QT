@@ -46,7 +46,7 @@ bool XmlParser::ParseRssNewsFeedResponse(const QString& src, QStringList& dest)
     }
     else
     {
-        ELGO_CONTROL_LOG("News feed parsing results");
+        ELGO_CONTROL_LOG("News feed parsing results (Size :%d)", dest.size());
         foreach(const QString& item, dest)
         {
             ELGO_CONTROL_LOG("%s", item.toUtf8().constData());
