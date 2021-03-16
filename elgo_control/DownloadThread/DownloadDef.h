@@ -43,7 +43,7 @@ namespace DownloadDef
             int nx;
             int ny;
             QString baseDate; // yyyymmdd
-            QString baseTime; // hhmmss
+            QString baseTime; // hhmm
         };
 
         // Response
@@ -70,58 +70,44 @@ namespace DownloadDef
 
         /**
          *  @note
-         *          pop - a rainfall probability
          *          pty - precipitation form
-         *          reh - humidity
          *          sky - sky condition
-         *          tmn - lowest temperature
-         *          tmx - highest temperature
+         *          t1h - temperature
+         *          rn1 - rainfall (1 hour)
+         *          reh - humidity
          *          vec - direction of the wind
          *          wsd - wind speed
          */
         struct Response
         {
             Response()
-                : bIsSetPop(false)
-                , bIsSetPty(false)
-                , bIsSetReh(false)
+                : bIsSetPty(false)
                 , bIsSetSky(false)
-                , bIsSetTmn(false)
-                , bIsSetTmx(false)
+                , bIsSetT1h(false)
+                , bIsSetRn1(false)
+                , bIsSetReh(false)
                 , bIsSetVec(false)
                 , bIsSetWsd(false)
             {
 
             }
 
-            int pop;
             PTY pty;
-            int reh;
             SKY sky;
-            QString tmn;
-            QString tmx;
+            QString t1h;
+            int rn1;
+            int reh;
             QString vec;
             QString wsd;
 
-            bool bIsSetPop;
             bool bIsSetPty;
-            bool bIsSetReh;
             bool bIsSetSky;
-            bool bIsSetTmn;
-            bool bIsSetTmx;
+            bool bIsSetT1h;
+            bool bIsSetRn1;
+            bool bIsSetReh;
             bool bIsSetVec;
             bool bIsSetWsd;
 
-            /** @brief  POP */
-            void SetPop(const int value)
-            {
-                pop = value;
-                bIsSetPop = true;
-            }
-            bool IsSetPop()
-            {
-                return bIsSetPop;
-            }
 
             /** @brief  PTY */
             void SetPty(const PTY value)
@@ -132,17 +118,6 @@ namespace DownloadDef
             bool IsSetPty()
             {
                 return bIsSetPty;
-            }
-
-            /** @brief  REH */
-            void SetReh(const int value)
-            {
-                reh = value;
-                bIsSetReh = true;
-            }
-            bool IsSetReh()
-            {
-                return bIsSetReh;
             }
 
             /** @brief  SKY */
@@ -156,26 +131,37 @@ namespace DownloadDef
                 return bIsSetSky;
             }
 
-            /** @brief  TMN */
-            void SetTmn(const QString value)
+            /** @brief  T1H */
+            void SetT1h(const QString value)
             {
-                tmn = value;
-                bIsSetTmn = true;
+                t1h = value;
+                bIsSetT1h = true;
             }
-            bool IsSetTmn()
+            bool IsSetT1h()
             {
-                return bIsSetTmn;
+                return bIsSetT1h;
             }
 
-            /** @brief  TMX */
-            void SetTmx(const QString value)
+            /** @brief  RN1 */
+            void SetRn1(const int value)
             {
-                tmx = value;
-                bIsSetTmx = true;
+                rn1 = value;
+                bIsSetRn1 = true;
             }
-            bool IsSetTmx()
+            bool IsSetRn1()
             {
-                return bIsSetTmx;
+                return bIsSetRn1;
+            }
+
+            /** @brief  REH */
+            void SetReh(const int value)
+            {
+                reh = value;
+                bIsSetReh = true;
+            }
+            bool IsSetReh()
+            {
+                return bIsSetReh;
             }
 
             /** @brief  VEC */
@@ -199,6 +185,7 @@ namespace DownloadDef
             {
                 return bIsSetWsd;
             }
+
         };
     }
 }

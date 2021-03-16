@@ -83,7 +83,7 @@ namespace JsonParser
     /** @brief */
     void GetBeautifyUDID(const QString& src, QString& dest);
     /** @brief */
-    void GetWeatherRequestBaseDateTime(QString& baseDate, QString baseTime);
+    void GetWeatherRequestBaseDateTime(QString& baseDate, QString& baseTime);
 }
 
 #endif // JSONPARSER_H

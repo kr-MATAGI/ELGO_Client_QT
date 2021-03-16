@@ -6,7 +6,7 @@
 #include <curl/curl.h>
 
 #define NEWS_BASE_URL    "https://www.yonhapnewstv.co.kr/"
-#define WEATHER_BASE_URL    "http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst?serviceKey="
+#define WEATHER_BASE_URL    "http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtFcst?serviceKey="
 #define WEATHER_KEY "0E%2Fz8rMxyn%2FK9t68RkJW2vlWcYJJN1M%2FF9Ai56KLbT2mEeDaZXSI24liwFcTuTKXM1RHJzmOA8Nwr5YWXpphhg%3D%3D"
 
 //========================================================
@@ -72,9 +72,12 @@ bool CurlDownloader::DownloadWeatherInfoJson(const DownloadDef::Weather::Request
     if(curl)
     {
         // make request url
+        /**
+         *  @note   numOfRows = count(category) * count(make_time)
+         */
         std::string url = WEATHER_BASE_URL;
         url.append(WEATHER_KEY);
-        url.append("&numOfRows=14&pageNo=1&nx=");
+        url.append("&numOfRows=200&pageNo=1&nx=");
         url.append(QString::number(req.nx).toStdString());
         url.append("&ny=");
         url.append(QString::number(req.ny).toStdString());

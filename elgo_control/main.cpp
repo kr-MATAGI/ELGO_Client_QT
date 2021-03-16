@@ -12,9 +12,6 @@
 #include "NetworkCtrl/NetworkController.h"
 #include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
-#include "DownloadThread/CurlDownloader.h"
-#include "JSON/JsonParser.h"
-
 static NetworkController *g_NetworkController = NetworkController::GetInstance();
 static RemoteControlServer *g_RemoteTCPServer = RemoteControlServer::GetInstance();
 static ControlEventHandler *g_EventHandler = NULL;

@@ -391,21 +391,11 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
         {
             const QJsonObject& itemObj = itemArray[idx].toObject();
             std::string category = itemObj["category"].toString().toStdString();
-            if(0 == strcmp("POP", category.c_str()))
-            {
-                const int pop = itemObj["fcstValue"].toInt();
-                dest.SetPop(pop);
-            }
-            else if(0 == strcmp("PTY", category.c_str()))
+            if(0 == strcmp("PTY", category.c_str()))
             {
                 const DownloadDef::Weather::PTY pty =
                         static_cast<DownloadDef::Weather::PTY>(itemObj["fcstValue"].toInt());
                 dest.SetPty(pty);
-            }
-            else if(0 == strcmp("REH", category.c_str()))
-            {
-                const int reh = itemObj["fcstValue"].toInt();
-                dest.SetReh(reh);
             }
             else if(0 == strcmp("SKY", category.c_str()))
             {
@@ -413,15 +403,20 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
                         static_cast<DownloadDef::Weather::SKY>(itemObj["fcstValue"].toInt());
                 dest.SetSky(sky);
             }
-            else if(0 == strcmp("TMN", category.c_str()))
+            else if(0 == strcmp("T1H", category.c_str()))
             {
-                const QString tmn = itemObj["fcstValue"].toString();
-                dest.SetTmn(tmn);
+                const QString t1h = itemObj["fcstValue"].toString();
+                dest.SetT1h(t1h);
             }
-            else if(0 == strcmp("TMX", category.c_str()))
+            else if(0 == strcmp("RN1", category.c_str()))
             {
-                const QString tmx = itemObj["fcstValue"].toString();
-                dest.SetTmx(tmx);
+                const int rn1 = itemObj["fcstValue"].toInt();
+                dest.SetRn1(rn1);
+            }
+            else if(0 == strcmp("REH", category.c_str()))
+            {
+                const int reh = itemObj["fcstValue"].toInt();
+                dest.SetReh(reh);
             }
             else if(0 == strcmp("VEC", category.c_str()))
             {
@@ -639,18 +634,27 @@ void JsonParser::GetBeautifyUDID(const QString& src, QString& dest)
 }
 
 //========================================================
-void JsonParser::GetWeatherRequestBaseDateTime(QString& baseDate, QString baseTime)
+void JsonParser::GetWeatherRequestBaseDateTime(QString& baseDate, QString& baseTime)
 //========================================================
 {
     const QDateTime dateTime = QDateTime::currentDateTime();
 
     // date
-    baseDate.append(QString::number(dateTime.date().year()));
-    baseDate.append(QString::number(dateTime.date().month()));
-    baseDate.append(QString::number(dateTime.date().day()));
+    const int year = dateTime.date().year();
+    const int month = dateTime.date().month();
+    const int day = dateTime.date().day();
 
-    // time - fixed
-    baseTime = "0800";
+    char dateBuf[16] = {'\0',};
+    sprintf(dateBuf, "%d%02d%02d", year, month, day);
+    baseDate = dateBuf;
+
+    // time
+    const int hour = dateTime.time().hour();
+    const int min = dateTime.time().minute();
+
+    char timeBuf[16] = {'\0', };
+    sprintf(timeBuf, "%02d%02d", hour, min);
+    baseTime = timeBuf;
 }
 
 //========================================================
