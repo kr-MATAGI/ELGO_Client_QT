@@ -27,19 +27,6 @@ int main(int argc, char *argv[])
     // control -> main
     g_NetworkController->GetNetworkCtrl().SendControlIsReady();
 
-    DownloadDef::Weather::Request request;
-    request.baseDate = "20210316";
-    request.baseTime = "0800";
-    request.nx = 97;
-    request.ny = 73;
-    QString dest;
-    CurlDownloader::DownloadWeatherInfoJson(request, dest);
-
-    DownloadDef::Weather::Response response;
-    bool retValue = JsonParser::ParseWeatherInfoJsonResponse(dest, response);
-    qDebug() << response.vec;
-
-
     return a.exec();
 }
 
