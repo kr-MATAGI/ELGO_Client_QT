@@ -11,6 +11,11 @@
 #include "Common/EventList.h"
 #include "LocalSocketEvent/EventState.h"
 
+// Control
+#include "NetworkCtrl/NetworkController.h"
+
+class NetworkController;
+
 class ControlEventState
 {
 public:
@@ -30,7 +35,6 @@ public:
 private:
     QThreadPool *m_threadPool;
     EventState<ControlEventState> m_state;
-
 };
 
 #endif // CONTROLEVENTSTATE_H

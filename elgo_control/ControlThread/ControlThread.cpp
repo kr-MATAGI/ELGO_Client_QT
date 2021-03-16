@@ -47,10 +47,6 @@ void ControlThread::run()
     {
         ExecRecvServerInfoFromMain();
     }
-    else if(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS == m_event)
-    {
-        ExecUpdateDisplaySleepStatus();
-    }
     else
     {
         ELGO_CONTROL_LOG("Unkwon Event %d", m_event);
@@ -90,30 +86,4 @@ void ControlThread::ExecRecvServerInfoFromMain()
 
     // Connect Content Server
     NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
-}
-
-//========================================================
-void ControlThread::ExecUpdateDisplaySleepStatus()
-//========================================================
-{
-    /**
-     *  @brief  Update display sleep status
-     *  @param  bool isDisplaySleep
-     */
-
-    QByteArray recvBytes = m_bytes;
-    QDataStream out(&recvBytes, QIODevice::ReadOnly);
-    bool bIsDisplaySleep = false;
-    out >> bIsDisplaySleep;
-
-    const bool prevDisplaySleepStatus = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
-    if(prevDisplaySleepStatus != bIsDisplaySleep)
-    {
-        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
-        ELGO_CONTROL_LOG("Update Display sleep status : %d -> %d", prevDisplaySleepStatus, bIsDisplaySleep);
-    }
-    else
-    {
-        ELGO_CONTROL_LOG("Not Update Display sleep status - current : %d", prevDisplaySleepStatus);
-    }
 }

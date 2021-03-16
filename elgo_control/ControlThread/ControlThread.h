@@ -27,9 +27,6 @@ public:
     /** @brief */
     void ExecRecvServerInfoFromMain();
 
-    /** @brief */
-    void ExecUpdateDisplaySleepStatus();
-
 public:
     /** @brief */
     void SetControlEvent(const CONTROL_EVENT::Event event);

@@ -5,6 +5,7 @@
 #include "Common/Deifinition.h"
 
 // Control
+#include "Logger/ControlLogger.h"
 #include "ControlEventState.h"
 #include "ControlThread/ControlThread.h"
 
@@ -68,8 +69,18 @@ void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
      *  @param  bool isDisplaySleep
      */
 
-    ControlThread *thread = new ControlThread;
-    thread->SetControlEvent(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS);
-    thread->SetRecvBytes(src);
-    m_threadPool->start(thread);
+    QDataStream out(&src, QIODevice::ReadOnly);
+    bool bIsDisplaySleep = false;
+    out >> bIsDisplaySleep;
+
+    const bool prevStatus = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+    if(prevStatus != bIsDisplaySleep)
+    {
+        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
+        ELGO_CONTROL_LOG("Update Display sleep status : %d -> %d", prevStatus, bIsDisplaySleep);
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NOT Updated Display sleep status : %d", prevStatus);
+    }
 }
