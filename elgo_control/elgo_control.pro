@@ -12,6 +12,7 @@ CONFIG -= app_bundle
 SOURCES += \
         ControlThread/ControlThread.cpp \
         DB/NetworkDBCtrl.cpp \
+        DownloadThread/CurlDownloader.cpp \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
         NetworkCtrl/NetworkCtrl.cpp \
         NetworkCtrl/RemoteControl/RemoteControlHandler.cpp \
         NetworkCtrl/RemoteControl/RemoteControlServer.cpp \
+        XML/XmlParser.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -32,6 +34,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ControlThread/ControlThread.h \
     DB/NetworkDBCtrl.h \
+    DownloadThread/CurlDownloader.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
@@ -46,7 +49,8 @@ HEADERS += \
     NetworkCtrl/Definition/ServerInfo.h \
     NetworkCtrl/NetworkCtrl.h \
     NetworkCtrl/RemoteControl/RemoteControlHandler.h \
-    NetworkCtrl/RemoteControl/RemoteControlServer.h
+    NetworkCtrl/RemoteControl/RemoteControlServer.h \
+    XML/XmlParser.h
 
 
 #openssl
