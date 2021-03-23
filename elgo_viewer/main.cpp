@@ -18,7 +18,7 @@ static ContentsPlayer *g_ContentsPlayer = NULL;
 static MainWindow *g_MainWindow = NULL;
 static ViewerEventHandler *g_EventHandler = NULL;
 
-#include "Widget/Weather/WeatherWidget.h"
+#include "Widget/News/NewsFeedWidget.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     g_EventHandler = new ViewerEventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
 
     // Send proccess ready status to MAIN
-    // TODO : IF socket is not opened, occured App crush.
+    // TODO : If socket is not opened, occured App crush.
     g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
     // Contetns Player Init
@@ -40,19 +40,30 @@ int main(int argc, char *argv[])
 //    g_MainWindow->showFullScreen();
     g_MainWindow->show();
 
-    WeatherWidget dateWidget;
+
+    // test
     StyleSheet::StyleInfo styleInfo;
     styleInfo.backgroundColor = "#333333";
     styleInfo.fontColor = "#7FFFD4";
     styleInfo.bTransparency = true;
 
-    Weather::DisplayInfo displayinfo;
-    displayinfo.city = "부산";
-    displayinfo.status = "맑음";
-    displayinfo.temperature = 16;
-    dateWidget.SetWeatherInfo(displayinfo);
-    dateWidget.SetStyleSheet(styleInfo);
-    dateWidget.show();
+    NewsFeedWidget newsWidget;
+    QList<QString> newsList;
+    newsList << "뉴스 피드 1번 입니다.";
+    newsList << "뉴스 피드 2번 입니다.";
+    newsList << "뉴스 피드 3번 입니다.";
+    newsList << "뉴스 피드 4번 입니다.";
+    newsList << "뉴스 피드 5번 입니다.";
+    newsList << "뉴스 피드 6번 입니다.";
+    newsList << "뉴스 피드 7번 입니다.";
+    newsList << "뉴스 피드 8번 입니다.";
+    newsList << "뉴스 피드 9번 입니다.";
+    newsList << "뉴스 피드 10번 입니다.";
+
+
+    newsWidget.SetNewsFeedList(News::Topic::e_LOCAL, newsList);
+    newsWidget.MakeNewsFeedWidget();
+    newsWidget.show();
 
     return app.exec();
 }
