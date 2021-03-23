@@ -4,6 +4,7 @@
 
 // QT
 #include <QMainWindow>
+#include <QTimer>
 
 // MainWindow
 #include <QGraphicsScene>
@@ -11,8 +12,10 @@
 
 // Viewer
 #include "ViewerCtrl/ViewerController.h"
+#include "Widget/ContentsPlayer.h"
 
 class ViewerController;
+class ContentsPlayer;
 
 namespace Ui {
 class MainWindow;
@@ -23,8 +26,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    /** @brief */
     static MainWindow *pInstance;
+
+    /** @brief */
     explicit MainWindow(QWidget *parent = nullptr);
+    /** @brief */
     ~MainWindow();
 
 public:
@@ -35,16 +42,23 @@ public:
     void DestoryInstance();
 
 signals:
+    /** @brief */
     void DrawQRCode();
 
 private slots:
+    /** @brief */
     void DrawQRCodeByThreadSignal();
+
+    /** @brief */
+    void CloseMainWindowByTimeout();
+
 
 private:
     Ui::MainWindow *ui;
 
     QGraphicsScene *m_logoScene;
     QSvgWidget *m_logoWidget;
+    QTimer *m_closeTimer;
 };
 
 #endif // MAINWINDOW_H

@@ -9,7 +9,9 @@
 #include "Logger/ViewerLogger.h"
 #include "QrCode/QrMaker.h"
 
-MainWindow* MainWindow::pInstance =nullptr;
+MainWindow* MainWindow::pInstance = nullptr;
+
+#define CLOSE_TIMEOUT   5000
 
 //========================================================
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,8 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_logoScene->addWidget(m_logoWidget);
     ui->elgoLogo->setScene(m_logoScene);
 
+    // close Timer
+    m_closeTimer = new QTimer(this);
+
     // connect
     connect(this, SIGNAL(DrawQRCode()), this, SLOT(DrawQRCodeByThreadSignal()));
+    connect(m_closeTimer, SIGNAL(timeout()), this, SLOT(CloseMainWindowByTimeout()));
 }
 
 //========================================================
@@ -42,6 +48,9 @@ MainWindow::~MainWindow()
     delete ui;
     delete m_logoScene;
     m_logoScene = NULL;
+
+    delete m_closeTimer;
+    m_closeTimer = NULL;
 }
 
 //========================================================
@@ -88,4 +97,16 @@ void MainWindow::DrawQRCodeByThreadSignal()
     ELGO_VIEWER_LOG("QR code - size : %d x %d, url : %s", width, height,url.toUtf8().constData());
 
     ui->qrLabel->setPixmap(pixmap);
+
+    // show Content Player after 10 sec
+    m_closeTimer->start(CLOSE_TIMEOUT);
+}
+
+//========================================================
+void MainWindow::CloseMainWindowByTimeout()
+//========================================================
+{
+    ContentsPlayer::GetInstance()->StartContentsPlayer();
+    m_closeTimer->stop();
+    this->close();
 }

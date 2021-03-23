@@ -11,6 +11,12 @@ HEADERS += \
         ViewerCtrl/ViewerController.h \
         ViewerCtrl/ViewerCtrl.h \
         ViewerThread/ViewerThread.h \
+        Widget/Clock/ClockWidget.h \
+        Widget/ContentsPlayer.h \
+        Widget/Date/DateWidget.h \
+        Widget/Definition/ContentsDef.h \
+        Widget/News/NewsFeedWidget.h \
+        Widget/Weather/WeatherWidget.h \
         ext_libs/QrCode/QrCode.h \
         QrCode/QrMaker.h
 
@@ -22,12 +28,22 @@ SOURCES += \
         ViewerCtrl/ViewerController.cpp \
         ViewerCtrl/ViewerCtrl.cpp \
         ViewerThread/ViewerThread.cpp \
+        Widget/Clock/ClockWidget.cpp \
+        Widget/ContentsPlayer.cpp \
+        Widget/Date/DateWidget.cpp \
+        Widget/News/NewsFeedWidget.cpp \
+        Widget/Weather/WeatherWidget.cpp \
         main.cpp \
         ext_libs/QrCode/QrCode.cpp \
         QrCode/QrMaker.cpp
 
 FORMS += \
-    MainWindow.ui
+    MainWindow.ui \
+    Widget/Clock/ClockWidget.ui \
+    Widget/ContentsPlayer.ui \
+    Widget/Date/DateWidget.ui \
+    Widget/News/NewsFeedWidget.ui \
+    Widget/Weather/WeatherWidget.ui
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
