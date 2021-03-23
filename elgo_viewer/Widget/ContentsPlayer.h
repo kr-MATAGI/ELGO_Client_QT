@@ -4,6 +4,7 @@
 // QT
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 // Viewer
 #include "Definition/ContentsDef.h"
@@ -41,11 +42,17 @@ public:
     /** @brief */
     void StartContentsPlayer();
 
+    /** @brief */
+    void DisplayImageContent(const QString& path, const QPointF& pos, const QSize& size);
+
 private:
     Ui::ContentsPlayer *ui;
     QSize m_displaySize;
 
     QGraphicsScene *m_scene;
+
+    // Contents List
+    QList<QGraphicsPixmapItem*> m_pixmapList;
 };
 
 #endif // CONTENTSPLAYER_H

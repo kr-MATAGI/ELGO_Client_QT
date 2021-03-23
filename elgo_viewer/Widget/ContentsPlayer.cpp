@@ -45,6 +45,13 @@ ContentsPlayer::~ContentsPlayer()
 
     delete m_scene;
     m_scene = NULL;
+
+    // pixmap
+    foreach(auto item, m_pixmapList)
+    {
+        delete item;
+        item = NULL;
+    }
 }
 
 //========================================================
@@ -111,4 +118,17 @@ void ContentsPlayer::StartContentsPlayer()
     // TODO : Check Schdule and Display Contents
     ELGO_VIEWER_LOG("Start Contents Player");
     this->showFullScreen();
+}
+
+//========================================================
+void ContentsPlayer::DisplayImageContent(const QString& path, const QPointF& pos, const QSize& size)
+//========================================================
+{
+    QPixmap pixmap(path);
+    QPixmap scaledPixmap = pixmap.scaled(size, Qt::IgnoreAspectRatio);
+
+    QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem();
+    pixmapItem->setPos(pos);
+    pixmapItem->setPixmap(scaledPixmap);
+    m_pixmapList.push_back(pixmapItem);
 }
