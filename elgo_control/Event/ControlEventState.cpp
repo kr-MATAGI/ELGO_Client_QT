@@ -11,8 +11,7 @@
 #include "DownloadThread/DownloadThread.h"
 
 //========================================================
-ControlEventState::ControlEventState(QObject *parent)
-    : QObject(parent)
+ControlEventState::ControlEventState()
 //========================================================
 {
     m_threadPool = new QThreadPool;
