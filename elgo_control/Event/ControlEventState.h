@@ -4,7 +4,6 @@
 #define MAX_THREAD_COUNT    4
 
 // QT
-#include <QObject>
 #include <QByteArray>
 #include <QThreadPool>
 
@@ -17,11 +16,10 @@
 
 class NetworkController;
 
-class ControlEventState : public QObject
+class ControlEventState
 {
-    Q_OBJECT
 public:
-    explicit ControlEventState(QObject *parent = nullptr);
+    explicit ControlEventState();
     ~ControlEventState();
 
 public:
