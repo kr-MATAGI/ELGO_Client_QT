@@ -1,6 +1,7 @@
 
 // Control
 #include "JSON/JsonParser.h"
+#include "JSON/JsonWriter.h"
 #include "ContentWebSocketHandler.h"
 #include "Logger/ControlLogger.h"
 
@@ -26,7 +27,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& response, Q
     {
         ContentSchema::Summary modifiedResponse = response;
         modifiedResponse.payload.displayPower = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
-        JsonParser::WriteContentServerAccessRequest(modifiedResponse, request);
+        JsonWriter::WriteContentServerAccessRequest(modifiedResponse, request);
     }
     else if(ContentSchema::Event::ERROR == response.event)
     {

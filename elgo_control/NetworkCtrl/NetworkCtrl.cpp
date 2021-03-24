@@ -11,6 +11,7 @@
 #include "LocalSocketEvent/EFCEvent.h"
 
 // Control
+#include "JSON/JsonWriter.h"
 #include "JSON/JsonParser.h"
 #include "NetworkCtrl.h"
 #include "Logger/ControlLogger.h"
@@ -85,7 +86,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
     std::string sendJson;
     QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
     QString os = QSysInfo::productType();
-    JsonParser::WriteGetJwtRequest(udid, os, sendJson);
+    JsonWriter::WriteGetJwtRequest(udid, os, sendJson);
     ELGO_CONTROL_LOG("sendJson : %s", sendJson.c_str());
 
     CURL *curl = curl_easy_init();

@@ -1,4 +1,4 @@
-QT += quick multimedia svg
+QT += quick multimedia svg multimediawidgets
 
 CONFIG += c++11
 
@@ -16,6 +16,7 @@ HEADERS += \
         Widget/Date/DateWidget.h \
         Widget/Definition/ContentsDef.h \
         Widget/News/NewsFeedWidget.h \
+        Widget/Video/VideoItem.h \
         Widget/Weather/WeatherWidget.h \
         ext_libs/QrCode/QrCode.h \
         QrCode/QrMaker.h
@@ -32,6 +33,7 @@ SOURCES += \
         Widget/ContentsPlayer.cpp \
         Widget/Date/DateWidget.cpp \
         Widget/News/NewsFeedWidget.cpp \
+        Widget/Video/VideoItem.cpp \
         Widget/Weather/WeatherWidget.cpp \
         main.cpp \
         ext_libs/QrCode/QrCode.cpp \

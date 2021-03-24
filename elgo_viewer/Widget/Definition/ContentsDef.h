@@ -10,6 +10,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 
+/** @brief */
 namespace StyleSheet
 {
     struct StyleInfo
@@ -26,6 +27,7 @@ namespace StyleSheet
     };
 }
 
+/** @brief */
 namespace Clock
 {
     enum Kinds
@@ -35,6 +37,7 @@ namespace Clock
     };
 }
 
+/** @brief */
 namespace Weather
 {
     enum Value
@@ -51,6 +54,7 @@ namespace Weather
     };
 }
 
+/** @brief */
 namespace News
 {
     enum Topic
@@ -104,6 +108,28 @@ namespace News
         QPropertyAnimation *originLabelAni;
         QPropertyAnimation *changedLabelAni;
         QParallelAnimationGroup *parallAniGroup;
+    };
+}
+
+/** @brief */
+namespace Video
+{
+    struct Duration
+    {
+        Duration()
+            : user(1)
+            , video(1)
+        {
+
+        }
+        qint64 user;
+        qint64 video;
+    };
+
+    struct ContentInfo
+    {
+        QString fileName;
+        Duration duration;
     };
 }
 

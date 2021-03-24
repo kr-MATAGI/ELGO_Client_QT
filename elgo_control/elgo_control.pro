@@ -17,6 +17,7 @@ SOURCES += \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
         JSON/JsonStringConverter.cpp \
+        JSON/JsonWriter.cpp \
         NetworkCtrl/ContentWebSocket/ContentWebSocket.cpp \
         NetworkCtrl/ContentWebSocket/ContentWebSocketHandler.cpp \
         NetworkCtrl/NetworkController.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
     JSON/JsonStringConverter.h \
+    JSON/JsonWriter.h \
     JSON/Schema/ContentServerSchema.h \
     JSON/Schema/RemoteSchema.h \
     Logger/ControlLogger.h \

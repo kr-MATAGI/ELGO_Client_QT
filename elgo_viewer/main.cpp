@@ -18,8 +18,6 @@ static ContentsPlayer *g_ContentsPlayer = NULL;
 static MainWindow *g_MainWindow = NULL;
 static ViewerEventHandler *g_EventHandler = NULL;
 
-#include "Widget/News/NewsFeedWidget.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -39,31 +37,6 @@ int main(int argc, char *argv[])
     // Display Main Window
 //    g_MainWindow->showFullScreen();
     g_MainWindow->show();
-
-
-    // test
-    StyleSheet::StyleInfo styleInfo;
-    styleInfo.backgroundColor = "#333333";
-    styleInfo.fontColor = "#7FFFD4";
-    styleInfo.bTransparency = true;
-
-    NewsFeedWidget newsWidget;
-    QList<QString> newsList;
-    newsList << "뉴스 피드 1번 입니다.";
-    newsList << "뉴스 피드 2번 입니다.";
-    newsList << "뉴스 피드 3번 입니다.";
-    newsList << "뉴스 피드 4번 입니다.";
-    newsList << "뉴스 피드 5번 입니다.";
-    newsList << "뉴스 피드 6번 입니다.";
-    newsList << "뉴스 피드 7번 입니다.";
-    newsList << "뉴스 피드 8번 입니다.";
-    newsList << "뉴스 피드 9번 입니다.";
-    newsList << "뉴스 피드 10번 입니다.";
-
-
-    newsWidget.SetNewsFeedList(News::Topic::e_LOCAL, newsList);
-    newsWidget.MakeNewsFeedWidget();
-    newsWidget.show();
 
     return app.exec();
 }

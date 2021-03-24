@@ -2,6 +2,7 @@
 #include "RemoteControlServer.h"
 #include "Logger/ControlLogger.h"
 #include "JSON/JsonParser.h"
+#include "JSON/JsonWriter.h"
 
 RemoteControlServer* RemoteControlServer::pInstance = nullptr;
 
@@ -163,7 +164,7 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
 {
     if(Remote::Action::DEVICE_LOGIN == action)
     {
-        JsonParser::WriteDeviceLoginResponse(contents, dest);
+        JsonWriter::WriteDeviceLoginResponse(contents, dest);
     }
     else if(Remote::Action::LOAD_WIFI_LIST == action)
     {
@@ -171,15 +172,15 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
-        JsonParser::WriteManageDeviceResponse(contents, dest);
+        JsonWriter::WriteManageDeviceResponse(contents, dest);
     }
     else if(Remote::Action::ROTATE_DISPLAY == action)
     {
-        JsonParser::WriteRotateDisplayResponse(contents, dest);
+        JsonWriter::WriteRotateDisplayResponse(contents, dest);
     }
     else if(Remote::Action::DEVICE_OPTIONS == action)
     {
-        JsonParser::WriteDeviceOptionsResponse(contents, dest);
+        JsonWriter::WriteDeviceOptionsResponse(contents, dest);
     }
     else
     {

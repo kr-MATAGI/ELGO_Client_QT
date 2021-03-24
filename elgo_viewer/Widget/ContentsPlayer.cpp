@@ -10,9 +10,9 @@
 ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 
 //========================================================
-ContentsPlayer::ContentsPlayer(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ContentsPlayer)
+ContentsPlayer::ContentsPlayer(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ContentsPlayer)
 //========================================================
 {
     // init

@@ -340,6 +340,104 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
+bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema::Schedules>& dest)
+//========================================================
+{
+    bool retValue = true;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
+    if(jsonObj.end() != jsonObj.find("schedules"))
+    {
+        const QJsonObject& schedulesObj = jsonObj["schedules"].toObject();
+        QJsonObject::const_iterator constIter = schedulesObj.constBegin();
+        QJsonObject::const_iterator constEnd = schedulesObj.constEnd();
+        while(constIter != constEnd)
+        {
+            ContentSchema::Schedules schedules;
+            schedules.id = constIter.key();
+
+            const QJsonArray valueArray = constIter.value().toArray();
+            QJsonArray::const_iterator arrIter = valueArray.constBegin();
+            QJsonArray::const_iterator arrEnd = valueArray.constEnd();
+            while(arrIter != arrEnd)
+            {
+                ContentSchema::ScheduleData scheduleData;
+                const QJsonObject arrObj = arrIter->toObject();
+
+                // start
+                if(arrObj.end() != arrObj.find("start"))
+                {
+                    QString startStr = arrObj["start"].toString();
+                    QDateTime startDateTime;
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(startStr, startDateTime);
+                    scheduleData.startTime = startDateTime;
+                }
+                else
+                {
+                    retValue = false;
+                    ELGO_CONTROL_LOG("Error - start object is not existed in array");
+                }
+
+                // end
+                if(arrObj.end() != arrObj.find("end"))
+                {
+                    QString endStr = arrObj["end"].toString();
+                    QDateTime endDateTime;
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endStr, endDateTime);
+                    scheduleData.endTime = endDateTime;
+                }
+                else
+                {
+                    retValue = false;
+                    ELGO_CONTROL_LOG("Error - end object is not existed in array");
+                }
+
+                // rule
+                if(arrObj.end() != arrObj.find("rule"))
+                {
+                    QString rule = arrObj["rule"].toString();
+                    ContentSchema::Cron cron;
+                    JsonStringConverter::CronCommandStringToStruct(rule, cron);
+                    scheduleData.cron = cron;
+                }
+                else
+                {
+                    retValue = false;
+                    ELGO_CONTROL_LOG("Error - rule object is not existed in array");
+                }
+
+                // name
+                if(arrObj.end() != arrObj.find("name"))
+                {
+                    QString name = arrObj["name"].toString();
+                    scheduleData.name = name;
+                }
+                else
+                {
+                    retValue = false;
+                    ELGO_CONTROL_LOG("Error - name object is not existed in array");
+                }
+
+                schedules.scheduleList.push_back(scheduleData);
+                ++arrIter;
+            }
+
+            dest.push_back(schedules);
+            ++constIter;
+        }
+    }
+    else
+    {
+        retValue = false;
+        ELGO_CONTROL_LOG("Error - schedules object is not existed");
+    }
+
+    return retValue;
+}
+
+//========================================================
 bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::Weather::Response& dest)
 //========================================================
 {
@@ -437,250 +535,4 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
     }
 
     return retValue;
-}
-
-//========================================================
-void JsonParser::WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // uuid & os
-    QString beautifyUdid;
-    JsonParser::GetBeautifyUDID(udid, beautifyUdid);
-    jsonObj["uuid"] = beautifyUdid;
-    jsonObj["os"] = os;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = compactBytes.toStdString().c_str();
-}
-
-//========================================================
-void JsonParser::WriteDeviceLoginResponse(const Remote::Result::Contents& results, QString& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // date
-    QString dateTimeStr;
-    JsonParser::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // result
-    bool bResult = false;
-    if( Remote::Result::Status::DEVICE_LOGIN_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
-
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
-}
-
-//========================================================
-void JsonParser::WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // date
-    QString dateTimeStr;
-    JsonParser::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::MANAGE_DEVICE_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
-}
-
-//========================================================
-void JsonParser::WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // date
-    QString dateTimeStr;
-    JsonParser::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::ROTATE_DISPLAY_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toUtf8().constData());
-}
-
-//========================================================
-void JsonParser::WriteDeviceOptionsResponse(const Remote::Result::Contents& results, QString& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // date
-    QString dateTimeStr;
-    JsonParser::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::DEVICE_OPTIONS_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json String : %s", dest.toUtf8().constData());
-}
-
-//========================================================
-void JsonParser::WriteContentServerAccessRequest(const ContentSchema::Summary& src, QString& dest)
-//========================================================
-{
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    ContentSchema::Event evnetEnum = ContentSchema::Event::ACCESS;
-    JsonStringConverter::ContentServerEventEnumToString(evnetEnum, event);
-    jsonObj["event"] = event;
-
-    // playload
-    QJsonObject payloadObj;
-    JsonParser::WriteContentServerPayloadRequest(src.payload, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toStdString().c_str());
-}
-
-//========================================================
-void JsonParser::WriteContentServerPayloadRequest(const ContentSchema::Payload& src, QJsonObject& dest)
-//========================================================
-{
-    QJsonObject jsonObj;
-
-    // src
-    jsonObj["src"] = src.dest;
-
-    // dst
-    jsonObj["dst"] = src.src;
-
-    // type
-    QString type;
-    ContentSchema::PayloadType enumType = ContentSchema::PayloadType::ONCE;
-    JsonStringConverter::ContentServerPayloadTypeEnumToString(enumType, type);
-    jsonObj["type"] = type;
-
-    // displayPower - Required on ACCESS Event
-    bool displayPower = src.displayPower;
-    QJsonValue displayPowerValue(displayPower);
-    jsonObj["displayPower"] = displayPowerValue.toInt();
-
-    dest = jsonObj;
-}
-
-//========================================================
-void JsonParser::GetBeautifyUDID(const QString& src, QString& dest)
-//========================================================
-{
-    const int hyphenIdx[] = {8,12,16,20};
-    int cnt = 0;
-    for(int idx = 0; idx < src.length(); idx++)
-    {
-        dest.append(src[idx]);
-        if(idx == hyphenIdx[cnt])
-        {
-            dest.append('-');
-            cnt++;
-        }
-    }
-}
-
-//========================================================
-void JsonParser::GetWeatherRequestBaseDateTime(QString& baseDate, QString& baseTime)
-//========================================================
-{
-    const QDateTime dateTime = QDateTime::currentDateTime();
-
-    // date
-    const int year = dateTime.date().year();
-    const int month = dateTime.date().month();
-    const int day = dateTime.date().day();
-
-    char dateBuf[16] = {'\0',};
-    sprintf(dateBuf, "%d%02d%02d", year, month, day);
-    baseDate = dateBuf;
-
-    // time
-    const int hour = dateTime.time().hour();
-    const int min = dateTime.time().minute();
-
-    char timeBuf[16] = {'\0', };
-    sprintf(timeBuf, "%02d%02d", hour, min);
-    baseTime = timeBuf;
-}
-
-//========================================================
-void JsonParser::MakeDateTimeString(QString& dest)
-//========================================================
-{
-    // date - yyyy-mm-dd_hh:mm:ss.msec
-    QDateTime dateTime = QDateTime::currentDateTime();
-    QDate date = dateTime.date();
-    QString year = QString::number(date.year());
-    QString month = QString::number(date.month());
-    QString day = QString::number(date.day());
-
-    // yyyy-mm-dd
-    QString dateStr;
-    dateStr.append(year);
-    dateStr.append("-");
-    dateStr.append(month);
-    dateStr.append("-");
-    dateStr.append(day);
-
-    // hh:mm::ss.msec
-    QString timeStr = dateTime.time().toString();
-    timeStr.append(".");
-    timeStr.append(QString::number(dateTime.time().msec()));
-
-    QString dateTimeStr = dateStr + '_' + timeStr;
-    dest = dateTimeStr;
 }
