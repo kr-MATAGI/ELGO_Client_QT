@@ -336,6 +336,13 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
         dest.deviceName = deviceName;
     }
 
+    // URL - if event name is 'singlePlay', 'url' is Required
+    if(payloadObj.end() != payloadObj.find("url"))
+    {
+        QString url = payloadObj["url"].toString();
+        dest.url = url;
+    }
+
     // message - NOT Required
     if(payloadObj.end() != payloadObj.find("message"))
     {
@@ -442,6 +449,51 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema:
     }
 
     return retValue;
+}
+
+//========================================================
+void JsonParser::ParseResourceResponse(const QString& src, QList<ContentSchema::Resource>& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonArray& resourceArray = jsonDoc.array();
+
+    const int resourceSize = resourceArray.size();
+    for(int idx = 0; idx < resourceSize; idx++)
+    {
+        ContentSchema::Resource resource;
+        const QJsonObject& resourceObj = resourceArray[idx].toObject();
+
+        // type
+        if(resourceObj.end() != resourceObj.find("type"))
+        {
+            const QString type = resourceObj["type"].toString();
+            resource.type = JsonStringConverter::ResourceTypeStringToEnum(type);
+        }
+
+        // name
+        if(resourceObj.end() != resourceObj.find("name"))
+        {
+            const QString name = resourceObj["name"].toString();
+            resource.name = name;
+        }
+
+        // size
+        if(resourceObj.end() != resourceObj.find("size"))
+        {
+            const int size = resourceObj["size"].toInt();
+            resource.size = size;
+        }
+
+        // url
+        if(resourceObj.end() != resourceObj.find("url"))
+        {
+            const QString url = resourceObj["url"].toString();
+            resource.url = url;
+        }
+
+        dest.push_back(resource);
+    }
 }
 
 //========================================================

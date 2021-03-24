@@ -7,12 +7,14 @@
 #include "JSON/JsonWriter.h"
 #include "ContentWebSocketHandler.h"
 #include "Logger/ControlLogger.h"
+#include "DownloadThread/DownloadThread.h"
 
 //========================================================
 ContentWebSocketHandler::ContentWebSocketHandler()
 //========================================================
 {
-
+    m_threadPool = new QThreadPool;
+    m_threadPool->setMaxThreadCount(MAX_THREAD_COUNT);
 }
 
 //========================================================
@@ -53,6 +55,17 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& response, Q
         {
             ELGO_CONTROL_LOG("SendEvent Error - %d", VIEWER_EVENT::Event::MAKE_QRCODE);
         }
+    }
+    else if(ContentSchema::Event::SINGLE_PLAY == response.event)
+    {
+        QByteArray bytes;
+        QDataStream stream(&bytes, QIODevice::WriteOnly);
+        stream << response.payload.url;
+
+        DownloadThread *thread = new DownloadThread;
+        thread->SetDownloadAction(DownloadDef::Action::RESOURCE);
+        thread->SetDownloadBytes(bytes);
+        m_threadPool->start(thread);
     }
     else if(ContentSchema::Event::ERROR == response.event)
     {

@@ -58,10 +58,12 @@ void ControlThread::ExecRecvServerInfoFromMain()
 //========================================================
 {
     /**
-     *  @brief  receive WIFI information from main process
+     *  @note
+     *          ELGO_MAIN -> ELGO_CONTROL
+     *          receive WIFI information from main process
      *  @param
      *          QString wasHost,
-     *          int wasHostPort,
+     *          quint16 wasHostPort,
      *          QString remoteTCPHost
      */
 

@@ -8,9 +8,11 @@
 #include "Logger/ControlLogger.h"
 #include "ControlEventState.h"
 #include "ControlThread/ControlThread.h"
+#include "DownloadThread/DownloadThread.h"
 
 //========================================================
-ControlEventState::ControlEventState()
+ControlEventState::ControlEventState(QObject *parent)
+    : QObject(parent)
 //========================================================
 {
     m_threadPool = new QThreadPool;
@@ -22,8 +24,6 @@ ControlEventState::ControlEventState()
 
     m_state.RegisterEvent(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS,
                           &ControlEventState::RecvUpdateDisplaySleepStatus);
-
-
 }
 
 //========================================================
@@ -40,7 +40,6 @@ void ControlEventState::ExecState(quint16 event, QByteArray &src)
 {
     m_state.Exec(event, src);
 }
-
 
 //========================================================
 void ControlEventState::RecvServerInfoFromMain(QByteArray &src)

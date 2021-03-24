@@ -1,9 +1,10 @@
 #ifndef CONTROLEVENTSTATE_H
 #define CONTROLEVENTSTATE_H
 
-#define MAX_THREAD_COUNT 4
+#define MAX_THREAD_COUNT    4
 
 // QT
+#include <QObject>
 #include <QByteArray>
 #include <QThreadPool>
 
@@ -16,10 +17,11 @@
 
 class NetworkController;
 
-class ControlEventState
+class ControlEventState : public QObject
 {
+    Q_OBJECT
 public:
-    ControlEventState();
+    explicit ControlEventState(QObject *parent = nullptr);
     ~ControlEventState();
 
 public:
@@ -31,6 +33,7 @@ public:
 
     /** @brief */
     void RecvUpdateDisplaySleepStatus(QByteArray& src);
+
 
 private:
     QThreadPool *m_threadPool;

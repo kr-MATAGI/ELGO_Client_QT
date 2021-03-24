@@ -7,9 +7,16 @@
 namespace DownloadDef
 {
     /** @brief */
+    enum Action
+    {
+        NONE_KIND = 0,
+        RESOURCE = 1,
+    };
+
+    /** @brief */
     enum CURL_TIMEOUT
     {
-        WEATHER_INFO = 1 * 1000,
+        DEFAULT_TIME_OUT = 1 * 1000,
         NEWS_FEED = 4 * 1000
     };
 

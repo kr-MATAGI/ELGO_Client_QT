@@ -61,7 +61,9 @@ void MainThread::ExecRecvProcecssReady()
 //========================================================
 {
     /**
-     *  @brief  receive status of process started
+     *  @note
+     *          ELGO_VIEWER, CONTROL -> ELGO_MAIN
+     *          receive status of process started
      *  @param
      *          ELGO_PROC::Proc proc
      */

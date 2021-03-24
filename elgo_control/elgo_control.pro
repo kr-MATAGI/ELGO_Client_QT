@@ -12,7 +12,8 @@ CONFIG -= app_bundle
 SOURCES += \
         ControlThread/ControlThread.cpp \
         DB/NetworkDBCtrl.cpp \
-        DownloadThread/CurlDownloader.cpp \
+        DownloadThread/CurlDownload.cpp \
+        DownloadThread/DownloadThread.cpp \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
@@ -35,8 +36,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ControlThread/ControlThread.h \
     DB/NetworkDBCtrl.h \
-    DownloadThread/CurlDownloader.h \
+    DownloadThread/CurlDownload.h \
     DownloadThread/DownloadDef.h \
+    DownloadThread/DownloadThread.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \

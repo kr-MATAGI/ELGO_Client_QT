@@ -66,8 +66,11 @@ void NetworkCtrl::SendControlIsReady()
     readyStream << ELGO_PROC::Proc::ELGO_CONTROL;
 
     /**
-     *  @brief  receive status of process started
-     *  @param  ELGO_PROC::Proc proc
+     *  @note
+     *          ELGO_VIEWER, CONTROL -> ELGO_MAIN
+     *          receive status of process started
+     *  @param
+     *          ELGO_PROC::Proc proc
      */
     const bool bReadyEventy = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN,
                                                   MAIN_EVENT::PROCESS_IS_READY, readyBytes);

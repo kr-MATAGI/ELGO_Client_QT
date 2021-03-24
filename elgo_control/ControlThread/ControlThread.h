@@ -27,7 +27,6 @@ public:
     /** @brief */
     void ExecRecvServerInfoFromMain();
 
-public:
     /** @brief */
     void SetControlEvent(const CONTROL_EVENT::Event event);
 

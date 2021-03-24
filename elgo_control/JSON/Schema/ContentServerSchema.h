@@ -37,6 +37,7 @@ namespace ContentSchema
         QString dest;
         QString message;
         QString deviceName;
+        QString url;
         PayloadType type;
         bool displayPower;
     };
@@ -60,6 +61,7 @@ namespace ContentSchema
         PAGE = 4,
         IMAGE = 5
     };
+    const static char* ResourceTypeEnumToStr[] = { "NONE", "js", "icon", "data", "page", "image" };
 
     /** @brief */
     struct Resource

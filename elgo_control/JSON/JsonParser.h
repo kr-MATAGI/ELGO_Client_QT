@@ -39,8 +39,12 @@ namespace JsonParser
     bool ParseContentServerJsonResponse(const QString& src, ContentSchema::Summary& dest);
     /** @brief */
     bool ParsePayloadResponse(const QJsonObject& payloadObj, ContentSchema::Payload& dest);
+
     /** @brief */
     bool ParseSchedulesResponse(const QString& src, QList<ContentSchema::Schedules>& dest);
+
+    /** @brief */
+    void ParseResourceResponse(const QString& src, QList<ContentSchema::Resource>& dest);
 
 
     /// Weather Info Parser
