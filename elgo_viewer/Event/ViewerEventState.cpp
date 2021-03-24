@@ -37,10 +37,11 @@ void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
 //========================================================
 {
     /**
-    *   @note
-    *       VIEWER_EVENT::MAKE_QRCODE
-    *   @param
-    *       NONE
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Viewer will make qr code image and display.
+    * @param
+    *       QString ip
     */
     QDataStream out(&src, QIODevice::ReadOnly);
     out.setVersion(QDataStream::Qt_5_12);

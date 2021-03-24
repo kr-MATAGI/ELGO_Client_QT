@@ -329,6 +329,13 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
         ELGO_CONTROL_LOG("Error - paylod.type Object is not existed");
     }
 
+    // d_name (device name) - NOT Required
+    if(payloadObj.end() != payloadObj.find("d_name"))
+    {
+        QString deviceName = payloadObj["d_name"].toString();
+        dest.deviceName = deviceName;
+    }
+
     // message - NOT Required
     if(payloadObj.end() != payloadObj.find("message"))
     {

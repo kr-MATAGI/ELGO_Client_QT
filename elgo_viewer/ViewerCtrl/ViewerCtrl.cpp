@@ -13,6 +13,7 @@
 
 //========================================================
 ViewerCtrl::ViewerCtrl()
+    : m_bIsDisplayQr(false)
 //========================================================
 {
 
@@ -30,10 +31,12 @@ void ViewerCtrl::SendViewerIsReady()
 //========================================================
 {
     /**
-     *  @brief  receive status of process started
-     *  @param  ELGO_PROC::Proc proc
+     *  @note
+     *          ELGO_VIEWER, CONTROL -> ELGO_MAIN
+     *          receive status of process started
+     *  @param
+     *          ELGO_PROC::Proc proc
      */
-
     QByteArray bytes;
     QDataStream outStream(&bytes, QIODevice::WriteOnly);
     outStream << ELGO_PROC::Proc::ELGO_VIEWER;
@@ -57,4 +60,18 @@ QString& ViewerCtrl::GetQRCodeURL()
 //========================================================
 {
     return m_qrCodeUrl;
+}
+
+//========================================================
+void ViewerCtrl::SetIsDisplayQr(const bool value)
+//========================================================
+{
+    m_bIsDisplayQr = value;
+}
+
+//========================================================
+bool ViewerCtrl::GetIsDisplayQr() const
+//========================================================
+{
+    return m_bIsDisplayQr;
 }

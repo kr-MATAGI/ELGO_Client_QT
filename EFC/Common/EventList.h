@@ -19,13 +19,18 @@ namespace MAIN_EVENT
         NONE_MAIN_EVENT = 256,
 
         /**
-         *  @brief  receive status of process started
-         *  @param  ELGO_PROC::Proc proc
+         *  @note
+         *          ELGO_VIEWER, CONTROL -> ELGO_MAIN
+         *          receive status of process started
+         *  @param
+         *          ELGO_PROC::Proc proc
          */
         PROCESS_IS_READY = 257,
 
         /**
-         *  @brief  Change Device Options
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Change Device Options
          *  @param
          *          bool displayOnOff
          *          bool deviceMute
@@ -44,7 +49,9 @@ namespace CONTROL_EVENT
         NONE_CONTROL_EVENT = 512,
 
         /**
-         *  @brief  receive WIFI information from main process
+         *  @note
+         *          ELGO_MAIN -> ELGO_CONTROL
+         *          receive WIFI information from main process
          *  @param
          *          QString wasHost,
          *          quint16 wasHostPort,
@@ -53,8 +60,11 @@ namespace CONTROL_EVENT
         RECV_SERVER_INFO_FROM_MAIN = 513,
 
         /**
-         *  @brief  Update display sleep status
-         *  @param  bool isDisplaySleep
+         *  @note
+         *          ELGO_MAIN -> ELGO_CONTROL
+         *          Update display sleep status
+         *  @param
+         *          bool isDisplaySleep
          */
         UPDATE_DISPLAY_SLEEP_STATUS = 514,
 
@@ -70,7 +80,7 @@ namespace VIEWER_EVENT
 
         /**
         * @note
-        *       ELGO_MAIN -> ELGO_VIEWER
+        *       ELGO_CONTROL -> ELGO_VIEWER
         *       Viewer will make qr code image and display.
         * @param
         *       QString ip

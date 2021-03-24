@@ -63,22 +63,31 @@ void ViewerThread::ExecMakeQrCodeThread()
 {
     /**
     * @note
-    *       ELGO_MAIN -> ELGO_VIEWER
+    *       ELGO_CONTROL -> ELGO_VIEWER
     *       Viewer will make qr code image and display.
     * @param
     *       QString ip
     */
 
-    QByteArray recvBytes = m_bytes;
-    QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
-    QString url = "http://";
-    QString ip;
-    recvStream >> ip;
-    url.append(ip);
-    url.append(":3000/remote");
-    ViewerController::GetInstance()->GetViewerCtrl().SetQRCodeURL(url);
-    emit MainWindow::GetInstance()->DrawQRCode();
-    ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());
+    const bool bIsDisplayQr = ViewerController::GetInstance()->GetViewerCtrl().GetIsDisplayQr();
+    if(true == bIsDisplayQr)
+    {
+        ELGO_VIEWER_LOG("Already Displayed Remote QR Code");
+    }
+    else
+    {
+        ViewerController::GetInstance()->GetViewerCtrl().SetIsDisplayQr(true);
+        QByteArray recvBytes = m_bytes;
+        QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+        QString url = "http://";
+        QString ip;
+        recvStream >> ip;
+        url.append(ip);
+        url.append(":3000/remote");
+        ViewerController::GetInstance()->GetViewerCtrl().SetQRCodeURL(url);
+        emit MainWindow::GetInstance()->DrawQRCode();
+        ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());
+    }
 }
 
 //========================================================

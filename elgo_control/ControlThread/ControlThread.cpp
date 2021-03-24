@@ -74,7 +74,7 @@ void ControlThread::ExecRecvServerInfoFromMain()
     out >> wasHost;
     out >> wasHostPort;
     out >> remoteTCPHost;
-    ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteTCPHost : %s",
+    ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteHost : %s",
                      wasHost.toUtf8().constData(), wasHostPort, remoteTCPHost.toUtf8().constData());
 
     // Set Info into NetCtrl

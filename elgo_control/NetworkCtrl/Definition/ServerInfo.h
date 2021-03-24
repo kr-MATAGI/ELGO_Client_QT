@@ -16,13 +16,13 @@ struct CONNECT_INFO
     {
         WAS_HOST = wasHost;
         WAS_PORT = wasPort;
-        REMOTE_TCP_HOST = remoteTCPHost;
+        REMOTE_HOST = remoteTCPHost;
     }
 
     QString WAS_HOST; // Web Backend Server
     quint16 WAS_PORT;
 
-    QString REMOTE_TCP_HOST; // TCP Server
+    QString REMOTE_HOST; // Remote Server
 
     QString remoteVersion;
     QString deviceVersion;

@@ -36,6 +36,7 @@ namespace ContentSchema
         QString src;
         QString dest;
         QString message;
+        QString deviceName;
         PayloadType type;
         bool displayPower;
     };
@@ -70,6 +71,7 @@ namespace ContentSchema
     };
 
     // Schedule
+    /** @brief */
     enum CronFormat
     {
         e_SEC = 1,
@@ -80,6 +82,7 @@ namespace ContentSchema
         e_DOW = 6
     };
 
+    /** @brief */
     struct CronOption
     {
         QList<CronFormat> last;
@@ -87,6 +90,7 @@ namespace ContentSchema
         int weekday;
     };
 
+    /** @brief */
     struct Cron
     {
         QList<int> secRepeat;
@@ -99,6 +103,7 @@ namespace ContentSchema
         CronOption options;
     };
 
+    /** @brief */
     struct ScheduleData
     {
         QDateTime startTime;
@@ -107,6 +112,7 @@ namespace ContentSchema
         QString name;
     };
 
+    /** @brief */
     struct Schedules
     {
         QString id;

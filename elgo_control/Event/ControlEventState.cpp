@@ -65,8 +65,11 @@ void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
 //========================================================
 {
     /**
-     *  @brief  Update display sleep status
-     *  @param  bool isDisplaySleep
+     *  @note
+     *          ELGO_MAIN -> ELGO_CONTROL
+     *          Update display sleep status
+     *  @param
+     *          bool isDisplaySleep
      */
 
     QDataStream out(&src, QIODevice::ReadOnly);

@@ -27,6 +27,9 @@ public:
     /** @brief */
     bool ChangeDevicePassword(Remote::ManageDevice& manageDeviceInfo);
 
+    /** @brief */
+    void UpdateDeviceNameFromServer(const QString& src);
+
 private:
     QMutex *m_mutex;
 };

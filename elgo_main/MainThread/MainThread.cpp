@@ -100,25 +100,7 @@ void MainThread::ExecRecvProcecssReady()
     }
     else if(ELGO_PROC::Proc::ELGO_VIEWER == proc)
     {
-        // elgo_viewer : make QrCode
-        /**
-        * @note
-        *       ELGO_MAIN -> ELGO_VIEWER
-        *       Viewer will make qr code image and display.
-        * @param
-        *       QString ip
-        */
-
-        QString ip = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().ipAddr.ip;
-        QByteArray sendBytes;
-        QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
-        sendStream << ip;
-        const bool bViewerEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
-                                                      VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
-        if(false == bViewerEvent)
-        {
-            ELGO_MAIN_LOG("SendEvent Error - %d", VIEWER_EVENT::Event::MAKE_QRCODE);
-        }
+        // Not thing.
     }
     else
     {
@@ -131,7 +113,9 @@ void MainThread::ExecChangeDeviceOptions()
 //========================================================
 {
     /**
-     *  @brief  Change Device Options
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Change Device Options
      *  @param
      *          bool displayOnOff
      *          bool deviceMute
@@ -152,8 +136,11 @@ void MainThread::ExecChangeDeviceOptions()
     if(bCurDisplaySleepStatus != displayOnOff)
     {
         /**
-         *  @brief  Update display sleep status
-         *  @param  bool isDisplaySleep
+         *  @note
+         *          ELGO_MAIN -> ELGO_CONTROL
+         *          Update display sleep status
+         *  @param
+         *          bool isDisplaySleep
          */
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);

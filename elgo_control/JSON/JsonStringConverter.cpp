@@ -17,6 +17,22 @@ ContentSchema::Event JsonStringConverter::ContentServerEventStringToEnum(const Q
     {
         retValue = ContentSchema::Event::ACCESS;
     }
+    else if(0 == strcmp("rename", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::RENAME;
+    }
+    else if(0 == strcmp("singlePlay", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::SINGLE_PLAY;
+    }
+    else if(0 == strcmp("playSchedules", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::SINGLE_PLAY;
+    }
+    else if(0 == strcmp("powerSchedules", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::POWER_SCHEDULES;
+    }
     else if(0 == strcmp("error", src.toStdString().c_str()))
     {
         retValue = ContentSchema::Event::ERROR;
