@@ -17,7 +17,9 @@ namespace CurlDownload
     bool DownloadResourceList(const QString& url, QString& dest);
 
     /** @brief */
-    bool DownloadResourceData(const ContentSchema::Resource& src);
+    bool DownloadResourceData(const ResourceJson::Resource& src);
+    /** @brief */
+    bool DownloadObjectResource(const QString& url, QString& dest);
 
     /** @brief */
     static size_t WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data);

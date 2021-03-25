@@ -23,6 +23,10 @@ public:
     /** @brief */
     void ExecDownloadResourceData();
 
+
+    /** @brief */
+    void SetContentSchema(const ContentSchema::Summary& src);
+
     /** @brief */
     void SetDownloadAction(const DownloadDef::Action value);
 
@@ -31,6 +35,7 @@ public:
 
 
 private:
+    ContentSchema::Summary m_serverJson;
     DownloadDef::Action m_action;
     QByteArray m_bytes;
 };

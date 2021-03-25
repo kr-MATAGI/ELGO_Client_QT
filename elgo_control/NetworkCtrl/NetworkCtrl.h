@@ -26,25 +26,21 @@ public:
 
     /** @brief */
     void ConnectContentWebSocketToServer();
-
     /** @brief */
     bool GetAccessibleJwtFromServer(QString& dest);
 
     /** @brief */
     void SetConnectInfo(const CONNECT_INFO& newValue);
-
     /** @brief */
     CONNECT_INFO GetConnectInfo();
 
     /** @brief */
     QString& GetJWTString();
-
     /** @brief */
     ContentWebSocket& GetContentWebSocket();
 
     /** @brief  Set/Get DPMS */
     void SetDisplaySleepStatus(const bool newValue);
-
     /** @brief */
     bool GetDisplaySleepStatus();
 

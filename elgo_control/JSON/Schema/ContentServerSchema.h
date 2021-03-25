@@ -11,13 +11,21 @@ namespace ContentSchema
     enum Event
     {
         NONE_EVENT = 0,
+
         READY = 1,
         ACCESS = 2,
-        RENAME = 3,
+        RENAME = 3, // payload type : once, request
         SINGLE_PLAY = 4,
         PLAY_SCHEDULES = 5,
         POWER_SCHEDULES = 6,
-        ERROR = 9
+        DISPLAY_ON = 7,
+        DISPLAY_OFF = 8,
+        SCREEN_CAPTURE = 9,
+        SYSTEM_REBOOT = 10,
+        CLEAR_PLAY_SCHEDULE = 11,
+        CLEAR_POWER_SCHEDULE = 12,
+
+        ERROR = 255
     };
 
     /** @brief */
@@ -48,8 +56,10 @@ namespace ContentSchema
         Event event;
         Payload payload;
     };
+}
 
-
+namespace ResourceJson
+{
     // resource
     /** @brief */
     enum ResourceType
@@ -59,9 +69,12 @@ namespace ContentSchema
         ICON = 2,
         DATA = 3,
         PAGE = 4,
-        IMAGE = 5
+        IMAGE = 5,
+        VIDEO = 6,
+        OBJECT = 7
     };
-    const static char* ResourceTypeEnumToStr[] = { "NONE", "js", "icon", "data", "page", "image" };
+    const static char* ResourceTypeEnumToStr[] = { "NONE", "js", "icon", "data",
+                                                   "page", "image", "video", "object" };
 
     /** @brief */
     struct Resource
@@ -71,17 +84,20 @@ namespace ContentSchema
         QString url;
         int size; // unit : byte
     };
+}
 
+namespace ScheduleJson
+{
     // Schedule
     /** @brief */
     enum CronFormat
     {
-        e_SEC = 1,
-        e_MIN = 2,
-        e_HOUR = 3,
-        e_DAY = 4,
-        e_MONTH = 5,
-        e_DOW = 6
+        SEC = 1,
+        MIN = 2,
+        HOUR = 3,
+        DAY = 4,
+        MONTH = 5,
+        DOW = 6
     };
 
     /** @brief */
@@ -119,6 +135,182 @@ namespace ContentSchema
     {
         QString id;
         QList<ScheduleData> scheduleList;
+    };
+}
+
+namespace ObjectJson
+{
+    // Object
+    /** @brief */
+    enum Orientation
+    {
+        NONE_ORIENTATION = 0,
+        HORIZONTAL = 1,
+        VERTICAL = 2
+    };
+
+    /** @brief */
+    struct PlayData
+    {
+        int id;
+        QString name;
+        QString memo;
+        int width;
+        int height;
+        Orientation orientation;
+    };
+
+    /** @brief */
+    enum HourType
+    {
+        NONE_HOUR_TYPE = 0,
+        HOUR_12 = 1,
+        HOUR_24 = 2,
+    };
+
+    /** @brief */
+    enum ContentType
+    {
+        NONE_CONTENT = 0,
+        FILE = 1,
+        WIDGET = 2,
+    };
+
+    /** @brief */
+    enum MediaType
+    {
+        NONE_MEDIA = 0,
+        IMAGE = 1,
+        VIDEO = 2,
+        CLOCK = 3,
+        DATE = 4,
+        WEATHER = 5,
+        NEWS = 6,
+    };
+
+    /** @brief */
+    enum DateType
+    {
+        NONE_DATE_TYPE = 0,
+        YES =1,
+        NO = 2
+    };
+
+    enum NewsCategory
+    {
+        NONE_NEWS_CATEGORY = 0,
+        LATEST = 1,
+        HEADLINE = 2,
+        POLITICS = 3,
+        ECONOMY = 4,
+        SOCIETY = 5,
+        LOCAL = 6,
+        GLBOAL = 7,
+        CULTURE = 8,
+        SPORT = 9,
+        NEWS_WEATHER = 10,
+    };
+
+    /** @brief */
+    struct LayerContentType
+    {
+        ContentType contentType;
+        MediaType mediaType;
+    };
+
+    /** @brief */
+    struct LayerContent
+    {
+        LayerContentType contentType;
+        QString name;
+
+        // weather
+        /** @note   below Area info will be replace nx, ny */
+        QString metropolCity; // area
+        QString metropolCityName;
+        QString city; // area2
+        QString cityName;
+        int nx;
+        int ny;
+
+        // clock
+        HourType hourType;
+
+        QString fontColor;
+        QString backgroundColor;
+        bool bBackgroundOpacity;
+
+        // date
+        DateType dateType;
+
+        // news
+        NewsCategory newsCategory;
+        int newsfontSize;
+        int newsBoxCount;
+        QString newsBoxColor;
+        bool bNewsBoxOpacity;
+    };
+
+    /** @brief */
+    struct LayerData
+    {
+        int left;
+        int top;
+        int width;
+        int height;
+        LayerContent layContent;
+    };
+
+    /** @brief */
+    enum SubtitleDirection
+    {
+        NONE_DIRECTION = 0,
+        LEFT_TO_RIGHT = 1,
+        RIGHT_TO_LEFT = 2,
+        TOP_TO_BOTTOM = 3,
+        BOTTOM_TO_TOP = 4,
+        FIXED_SUBTITLE = 5,
+    };
+
+    /** @brief */
+    enum SubtitleAction
+    {
+        NONE_ACTION = 0,
+        SCROLL = 1,
+        LOOP = 2,
+    };
+
+    /** @brief */
+    struct SubtitleData
+    {
+        int left;
+        int top;
+        int width;
+        int height;
+        QString text;
+        bool bIsFixed;
+        SubtitleDirection direction;
+        Orientation orientation;
+        SubtitleAction action;
+        int speed;
+        QString backgroundColor;
+        QString fontColor;
+        int fontSize;
+    };
+
+    /** @brief */
+    struct PageData
+    {
+        int duration;
+        QList<LayerData> layerDataList;
+        QList<SubtitleData> subtitleDataList;
+    };
+
+    /** @brief */
+    struct Object
+    {
+        PlayData playData;
+        QList<PageData> pageDataList;
     };
 }
 

@@ -135,7 +135,7 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Result::Contents& resu
 }
 
 //========================================================
-void JsonWriter::WriteContentServerAccessRequest(const ContentSchema::Summary& src, QString& dest)
+void JsonWriter::WriteContentServerRenameEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -143,13 +143,12 @@ void JsonWriter::WriteContentServerAccessRequest(const ContentSchema::Summary& s
 
     // event
     QString event;
-    ContentSchema::Event evnetEnum = ContentSchema::Event::ACCESS;
-    JsonStringConverter::ContentServerEventEnumToString(evnetEnum, event);
+    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
     jsonObj["event"] = event;
 
-    // playload
+    // payload
     QJsonObject payloadObj;
-    JsonWriter::WriteContentServerPayloadRequest(src.payload, payloadObj);
+    JsonWriter::WriteContentServerPayload(src, payloadObj);
     jsonObj["payload"] = payloadObj;
 
     jsonDoc.setObject(jsonObj);
@@ -159,27 +158,75 @@ void JsonWriter::WriteContentServerAccessRequest(const ContentSchema::Summary& s
 }
 
 //========================================================
-void JsonWriter::WriteContentServerPayloadRequest(const ContentSchema::Payload& src, QJsonObject& dest)
+void JsonWriter::WriteContentServerAccessEvent(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // event
+    QString event;
+    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
+    jsonObj["event"] = event;
+
+    // playload
+    QJsonObject payloadObj;
+    JsonWriter::WriteContentServerPayload(src, payloadObj);
+    jsonObj["payload"] = payloadObj;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json string : %s", dest.toStdString().c_str());
+}
+
+//========================================================
+void JsonWriter::WriteContentServerSinglePlayEvent(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // event
+    QString event;
+    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
+    jsonObj["event"] = event;
+
+    // playload
+    QJsonObject payloadObj;
+    WriteContentServerPayload(src, payloadObj);
+    jsonObj["payload"] = payloadObj;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
+}
+
+//========================================================
+void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest)
 //========================================================
 {
     QJsonObject jsonObj;
 
     // src
-    jsonObj["src"] = src.dest;
+    jsonObj["src"] = src.payload.src;
 
     // dst
-    jsonObj["dst"] = src.src;
+    jsonObj["dst"] = src.payload.dest;
 
     // type
     QString type;
-    ContentSchema::PayloadType enumType = ContentSchema::PayloadType::ONCE;
-    JsonStringConverter::ContentServerPayloadTypeEnumToString(enumType, type);
+    JsonStringConverter::ContentServerPayloadTypeEnumToString(src.payload.type, type);
     jsonObj["type"] = type;
 
     // displayPower - Required on ACCESS Event
-    bool displayPower = src.displayPower;
-    QJsonValue displayPowerValue(displayPower);
-    jsonObj["displayPower"] = displayPowerValue.toInt();
+    if(ContentSchema::Event::ACCESS == src.event)
+    {
+        bool displayPower = src.payload.displayPower;
+        QJsonValue displayPowerValue(displayPower);
+        jsonObj["displayPower"] = displayPowerValue.toInt();
+    }
 
     dest = jsonObj;
 }

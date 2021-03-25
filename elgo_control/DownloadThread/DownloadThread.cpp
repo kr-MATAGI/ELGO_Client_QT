@@ -2,6 +2,7 @@
 #include "DownloadThread.h"
 #include "CurlDownload.h"
 #include "JSON/JsonParser.h"
+#include "JSON/JsonWriter.h"
 #include "Logger/ControlLogger.h"
 
 
@@ -47,23 +48,62 @@ void DownloadThread::ExecDownloadResourceData()
     const bool bIsResponse = CurlDownload::DownloadResourceList(resourceUrl, response);
     if(true == bIsResponse)
     {
-        QList<ContentSchema::Resource> resource;
+        QList<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
 
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
         {
-            const bool bIsDownload = CurlDownload::DownloadResourceData(resource[idx]);
-            if(false == bIsDownload)
+            if(ResourceJson::ResourceType::OBJECT == resource[idx].type)
             {
-                ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
+                QString url = resource[idx].url;
+                url += "/";
+                url += resource[idx].name;
+
+                QString objectResponse;
+                const bool bIsObjectDownload =CurlDownload::DownloadObjectResource(url, objectResponse);
+                if(true == bIsObjectDownload)
+                {
+                    // object.json, elgo_control -> elgo_viewer
+                    ObjectJson::Object objectJson;
+                    JsonParser::ParseObjectJsonResponse(objectResponse, objectJson);
+                }
+                else
+                {
+                    ELGO_CONTROL_LOG("Error - Failed Object Download : %s", url.toUtf8().constData());
+                }
+            }
+            else
+            {
+                const bool bIsDownload = CurlDownload::DownloadResourceData(resource[idx]);
+                if(false == bIsDownload)
+                {
+                    ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
+                }
             }
         }
+
+        // send response to content server
+        QString responseJson;
+        ContentSchema::Summary modifiedJson = m_serverJson;
+        modifiedJson.payload.src = m_serverJson.payload.dest;
+        modifiedJson.payload.dest = m_serverJson.payload.src;
+        modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+        JsonWriter::WriteContentServerSinglePlayEvent(modifiedJson, responseJson);
+        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
     }
     else
     {
         ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", resourceUrl.toUtf8().constData());
     }
+}
+
+//========================================================
+void DownloadThread::SetContentSchema(const ContentSchema::Summary& src)
+//========================================================
+{
+    m_serverJson = src;
 }
 
 //========================================================

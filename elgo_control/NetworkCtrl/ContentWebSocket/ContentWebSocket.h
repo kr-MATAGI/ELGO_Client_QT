@@ -21,6 +21,9 @@ public:
     /** @brief */
     ~ContentWebSocket();
 
+    /** @brief */
+    void SendTextMessageToServer(const QString& textMsg);
+
 signals:
     void ConnectContentServerSignal();
 

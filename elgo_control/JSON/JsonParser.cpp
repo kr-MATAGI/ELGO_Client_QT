@@ -354,7 +354,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
-bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema::Schedules>& dest)
+bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::Schedules>& dest)
 //========================================================
 {
     bool retValue = true;
@@ -369,7 +369,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema:
         QJsonObject::const_iterator constEnd = schedulesObj.constEnd();
         while(constIter != constEnd)
         {
-            ContentSchema::Schedules schedules;
+            ScheduleJson::Schedules schedules;
             schedules.id = constIter.key();
 
             const QJsonArray valueArray = constIter.value().toArray();
@@ -377,7 +377,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema:
             QJsonArray::const_iterator arrEnd = valueArray.constEnd();
             while(arrIter != arrEnd)
             {
-                ContentSchema::ScheduleData scheduleData;
+                ScheduleJson::ScheduleData scheduleData;
                 const QJsonObject arrObj = arrIter->toObject();
 
                 // start
@@ -412,7 +412,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema:
                 if(arrObj.end() != arrObj.find("rule"))
                 {
                     QString rule = arrObj["rule"].toString();
-                    ContentSchema::Cron cron;
+                    ScheduleJson::Cron cron;
                     JsonStringConverter::CronCommandStringToStruct(rule, cron);
                     scheduleData.cron = cron;
                 }
@@ -452,7 +452,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ContentSchema:
 }
 
 //========================================================
-void JsonParser::ParseResourceResponse(const QString& src, QList<ContentSchema::Resource>& dest)
+void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest)
 //========================================================
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
@@ -461,7 +461,7 @@ void JsonParser::ParseResourceResponse(const QString& src, QList<ContentSchema::
     const int resourceSize = resourceArray.size();
     for(int idx = 0; idx < resourceSize; idx++)
     {
-        ContentSchema::Resource resource;
+        ResourceJson::Resource resource;
         const QJsonObject& resourceObj = resourceArray[idx].toObject();
 
         // type
@@ -493,6 +493,381 @@ void JsonParser::ParseResourceResponse(const QString& src, QList<ContentSchema::
         }
 
         dest.push_back(resource);
+    }
+}
+
+//========================================================
+void JsonParser::ParseObjectJsonResponse(const QString& src, ObjectJson::Object& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject jsonObj = jsonDoc.object();
+
+    // play data
+    ObjectJson::PlayData playData;
+    ParseObjectPlayDataJson(jsonObj, playData);
+    dest.playData = playData;
+
+    // page data
+    const QJsonArray pageDataArr = jsonObj["page_data"].toArray();
+    ParseObjectPageDataJson(pageDataArr, dest.pageDataList);
+}
+
+//========================================================
+void JsonParser::ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJson::PlayData& dest)
+//========================================================
+{
+    if(playDataObj.end() != playDataObj.find("play_data_id"))
+    {
+        const int id = playDataObj["play_data_id"].toInt();
+        dest.id = id;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_name"))
+    {
+        const QString name = playDataObj["pld_name"].toString();
+        dest.name = name;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_memo"))
+    {
+        const QString memo = playDataObj["pld_widht"].toString();
+        dest.memo = memo;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_width"))
+    {
+        const int width = playDataObj["pld_width"].toInt();
+        dest.width = width;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_height"))
+    {
+        const int height = playDataObj["pl_height"].toInt();
+        dest.height =height;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_orientation"))
+    {
+        const QString orientationStr = playDataObj["pld_orientation"].toString();
+        const ObjectJson::Orientation orientation = JsonStringConverter::OrientationTypeStringToEnum(orientationStr);
+        dest.orientation = orientation;
+    }
+}
+
+//========================================================
+void JsonParser::ParseObjectPageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest)
+//========================================================
+{
+    const int pageDataArrSize = pageDataArr.size();
+    for(int idx = 0; idx < pageDataArrSize; idx++)
+    {
+        ObjectJson::PageData pageData;
+
+        const QJsonObject pageDataObj = pageDataArr[idx].toObject();
+        if(pageDataObj.end() != pageDataObj.find("pgd_duration"))
+        {
+            const int duration = pageDataObj["pgd_duration"].toInt();
+            pageData.duration = duration;
+        }
+
+        // layer data
+        const QJsonArray layerDataArr = pageDataObj["layer_data"].toArray();
+        ParseObjectLayerDataJson(layerDataArr, pageData.layerDataList);
+
+        // subtitle data
+        const QJsonArray subtitleDataArr = pageDataObj["subtitle_data"].toArray();
+        ParseObjectSubtitleDataJson(subtitleDataArr, pageData.subtitleDataList);
+
+        dest.push_back(pageData);
+    }
+}
+
+//========================================================
+void JsonParser::ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<ObjectJson::LayerData>& dest)
+//========================================================
+{
+    const int layDataArrSize = layerDataArr.size();
+    for(int idx = 0; idx < layDataArrSize; idx++)
+    {
+        ObjectJson::LayerData layerData;
+
+        const QJsonObject layerDataObj = layerDataArr[idx].toObject();
+        if(layerDataObj.end() != layerDataObj.find("ld_top"))
+        {
+            const int top = layerDataObj["ld_top"].toInt();
+            layerData.top = top;
+        }
+
+        if(layerDataObj.end() != layerDataObj.find("ld_left"))
+        {
+            const int left = layerDataObj["ld_left"].toInt();
+            layerData.left = left;
+        }
+
+        if(layerDataObj.end() != layerDataObj.find("ld_width"))
+        {
+            const int width = layerDataObj["ld_width"].toInt();
+            layerData.width = width;
+        }
+
+        if(layerDataObj.end() != layerDataObj.find("ld_height"))
+        {
+            const int height = layerDataObj["ld_height"].toInt();
+            layerData.height = height;
+        }
+
+        // layer content
+        if(layerDataObj.end() != layerDataObj.find("ld_content"))
+        {
+            const QJsonObject layerContentObj = layerDataObj["ld_content"].toObject();
+            ParseObjectLayerContentJson(layerContentObj, layerData.layContent);
+        }
+
+        dest.push_back(layerData);
+    }
+}
+
+//========================================================
+void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest)
+//========================================================
+{
+    if(layerContentObj.end() != layerContentObj.find("type"))
+    {
+        const QString typeString = layerContentObj["type"].toString();
+        const QStringList dividedType = typeString.split("/");
+
+        const QString contentTypeStr = dividedType[0];
+        const QString mediaTypeStr = dividedType[1];
+        const ObjectJson::ContentType contentType
+                = JsonStringConverter::ContentTypeStringToEnum(contentTypeStr);
+        const ObjectJson::MediaType mediaType
+                = JsonStringConverter::MediaTypeStringToEunum(mediaTypeStr);
+
+        dest.contentType.contentType = contentType;
+        dest.contentType.mediaType = mediaType;
+    }
+
+    if(layerContentObj.end() != layerContentObj.find("name"))
+    {
+        const QString name = layerContentObj["name"].toString();
+        dest.name = name;
+    }
+
+    if(layerContentObj.end() != layerContentObj.find("color"))
+    {
+        const QString fontColor = layerContentObj["color"].toString();
+        dest.fontColor = fontColor;
+    }
+
+    if(layerContentObj.end() != layerContentObj.find("bg_color"))
+    {
+        const QString backgroundColor = layerContentObj["bg_color"].toString();
+        dest.backgroundColor = backgroundColor;
+    }
+
+    if(layerContentObj.end() != layerContentObj.find("bg_opacity"))
+    {
+        const bool backgroundOpacity = layerContentObj["bg_opacity"].toBool();
+        dest.bBackgroundOpacity = backgroundOpacity;
+    }
+
+    // clock
+    if(ObjectJson::MediaType::CLOCK == dest.contentType.mediaType)
+    {
+        if(layerContentObj.end() != layerContentObj.find("hour_type"))
+        {
+            const QString hourTypeStr = layerContentObj["hour_type"].toString();
+            const ObjectJson::HourType hourType
+                    = JsonStringConverter::HourTypeStringToEnum(hourTypeStr);
+            dest.hourType = hourType;
+        }
+    }
+
+    // date
+    if(ObjectJson::MediaType::DATE == dest.contentType.mediaType)
+    {
+        if(layerContentObj.end() != layerContentObj.find("date_type"))
+        {
+           const QString dateTypeStr = layerContentObj["date_type"].toString();
+           const ObjectJson::DateType dateType
+                   = JsonStringConverter::DateTypeStringToEnum(dateTypeStr);
+           dest.dateType = dateType;
+        }
+    }
+
+    // weather
+    if(ObjectJson::MediaType::WEATHER == dest.contentType.mediaType)
+    {
+        if(layerContentObj.end() != layerContentObj.find("area"))
+        {
+            const QString metropolCityStr = layerContentObj["area"].toString();
+            dest.metropolCity = metropolCityStr;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("area_name"))
+        {
+            const QString metropolCityNameStr = layerContentObj["area_name"].toString();
+            dest.metropolCityName = metropolCityNameStr;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("area2"))
+        {
+            const QString cityStr = layerContentObj["area2"].toString();
+            dest.city = cityStr;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("area2_name"))
+        {
+            const QString cityNameStr = layerContentObj["area2_name"].toString();
+            dest.cityName = cityNameStr;
+        }
+    }
+
+    // news
+    if(ObjectJson::MediaType::NEWS == dest.contentType.mediaType)
+    {
+        if(layerContentObj.end() != layerContentObj.find("category"))
+        {
+            const QString newsCategoryStr = layerContentObj["category"].toString();
+            const ObjectJson::NewsCategory newsCategory =
+                    JsonStringConverter::NewsCategoryStringToEnum(newsCategoryStr);
+            dest.newsCategory = newsCategory;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("news_count"))
+        {
+            const QString newsCountStr = layerContentObj["news_count"].toString();
+            const int newsCount = newsCountStr.toInt();
+            dest.newsBoxCount = newsCount;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("font_size"))
+        {
+            const QString newsFontSizeStr = layerContentObj["font_size"].toString();
+            const int newsFontSize = newsFontSizeStr.toInt();
+            dest.newsfontSize = newsFontSize;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("news_bg_color"))
+        {
+            const QString newsBoxBackgroundColor = layerContentObj["news_bg_color"].toString();
+            dest.newsBoxColor = newsBoxBackgroundColor;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("news_bg_opacity"))
+        {
+            const bool newsBoxOpacity = layerContentObj["news_bg_opacity"].toBool();
+            dest.bNewsBoxOpacity = newsBoxOpacity;
+        }
+    }
+}
+
+//========================================================
+void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest)
+//========================================================
+{
+    const int subtitleArrSize = subtitleDataArr.size();
+    for(int idx = 0; idx < subtitleArrSize; idx++)
+    {
+        ObjectJson::SubtitleData subtitleData;
+
+        const QJsonObject subtitleObj = subtitleDataArr[idx].toObject();
+        if(subtitleObj.end() != subtitleObj.find("sd_top"))
+        {
+            const int top = subtitleObj["sd_top"].toInt();
+            subtitleData.top = top;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_left"))
+        {
+            const int left = subtitleObj["sd_left"].toInt();
+            subtitleData.left = left;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_width"))
+        {
+            const int width = subtitleObj["sd_width"].toInt();
+            subtitleData.width = width;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_height"))
+        {
+            const int height = subtitleObj["sd_height"].toInt();
+            subtitleData.height = height;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_text"))
+        {
+            const QString text = subtitleObj["sd_text"].toString();
+            subtitleData.text = text;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_fixed"))
+        {
+            const int fixedInteger = subtitleObj["sd_fixed"].toInt();
+            if(1 == fixedInteger)
+            {
+                subtitleData.bIsFixed = true;
+            }
+            else
+            {
+                subtitleData.bIsFixed = false;
+            }
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_orientation"))
+        {
+            const QString subtitleOriStr = subtitleObj["sd_orientation"].toString();
+            const ObjectJson::Orientation orientation
+                    = JsonStringConverter::OrientationTypeStringToEnum(subtitleOriStr);
+            subtitleData.orientation = orientation;
+        }
+
+        if(false == subtitleData.bIsFixed)
+        {
+            if(subtitleObj.end() != subtitleObj.find("sd_direction"))
+            {
+                const QString subtitleDirStr = subtitleObj["sd_direction"].toString();
+                const ObjectJson::SubtitleDirection direction
+                        = JsonStringConverter::SubtitleDirectionStringToEnum(subtitleDirStr);
+                subtitleData.direction = direction;
+            }
+
+            if(subtitleObj.end() != subtitleObj.find("sd_behavior"))
+            {
+                const QString subtitleActionStr = subtitleObj["sd_behavior"].toString();
+                const ObjectJson::SubtitleAction action
+                        = JsonStringConverter::SubtitleActionStringToEnum(subtitleActionStr);
+                subtitleData.action = action;
+            }
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_speed"))
+        {
+            const int speed = subtitleObj["sd_speed"].toInt();
+            subtitleData.speed = speed;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_background_color"))
+        {
+            const QString backgroundColor = subtitleObj["sd_background_color"].toString();
+            subtitleData.backgroundColor = backgroundColor;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_font_color"))
+        {
+            const QString fontColor = subtitleObj["sd_font_color"].toString();
+            subtitleData.fontColor = fontColor;
+        }
+
+        if(subtitleObj.end() != subtitleObj.find("sd_font_size"))
+        {
+            const int fontSize = subtitleObj["sd_font_size"].toInt();
+            subtitleData.fontSize = fontSize;
+        }
+
+        dest.push_back(subtitleData);
     }
 }
 

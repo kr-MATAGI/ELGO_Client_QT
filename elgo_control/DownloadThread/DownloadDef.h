@@ -17,6 +17,7 @@ namespace DownloadDef
     enum CURL_TIMEOUT
     {
         DEFAULT_TIME_OUT = 1 * 1000,
+        VIDEO_DOWNLOAD_TIME_OUT = 5 * 1000,
         NEWS_FEED = 4 * 1000
     };
 

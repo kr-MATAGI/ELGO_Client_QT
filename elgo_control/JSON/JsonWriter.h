@@ -18,10 +18,17 @@ namespace JsonWriter
     /// elgo_control <-> Content server
     /** @brief */
     void WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest);
+
+    /** @brief  access Event */
+    void WriteContentServerAccessEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  rename Event */
+    void WriteContentServerRenameEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  singlePlay Event*/
+    void WriteContentServerSinglePlayEvent(const ContentSchema::Summary& src, QString& dest);
+
     /** @brief */
-    void WriteContentServerAccessRequest(const ContentSchema::Summary& src, QString& dest);
-    /** @brief */
-    void WriteContentServerPayloadRequest(const ContentSchema::Payload& src, QJsonObject& dest);
+    void WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest);
+
 
     /// elgo_remote <-> elgo_control
     /** @brief */

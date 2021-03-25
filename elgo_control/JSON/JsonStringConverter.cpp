@@ -21,17 +21,41 @@ ContentSchema::Event JsonStringConverter::ContentServerEventStringToEnum(const Q
     {
         retValue = ContentSchema::Event::RENAME;
     }
+    else if(0 == strcmp("on", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::DISPLAY_ON;
+    }
+    else if(0 == strcmp("off", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::DISPLAY_OFF;
+    }
+    else if(0 == strcmp("capture", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::SCREEN_CAPTURE;
+    }
+    else if(0 == strcmp("reboot", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::SYSTEM_REBOOT;
+    }
     else if(0 == strcmp("singlePlay", src.toStdString().c_str()))
     {
         retValue = ContentSchema::Event::SINGLE_PLAY;
     }
-    else if(0 == strcmp("playSchedules", src.toStdString().c_str()))
+    else if(0 == strcmp("playSchedule", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::Event::SINGLE_PLAY;
+        retValue = ContentSchema::Event::PLAY_SCHEDULES;
     }
-    else if(0 == strcmp("powerSchedules", src.toStdString().c_str()))
+    else if(0 == strcmp("powerSchedule", src.toStdString().c_str()))
     {
         retValue = ContentSchema::Event::POWER_SCHEDULES;
+    }
+    else if(0 == strcmp("clearPlaySchedule", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::CLEAR_PLAY_SCHEDULE;
+    }
+    else if(0 == strcmp("clearPowerSchedule", src.toStdString().c_str()))
+    {
+        retValue = ContentSchema::Event::CLEAR_POWER_SCHEDULE;
     }
     else if(0 == strcmp("error", src.toStdString().c_str()))
     {
@@ -76,34 +100,278 @@ ContentSchema::PayloadType JsonStringConverter::ContentServerPayloadTypeStringTo
 }
 
 //========================================================
-ContentSchema::ResourceType JsonStringConverter::ResourceTypeStringToEnum(const QString& src)
+ResourceJson::ResourceType JsonStringConverter::ResourceTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ContentSchema::ResourceType retValue = ContentSchema::ResourceType::NONE_RSRC;
+    ResourceJson::ResourceType retValue = ResourceJson::ResourceType::NONE_RSRC;
 
     if(0 == strcmp("js", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::ResourceType::JS;
+        retValue = ResourceJson::ResourceType::JS;
     }
     else if(0 == strcmp("icon", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::ResourceType::ICON;
+        retValue = ResourceJson::ResourceType::ICON;
     }
     else if(0 == strcmp("data", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::ResourceType::DATA;
+        retValue = ResourceJson::ResourceType::DATA;
     }
     else if(0 == strcmp("page", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::ResourceType::PAGE;
+        retValue = ResourceJson::ResourceType::PAGE;
     }
     else if(0 == strcmp("image", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::ResourceType::IMAGE;
+        retValue = ResourceJson::ResourceType::IMAGE;
+    }
+    else if(0 == strcmp("video", src.toStdString().c_str()))
+    {
+        retValue = ResourceJson::ResourceType::VIDEO;
+    }
+    else if(0 == strcmp("object", src.toStdString().c_str()))
+    {
+        retValue = ResourceJson::ResourceType::OBJECT;
     }
     else
     {
         ELGO_CONTROL_LOG("Error - Unkwon resource type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::Orientation retValue = ObjectJson::Orientation::NONE_ORIENTATION;
+
+    if(0 == strcmp("landscape", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::Orientation::HORIZONTAL;
+    }
+    else if(0 == strcmp("portrait", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::Orientation::VERTICAL;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon orientation type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::ContentType JsonStringConverter::ContentTypeStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::ContentType retValue = ObjectJson::ContentType::NONE_CONTENT;
+
+    if(0 == strcmp("file", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::ContentType::FILE;
+    }
+    else if(0 == strcmp("widget", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::ContentType::WIDGET;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon content type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::MediaType JsonStringConverter::MediaTypeStringToEunum(const QString& src)
+//========================================================
+{
+    ObjectJson::MediaType retValue = ObjectJson::MediaType::NONE_MEDIA;
+
+    if(0 == strcmp("image", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::IMAGE;
+    }
+    else if(0 == strcmp("video", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::VIDEO;
+    }
+    else if(0 == strcmp("clock", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::CLOCK;
+    }
+    else if(0 == strcmp("date", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::DATE;
+    }
+    else if(0 == strcmp("weather", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::WEATHER;
+    }
+    else if(0 == strcmp("news", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::MediaType::NEWS;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon media type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::HourType JsonStringConverter::HourTypeStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::HourType retValue = ObjectJson::HourType::NONE_HOUR_TYPE;
+
+    if(0 == strcmp("12h", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::HourType::HOUR_12;
+    }
+    else if(0 == strcmp("24h", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::HourType::HOUR_24;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon hour type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::DateType JsonStringConverter::DateTypeStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::DateType retValue = ObjectJson::DateType::NONE_DATE_TYPE;
+
+    if(0 == strcmp("yes", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::DateType::YES;
+    }
+    else if(0 == strcmp("no", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::DateType::NO;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon date type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::NewsCategory retValue = ObjectJson::NewsCategory::NONE_NEWS_CATEGORY;
+
+    if(0 == strcmp("browse", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::LATEST;
+    }
+    else if(0 == strcmp("headline", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::HEADLINE;
+    }
+    else if(0 == strcmp("politics", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::POLITICS;
+    }
+    else if(0 == strcmp("economy", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::ECONOMY;
+    }
+    else if(0 == strcmp("society", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::SOCIETY;
+    }
+    else if(0 == strcmp("local", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::LOCAL;
+    }
+    else if(0 == strcmp("international", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::GLBOAL;
+    }
+    else if(0 == strcmp("culture", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::CULTURE;
+    }
+    else if(0 == strcmp("sports", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::SPORT;
+    }
+    else if(0 == strcmp("weather", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::NewsCategory::NEWS_WEATHER;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon news category type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::SubtitleDirection JsonStringConverter::SubtitleDirectionStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::SubtitleDirection retValue = ObjectJson::SubtitleDirection::NONE_DIRECTION;
+
+    if(0 == strcmp("null", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleDirection::FIXED_SUBTITLE;
+    }
+    else if(0 == strcmp("left", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleDirection::LEFT_TO_RIGHT;
+    }
+    else if(0 == strcmp("right", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleDirection::RIGHT_TO_LEFT;
+    }
+    else if(0 == strcmp("up", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleDirection::BOTTOM_TO_TOP;
+    }
+    else if(0 == strcmp("down", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleDirection::TOP_TO_BOTTOM;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon subtitle direction : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+ObjectJson::SubtitleAction JsonStringConverter::SubtitleActionStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::SubtitleAction retValue = ObjectJson::SubtitleAction::NONE_ACTION;
+
+    if(0 == strcmp("scroll", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleAction::SCROLL;
+    }
+    else if(0 == strcmp("alternate", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::SubtitleAction::LOOP;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon subtitle action : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -117,13 +385,53 @@ void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Ev
     {
         dest = "access";
     }
-    else if(ContentSchema::Event::ERROR == event)
+    else if(ContentSchema::Event::RENAME == event)
     {
-        dest = "error";
+        dest = "rename";
     }
     else if(ContentSchema::Event::READY == event)
     {
         dest = "ready";
+    }
+    else if(ContentSchema::Event::SINGLE_PLAY == event)
+    {
+        dest = "singlePlay";
+    }
+    else if(ContentSchema::Event::DISPLAY_ON == event)
+    {
+        dest = "on";
+    }
+    else if(ContentSchema::Event::DISPLAY_OFF == event)
+    {
+        dest = "off";
+    }
+    else if(ContentSchema::Event::SCREEN_CAPTURE == event)
+    {
+        dest = "capture";
+    }
+    else if(ContentSchema::Event::SYSTEM_REBOOT == event)
+    {
+        dest = "reboot";
+    }
+    else if(ContentSchema::Event::PLAY_SCHEDULES == event)
+    {
+        dest = "playSchedule";
+    }
+    else if(ContentSchema::Event::POWER_SCHEDULES == event)
+    {
+        dest = "powerSchedule";
+    }
+    else if(ContentSchema::Event::CLEAR_PLAY_SCHEDULE == event)
+    {
+        dest = "clearPlaySchedule";
+    }
+    else if(ContentSchema::Event::POWER_SCHEDULES == event)
+    {
+        dest = "clearPowerSchedule";
+    }
+    else if(ContentSchema::Event::ERROR == event)
+    {
+        dest = "error";
     }
     else
     {
@@ -158,32 +466,240 @@ void JsonStringConverter::ContentServerPayloadTypeEnumToString(const ContentSche
 }
 
 //========================================================
-void JsonStringConverter::ResourceTypeEnumToString(const ContentSchema::ResourceType type, QString& dest)
+void JsonStringConverter::ResourceTypeEnumToString(const ResourceJson::ResourceType type, QString& dest)
 //========================================================
 {
-    if(ContentSchema::ResourceType::JS == type)
+    if(ResourceJson::ResourceType::JS == type)
     {
         dest = "js";
     }
-    else if(ContentSchema::ResourceType::ICON == type)
+    else if(ResourceJson::ResourceType::ICON == type)
     {
         dest = "icon";
     }
-    else if(ContentSchema::ResourceType::DATA == type)
+    else if(ResourceJson::ResourceType::DATA == type)
     {
         dest = "data";
     }
-    else if(ContentSchema::ResourceType::PAGE == type)
+    else if(ResourceJson::ResourceType::PAGE == type)
     {
         dest = "page";
     }
-    else if(ContentSchema::ResourceType::IMAGE == type)
+    else if(ResourceJson::ResourceType::IMAGE == type)
     {
         dest = "image";
+    }
+    else if(ResourceJson::ResourceType::VIDEO == type)
+    {
+        dest = "video";
+    }
+    else if(ResourceJson::ResourceType::OBJECT == type)
+    {
+        dest = "object";
     }
     else
     {
         dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::OrientationTypeEnumToString(const ObjectJson::Orientation type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::Orientation::HORIZONTAL == type)
+    {
+        dest = "landscape";
+    }
+    else if(ObjectJson::Orientation::VERTICAL == type)
+    {
+        dest = "portrait";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::ContentTypeEnumToString(const ObjectJson::ContentType type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::ContentType::FILE == type)
+    {
+        dest = "file";
+    }
+    else if(ObjectJson::ContentType::WIDGET == type)
+    {
+        dest = "widget";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::MediaTypeEnumToString(const ObjectJson::MediaType type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::MediaType::IMAGE == type)
+    {
+        dest = "image";
+    }
+    else if(ObjectJson::MediaType::VIDEO == type)
+    {
+        dest = "video";
+    }
+    else if(ObjectJson::MediaType::CLOCK == type)
+    {
+        dest = "clock";
+    }
+    else if(ObjectJson::MediaType::DATE == type)
+    {
+        dest = "date";
+    }
+    else if(ObjectJson::MediaType::WEATHER == type)
+    {
+        dest = "weather";
+    }
+    else if(ObjectJson::MediaType::NEWS == type)
+    {
+        dest = "news";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::HourTypeEnumToString(const ObjectJson::HourType type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::HourType::HOUR_12 == type)
+    {
+        dest = "12h";
+    }
+    else if(ObjectJson::HourType::HOUR_24 == type)
+    {
+        dest = "24h";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::DateTypeEnumToString(const ObjectJson::DateType type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::DateType::YES == type)
+    {
+        dest = "yes";
+    }
+    else if(ObjectJson::DateType::NO == type)
+    {
+        dest = "no";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::NewsCategoryEnumToString(const ObjectJson::NewsCategory type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::NewsCategory::LATEST == type)
+    {
+        dest = "browse";
+    }
+    else if(ObjectJson::NewsCategory::HEADLINE == type)
+    {
+        dest = "headline";
+    }
+    else if(ObjectJson::NewsCategory::POLITICS == type)
+    {
+        dest = "politics";
+    }
+    else if(ObjectJson::NewsCategory::ECONOMY == type)
+    {
+        dest = "economy";
+    }
+    else if(ObjectJson::NewsCategory::SOCIETY == type)
+    {
+        dest = "society";
+    }
+    else if(ObjectJson::NewsCategory::LOCAL == type)
+    {
+        dest = "local";
+    }
+    else if(ObjectJson::NewsCategory::GLBOAL == type)
+    {
+        dest = "international";
+    }
+    else if(ObjectJson::NewsCategory::CULTURE == type)
+    {
+        dest = "culture";
+    }
+    else if(ObjectJson::NewsCategory::SPORT == type)
+    {
+        dest = "sports";
+    }
+    else if(ObjectJson::NewsCategory::NEWS_WEATHER == type)
+    {
+        dest = "weather";
+    }
+}
+
+//========================================================
+void JsonStringConverter::SubtitleDirectionEnumToString(const ObjectJson::SubtitleDirection type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::SubtitleDirection::FIXED_SUBTITLE == type)
+    {
+        dest = "fixed";
+    }
+    else if(ObjectJson::SubtitleDirection::LEFT_TO_RIGHT == type)
+    {
+        dest = "left";
+    }
+    else if(ObjectJson::SubtitleDirection::RIGHT_TO_LEFT == type)
+    {
+        dest = "right";
+    }
+    else if(ObjectJson::SubtitleDirection::TOP_TO_BOTTOM == type)
+    {
+        dest = "down";
+    }
+    else if(ObjectJson::SubtitleDirection::BOTTOM_TO_TOP == type)
+    {
+        dest = "up";
+    }
+    else
+    {
+        dest = "null";
+    }
+}
+
+//========================================================
+void JsonStringConverter::SubtitleActionEnumToString(const ObjectJson::SubtitleAction type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::SubtitleAction::SCROLL == type)
+    {
+        dest = "scroll";
+    }
+    else if(ObjectJson::SubtitleAction::LOOP == type)
+    {
+        dest = "alternate";
+    }
+    else
+    {
+        dest = "null";
     }
 }
 
@@ -220,10 +736,10 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
 }
 
 //========================================================
-void JsonStringConverter::CronCommandStringToStruct(const QString& src, ContentSchema::Cron& dest)
+void JsonStringConverter::CronCommandStringToStruct(const QString& src, ScheduleJson::Cron& dest)
 //========================================================
 {
-    ContentSchema::CronOption options;
+    ScheduleJson::CronOption options;
 
     QStringList cronStrSplit = src.split(" ");
     QString secStr = cronStrSplit[0];
@@ -236,30 +752,30 @@ void JsonStringConverter::CronCommandStringToStruct(const QString& src, ContentS
 
     /// time
     // sec
-    GetCronCommandConvertedList(secStr, ContentSchema::CronFormat::e_SEC, dest.secRepeat, options);
+    GetCronCommandConvertedList(secStr, ScheduleJson::CronFormat::SEC, dest.secRepeat, options);
 
     // min
-    GetCronCommandConvertedList(minStr, ContentSchema::CronFormat::e_MIN, dest.minRepeat, options);
+    GetCronCommandConvertedList(minStr, ScheduleJson::CronFormat::MIN, dest.minRepeat, options);
 
     // hour()
-    GetCronCommandConvertedList(hourStr, ContentSchema::CronFormat::e_HOUR, dest.hourRepeat, options);
+    GetCronCommandConvertedList(hourStr, ScheduleJson::CronFormat::HOUR, dest.hourRepeat, options);
 
     // day
-    GetCronCommandConvertedList(dayStr, ContentSchema::CronFormat::e_DAY, dest.dayRepeat, options);
+    GetCronCommandConvertedList(dayStr, ScheduleJson::CronFormat::DAY, dest.dayRepeat, options);
 
     // month
-    GetCronCommandConvertedList(monthStr, ContentSchema::CronFormat::e_MONTH, dest.monthRepeat, options);
+    GetCronCommandConvertedList(monthStr, ScheduleJson::CronFormat::MONTH, dest.monthRepeat, options);
 
     // day of week
-    GetCronCommandConvertedList(dayOfWeekStr, ContentSchema::CronFormat::e_DOW, dest.dowRepeat, options);
+    GetCronCommandConvertedList(dayOfWeekStr, ScheduleJson::CronFormat::DOW, dest.dowRepeat, options);
 
     // set options
     dest.options = options;
 }
 
 //========================================================
-void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const ContentSchema::CronFormat format,
-                                                QList<int>& dest, ContentSchema::CronOption& options)
+void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
+                                                QList<int>& dest, ScheduleJson::CronOption& options)
 //========================================================
 {
     const int limitValue = GetCronFormatLimitValue(format);
@@ -271,7 +787,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
             const int plusValue = src.split("/")[1].toInt();
             for(int val = 0; val < limitValue; )
             {
-                if(ContentSchema::CronFormat::e_DOW == format)
+                if(ScheduleJson::CronFormat::DOW == format)
                 {
                     const int qtDow = GetConvertedDayOfWeek(val);
                     dest.push_back(qtDow);
@@ -288,7 +804,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
         {
             for(int val = 0; val <= limitValue; val++)
             {
-                if(ContentSchema::CronFormat::e_DOW == format)
+                if(ScheduleJson::CronFormat::DOW == format)
                 {
                     const int qtDow = GetConvertedDayOfWeek(val);
                     dest.push_back(qtDow);
@@ -308,7 +824,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
 
         for(int val = startVal; val <= limitValue; )
         {
-            if(ContentSchema::CronFormat::e_DOW == format)
+            if(ScheduleJson::CronFormat::DOW == format)
             {
                 const int qtDow = GetConvertedDayOfWeek(val);
                 dest.push_back(qtDow);
@@ -334,7 +850,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
                 break;
             }
 
-            if(ContentSchema::CronFormat::e_DOW == format)
+            if(ScheduleJson::CronFormat::DOW == format)
             {
                 const int qtDow = GetConvertedDayOfWeek(val);
                 dest.push_back(qtDow);
@@ -353,7 +869,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
         {
             const int val = valStr.toInt();
 
-            if(ContentSchema::CronFormat::e_DOW == format)
+            if(ScheduleJson::CronFormat::DOW == format)
             {
                 const int qtDow = GetConvertedDayOfWeek(val);
                 dest.push_back(qtDow);
@@ -364,7 +880,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
             }
         }
     }
-    else if( (ContentSchema::CronFormat::e_DOW == format) &&
+    else if( (ScheduleJson::CronFormat::DOW == format) &&
             (src.end() != std::find(src.begin(), src.end(), "#")) )
     {
         const QStringList dividedSplit = src.split("#");
@@ -372,13 +888,13 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
 
         options.numOfWeek = numOfWeek;
     }
-    else if( (ContentSchema::CronFormat::e_DAY == format ||
-              ContentSchema::CronFormat::e_DOW == format) &&
+    else if( (ScheduleJson::CronFormat::DAY == format ||
+              ScheduleJson::CronFormat::DOW == format) &&
              (src.end() != std::find(src.begin(), src.end(), "L")) )
     {
         options.last.push_back(format);
     }
-    else if( (ContentSchema::CronFormat::e_DAY == format) &&
+    else if( (ScheduleJson::CronFormat::DAY == format) &&
              (src.end() != std::find(src.begin(), src.end(), "W")) )
     {
         const QStringList dividedSplit = src.split("W");
@@ -393,29 +909,29 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
 }
 
 //========================================================
-int JsonStringConverter::GetCronFormatLimitValue(const ContentSchema::CronFormat format)
+int JsonStringConverter::GetCronFormatLimitValue(const ScheduleJson::CronFormat format)
 //========================================================
 {
     int retValue = 0;
 
-    if(ContentSchema::CronFormat::e_SEC == format ||
-        ContentSchema::CronFormat::e_MIN == format)
+    if(ScheduleJson::CronFormat::SEC == format ||
+        ScheduleJson::CronFormat::MIN == format)
     {
         retValue = 60;
     }
-    else if(ContentSchema::CronFormat::e_HOUR == format)
+    else if(ScheduleJson::CronFormat::HOUR == format)
     {
         retValue = 24;
     }
-    else if(ContentSchema::CronFormat::e_DAY == format)
+    else if(ScheduleJson::CronFormat::DAY == format)
     {
         retValue = 31;
     }
-    else if(ContentSchema::CronFormat::e_MONTH == format)
+    else if(ScheduleJson::CronFormat::MONTH == format)
     {
         retValue = 12;
     }
-    else if(ContentSchema::CronFormat::e_DOW == format)
+    else if(ScheduleJson::CronFormat::DOW == format)
     {
         /**
          * @note 0 - Sunday, ... , 6 - Saturday

@@ -21,7 +21,16 @@ public:
     ~ContentWebSocketHandler();
 
     /** @brief */
-    void RunEvent(const ContentSchema::Summary& response, QString& request);
+    void RunEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
+
+    /** @brief */
+    void ExecReadyEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
+
+    /** @brief */
+    void ExecRenameEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
+
+    /** @brief */
+    void ExecSinglePlayEvent(const ContentSchema::Summary& serverJson);
 
 private:
     QThreadPool *m_threadPool;

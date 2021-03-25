@@ -41,6 +41,27 @@ ContentWebSocket::~ContentWebSocket()
 }
 
 //========================================================
+void ContentWebSocket::SendTextMessageToServer(const QString& textMsg)
+//========================================================
+{
+    if(NULL != m_socket)
+    {
+        if(0 < textMsg.length())
+        {
+            m_socket->sendTextMessage(textMsg);
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - 0 == text.length()");
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - NULL == socket");
+    }
+}
+
+//========================================================
 void ContentWebSocket::ConnectContentSocketSlot()
 //========================================================
 {

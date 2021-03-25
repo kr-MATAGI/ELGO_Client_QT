@@ -25,54 +25,89 @@ ContentWebSocketHandler::~ContentWebSocketHandler()
 }
 
 //========================================================
-void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& response, QString& request)
+void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
 //========================================================
 {
-    if(ContentSchema::Event::READY == response.event)
+    if(ContentSchema::Event::READY == serverJson.event)
     {
-        ContentSchema::Summary modifiedResponse = response;
-        modifiedResponse.payload.displayPower = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
-        JsonWriter::WriteContentServerAccessRequest(modifiedResponse, request);
+        ExecReadyEvent(serverJson, clientJson);
     }
-    else if(ContentSchema::Event::RENAME == response.event)
+    else if(ContentSchema::Event::RENAME == serverJson.event)
     {
-        NetworkController::GetInstance()->GetDBCtrl().UpdateDeviceNameFromServer(response.payload.deviceName);
-
-        /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Viewer will make qr code image and display.
-        * @param
-        *       QString ip
-        */
-        QString ip = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().REMOTE_HOST;
-        QByteArray sendBytes;
-        QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
-        sendStream << ip;
-        const bool bViewerEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
-                                                      VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
-        if(false == bViewerEvent)
-        {
-            ELGO_CONTROL_LOG("SendEvent Error - %d", VIEWER_EVENT::Event::MAKE_QRCODE);
-        }
+        ExecRenameEvent(serverJson, clientJson);
     }
-    else if(ContentSchema::Event::SINGLE_PLAY == response.event)
+    else if(ContentSchema::Event::SINGLE_PLAY == serverJson.event)
     {
-        QByteArray bytes;
-        QDataStream stream(&bytes, QIODevice::WriteOnly);
-        stream << response.payload.url;
-
-        DownloadThread *thread = new DownloadThread;
-        thread->SetDownloadAction(DownloadDef::Action::RESOURCE);
-        thread->SetDownloadBytes(bytes);
-        m_threadPool->start(thread);
+        ExecSinglePlayEvent(serverJson);
     }
-    else if(ContentSchema::Event::ERROR == response.event)
+    else if(ContentSchema::Event::ERROR == serverJson.event)
     {
-        ELGO_CONTROL_LOG("ERROR - %s", response.payload.message.toUtf8().constData());
+        ELGO_CONTROL_LOG("ERROR - %s", serverJson.payload.message.toUtf8().constData());
     }
     else
     {
-        ELGO_CONTROL_LOG("Unkwon Event : %d", response.event);
+        ELGO_CONTROL_LOG("Unkwon Event : %d", serverJson.event);
     }
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecReadyEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+//========================================================
+{
+    ContentSchema::Summary modifiedResponse = serverJson;
+    modifiedResponse.payload.src = serverJson.payload.dest;
+    modifiedResponse.payload.dest = serverJson.payload.src;
+    modifiedResponse.event = ContentSchema::Event::ACCESS;
+    modifiedResponse.payload.type = ContentSchema::PayloadType::ONCE;
+    modifiedResponse.payload.displayPower = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+
+    JsonWriter::WriteContentServerAccessEvent(modifiedResponse, clientJson);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+//========================================================
+{
+    NetworkController::GetInstance()->GetDBCtrl().UpdateDeviceNameFromServer(serverJson.payload.deviceName);
+
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Viewer will make qr code image and display.
+    * @param
+    *       QString ip
+    */
+    QString ip = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().REMOTE_HOST;
+    QByteArray sendBytes;
+    QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+    sendStream << ip;
+    const bool bViewerEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
+                                                  VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
+    if(false == bViewerEvent)
+    {
+        ELGO_CONTROL_LOG("SendEvent Error - %d", VIEWER_EVENT::Event::MAKE_QRCODE);
+    }
+
+    // Json
+    ContentSchema::Summary modifiedJson = serverJson;
+    modifiedJson.payload.src = serverJson.payload.dest;
+    modifiedJson.payload.dest = serverJson.payload.src;
+    modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+    JsonWriter::WriteContentServerRenameEvent(modifiedJson, clientJson);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecSinglePlayEvent(const ContentSchema::Summary& serverJson)
+//========================================================
+{
+    QByteArray bytes;
+    QDataStream stream(&bytes, QIODevice::WriteOnly);
+    stream << serverJson.payload.url;
+
+    DownloadThread *thread = new DownloadThread;
+    thread->SetContentSchema(serverJson);
+    thread->SetDownloadAction(DownloadDef::Action::RESOURCE);
+    thread->SetDownloadBytes(bytes);
+    m_threadPool->start(thread);
 }
