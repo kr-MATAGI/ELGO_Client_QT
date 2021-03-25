@@ -142,6 +142,28 @@ ResourceJson::ResourceType JsonStringConverter::ResourceTypeStringToEnum(const Q
 }
 
 //========================================================
+ObjectJson::PlayDataType JsonStringConverter::PlayDataTypeStringToEnum(const QString& src)
+//========================================================
+{
+    ObjectJson::PlayDataType retValue = ObjectJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+
+    if(0 == strcmp("custom", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::PlayDataType::CUSTOM;
+    }
+    else if(0 == strcmp("fixed", src.toStdString().c_str()))
+    {
+        retValue = ObjectJson::PlayDataType::FIXED;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon playdata type : %s", src.toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
 ObjectJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const QString& src)
 //========================================================
 {
@@ -496,6 +518,24 @@ void JsonStringConverter::ResourceTypeEnumToString(const ResourceJson::ResourceT
     else if(ResourceJson::ResourceType::OBJECT == type)
     {
         dest = "object";
+    }
+    else
+    {
+        dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::PlayDataTypeEnumToString(const ObjectJson::PlayDataType type, QString& dest)
+//========================================================
+{
+    if(ObjectJson::PlayDataType::CUSTOM == type)
+    {
+        dest = "custom";
+    }
+    else if(ObjectJson::PlayDataType::FIXED == type)
+    {
+        dest = "fixed";
     }
     else
     {

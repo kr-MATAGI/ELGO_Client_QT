@@ -65,7 +65,7 @@ void DownloadThread::ExecDownloadResourceData()
                 if(true == bIsObjectDownload)
                 {
                     // object.json, elgo_control -> elgo_viewer
-                    ObjectJson::Object objectJson;
+                    ObjectJson::LayerObject objectJson;
                     JsonParser::ParseObjectJsonResponse(objectResponse, objectJson);
                 }
                 else

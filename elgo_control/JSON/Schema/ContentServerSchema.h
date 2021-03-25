@@ -150,6 +150,14 @@ namespace ObjectJson
     };
 
     /** @brief */
+    enum PlayDataType
+    {
+        NONE_PLAY_DATA_TYPE = 0,
+        CUSTOM = 1,
+        FIXED = 2
+    };
+
+    /** @brief */
     struct PlayData
     {
         int id;
@@ -158,6 +166,7 @@ namespace ObjectJson
         int width;
         int height;
         Orientation orientation;
+        PlayDataType playDataType;
     };
 
     /** @brief */
@@ -307,7 +316,7 @@ namespace ObjectJson
     };
 
     /** @brief */
-    struct Object
+    struct LayerObject
     {
         PlayData playData;
         QList<PageData> pageDataList;

@@ -19,6 +19,8 @@ namespace JsonStringConverter
     ResourceJson::ResourceType ResourceTypeStringToEnum(const QString& src);
 
     /** @brief */
+    ObjectJson::PlayDataType PlayDataTypeStringToEnum(const QString& src);
+    /** @brief */
     ObjectJson::Orientation OrientationTypeStringToEnum(const QString& src);
     /** @brief */
     ObjectJson::ContentType ContentTypeStringToEnum(const QString& src);
@@ -45,6 +47,8 @@ namespace JsonStringConverter
     /** @brief */
     void ResourceTypeEnumToString(const ResourceJson::ResourceType type, QString& dest);
 
+    /** @brief */
+    void PlayDataTypeEnumToString(const ObjectJson::PlayDataType type, QString& dest);
     /** @brief */
     void OrientationTypeEnumToString(const ObjectJson::Orientation type, QString& dest);
     /** @brief */

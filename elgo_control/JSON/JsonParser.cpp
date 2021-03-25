@@ -497,7 +497,7 @@ void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::R
 }
 
 //========================================================
-void JsonParser::ParseObjectJsonResponse(const QString& src, ObjectJson::Object& dest)
+void JsonParser::ParseObjectJsonResponse(const QString& src, ObjectJson::LayerObject& dest)
 //========================================================
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
@@ -508,9 +508,21 @@ void JsonParser::ParseObjectJsonResponse(const QString& src, ObjectJson::Object&
     ParseObjectPlayDataJson(jsonObj, playData);
     dest.playData = playData;
 
-    // page data
-    const QJsonArray pageDataArr = jsonObj["page_data"].toArray();
-    ParseObjectPageDataJson(pageDataArr, dest.pageDataList);
+
+    if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+    {
+        // page data - custom play data type
+        const QJsonArray pageDataArr = jsonObj["page_data"].toArray();
+        ParseObjectPageDataJson(pageDataArr, dest.pageDataList);
+    }
+    else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
+    {
+        // layer data - fixed play data type
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon Play Data Type: %d, Failed Paring", playData.playDataType);
+    }
 }
 
 //========================================================
@@ -552,6 +564,13 @@ void JsonParser::ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJ
         const QString orientationStr = playDataObj["pld_orientation"].toString();
         const ObjectJson::Orientation orientation = JsonStringConverter::OrientationTypeStringToEnum(orientationStr);
         dest.orientation = orientation;
+    }
+
+    if(playDataObj.end() != playDataObj.find("pld_type"))
+    {
+        const QString playDataTypeStr = playDataObj["pld_type"].toString();
+        const ObjectJson::PlayDataType playDataType = JsonStringConverter::PlayDataTypeStringToEnum(playDataTypeStr);
+        dest.playDataType = playDataType;
     }
 }
 
