@@ -46,7 +46,7 @@ namespace JsonParser
     /** @brief  Resource */
     void ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest);
 
-    /** @brief  Object */
+    /** @brief  Layer Object */
     void ParseObjectJsonResponse(const QString& src, ObjectJson::LayerObject& dest);
     /** @brief */
     void ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJson::PlayData& dest);
