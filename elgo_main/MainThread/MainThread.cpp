@@ -70,11 +70,11 @@ void MainThread::ExecRecvProcecssReady()
     QByteArray recvBytes = m_bytes;
     QDataStream out(&recvBytes, QIODevice::ReadOnly);
 
-    ELGO_PROC::Proc proc = ELGO_PROC::Proc::NONE_PROC;
+    ELGO_SYS::Proc proc = ELGO_SYS::Proc::NONE_PROC;
     out >> proc;
-    ELGO_MAIN_LOG("%s proccess is Ready !", ELGO_PROC::ELGOProc_enum2str[proc]);
+    ELGO_MAIN_LOG("%s proccess is Ready !", ELGO_SYS::ELGOProc_enum2str[proc]);
 
-    if(ELGO_PROC::Proc::ELGO_CONTROL == proc)
+    if(ELGO_SYS::Proc::ELGO_CONTROL == proc)
     {
         // Server [host, port] info send to elgo_control
         /**
@@ -93,14 +93,14 @@ void MainThread::ExecRecvProcecssReady()
         sendStream << initConfig.server.wasHostPort;
         sendStream << hostAddr.ip;
 
-        const bool bContorlEvent = EFCEvent::SendEvent(ELGO_PROC::ELGO_CONTROL,
+        const bool bContorlEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_CONTROL,
                             CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN, sendBytes);
         if(false == bContorlEvent)
         {
             ELGO_MAIN_LOG("SendEvent Error - %d", CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN);
         }
     }
-    else if(ELGO_PROC::Proc::ELGO_VIEWER == proc)
+    else if(ELGO_SYS::Proc::ELGO_VIEWER == proc)
     {
         // Not thing.
     }
@@ -149,7 +149,7 @@ void MainThread::ExecChangeDeviceOptions()
         sendStream << displayOnOff;
 
         MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displayOnOff);
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_CONTROL,
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
                                                     CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS, sendBytes);
         if(false == bSendEvent)
         {

@@ -39,8 +39,8 @@ void ViewerCtrl::SendViewerIsReady()
      */
     QByteArray bytes;
     QDataStream outStream(&bytes, QIODevice::WriteOnly);
-    outStream << ELGO_PROC::Proc::ELGO_VIEWER;
-    const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN,
+    outStream << ELGO_SYS::Proc::ELGO_VIEWER;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                 MAIN_EVENT::Event::PROCESS_IS_READY, bytes);
     if(false == bSendEvent)
     {

@@ -18,7 +18,7 @@
 static MainController *g_MainController = MainController::GetInstance();
 static MainEventHandler *g_EventHandler = NULL;
 
-bool StartProcess(::ELGO_PROC::Proc proc)
+bool StartProcess(::ELGO_SYS::Proc proc)
 {
     bool retValue = false;
 
@@ -55,8 +55,8 @@ void Initialize()
 
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
-    const bool bIsStaredControl = StartProcess(::ELGO_PROC::Proc::ELGO_CONTROL);
-    const bool bIsStaredViewer = StartProcess(::ELGO_PROC::Proc::ELGO_VIEWER);
+    const bool bIsStaredControl = StartProcess(::ELGO_SYS::Proc::ELGO_CONTROL);
+    const bool bIsStaredViewer = StartProcess(::ELGO_SYS::Proc::ELGO_VIEWER);
     ELGO_MAIN_LOG("[elgo_main] startProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     // IPC Event Listenner
-    g_EventHandler = new MainEventHandler(ELGO_PROC::Proc::ELGO_MAIN);
+    g_EventHandler = new MainEventHandler(ELGO_SYS::Proc::ELGO_MAIN);
 
     Initialize();
 

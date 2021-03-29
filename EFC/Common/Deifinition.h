@@ -3,7 +3,7 @@
 
 #include <QString>
 
-namespace ELGO_PROC
+namespace ELGO_SYS
 {
     enum Proc
     {

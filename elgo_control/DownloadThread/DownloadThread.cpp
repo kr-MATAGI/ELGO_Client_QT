@@ -1,9 +1,16 @@
+
+// EFC
+#include "LocalSocketEvent/EFCEvent.h"
+
 // Control
 #include "DownloadThread.h"
 #include "CurlDownload.h"
 #include "JSON/JsonParser.h"
 #include "JSON/JsonWriter.h"
 #include "Logger/ControlLogger.h"
+
+// Common
+#include "Common/Interface/ContentsPlayDataImpl.h"
 
 
 //========================================================
@@ -65,8 +72,62 @@ void DownloadThread::ExecDownloadResourceData()
                 if(true == bIsObjectDownload)
                 {
                     // object.json, elgo_control -> elgo_viewer
-                    ObjectJson::LayerObject objectJson;
-                    JsonParser::ParseObjectJsonResponse(objectResponse, objectJson);
+                    ObjectJson::PlayData playData;
+                    JsonParser::ParsePlayDataJson(objectResponse, playData);
+
+                    if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+                    {
+                        ObjectJson::CustomPlayDataJson customPlayData;
+                        customPlayData.playData = playData;
+                        JsonParser::ParseCustomPlayDataJsonResponse(objectResponse, customPlayData);
+
+                        /**
+                        * @note
+                        *       ELGO_CONTROL -> ELGO_VIEWER
+                        *       Send custom play data information
+                        * @param
+                        *       CustomPlayDataJson customPlayData
+                        */
+                        QByteArray bytes;
+                        QDataStream outStream(&bytes, QIODevice::WriteOnly);
+                        ObjectJsonDataStream::operator<<(outStream, customPlayData);
+
+                        const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                                      VIEWER_EVENT::CUSTOM_PLAY_DATA, bytes);
+                        if(false == bIsSendEvent)
+                        {
+                            ELGO_CONTROL_LOG("Error - Send custom play data");
+                        }
+                    }
+                    else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
+                    {
+                        ObjectJson::FixedPlayDataJson fixedPlayData;
+                        fixedPlayData.playData = playData;
+                        JsonParser::ParseFixedPlayDataJsonResponse(objectResponse, fixedPlayData);
+
+                        /**
+                        * @note
+                        *       ELGO_CONTROL -> ELGO_VIEWER
+                        *       Send fixed play data information
+                        * @param
+                        *       FixedPlayDataJson customPlayData
+                        */
+                        QByteArray bytes;
+                        QDataStream outStream(&bytes, QIODevice::WriteOnly);
+                        ObjectJsonDataStream::operator<<(outStream, fixedPlayData);
+
+                        const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                                      VIEWER_EVENT::FIXED_PLAY_DATA, bytes);
+                        if(false == bIsSendEvent)
+                        {
+                            ELGO_CONTROL_LOG("Error - Send fixed play data");
+                        }
+                    }
+                    else
+                    {
+                        ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
+                    }
+
                 }
                 else
                 {

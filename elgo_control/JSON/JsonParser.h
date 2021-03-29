@@ -13,6 +13,9 @@
 #include "Schema/ContentServerSchema.h"
 #include "DownloadThread/DownloadDef.h"
 
+// Common
+#include "Common/Interface/ContentsPlayDataImpl.h"
+
 namespace JsonParser
 {
     /** @brief */
@@ -46,18 +49,21 @@ namespace JsonParser
     /** @brief  Resource */
     void ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest);
 
-    /** @brief  Layer Object */
-    void ParseObjectJsonResponse(const QString& src, ObjectJson::LayerObject& dest);
+
     /** @brief */
-    void ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJson::PlayData& dest);
+    void ParsePlayDataJson(const QString& src, ObjectJson::PlayData& dest);
+    /** @brief  Custom Play Data */
+    void ParseCustomPlayDataJsonResponse(const QString& src, ObjectJson::CustomPlayDataJson& dest);
+    /** @brief  Custom Play Data */
+    void ParseFixedPlayDataJsonResponse(const QString& src, ObjectJson::FixedPlayDataJson& dest);
     /** @brief */
-    void ParseObjectPageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest);
+    void ParsePageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest);
     /** @brief */
-    void ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<ObjectJson::LayerData>& dest);
+    void ParseLayerDataJson(const QJsonArray& layerDataArr, QList<ObjectJson::LayerData>& dest);
     /** @brief */
-    void ParseObjectLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest);
+    void ParseLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest);
     /** @brief */
-    void ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest);
+    void ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest);
 
 
     /// Weather Info Parser

@@ -63,7 +63,7 @@ void NetworkCtrl::SendControlIsReady()
     QByteArray readyBytes;
     QDataStream readyStream(&readyBytes, QIODevice::WriteOnly);
     readyStream.setVersion(QDataStream::Qt_5_12);
-    readyStream << ELGO_PROC::Proc::ELGO_CONTROL;
+    readyStream << ELGO_SYS::Proc::ELGO_CONTROL;
 
     /**
      *  @note
@@ -72,7 +72,7 @@ void NetworkCtrl::SendControlIsReady()
      *  @param
      *          ELGO_PROC::Proc proc
      */
-    const bool bReadyEventy = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN,
+    const bool bReadyEventy = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                   MAIN_EVENT::PROCESS_IS_READY, readyBytes);
     if(false == bReadyEventy)
     {

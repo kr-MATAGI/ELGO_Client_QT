@@ -81,7 +81,7 @@ void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serv
     QByteArray sendBytes;
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
     sendStream << ip;
-    const bool bViewerEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
+    const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                   VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
     if(false == bViewerEvent)
     {

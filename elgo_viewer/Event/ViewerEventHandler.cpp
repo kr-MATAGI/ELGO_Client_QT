@@ -5,7 +5,7 @@
 #include <LocalSocketEvent/EFCEvent.h>
 
 //========================================================
-ViewerEventHandler::ViewerEventHandler(ELGO_PROC::Proc name, QObject *parent)
+ViewerEventHandler::ViewerEventHandler(ELGO_SYS::Proc name, QObject *parent)
     : LocalSocketServer(name, parent)
 //========================================================
 {

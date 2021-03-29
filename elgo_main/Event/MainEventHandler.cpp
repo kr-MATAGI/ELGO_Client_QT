@@ -6,7 +6,7 @@
 #include "MainEventHandler.h"
 
 //========================================================
-MainEventHandler::MainEventHandler(ELGO_PROC::Proc name, QObject *parent)
+MainEventHandler::MainEventHandler(ELGO_SYS::Proc name, QObject *parent)
     : LocalSocketServer(name, parent)
 //========================================================
 {

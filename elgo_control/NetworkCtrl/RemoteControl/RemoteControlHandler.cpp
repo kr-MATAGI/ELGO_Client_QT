@@ -141,7 +141,7 @@ Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& 
         quint8 heading = static_cast<quint8>(rotateDisplay.heading);
         dataStream << heading;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_VIEWER,
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                     VIEWER_EVENT::Event::ROTATE_DISPLAY, bytes);
         if(true == bSendEvent)
         {
@@ -184,7 +184,7 @@ Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& 
         dataStream << deviceOptions.deviceMute;
         dataStream << deviceOptions.contentPause;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_PROC::Proc::ELGO_MAIN,
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                     MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS, bytes);
         if(true == bSendEvent)
         {

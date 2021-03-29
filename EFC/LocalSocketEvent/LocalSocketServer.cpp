@@ -7,11 +7,11 @@
 #include "Logger/ELogger.h"
 
 //========================================================
-LocalSocketServer::LocalSocketServer(::ELGO_PROC::Proc proc, QObject *parent)
+LocalSocketServer::LocalSocketServer(::ELGO_SYS::Proc proc, QObject *parent)
     : QObject(parent)
 //========================================================
 {
-    m_procName = ::ELGO_PROC::ELGOProc_enum2str[proc];
+    m_procName = ::ELGO_SYS::ELGOProc_enum2str[proc];
 
     m_server.removeServer(m_procName);
     if(m_server.listen(m_procName))

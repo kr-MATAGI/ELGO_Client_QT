@@ -19,7 +19,7 @@ static ControlEventHandler *g_EventHandler = NULL;
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    g_EventHandler = new ControlEventHandler(ELGO_PROC::Proc::ELGO_CONTROL);
+    g_EventHandler = new ControlEventHandler(ELGO_SYS::Proc::ELGO_CONTROL);
 
     // control -> main
     g_NetworkController->GetNetworkCtrl().SendControlIsReady();

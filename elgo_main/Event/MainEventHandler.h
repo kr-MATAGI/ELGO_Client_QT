@@ -10,7 +10,7 @@
 class MainEventHandler : public LocalSocketServer
 {
 public:
-    MainEventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
+    MainEventHandler(ELGO_SYS::Proc name, QObject *parent = nullptr);
     virtual ~MainEventHandler();
 
 private:

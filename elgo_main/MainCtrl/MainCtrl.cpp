@@ -116,7 +116,7 @@ bool MainCtrl::GetDisplaySleepStatus()
 }
 
 //========================================================
-QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
+QString MainCtrl::MakeProcessPath(::ELGO_SYS::Proc proc)
 //========================================================
 {
     // TODO : load configuration path
@@ -132,9 +132,9 @@ QString MainCtrl::MakeProcessPath(::ELGO_PROC::Proc proc)
     }
 
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-    basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
+    basePath += ::ELGO_SYS::ELGOProc_enum2str[proc];
     basePath += "/";
-    basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
+    basePath += ::ELGO_SYS::ELGOProc_enum2str[proc];
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];
     basePath += "/debug/";

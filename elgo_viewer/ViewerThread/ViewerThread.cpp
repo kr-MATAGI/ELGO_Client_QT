@@ -11,6 +11,9 @@
 #include "QrCode/QrMaker.h"
 #include "ViewerThread.h"
 
+// Common
+#include "Common/Interface/ContentsPlayDataImpl.h"
+
 //========================================================
 ViewerThread::ViewerThread()
 //========================================================
@@ -51,6 +54,14 @@ void ViewerThread::run()
     {
         ExecRotateDeviceDisplay();
     }
+    else if(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA == m_event)
+    {
+        ExecRecvCustomPlayData();
+    }
+    else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
+    {
+        ExecRecvFixedPlayData();
+    }
     else
     {
         qDebug() << __FUNCTION__ << "Unkwon Event" ;
@@ -77,8 +88,7 @@ void ViewerThread::ExecMakeQrCodeThread()
     else
     {
         ViewerController::GetInstance()->GetViewerCtrl().SetIsDisplayQr(true);
-        QByteArray recvBytes = m_bytes;
-        QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+        QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
         QString url = "http://";
         QString ip;
         recvStream >> ip;
@@ -102,8 +112,7 @@ void ViewerThread::ExecRotateDeviceDisplay()
     *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
     */
 
-    QByteArray recvBytes = m_bytes;
-    QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     VIEWER_DEF::HEADING heading;
     quint8 data;
     recvStream >> data;
@@ -112,4 +121,45 @@ void ViewerThread::ExecRotateDeviceDisplay()
 
     // TODO : rotate content display window accroding to heading degree.
 
+
+
 }
+
+//========================================================
+void ViewerThread::ExecRecvCustomPlayData()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send custom play data information
+    * @param
+    *       CustomPlayDataJson customPlayData
+    */
+
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    ObjectJson::CustomPlayDataJson customPlayData;
+    ObjectJsonDataStream::operator>>(recvStream, customPlayData);
+
+    ELGO_VIEWER_LOG("custom name : %s", customPlayData.playData.name.toStdString().c_str());
+}
+
+//========================================================
+void ViewerThread::ExecRecvFixedPlayData()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send fixed play data information
+    * @param
+    *       FixedPlayDataJson customPlayData
+    */
+
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    ObjectJson::FixedPlayDataJson fixedPlayData;
+    ObjectJsonDataStream::operator>>(recvStream, fixedPlayData);
+
+    ELGO_VIEWER_LOG("fixed name : %s", fixedPlayData.playData.name.toStdString().c_str());
+}
+

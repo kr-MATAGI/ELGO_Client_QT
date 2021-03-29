@@ -1,6 +1,8 @@
 #ifndef EVENTLIST_H
 #define EVENTLIST_H
 
+#include <QDataStream>
+
 namespace COMM_EVENT
 {
     enum Event
@@ -95,6 +97,24 @@ namespace VIEWER_EVENT
         *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
         */
         ROTATE_DISPLAY = 770,
+
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Send custom play data information
+        * @param
+        *       CustomPlayDataJson customPlayData
+        */
+        CUSTOM_PLAY_DATA = 771,
+
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Send fixed play data information
+        * @param
+        *       FixedPlayDataJson customPlayData
+        */
+        FIXED_PLAY_DATA = 772,
 
         MAX_VIEWER_EVENT = 1023
     };

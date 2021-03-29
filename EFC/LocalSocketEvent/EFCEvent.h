@@ -9,7 +9,7 @@ class EFCEvent
 {
 public:
     /** @brief */
-    static bool SendEvent(ELGO_PROC::Proc proc, quint16 event, QByteArray &src);
+    static bool SendEvent(ELGO_SYS::Proc proc, quint16 event, QByteArray &src);
 };
 
 #endif // EFCEVENT_H

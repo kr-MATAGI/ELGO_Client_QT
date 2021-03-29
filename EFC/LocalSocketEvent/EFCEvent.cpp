@@ -4,12 +4,12 @@
 #include <QLocalSocket>
 #include <QDataStream>
 
-bool EFCEvent::SendEvent(ELGO_PROC::Proc proc, quint16 event, QByteArray &src)
+bool EFCEvent::SendEvent(ELGO_SYS::Proc proc, quint16 event, QByteArray &src)
 {
     bool retValue = true; // TODO : change to eunm of error (for details)
 
     QLocalSocket *socket = new QLocalSocket;
-    QString procName = ::ELGO_PROC::ELGOProc_enum2str[proc];
+    QString procName = ::ELGO_SYS::ELGOProc_enum2str[proc];
 
     if(socket)
     {

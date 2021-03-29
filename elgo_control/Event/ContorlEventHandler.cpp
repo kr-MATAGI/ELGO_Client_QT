@@ -6,7 +6,7 @@
 #include "ControlEventHandler.h"
 
 //========================================================
-ControlEventHandler::ControlEventHandler(ELGO_PROC::Proc proc, QObject *parent)
+ControlEventHandler::ControlEventHandler(ELGO_SYS::Proc proc, QObject *parent)
     : LocalSocketServer(proc, parent)
 //========================================================
 {

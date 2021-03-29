@@ -10,9 +10,10 @@
 QString JsonParser::LatestVersionParse(const QString &src)
 //========================================================
 {
-    QJsonDocument doc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = doc.object();
-    QString version = jsonObj["version"].toString();
+    const QJsonDocument& doc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = doc.object();
+
+    const QString& version = jsonObj["version"].toString();
     ELGO_CONTROL_LOG("Remote Version : %s", version.toUtf8().constData());
 
     return version;
@@ -22,8 +23,9 @@ QString JsonParser::LatestVersionParse(const QString &src)
 void JsonParser::ParseGetJwtResponse(const QString& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
     if(jsonObj.end() != jsonObj.find("newToken"))
     {
         dest = jsonObj["newToken"].toString();
@@ -40,8 +42,9 @@ Remote::Action JsonParser::PaseRemoteActionText(const QString &src)
 {
     Remote::Action action = Remote::Action::NONE_ACTION;
 
-    QJsonDocument doc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = doc.object();
+    const QJsonDocument& doc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = doc.object();
+
     if(jsonObj.end() != jsonObj.find("action"))
     {
         action = static_cast<Remote::Action>(jsonObj["action"].toInt());
@@ -60,18 +63,18 @@ bool JsonParser::ParseRemoteDeviceLogin(const QString &src, Remote::DeviceLogin 
 {
     bool retValue = true;
 
-    QJsonDocument doc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = doc.object();
+    const QJsonDocument& doc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = doc.object();
 
     // deviceLogin
     if(jsonObj.end() != jsonObj.find("deviceLogin"))
     {
-        QJsonObject deviceObj = jsonObj["deviceLogin"].toObject();
+        const QJsonObject& deviceObj = jsonObj["deviceLogin"].toObject();
 
         // id
         if(deviceObj.end() != deviceObj.find("id"))
         {
-            QString deviceId = deviceObj["id"].toString();
+            const QString& deviceId = deviceObj["id"].toString();
             dest.id = deviceId;
         }
         else
@@ -83,7 +86,7 @@ bool JsonParser::ParseRemoteDeviceLogin(const QString &src, Remote::DeviceLogin 
         // pw
         if(deviceObj.end() != deviceObj.find("pw"))
         {
-            QString devicePw = deviceObj["pw"].toString();
+            const QString& devicePw = deviceObj["pw"].toString();
             dest.pw = devicePw;
         }
         else
@@ -107,18 +110,18 @@ bool JsonParser::ParseRemoteManageDevice(const QString &src, Remote::ManageDevic
 {
     bool retValue = true;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
 
     // manageDevice
     if(jsonObj.end() != jsonObj.find("manageDevice"))
     {
-        QJsonObject manageDevie = jsonObj["manageDevice"].toObject();
+        const QJsonObject& manageDevie = jsonObj["manageDevice"].toObject();
 
         // oldPassword
         if(manageDevie.end() != manageDevie.find("oldPassword"))
         {
-            QString oldPw = manageDevie["oldPassword"].toString();
+            const QString& oldPw = manageDevie["oldPassword"].toString();
             dest.oldPw = oldPw;
         }
         else
@@ -130,7 +133,7 @@ bool JsonParser::ParseRemoteManageDevice(const QString &src, Remote::ManageDevic
         // newPassword
         if(manageDevie.end() != manageDevie.find("newPassword"))
         {
-            QString newPw = manageDevie["newPassword"].toString();
+            const QString& newPw = manageDevie["newPassword"].toString();
             dest.newPw = newPw;
         }
         else
@@ -154,13 +157,13 @@ bool JsonParser::ParseRemoteRotateDevice(const QString &src, Remote::RotateDispl
 {
     bool retValue = true;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
 
     // Rotate Display
     if(jsonObj.end() != jsonObj.find("rotateDisplay"))
     {
-        QJsonObject rotateDisplay = jsonObj["rotateDisplay"].toObject();
+        const QJsonObject& rotateDisplay = jsonObj["rotateDisplay"].toObject();
 
         // newHeading
         if(rotateDisplay.end() != rotateDisplay.find("newHeading"))
@@ -189,13 +192,13 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
 {
     bool retValue = true;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
 
     // Device Options
     if(jsonObj.end() != jsonObj.find("deviceOptions"))
     {
-        QJsonObject deviceOptions = jsonObj["deviceOptions"].toObject();
+        const QJsonObject& deviceOptions = jsonObj["deviceOptions"].toObject();
 
         // displayOnOff
         if(deviceOptions.end() != deviceOptions.find("displayOnOff"))
@@ -248,13 +251,13 @@ bool JsonParser::ParseContentServerJsonResponse(const QString& src, ContentSchem
 {
     bool retValue = true;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
 
     // Event
     if(jsonObj.end() != jsonObj.find("event"))
     {
-        QString event = jsonObj["event"].toString();
+        const QString& event = jsonObj["event"].toString();
         dest.event = JsonStringConverter::ContentServerEventStringToEnum(event);
     }
     else
@@ -267,7 +270,7 @@ bool JsonParser::ParseContentServerJsonResponse(const QString& src, ContentSchem
     if(jsonObj.end() != jsonObj.find("payload"))
     {
         ContentSchema::Payload paylod;
-        QJsonObject playLoadObj = jsonObj["payload"].toObject();
+        const QJsonObject& playLoadObj = jsonObj["payload"].toObject();
 
         const bool bIsParsing = JsonParser::ParsePayloadResponse(playLoadObj, paylod);
         if(false == bIsParsing)
@@ -296,7 +299,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
     // src - Required
     if(payloadObj.end() != payloadObj.find("src"))
     {
-        QString src = payloadObj["src"].toString();
+        const QString& src = payloadObj["src"].toString();
         dest.src = src;
     }
     else
@@ -308,7 +311,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
     // dest - Required
     if(payloadObj.end() != payloadObj.find("dst"))
     {
-        QString dst = payloadObj["dst"].toString();
+        const QString& dst = payloadObj["dst"].toString();
         dest.dest = dst;
     }
     else
@@ -320,7 +323,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
     // type - Required
     if(payloadObj.end() != payloadObj.find("type"))
     {
-        QString type = payloadObj["type"].toString();
+        const QString& type = payloadObj["type"].toString();
         dest.type = JsonStringConverter::ContentServerPayloadTypeStringToEnum(type);
     }
     else
@@ -332,21 +335,21 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
     // d_name (device name) - NOT Required
     if(payloadObj.end() != payloadObj.find("d_name"))
     {
-        QString deviceName = payloadObj["d_name"].toString();
+        const QString& deviceName = payloadObj["d_name"].toString();
         dest.deviceName = deviceName;
     }
 
     // URL - if event name is 'singlePlay', 'url' is Required
     if(payloadObj.end() != payloadObj.find("url"))
     {
-        QString url = payloadObj["url"].toString();
+        const QString& url = payloadObj["url"].toString();
         dest.url = url;
     }
 
     // message - NOT Required
     if(payloadObj.end() != payloadObj.find("message"))
     {
-        QString message = payloadObj["message"].toString();
+        const QString& message = payloadObj["message"].toString();
         dest.message = message;
     }
 
@@ -359,7 +362,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
 {
     bool retValue = true;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
     const QJsonObject& jsonObj = jsonDoc.object();
 
     if(jsonObj.end() != jsonObj.find("schedules"))
@@ -372,18 +375,18 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
             ScheduleJson::Schedules schedules;
             schedules.id = constIter.key();
 
-            const QJsonArray valueArray = constIter.value().toArray();
+            const QJsonArray& valueArray = constIter.value().toArray();
             QJsonArray::const_iterator arrIter = valueArray.constBegin();
             QJsonArray::const_iterator arrEnd = valueArray.constEnd();
             while(arrIter != arrEnd)
             {
                 ScheduleJson::ScheduleData scheduleData;
-                const QJsonObject arrObj = arrIter->toObject();
+                const QJsonObject& arrObj = arrIter->toObject();
 
                 // start
                 if(arrObj.end() != arrObj.find("start"))
                 {
-                    QString startStr = arrObj["start"].toString();
+                    const QString& startStr = arrObj["start"].toString();
                     QDateTime startDateTime;
                     JsonStringConverter::ScheduleDateTimeStringToQDateTime(startStr, startDateTime);
                     scheduleData.startTime = startDateTime;
@@ -397,7 +400,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
                 // end
                 if(arrObj.end() != arrObj.find("end"))
                 {
-                    QString endStr = arrObj["end"].toString();
+                    const QString& endStr = arrObj["end"].toString();
                     QDateTime endDateTime;
                     JsonStringConverter::ScheduleDateTimeStringToQDateTime(endStr, endDateTime);
                     scheduleData.endTime = endDateTime;
@@ -411,7 +414,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
                 // rule
                 if(arrObj.end() != arrObj.find("rule"))
                 {
-                    QString rule = arrObj["rule"].toString();
+                    const QString& rule = arrObj["rule"].toString();
                     ScheduleJson::Cron cron;
                     JsonStringConverter::CronCommandStringToStruct(rule, cron);
                     scheduleData.cron = cron;
@@ -425,7 +428,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
                 // name
                 if(arrObj.end() != arrObj.find("name"))
                 {
-                    QString name = arrObj["name"].toString();
+                    const QString& name = arrObj["name"].toString();
                     scheduleData.name = name;
                 }
                 else
@@ -455,7 +458,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
 void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
     const QJsonArray& resourceArray = jsonDoc.array();
 
     const int resourceSize = resourceArray.size();
@@ -497,38 +500,71 @@ void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::R
 }
 
 //========================================================
-void JsonParser::ParseObjectJsonResponse(const QString& src, ObjectJson::LayerObject& dest)
+void JsonParser::ParseCustomPlayDataJsonResponse(const QString& src, ObjectJson::CustomPlayDataJson& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    const QJsonObject jsonObj = jsonDoc.object();
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
 
-    // play data
-    ObjectJson::PlayData playData;
-    ParseObjectPlayDataJson(jsonObj, playData);
-    dest.playData = playData;
-
-
-    if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+    if(jsonObj.end() != jsonObj.find("page_data"))
     {
-        // page data - custom play data type
-        const QJsonArray pageDataArr = jsonObj["page_data"].toArray();
-        ParseObjectPageDataJson(pageDataArr, dest.pageDataList);
-    }
-    else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
-    {
-        // layer data - fixed play data type
+        const QJsonArray& pageDataArr = jsonObj["page_data"].toArray();
+        if(0 < pageDataArr.size())
+        {
+            QList<ObjectJson::PageData> pageDataList;
+            ParsePageDataJson(pageDataArr, pageDataList);
+            dest.pageDataList = pageDataList;
+        }
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon Play Data Type: %d, Failed Paring", playData.playDataType);
+        ELGO_CONTROL_LOG("Error - Not Existed customData.page_data");
     }
 }
 
 //========================================================
-void JsonParser::ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJson::PlayData& dest)
+void JsonParser::ParseFixedPlayDataJsonResponse(const QString& src, ObjectJson::FixedPlayDataJson& dest)
 //========================================================
 {
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
+    // lyaer Data
+    if(jsonObj.end() != jsonObj.find("layer_data"))
+    {
+
+        QList<ObjectJson::LayerData> layerDataList;
+        const QJsonArray& layerDataArr = jsonObj["layer_data"].toArray();
+        ParseLayerDataJson(layerDataArr, layerDataList);
+
+        dest.layerDataList = layerDataList;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Not Existed fixedPlay.layer_data");
+    }
+
+    // subtitle Data
+    if(jsonObj.end() != jsonObj.find("subtitle_data"))
+    {
+        const QJsonArray& subtitleDataArr = jsonObj["subtitle_data"].toArray();
+        if(0 < subtitleDataArr.size())
+        {
+            QList<ObjectJson::SubtitleData> subtitleDataList;
+            ParseSubtitleDataJson(subtitleDataArr, subtitleDataList);
+
+            dest.subtitleDataList = subtitleDataList;
+        }
+    }
+}
+
+//========================================================
+void JsonParser::ParsePlayDataJson(const QString& src, ObjectJson::PlayData& dest)
+//========================================================
+{
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& playDataObj = jsonDoc.object();
+
     if(playDataObj.end() != playDataObj.find("play_data_id"))
     {
         const int id = playDataObj["play_data_id"].toInt();
@@ -537,13 +573,13 @@ void JsonParser::ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJ
 
     if(playDataObj.end() != playDataObj.find("pld_name"))
     {
-        const QString name = playDataObj["pld_name"].toString();
+        const QString& name = playDataObj["pld_name"].toString();
         dest.name = name;
     }
 
     if(playDataObj.end() != playDataObj.find("pld_memo"))
     {
-        const QString memo = playDataObj["pld_widht"].toString();
+        const QString& memo = playDataObj["pld_widht"].toString();
         dest.memo = memo;
     }
 
@@ -561,21 +597,21 @@ void JsonParser::ParseObjectPlayDataJson(const QJsonObject& playDataObj, ObjectJ
 
     if(playDataObj.end() != playDataObj.find("pld_orientation"))
     {
-        const QString orientationStr = playDataObj["pld_orientation"].toString();
+        const QString& orientationStr = playDataObj["pld_orientation"].toString();
         const ObjectJson::Orientation orientation = JsonStringConverter::OrientationTypeStringToEnum(orientationStr);
         dest.orientation = orientation;
     }
 
     if(playDataObj.end() != playDataObj.find("pld_type"))
     {
-        const QString playDataTypeStr = playDataObj["pld_type"].toString();
+        const QString& playDataTypeStr = playDataObj["pld_type"].toString();
         const ObjectJson::PlayDataType playDataType = JsonStringConverter::PlayDataTypeStringToEnum(playDataTypeStr);
         dest.playDataType = playDataType;
     }
 }
 
 //========================================================
-void JsonParser::ParseObjectPageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest)
+void JsonParser::ParsePageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest)
 //========================================================
 {
     const int pageDataArrSize = pageDataArr.size();
@@ -583,7 +619,7 @@ void JsonParser::ParseObjectPageDataJson(const QJsonArray& pageDataArr, QList<Ob
     {
         ObjectJson::PageData pageData;
 
-        const QJsonObject pageDataObj = pageDataArr[idx].toObject();
+        const QJsonObject& pageDataObj = pageDataArr[idx].toObject();
         if(pageDataObj.end() != pageDataObj.find("pgd_duration"))
         {
             const int duration = pageDataObj["pgd_duration"].toInt();
@@ -591,19 +627,19 @@ void JsonParser::ParseObjectPageDataJson(const QJsonArray& pageDataArr, QList<Ob
         }
 
         // layer data
-        const QJsonArray layerDataArr = pageDataObj["layer_data"].toArray();
-        ParseObjectLayerDataJson(layerDataArr, pageData.layerDataList);
+        const QJsonArray& layerDataArr = pageDataObj["layer_data"].toArray();
+        ParseLayerDataJson(layerDataArr, pageData.layerDataList);
 
         // subtitle data
-        const QJsonArray subtitleDataArr = pageDataObj["subtitle_data"].toArray();
-        ParseObjectSubtitleDataJson(subtitleDataArr, pageData.subtitleDataList);
+        const QJsonArray& subtitleDataArr = pageDataObj["subtitle_data"].toArray();
+        ParseSubtitleDataJson(subtitleDataArr, pageData.subtitleDataList);
 
         dest.push_back(pageData);
     }
 }
 
 //========================================================
-void JsonParser::ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<ObjectJson::LayerData>& dest)
+void JsonParser::ParseLayerDataJson(const QJsonArray& layerDataArr, QList<ObjectJson::LayerData>& dest)
 //========================================================
 {
     const int layDataArrSize = layerDataArr.size();
@@ -611,7 +647,7 @@ void JsonParser::ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<
     {
         ObjectJson::LayerData layerData;
 
-        const QJsonObject layerDataObj = layerDataArr[idx].toObject();
+        const QJsonObject& layerDataObj = layerDataArr[idx].toObject();
         if(layerDataObj.end() != layerDataObj.find("ld_top"))
         {
             const int top = layerDataObj["ld_top"].toInt();
@@ -639,8 +675,8 @@ void JsonParser::ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<
         // layer content
         if(layerDataObj.end() != layerDataObj.find("ld_content"))
         {
-            const QJsonObject layerContentObj = layerDataObj["ld_content"].toObject();
-            ParseObjectLayerContentJson(layerContentObj, layerData.layContent);
+            const QJsonObject& layerContentObj = layerDataObj["ld_content"].toObject();
+            ParseLayerContentJson(layerContentObj, layerData.layerContent);
         }
 
         dest.push_back(layerData);
@@ -648,16 +684,16 @@ void JsonParser::ParseObjectLayerDataJson(const QJsonArray& layerDataArr, QList<
 }
 
 //========================================================
-void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest)
+void JsonParser::ParseLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest)
 //========================================================
 {
     if(layerContentObj.end() != layerContentObj.find("type"))
     {
-        const QString typeString = layerContentObj["type"].toString();
-        const QStringList dividedType = typeString.split("/");
+        const QString& typeString = layerContentObj["type"].toString();
+        const QStringList& dividedType = typeString.split("/");
 
-        const QString contentTypeStr = dividedType[0];
-        const QString mediaTypeStr = dividedType[1];
+        const QString& contentTypeStr = dividedType[0];
+        const QString& mediaTypeStr = dividedType[1];
         const ObjectJson::ContentType contentType
                 = JsonStringConverter::ContentTypeStringToEnum(contentTypeStr);
         const ObjectJson::MediaType mediaType
@@ -669,19 +705,19 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
 
     if(layerContentObj.end() != layerContentObj.find("name"))
     {
-        const QString name = layerContentObj["name"].toString();
+        const QString& name = layerContentObj["name"].toString();
         dest.name = name;
     }
 
     if(layerContentObj.end() != layerContentObj.find("color"))
     {
-        const QString fontColor = layerContentObj["color"].toString();
+        const QString& fontColor = layerContentObj["color"].toString();
         dest.fontColor = fontColor;
     }
 
     if(layerContentObj.end() != layerContentObj.find("bg_color"))
     {
-        const QString backgroundColor = layerContentObj["bg_color"].toString();
+        const QString& backgroundColor = layerContentObj["bg_color"].toString();
         dest.backgroundColor = backgroundColor;
     }
 
@@ -696,7 +732,7 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
     {
         if(layerContentObj.end() != layerContentObj.find("hour_type"))
         {
-            const QString hourTypeStr = layerContentObj["hour_type"].toString();
+            const QString& hourTypeStr = layerContentObj["hour_type"].toString();
             const ObjectJson::HourType hourType
                     = JsonStringConverter::HourTypeStringToEnum(hourTypeStr);
             dest.hourType = hourType;
@@ -708,7 +744,7 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
     {
         if(layerContentObj.end() != layerContentObj.find("date_type"))
         {
-           const QString dateTypeStr = layerContentObj["date_type"].toString();
+           const QString& dateTypeStr = layerContentObj["date_type"].toString();
            const ObjectJson::DateType dateType
                    = JsonStringConverter::DateTypeStringToEnum(dateTypeStr);
            dest.dateType = dateType;
@@ -720,25 +756,25 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
     {
         if(layerContentObj.end() != layerContentObj.find("area"))
         {
-            const QString metropolCityStr = layerContentObj["area"].toString();
+            const QString& metropolCityStr = layerContentObj["area"].toString();
             dest.metropolCity = metropolCityStr;
         }
 
         if(layerContentObj.end() != layerContentObj.find("area_name"))
         {
-            const QString metropolCityNameStr = layerContentObj["area_name"].toString();
+            const QString& metropolCityNameStr = layerContentObj["area_name"].toString();
             dest.metropolCityName = metropolCityNameStr;
         }
 
         if(layerContentObj.end() != layerContentObj.find("area2"))
         {
-            const QString cityStr = layerContentObj["area2"].toString();
+            const QString& cityStr = layerContentObj["area2"].toString();
             dest.city = cityStr;
         }
 
         if(layerContentObj.end() != layerContentObj.find("area2_name"))
         {
-            const QString cityNameStr = layerContentObj["area2_name"].toString();
+            const QString& cityNameStr = layerContentObj["area2_name"].toString();
             dest.cityName = cityNameStr;
         }
     }
@@ -748,7 +784,7 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
     {
         if(layerContentObj.end() != layerContentObj.find("category"))
         {
-            const QString newsCategoryStr = layerContentObj["category"].toString();
+            const QString& newsCategoryStr = layerContentObj["category"].toString();
             const ObjectJson::NewsCategory newsCategory =
                     JsonStringConverter::NewsCategoryStringToEnum(newsCategoryStr);
             dest.newsCategory = newsCategory;
@@ -756,21 +792,21 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
 
         if(layerContentObj.end() != layerContentObj.find("news_count"))
         {
-            const QString newsCountStr = layerContentObj["news_count"].toString();
+            const QString& newsCountStr = layerContentObj["news_count"].toString();
             const int newsCount = newsCountStr.toInt();
             dest.newsBoxCount = newsCount;
         }
 
         if(layerContentObj.end() != layerContentObj.find("font_size"))
         {
-            const QString newsFontSizeStr = layerContentObj["font_size"].toString();
+            const QString& newsFontSizeStr = layerContentObj["font_size"].toString();
             const int newsFontSize = newsFontSizeStr.toInt();
             dest.newsfontSize = newsFontSize;
         }
 
         if(layerContentObj.end() != layerContentObj.find("news_bg_color"))
         {
-            const QString newsBoxBackgroundColor = layerContentObj["news_bg_color"].toString();
+            const QString& newsBoxBackgroundColor = layerContentObj["news_bg_color"].toString();
             dest.newsBoxColor = newsBoxBackgroundColor;
         }
 
@@ -783,7 +819,7 @@ void JsonParser::ParseObjectLayerContentJson(const QJsonObject& layerContentObj,
 }
 
 //========================================================
-void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest)
+void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest)
 //========================================================
 {
     const int subtitleArrSize = subtitleDataArr.size();
@@ -791,7 +827,7 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
     {
         ObjectJson::SubtitleData subtitleData;
 
-        const QJsonObject subtitleObj = subtitleDataArr[idx].toObject();
+        const QJsonObject& subtitleObj = subtitleDataArr[idx].toObject();
         if(subtitleObj.end() != subtitleObj.find("sd_top"))
         {
             const int top = subtitleObj["sd_top"].toInt();
@@ -818,7 +854,7 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
 
         if(subtitleObj.end() != subtitleObj.find("sd_text"))
         {
-            const QString text = subtitleObj["sd_text"].toString();
+            const QString& text = subtitleObj["sd_text"].toString();
             subtitleData.text = text;
         }
 
@@ -837,7 +873,7 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
 
         if(subtitleObj.end() != subtitleObj.find("sd_orientation"))
         {
-            const QString subtitleOriStr = subtitleObj["sd_orientation"].toString();
+            const QString& subtitleOriStr = subtitleObj["sd_orientation"].toString();
             const ObjectJson::Orientation orientation
                     = JsonStringConverter::OrientationTypeStringToEnum(subtitleOriStr);
             subtitleData.orientation = orientation;
@@ -847,7 +883,7 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
         {
             if(subtitleObj.end() != subtitleObj.find("sd_direction"))
             {
-                const QString subtitleDirStr = subtitleObj["sd_direction"].toString();
+                const QString& subtitleDirStr = subtitleObj["sd_direction"].toString();
                 const ObjectJson::SubtitleDirection direction
                         = JsonStringConverter::SubtitleDirectionStringToEnum(subtitleDirStr);
                 subtitleData.direction = direction;
@@ -855,7 +891,7 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
 
             if(subtitleObj.end() != subtitleObj.find("sd_behavior"))
             {
-                const QString subtitleActionStr = subtitleObj["sd_behavior"].toString();
+                const QString& subtitleActionStr = subtitleObj["sd_behavior"].toString();
                 const ObjectJson::SubtitleAction action
                         = JsonStringConverter::SubtitleActionStringToEnum(subtitleActionStr);
                 subtitleData.action = action;
@@ -870,13 +906,13 @@ void JsonParser::ParseObjectSubtitleDataJson(const QJsonArray& subtitleDataArr, 
 
         if(subtitleObj.end() != subtitleObj.find("sd_background_color"))
         {
-            const QString backgroundColor = subtitleObj["sd_background_color"].toString();
+            const QString& backgroundColor = subtitleObj["sd_background_color"].toString();
             subtitleData.backgroundColor = backgroundColor;
         }
 
         if(subtitleObj.end() != subtitleObj.find("sd_font_color"))
         {
-            const QString fontColor = subtitleObj["sd_font_color"].toString();
+            const QString& fontColor = subtitleObj["sd_font_color"].toString();
             subtitleData.fontColor = fontColor;
         }
 
@@ -896,7 +932,7 @@ bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::W
 {
     bool retValue = false;
 
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
     const QJsonObject& jsonObj = jsonDoc.object();
 
     if(jsonObj.end() != jsonObj.find("response"))
@@ -956,7 +992,7 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
             }
             else if(0 == strcmp("T1H", category.c_str()))
             {
-                const QString t1h = itemObj["fcstValue"].toString();
+                const QString& t1h = itemObj["fcstValue"].toString();
                 dest.SetT1h(t1h);
             }
             else if(0 == strcmp("RN1", category.c_str()))
@@ -971,12 +1007,12 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
             }
             else if(0 == strcmp("VEC", category.c_str()))
             {
-                const QString vec = itemObj["fcstValue"].toString();
+                const QString& vec = itemObj["fcstValue"].toString();
                 dest.SetVec(vec);
             }
             else if(0 == strcmp("WSD", category.c_str()))
             {
-                const QString wsd = itemObj["fcstValue"].toString();
+                const QString& wsd = itemObj["fcstValue"].toString();
                 dest.SetWsd(wsd);
             }
         }

@@ -19,7 +19,7 @@ public:
     void LoadCurrentDeviceInfo();
 
     /** @brief */
-    QString MakeProcessPath(::ELGO_PROC::Proc proc);   
+    QString MakeProcessPath(::ELGO_SYS::Proc proc);   
 
     /** @brief */
     bool CheckingWirelessInternet();

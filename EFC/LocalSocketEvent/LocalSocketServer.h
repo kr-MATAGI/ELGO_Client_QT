@@ -13,7 +13,7 @@ class LocalSocketServer : public QObject
 {
     Q_OBJECT
 public:
-    LocalSocketServer(::ELGO_PROC::Proc name, QObject *parent = nullptr);
+    LocalSocketServer(::ELGO_SYS::Proc name, QObject *parent = nullptr);
     ~LocalSocketServer();
 
 private:

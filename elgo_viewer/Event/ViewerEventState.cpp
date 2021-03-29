@@ -15,6 +15,10 @@ ViewerEventState::ViewerEventState()
                           &ViewerEventState::MakeQrCodeAndDisplay);
     m_state.RegisterEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY,
                           &ViewerEventState::RotateDeviceDisplay);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA,
+                          &ViewerEventState::RecvCustomPlayData);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA,
+                          &ViewerEventState::RecvFixedPlayData);
 }
 
 //========================================================
@@ -63,10 +67,42 @@ void ViewerEventState::RotateDeviceDisplay(QByteArray& src)
     * @param
     *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
     */
-    QDataStream out(&src, QIODevice::ReadOnly);
-
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY);
+    thread->SetRecvBytes(src);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvCustomPlayData(QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send custom play data information
+    * @param
+    *       CustomPlayDataJson customPlayData
+    */
+    ViewerThread *thread = new ViewerThread;
+    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
+    thread->SetRecvBytes(src);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvFixedPlayData(QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send fixed play data information
+    * @param
+    *       FixedPlayDataJson customPlayData
+    */
+    ViewerThread *thread = new ViewerThread;
+    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA);
     thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

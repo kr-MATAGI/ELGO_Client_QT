@@ -30,6 +30,12 @@ public:
     /** @brief */
     void RotateDeviceDisplay(QByteArray& src);
 
+    /** @brief */
+    void RecvCustomPlayData(QByteArray& src);
+
+    /** @brief */
+    void RecvFixedPlayData(QByteArray& src);
+
 public:
     QThreadPool *m_threadPool;
     EventState<ViewerEventState> m_state;

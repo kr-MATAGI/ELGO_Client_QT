@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 //    g_MainWindow->setStyleSheet("background-color: rgb(255, 255, 0);");
 
     // Event Listenner
-    g_EventHandler = new ViewerEventHandler(ELGO_PROC::Proc::ELGO_VIEWER);
+    g_EventHandler = new ViewerEventHandler(ELGO_SYS::Proc::ELGO_VIEWER);
 
     // Send proccess ready status to MAIN
     // TODO : If socket is not opened, occured App crush.

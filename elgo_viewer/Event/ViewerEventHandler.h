@@ -8,7 +8,7 @@ class ViewerEventHandler : public LocalSocketServer
 {
 
 public:
-    ViewerEventHandler(ELGO_PROC::Proc name, QObject *parent = nullptr);
+    ViewerEventHandler(ELGO_SYS::Proc name, QObject *parent = nullptr);
     virtual ~ViewerEventHandler();
 
 private slots:

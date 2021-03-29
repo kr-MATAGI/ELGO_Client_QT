@@ -32,6 +32,12 @@ public:
     /** @brief */
     void ExecRotateDeviceDisplay();
 
+    /** @brief */
+    void ExecRecvCustomPlayData();
+
+    /** @brief */
+    void ExecRecvFixedPlayData();
+
 public:
     /** @brief */
     void SetViewerEvent(VIEWER_EVENT::Event event);

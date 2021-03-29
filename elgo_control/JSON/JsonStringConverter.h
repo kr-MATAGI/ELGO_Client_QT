@@ -7,6 +7,9 @@
 // Control
 #include "Schema/ContentServerSchema.h"
 
+// Common
+#include "Common/Interface/ConetnsPlayDataDef.h"
+
 namespace JsonStringConverter
 {
     /// string to enum

@@ -10,7 +10,7 @@
 class ControlEventHandler : public LocalSocketServer
 {
 public:
-    ControlEventHandler(ELGO_PROC::Proc proc, QObject *parent = nullptr);
+    ControlEventHandler(ELGO_SYS::Proc proc, QObject *parent = nullptr);
     virtual ~ControlEventHandler();
 
 private slots:
