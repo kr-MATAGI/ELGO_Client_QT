@@ -71,6 +71,21 @@ namespace ScheduleJson
         QList<PowerScheduleData> onScheduleList;
         QList<PowerScheduleData> offScheduleList;
     };
+
+
+    /** @brief  Single Play Schedule */
+    struct SinglePlayData
+    {
+        QDateTime startTime;
+        QDateTime endTime;
+        Cron cron;
+        QString name;
+    };
+
+    struct SinglePlaySchedules
+    {
+        QList<SinglePlayData> schduleList;
+    };
 }
 
 #endif // PLAYSCHEDULEDEF_H

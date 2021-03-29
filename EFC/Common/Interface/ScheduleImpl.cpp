@@ -130,6 +130,32 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& 
 }
 
 //========================================================
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlaySchedules& src)
+//========================================================
+{
+    const int scheduleListSize = src.schduleList.size();
+    ds << scheduleListSize;
+    for(int idx = 0; idx < scheduleListSize; idx++)
+    {
+        ds << src.schduleList[idx];
+    }
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayData& src)
+//========================================================
+{
+    ds << src.startTime;
+    ds << src.endTime;
+    ds << src.cron;
+    ds << src.name;
+
+    return ds;
+}
+
+//========================================================
 QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlaySchedules& dest)
 //========================================================
 {
@@ -274,6 +300,34 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest)
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest)
+//========================================================
+{
+    int scheduleListSize = 0;
+    ds >> scheduleListSize;
+    for(int idx = 0; idx < scheduleListSize; idx++)
+    {
+        ScheduleJson::SinglePlayData singlePlayData;
+        ds >> singlePlayData;
+        dest.schduleList.push_back(singlePlayData);
+    }
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayData dest)
+//========================================================
+{
+    ds >> dest.startTime;
+    ds >> dest.endTime;
+    ds >> dest.cron;
+    ds >> dest.name;
 
     return ds;
 }

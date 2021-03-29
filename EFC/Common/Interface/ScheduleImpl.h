@@ -11,9 +11,8 @@
  *  @note   elgo_control <-> elgo_viewer, serialize function
  */
 
-/** @brief  PlaySchedules Serialize */
+/** @brief  Play Schedules Serialize */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedules& src);
-
 /** @brief */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& src);
 /** @brief */
@@ -22,19 +21,23 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::Cron& src);
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::CronOption& src);
 
 
-/** @brief  PowerSchedules Serialize */
+/** @brief  Power Schedules Serialize */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedules& src);
-
 /** @brief */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& src);
+
+
+/** @brief  Single Play Schdeuls Serialize */
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlaySchedules& src);
+/** @brief */
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayData& src);
 
 
 /**
  *  @note   elgo_control <-> elgo_viewer, deserialize function
  */
-/** @brief  PlaySchedules Desrialize */
+/** @brief  Play Schedules Desrialize */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PlaySchedules& dest);
-
 /** @brief */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest);
 /** @brief */
@@ -43,12 +46,15 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::Cron& dest);
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::CronOption& dest);
 
 
-
-/** @brief  PowerSchedules Deserialize */
+/** @brief  Power Schedules Deserialize */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedules& dest);
-
 /** @brief */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest);
 
+
+/** @brief  Single Play Schdeuls Serialize */
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest);
+/** @brief */
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayData dest);
 
 #endif // PLAYSCHEDULEIMPL_H
