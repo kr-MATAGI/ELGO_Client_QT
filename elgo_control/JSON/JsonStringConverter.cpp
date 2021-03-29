@@ -944,8 +944,24 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - %s rule : %s",
-                         ScheduleJson::CronFormatEnumToStr[format], src.toUtf8().constData());
+        QString typeId = typeid(src.toInt()).name();
+        if( 0 == typeId.compare("int"))
+        {
+            if(ScheduleJson::CronFormat::DOW == format)
+            {
+                const int qtDow = GetConvertedDayOfWeek(src.toInt());
+                dest.push_back(qtDow);
+            }
+            else
+            {
+                dest.push_back(src.toInt());
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - %s rule : %s",
+                             ScheduleJson::CronFormatEnumToStr[format], src.toUtf8().constData());
+        }
     }
 }
 
