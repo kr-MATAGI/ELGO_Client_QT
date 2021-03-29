@@ -64,7 +64,7 @@ void ViewerThread::run()
     }
     else
     {
-        qDebug() << __FUNCTION__ << "Unkwon Event" ;
+        ELGO_VIEWER_LOG("Error - Unkwon Event : %d", m_event);
     }
 }
 

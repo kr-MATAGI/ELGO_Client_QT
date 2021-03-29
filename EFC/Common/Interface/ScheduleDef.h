@@ -11,6 +11,7 @@ namespace ScheduleJson
     /** @brief */
     enum CronFormat
     {
+        NONE_CRON_FORMAT = 0,
         SEC = 1,
         MIN = 2,
         HOUR = 3,
@@ -18,6 +19,9 @@ namespace ScheduleJson
         MONTH = 5,
         DOW = 6
     };
+
+    static const char* CronFormatEnumToStr[] = {"none", "sec", "min", "hour",
+                                               "day", "month", "DOW"};
 
     /** @brief */
     struct CronOption
