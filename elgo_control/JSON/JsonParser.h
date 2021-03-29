@@ -15,7 +15,7 @@
 
 // Common
 #include "Common/Interface/ContentsPlayDataImpl.h"
-#include "Common/Interface/PlayScheduleDef.h"
+#include "Common/Interface/ScheduleDef.h"
 
 namespace JsonParser
 {
@@ -45,18 +45,18 @@ namespace JsonParser
     bool ParsePayloadResponse(const QJsonObject& payloadObj, ContentSchema::Payload& dest);
 
     /** @brief  Schedules */
-    bool ParseSchedulesResponse(const QString& src, QList<ScheduleJson::Schedules>& dest);
+    bool ParseSchedulesResponse(const QString& src, QList<ScheduleJson::PlaySchedules>& dest);
 
     /** @brief  Resource */
     void ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest);
 
 
-    /** @brief */
+    /** @brief  Play Data */
     void ParsePlayDataJson(const QString& src, ObjectJson::PlayData& dest);
     /** @brief  Custom Play Data */
-    void ParseCustomPlayDataJsonResponse(const QString& src, ObjectJson::CustomPlayDataJson& dest);
+    void ParseCustomPlayDataJson(const QString& src, ObjectJson::CustomPlayDataJson& dest);
     /** @brief  Custom Play Data */
-    void ParseFixedPlayDataJsonResponse(const QString& src, ObjectJson::FixedPlayDataJson& dest);
+    void ParseFixedPlayDataJson(const QString& src, ObjectJson::FixedPlayDataJson& dest);
     /** @brief */
     void ParsePageDataJson(const QJsonArray& pageDataArr, QList<ObjectJson::PageData>& dest);
     /** @brief */
@@ -65,6 +65,10 @@ namespace JsonParser
     void ParseLayerContentJson(const QJsonObject& layerContentObj, ObjectJson::LayerContent& dest);
     /** @brief */
     void ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<ObjectJson::SubtitleData>& dest);
+
+
+    /** @brief  Power Schedules */
+    void ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedules& dest);
 
 
     /// Weather Info Parser

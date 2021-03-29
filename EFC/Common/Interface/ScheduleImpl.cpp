@@ -1,7 +1,7 @@
-#include "PlayScheduleImpl.h"
+#include "ScheduleImpl.h"
 
 //========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::Schedules& src)
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedules& src)
 //========================================================
 {
     ds << src.id;
@@ -17,7 +17,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::Schedules& src)
 }
 
 //========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::ScheduleData& src)
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& src)
 //========================================================
 {
     ds << src.startTime;
@@ -97,7 +97,40 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::CronOption& src)
 }
 
 //========================================================
-QDataStream &operator>>(QDataStream& ds, ScheduleJson::Schedules& dest)
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedules& src)
+//========================================================
+{
+    const int onScheduleListSize = src.onScheduleList.size();
+    ds << onScheduleListSize;
+    for(int idx = 0; idx < onScheduleListSize; idx++)
+    {
+        ds << src.onScheduleList[idx];
+    }
+
+    const int offScheduleListSize = src.offScheduleList.size();
+    ds << offScheduleListSize;
+    for(int idx = 0; idx < offScheduleListSize; idx++)
+    {
+        ds << src.offScheduleList[idx];
+    }
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& src)
+//========================================================
+{
+    ds << src.id;
+    ds << src.startTime;
+    ds << src.endTime;
+    ds << src.cron;
+
+    return ds;
+}
+
+//========================================================
+QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlaySchedules& dest)
 //========================================================
 {
     ds >> dest.id;
@@ -106,7 +139,7 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::Schedules& dest)
     ds >> scheduleDataListSize;
     for(int idx = 0; idx < scheduleDataListSize; idx++)
     {
-        ScheduleJson::ScheduleData scheduleData;
+        ScheduleJson::PlayScheduleData scheduleData;
         ds >> scheduleData;
         dest.scheduleList.push_back(scheduleData);
     }
@@ -115,7 +148,7 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::Schedules& dest)
 }
 
 //========================================================
-QDataStream &operator>>(QDataStream& ds, ScheduleJson::ScheduleData& dest)
+QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest)
 //========================================================
 {
     ds >> dest.startTime;
@@ -204,6 +237,43 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::CronOption& dest)
 
     ds >> dest.numOfWeek;
     ds >> dest.weekday;
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedules& dest)
+//========================================================
+{
+    int onScheduleListSize = 0;
+    ds >> onScheduleListSize;
+    for(int idx = 0; idx < onScheduleListSize; idx++)
+    {
+        ScheduleJson::PowerScheduleData powerSchedule;
+        ds >> powerSchedule;
+        dest.onScheduleList.push_back(powerSchedule);
+    }
+
+    int offScheduleListSize = 0;
+    ds >> offScheduleListSize;
+    for(int idx = 0; idx < offScheduleListSize; idx++)
+    {
+        ScheduleJson::PowerScheduleData powerSchedule;
+        ds >> powerSchedule;
+        dest.offScheduleList.push_back(powerSchedule);
+    }
+
+    return ds;
+}
+
+//========================================================
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest)
+//========================================================
+{
+    ds >> dest.id;
+    ds >> dest.startTime;
+    ds >> dest.endTime;
+    ds >> dest.cron;
 
     return ds;
 }

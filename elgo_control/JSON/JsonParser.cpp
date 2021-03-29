@@ -357,7 +357,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
-bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::Schedules>& dest)
+bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::PlaySchedules>& dest)
 //========================================================
 {
     bool retValue = true;
@@ -372,7 +372,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
         QJsonObject::const_iterator constEnd = schedulesObj.constEnd();
         while(constIter != constEnd)
         {
-            ScheduleJson::Schedules schedules;
+            ScheduleJson::PlaySchedules schedules;
             schedules.id = constIter.key();
 
             const QJsonArray& valueArray = constIter.value().toArray();
@@ -380,7 +380,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
             QJsonArray::const_iterator arrEnd = valueArray.constEnd();
             while(arrIter != arrEnd)
             {
-                ScheduleJson::ScheduleData scheduleData;
+                ScheduleJson::PlayScheduleData scheduleData;
                 const QJsonObject& arrObj = arrIter->toObject();
 
                 // start
@@ -500,7 +500,7 @@ void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::R
 }
 
 //========================================================
-void JsonParser::ParseCustomPlayDataJsonResponse(const QString& src, ObjectJson::CustomPlayDataJson& dest)
+void JsonParser::ParseCustomPlayDataJson(const QString& src, ObjectJson::CustomPlayDataJson& dest)
 //========================================================
 {
     const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
@@ -523,7 +523,7 @@ void JsonParser::ParseCustomPlayDataJsonResponse(const QString& src, ObjectJson:
 }
 
 //========================================================
-void JsonParser::ParseFixedPlayDataJsonResponse(const QString& src, ObjectJson::FixedPlayDataJson& dest)
+void JsonParser::ParseFixedPlayDataJson(const QString& src, ObjectJson::FixedPlayDataJson& dest)
 //========================================================
 {
     const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
@@ -923,6 +923,107 @@ void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<
         }
 
         dest.push_back(subtitleData);
+    }
+}
+
+//========================================================
+void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedules& dest)
+//========================================================
+{
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
+    // on
+    if(jsonObj.end() != jsonObj.find("on"))
+    {
+        const QJsonObject& onSchdulesObj = jsonObj["on"].toObject();
+        const int onSchedulesObjSize = onSchdulesObj.size();
+
+        if(0 < onSchedulesObjSize)
+        {
+            ScheduleJson::PowerScheduleData powerSchedule;
+            QJsonObject::const_iterator constIter = onSchdulesObj.constBegin();
+            QJsonObject::const_iterator constEnd = onSchdulesObj.constEnd();
+            while(constIter != constEnd)
+            {
+                powerSchedule.id = constIter.key();
+                const QJsonObject& scheduleDataObj =  constIter.value().toObject();
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("start"))
+                {
+                    QDateTime startTime;
+                    const QString& startTimeStr = scheduleDataObj["start"].toString();
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(startTimeStr, startTime);
+                    powerSchedule.startTime = startTime;
+                }
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("end"))
+                {
+                    QDateTime endTime;
+                    const QString& endTimeStr = scheduleDataObj["end"].toString();
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime);
+                    powerSchedule.endTime = endTime;
+                }
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("rule"))
+                {
+                    ScheduleJson::Cron cron;
+                    const QString& ruleStr = scheduleDataObj["rule"].toString();
+                    JsonStringConverter::CronCommandStringToStruct(ruleStr, cron);
+                    powerSchedule.cron = cron;
+                }
+
+                dest.onScheduleList.push_back(powerSchedule);
+                ++constIter;
+            }
+        }
+    }
+
+    // off
+    if(jsonObj.end() != jsonObj.find("off"))
+    {
+        const QJsonObject& offScheduleObj = jsonObj["off"].toObject();
+        const int offSchedulesObjSize = offScheduleObj.size();
+
+        if(0 < offSchedulesObjSize)
+        {
+            ScheduleJson::PowerScheduleData powerSchedule;
+            QJsonObject::const_iterator constIter = offScheduleObj.constBegin();
+            QJsonObject::const_iterator constEnd = offScheduleObj.constEnd();
+
+            while(constIter != constEnd)
+            {
+                powerSchedule.id = constIter.key();
+                const QJsonObject& scheduleDataObj = constIter.value().toObject();
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("start"))
+                {
+                    QDateTime startTime;
+                    const QString& startTimeStr = scheduleDataObj["start"].toString();
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(startTimeStr, startTime);
+                    powerSchedule.startTime = startTime;
+                }
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("end"))
+                {
+                    QDateTime endTime;
+                    const QString& endTimeStr = scheduleDataObj["end"].toString();
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime);
+                    powerSchedule.endTime = endTime;
+                }
+
+                if(scheduleDataObj.end() != scheduleDataObj.find("rule"))
+                {
+                    ScheduleJson::Cron cron;
+                    const QString& ruleStr = scheduleDataObj["rule"].toString();
+                    JsonStringConverter::CronCommandStringToStruct(ruleStr, cron);
+                    powerSchedule.cron = cron;
+                }
+
+                dest.offScheduleList.push_back(powerSchedule);
+                ++constIter;
+            }
+        }
     }
 }
 

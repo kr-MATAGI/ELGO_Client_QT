@@ -79,7 +79,7 @@ void DownloadThread::ExecDownloadResourceData()
                     {
                         ObjectJson::CustomPlayDataJson customPlayData;
                         customPlayData.playData = playData;
-                        JsonParser::ParseCustomPlayDataJsonResponse(objectResponse, customPlayData);
+                        JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
 
                         /**
                         * @note
@@ -103,7 +103,7 @@ void DownloadThread::ExecDownloadResourceData()
                     {
                         ObjectJson::FixedPlayDataJson fixedPlayData;
                         fixedPlayData.playData = playData;
-                        JsonParser::ParseFixedPlayDataJsonResponse(objectResponse, fixedPlayData);
+                        JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
 
                         /**
                         * @note

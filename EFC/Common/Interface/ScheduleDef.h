@@ -41,7 +41,7 @@ namespace ScheduleJson
     };
 
     /** @brief */
-    struct ScheduleData
+    struct PlayScheduleData
     {
         QDateTime startTime;
         QDateTime endTime;
@@ -49,11 +49,27 @@ namespace ScheduleJson
         QString name;
     };
 
-    /** @brief */
-    struct Schedules
+    /** @brief  Play Schedules */
+    struct PlaySchedules
     {
         QString id;
-        QList<ScheduleData> scheduleList;
+        QList<PlayScheduleData> scheduleList;
+    };
+
+
+    /** @brief  Power Schedules */
+    struct PowerScheduleData
+    {
+        QString id;
+        QDateTime startTime;
+        QDateTime endTime;
+        Cron cron;
+    };
+
+    struct PowerSchedules
+    {
+        QList<PowerScheduleData> onScheduleList;
+        QList<PowerScheduleData> offScheduleList;
     };
 }
 
