@@ -90,7 +90,7 @@ void DownloadThread::ExecDownloadResourceData()
                         */
                         QByteArray bytes;
                         QDataStream outStream(&bytes, QIODevice::WriteOnly);
-                        ObjectJsonDataStream::operator<<(outStream, customPlayData);
+                        outStream << customPlayData;
 
                         const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                                       VIEWER_EVENT::CUSTOM_PLAY_DATA, bytes);
@@ -114,7 +114,7 @@ void DownloadThread::ExecDownloadResourceData()
                         */
                         QByteArray bytes;
                         QDataStream outStream(&bytes, QIODevice::WriteOnly);
-                        ObjectJsonDataStream::operator<<(outStream, fixedPlayData);
+                        outStream << fixedPlayData;
 
                         const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                                       VIEWER_EVENT::FIXED_PLAY_DATA, bytes);

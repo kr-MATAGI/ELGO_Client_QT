@@ -139,7 +139,7 @@ void ViewerThread::ExecRecvCustomPlayData()
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     ObjectJson::CustomPlayDataJson customPlayData;
-    ObjectJsonDataStream::operator>>(recvStream, customPlayData);
+    recvStream >> customPlayData;
 
     ELGO_VIEWER_LOG("custom name : %s", customPlayData.playData.name.toStdString().c_str());
 }
@@ -158,7 +158,7 @@ void ViewerThread::ExecRecvFixedPlayData()
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     ObjectJson::FixedPlayDataJson fixedPlayData;
-    ObjectJsonDataStream::operator>>(recvStream, fixedPlayData);
+    recvStream >> fixedPlayData;
 
     ELGO_VIEWER_LOG("fixed name : %s", fixedPlayData.playData.name.toStdString().c_str());
 }

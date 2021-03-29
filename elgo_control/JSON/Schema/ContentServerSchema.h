@@ -86,6 +86,7 @@ namespace ResourceJson
     };
 }
 
+#if 0
 namespace ScheduleJson
 {
     // Schedule
@@ -137,6 +138,7 @@ namespace ScheduleJson
         QList<ScheduleData> scheduleList;
     };
 }
+#endif
 
 #if 0
 namespace ObjectJson

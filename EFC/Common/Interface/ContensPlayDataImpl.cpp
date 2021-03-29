@@ -3,7 +3,7 @@
 
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::CustomPlayDataJson &src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::CustomPlayDataJson &src)
 //========================================================
 {
     ds << src.playData;
@@ -20,7 +20,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::FixedPlayDataJson &src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::FixedPlayDataJson &src)
 //========================================================
 {
     ds << src.playData;
@@ -45,7 +45,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::PlayData &src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::PlayData &src)
 //========================================================
 {
     ds << src.id;
@@ -60,7 +60,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::PageData& src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::PageData& src)
 //========================================================
 {
     ds << src.duration;
@@ -85,7 +85,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::LayerData& src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerData& src)
 //========================================================
 {
     ds << src.left;
@@ -98,7 +98,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::LayerContent& src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerContent& src)
 //========================================================
 {
     ds << src.contentType;
@@ -133,7 +133,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::LayerContentType& src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerContentType& src)
 //========================================================
 {
     ds << src.contentType;
@@ -143,7 +143,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson::SubtitleData& src)
+QDataStream &operator<<(QDataStream& ds, const ObjectJson::SubtitleData& src)
 //========================================================
 {
     ds << src.left;
@@ -165,7 +165,7 @@ QDataStream &ObjectJsonDataStream::operator<<(QDataStream& ds, const ObjectJson:
 
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::CustomPlayDataJson& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::CustomPlayDataJson& dest)
 //========================================================
 {
     ds >> dest.playData;
@@ -184,7 +184,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::Custo
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::FixedPlayDataJson& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::FixedPlayDataJson& dest)
 //========================================================
 {
     ds >> dest.playData;
@@ -213,7 +213,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::Fixed
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::PlayData& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::PlayData& dest)
 //========================================================
 {
     ds >> dest.id;
@@ -228,7 +228,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::PlayD
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::PageData& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::PageData& dest)
 //========================================================
 {
     ds >> dest.duration;
@@ -257,7 +257,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::PageD
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::LayerData& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerData& dest)
 //========================================================
 {
     ds >> dest.left;
@@ -270,7 +270,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::Layer
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::LayerContent& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerContent& dest)
 //========================================================
 {
     ds >> dest.contentType;
@@ -305,7 +305,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::Layer
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::SubtitleData& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::SubtitleData& dest)
 //========================================================
 {
     ds >> dest.left;
@@ -326,7 +326,7 @@ QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::Subti
 }
 
 //========================================================
-QDataStream &ObjectJsonDataStream::operator>>(QDataStream& ds, ObjectJson::LayerContentType& dest)
+QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerContentType& dest)
 //========================================================
 {
     ds >> dest.contentType;

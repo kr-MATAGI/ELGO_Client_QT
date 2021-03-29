@@ -15,6 +15,7 @@
 
 // Common
 #include "Common/Interface/ContentsPlayDataImpl.h"
+#include "Common/Interface/PlayScheduleDef.h"
 
 namespace JsonParser
 {

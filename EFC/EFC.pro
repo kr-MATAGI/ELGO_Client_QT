@@ -22,6 +22,8 @@ HEADERS += \
     Common/EventList.h \
     Common/Interface/ConetnsPlayDataDef.h \
     Common/Interface/ContentsPlayDataImpl.h \
+    Common/Interface/PlayScheduleDef.h \
+    Common/Interface/PlayScheduleImpl.h \
     LocalSocketEvent/EFCEvent.h \
     LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \
@@ -32,6 +34,7 @@ HEADERS += \
 
 SOURCES += \
     Common/Interface/ContensPlayDataImpl.cpp \
+    Common/Interface/PlayScheduleImpl.cpp \
     LocalSocketEvent/EFCEvent.cpp \
     LocalSocketEvent/LocalSocketServer.cpp \
     Logger/ELogger.cpp \

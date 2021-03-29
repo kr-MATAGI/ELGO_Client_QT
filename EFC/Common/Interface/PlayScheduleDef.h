@@ -1,0 +1,60 @@
+#ifndef PLAYSCHEDULEDEF_H
+#define PLAYSCHEDULEDEF_H
+
+#include <QList>
+#include <QString>
+#include <QDateTime>
+
+namespace ScheduleJson
+{
+    // Schedule
+    /** @brief */
+    enum CronFormat
+    {
+        SEC = 1,
+        MIN = 2,
+        HOUR = 3,
+        DAY = 4,
+        MONTH = 5,
+        DOW = 6
+    };
+
+    /** @brief */
+    struct CronOption
+    {
+        QList<CronFormat> last;
+        int numOfWeek;
+        int weekday;
+    };
+
+    /** @brief */
+    struct Cron
+    {
+        QList<int> secRepeat;
+        QList<int> minRepeat;
+        QList<int> hourRepeat;
+        QList<int> dayRepeat;
+        QList<int> monthRepeat;
+        QList<int> dowRepeat;
+
+        CronOption options;
+    };
+
+    /** @brief */
+    struct ScheduleData
+    {
+        QDateTime startTime;
+        QDateTime endTime;
+        Cron cron;
+        QString name;
+    };
+
+    /** @brief */
+    struct Schedules
+    {
+        QString id;
+        QList<ScheduleData> scheduleList;
+    };
+}
+
+#endif // PLAYSCHEDULEDEF_H

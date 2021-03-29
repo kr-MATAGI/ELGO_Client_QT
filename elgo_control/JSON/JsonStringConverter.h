@@ -9,6 +9,7 @@
 
 // Common
 #include "Common/Interface/ConetnsPlayDataDef.h"
+#include "Common/Interface/PlayScheduleDef.h"
 
 namespace JsonStringConverter
 {
