@@ -945,7 +945,8 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
     else
     {
         QString typeId = typeid(src.toInt()).name();
-        if( 0 == typeId.compare("int"))
+        ELGO_CONTROL_LOG("TEST TYPE NAME : %s", typeId.toStdString().c_str());
+        if( 0 == typeId.compare("i"))
         {
             if(ScheduleJson::CronFormat::DOW == format)
             {
