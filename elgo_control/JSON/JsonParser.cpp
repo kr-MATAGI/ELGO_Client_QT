@@ -429,7 +429,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
                 if(arrObj.end() != arrObj.find("name"))
                 {
                     const QString& name = arrObj["name"].toString();
-                    scheduleData.name = name;
+                    JsonStringConverter::GetSchedulePlayDataIdInName(name, scheduleData.id);
                 }
                 else
                 {
@@ -1075,7 +1075,7 @@ void JsonParser::ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::
                     if(singleObj.end() != singleObj.find("name"))
                     {
                         const QString& name = singleObj["name"].toString();
-                        singlePlayData.name = name;
+                        JsonStringConverter::GetSchedulePlayDataIdInName(name, singlePlayData.id);
                     }
 
                     dest.schduleList.push_back(singlePlayData);

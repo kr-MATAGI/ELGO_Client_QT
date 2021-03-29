@@ -46,7 +46,7 @@ namespace ScheduleJson
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
-        QString name;
+        QString id;
     };
 
     /** @brief  Play Schedules */
@@ -79,7 +79,7 @@ namespace ScheduleJson
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
-        QString name;
+        QString id;
     };
 
     struct SinglePlaySchedules

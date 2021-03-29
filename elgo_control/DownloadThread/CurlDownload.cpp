@@ -1,3 +1,6 @@
+// QT
+#include <QFile>
+
 // Control
 #include "CurlDownload.h"
 #include "Logger/ControlLogger.h"
@@ -165,7 +168,7 @@ bool CurlDownload::DownloadResourceList(const QString& url, QString& dest)
 }
 
 //========================================================
-bool CurlDownload::DownloadObjectResource(const QString& url, QString& dest)
+bool CurlDownload::DownloadObjectJson(const QString& url, QString& dest)
 //========================================================
 {
     bool retValue = false;
@@ -224,6 +227,16 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
     savePath += ResourceJson::ResourceTypeEnumToStr[src.type];
     savePath += "/";
     savePath += src.name.toStdString().c_str();
+
+    // Check Downloaded File
+    QFile file(QString(savePath.c_str()));
+    if(true == file.exists())
+    {
+        retValue = true;
+        ELGO_CONTROL_LOG("%s is already downloaded", src.name.toStdString().c_str());
+
+        return retValue;
+    }
 
     // timeout
     int downloadTimeout = DownloadDef::CURL_TIMEOUT::DEFAULT_TIME_OUT;

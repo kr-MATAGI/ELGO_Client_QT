@@ -10,7 +10,8 @@ namespace DownloadDef
     enum Action
     {
         NONE_KIND = 0,
-        RESOURCE = 1,
+        SINGLE_PLAY = 1,
+        PLAY_SCHEDULES = 2,
     };
 
     /** @brief */

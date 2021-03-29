@@ -23,7 +23,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& s
     ds << src.startTime;
     ds << src.endTime;
     ds << src.cron;
-    ds << src.name;
+    ds << src.id;
 
     return ds;
 }
@@ -150,7 +150,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayData& src
     ds << src.startTime;
     ds << src.endTime;
     ds << src.cron;
-    ds << src.name;
+    ds << src.id;
 
     return ds;
 }
@@ -180,7 +180,7 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest)
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
-    ds >> dest.name;
+    ds >> dest.id;
 
     return ds;
 }
@@ -327,7 +327,7 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayData dest)
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
-    ds >> dest.name;
+    ds >> dest.id;
 
     return ds;
 }

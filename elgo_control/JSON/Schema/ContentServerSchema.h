@@ -86,6 +86,7 @@ namespace ResourceJson
     };
 }
 
+// move to EFC/Common/Interface
 #if 0
 namespace ScheduleJson
 {
@@ -140,6 +141,7 @@ namespace ScheduleJson
 }
 #endif
 
+// move to EFC/Common/Interface
 #if 0
 namespace ObjectJson
 {

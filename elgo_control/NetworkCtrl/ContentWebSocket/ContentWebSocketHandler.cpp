@@ -40,6 +40,22 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     {
         ExecSinglePlayEvent(serverJson);
     }
+    else if(ContentSchema::Event::PLAY_SCHEDULES == serverJson.event)
+    {
+        ExecPlaySchedulesEvent(serverJson);
+    }
+    else if(ContentSchema::Event::POWER_SCHEDULES == serverJson.event)
+    {
+
+    }
+    else if(ContentSchema::Event::CLEAR_PLAY_SCHEDULE == serverJson.event)
+    {
+
+    }
+    else if(ContentSchema::Event::CLEAR_POWER_SCHEDULE == serverJson.event)
+    {
+
+    }
     else if(ContentSchema::Event::ERROR == serverJson.event)
     {
         ELGO_CONTROL_LOG("ERROR - %s", serverJson.payload.message.toUtf8().constData());
@@ -107,7 +123,22 @@ void ContentWebSocketHandler::ExecSinglePlayEvent(const ContentSchema::Summary& 
 
     DownloadThread *thread = new DownloadThread;
     thread->SetContentSchema(serverJson);
-    thread->SetDownloadAction(DownloadDef::Action::RESOURCE);
+    thread->SetDownloadAction(DownloadDef::Action::SINGLE_PLAY);
+    thread->SetDownloadBytes(bytes);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecPlaySchedulesEvent(const ContentSchema::Summary& serverJson)
+//========================================================
+{
+    QByteArray bytes;
+    QDataStream stream(&bytes, QIODevice::WriteOnly);
+    stream << serverJson.payload.url;
+
+    DownloadThread *thread = new DownloadThread;
+    thread->SetContentSchema(serverJson);
+    thread->SetDownloadAction(DownloadDef::Action::PLAY_SCHEDULES);
     thread->SetDownloadBytes(bytes);
     m_threadPool->start(thread);
 }

@@ -21,18 +21,17 @@ public:
     void run() override;
 
     /** @brief */
-    void ExecDownloadResourceData();
+    void ExecDownloadSinglePlayData();
+    /** @brief */
+    void ExecDownloadPlaySchedules();
 
 
     /** @brief */
     void SetContentSchema(const ContentSchema::Summary& src);
-
     /** @brief */
     void SetDownloadAction(const DownloadDef::Action value);
-
     /** @brief */
     void SetDownloadBytes(const QByteArray& src);
-
 
 private:
     ContentSchema::Summary m_serverJson;

@@ -1004,3 +1004,18 @@ int JsonStringConverter::GetConvertedDayOfWeek(const int cronDow)
 
     return retValue;
 }
+
+//========================================================
+void JsonStringConverter::GetSchedulePlayDataIdInName(const QString& src, QString& dest)
+//========================================================
+{
+    QStringList nameSplit = src.split("_");
+    if(2 < nameSplit.size())
+    {
+        dest = nameSplit[1];
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - %s, split size : %d", src.toUtf8().constData(), nameSplit.size());
+    }
+}

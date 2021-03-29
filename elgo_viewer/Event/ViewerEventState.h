@@ -32,9 +32,13 @@ public:
 
     /** @brief */
     void RecvCustomPlayData(QByteArray& src);
-
     /** @brief */
     void RecvFixedPlayData(QByteArray& src);
+
+    /** @brief */
+    void RecvCustomPlaySchedules(QByteArray& src);
+    /** @brief */
+    void RecvFixedPlaySchedules(QByteArray& src);
 
 public:
     QThreadPool *m_threadPool;

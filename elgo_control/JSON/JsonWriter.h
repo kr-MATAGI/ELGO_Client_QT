@@ -23,8 +23,10 @@ namespace JsonWriter
     void WriteContentServerAccessEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  rename Event */
     void WriteContentServerRenameEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  singlePlay Event*/
+    /** @brief  singlePlay Event */
     void WriteContentServerSinglePlayEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  playSchedule Event */
+    void WriteContentServerPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest);
 
     /** @brief */
     void WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest);

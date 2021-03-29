@@ -84,6 +84,9 @@ namespace JsonStringConverter
     int GetCronFormatLimitValue(const ScheduleJson::CronFormat format);
     /** @brief  cron format -> QDate */
     int GetConvertedDayOfWeek(const int cronDow);
+
+    /** @brief */
+    void GetSchedulePlayDataIdInName(const QString& src, QString& dest);
 }
 
 #endif // JSONSTRINGCONVERTER_H

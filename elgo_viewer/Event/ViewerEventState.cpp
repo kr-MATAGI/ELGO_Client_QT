@@ -19,6 +19,10 @@ ViewerEventState::ViewerEventState()
                           &ViewerEventState::RecvCustomPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA,
                           &ViewerEventState::RecvFixedPlayData);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES,
+                          &ViewerEventState::RecvCustomPlaySchedules);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES,
+                          &ViewerEventState::RecvFixedPlaySchedules);
 }
 
 //========================================================
@@ -47,9 +51,6 @@ void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
     * @param
     *       QString ip
     */
-    QDataStream out(&src, QIODevice::ReadOnly);
-    out.setVersion(QDataStream::Qt_5_12);
-
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::MAKE_QRCODE);
     thread->SetRecvBytes(src);
@@ -103,6 +104,46 @@ void ViewerEventState::RecvFixedPlayData(QByteArray& src)
     */
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA);
+    thread->SetRecvBytes(src);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvCustomPlaySchedules(QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send fixed play data information
+    *       with schedules
+    * @param
+    *       FixedPlayDataJson customPlayData
+    *       int scheduleCount
+    *       PlaySchedules schedules
+    */
+    ViewerThread *thread = new ViewerThread;
+    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES);
+    thread->SetRecvBytes(src);
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvFixedPlaySchedules(QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send fixed play data information
+    *       with schedules
+    * @param
+    *       FixedPlayDataJson customPlayData
+    *       int scheduleCount
+    *       PlaySchedules schedules
+    */
+    ViewerThread *thread = new ViewerThread;
+    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES);
     thread->SetRecvBytes(src);
     m_threadPool->start(thread);
 }

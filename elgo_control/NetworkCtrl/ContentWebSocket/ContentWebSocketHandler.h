@@ -32,6 +32,18 @@ public:
     /** @brief */
     void ExecSinglePlayEvent(const ContentSchema::Summary& serverJson);
 
+    /** @brief */
+    void ExecPlaySchedulesEvent(const ContentSchema::Summary& serverJson);
+
+    /** @brief */
+    void ExecPowerSchedulesEvent();
+
+    /** @brief */
+    void ExecClearPlaySchdules();
+
+    /** @brief */
+    void ExecClearPowerSchedules();
+
 private:
     QThreadPool *m_threadPool;
 };

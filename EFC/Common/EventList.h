@@ -116,6 +116,30 @@ namespace VIEWER_EVENT
         */
         FIXED_PLAY_DATA = 772,
 
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Send fixed play data information
+        *       with schedules
+        * @param
+        *       FixedPlayDataJson customPlayData
+        *       int scheduleCount
+        *       PlaySchedules schedules
+        */
+        CUSTOM_PLAY_DATA_SCHEDULES = 773,
+
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Send fixed play data information
+        *       with schedules
+        * @param
+        *       FixedPlayDataJson customPlayData
+        *       int scheduleCount
+        *       PlaySchedules schedules
+        */
+        FIXED_PLAY_DATA_SCHEDULES = 774,
+
         MAX_VIEWER_EVENT = 1023
     };
 }
