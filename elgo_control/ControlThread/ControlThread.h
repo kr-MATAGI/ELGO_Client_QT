@@ -28,6 +28,11 @@ public:
     void ExecRecvServerInfoFromMain();
 
     /** @brief */
+    void ExecResponseScreenCapture();
+
+
+public:
+    /** @brief */
     void SetControlEvent(const CONTROL_EVENT::Event event);
 
     /** @brief */

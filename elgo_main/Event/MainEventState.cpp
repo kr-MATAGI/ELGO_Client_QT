@@ -27,14 +27,14 @@ MainEventState::~MainEventState()
 }
 
 //========================================================
-void MainEventState::ExecState(quint16 event, QByteArray &src)
+void MainEventState::ExecState(const quint16 event, const QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);;
 }
 
 //========================================================
-void MainEventState::RecvProcecssReady(QByteArray &src)
+void MainEventState::RecvProcecssReady(const QByteArray &src)
 //========================================================
 {
     /**
@@ -49,7 +49,7 @@ void MainEventState::RecvProcecssReady(QByteArray &src)
 }
 
 //========================================================
-void MainEventState::RecvChangeDeviceOptions(QByteArray& src)
+void MainEventState::RecvChangeDeviceOptions(const QByteArray& src)
 //========================================================
 {
     /**

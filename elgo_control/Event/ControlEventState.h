@@ -24,14 +24,16 @@ public:
 
 public:
     /** @brief */
-    void ExecState(quint16 event, QByteArray &src);
+    void ExecState(const quint16 event, const QByteArray &src);
 
     /** @brief */
-    void RecvServerInfoFromMain(QByteArray& src);
+    void RecvServerInfoFromMain(const QByteArray& src);
 
     /** @brief */
-    void RecvUpdateDisplaySleepStatus(QByteArray& src);
+    void RecvUpdateDisplaySleepStatus(const QByteArray& src);
 
+    /** @brief */
+    void RecvResponseScreenCapture(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

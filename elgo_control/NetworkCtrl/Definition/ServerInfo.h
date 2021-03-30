@@ -30,6 +30,7 @@ struct CONNECT_INFO
 
 enum CONN_TIMEOUT
 {
+    DEFAULT_TIMEOUT = 2 * 1000,
     GET_JWT_TIMEOUT = 3 * 1000,
 };
 

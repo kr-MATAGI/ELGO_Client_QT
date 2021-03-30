@@ -39,6 +39,9 @@ public:
     /** @brief */
     ContentWebSocket& GetContentWebSocket();
 
+    /** @brief */
+    bool UploadScreenCaptureImage(const QString& savedPath, QString& uploadedPath);
+
     /** @brief  Set/Get DPMS */
     void SetDisplaySleepStatus(const bool newValue);
     /** @brief */

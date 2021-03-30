@@ -55,7 +55,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else if(ContentSchema::Event::SCREEN_CAPTURE == serverJson.event)
     {
-
+        ExecScreenCaptureEvent(serverJson);
     }
     else if(ContentSchema::Event::SYSTEM_REBOOT == serverJson.event)
     {
@@ -130,14 +130,10 @@ void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serv
 void ContentWebSocketHandler::ExecSinglePlayEvent(const ContentSchema::Summary& serverJson)
 //========================================================
 {
-    QByteArray bytes;
-    QDataStream stream(&bytes, QIODevice::WriteOnly);
-    stream << serverJson.payload.url;
-
     DownloadThread *thread = new DownloadThread;
-    thread->SetContentSchema(serverJson);
     thread->SetDownloadAction(DownloadDef::Action::SINGLE_PLAY);
-    thread->SetDownloadBytes(bytes);
+    thread->SetContentSchema(serverJson);
+
     m_threadPool->start(thread);
 }
 
@@ -145,13 +141,36 @@ void ContentWebSocketHandler::ExecSinglePlayEvent(const ContentSchema::Summary& 
 void ContentWebSocketHandler::ExecPlaySchedulesEvent(const ContentSchema::Summary& serverJson)
 //========================================================
 {
-    QByteArray bytes;
-    QDataStream stream(&bytes, QIODevice::WriteOnly);
-    stream << serverJson.payload.url;
-
     DownloadThread *thread = new DownloadThread;
-    thread->SetContentSchema(serverJson);
     thread->SetDownloadAction(DownloadDef::Action::PLAY_SCHEDULES);
-    thread->SetDownloadBytes(bytes);
+    thread->SetContentSchema(serverJson);
+
     m_threadPool->start(thread);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecScreenCaptureEvent(const ContentSchema::Summary& serverJson)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       current Screen capture on elgo_viewer
+    *       if capture is successed, response to elgo_control
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    */
+
+    QByteArray bytes;
+    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+    dataStream << serverJson.payload.src;
+    dataStream << serverJson.payload.dest;
+
+    const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                  VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE, bytes);
+    if(false == bIsSendEvent)
+    {
+        ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE);
+    }
 }

@@ -70,6 +70,18 @@ namespace CONTROL_EVENT
          */
         UPDATE_DISPLAY_SLEEP_STATUS = 514,
 
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       Receive screen capture response from elgo_viewer
+        * @param
+        *       QString payload.src
+        *       QString payload.dest
+        *       QString imagePath
+        *       bool    bIsSuccessed
+        */
+        RESPONSE_SCREEN_CAPTURE = 515,
+
         MAX_CONTROL_EVENT = 767
     };
 }
@@ -139,6 +151,20 @@ namespace VIEWER_EVENT
         *       PlaySchedules schedules
         */
         FIXED_PLAY_DATA_SCHEDULES = 774,
+
+
+        /**
+        * @note
+        *       ELGO_CONTROL -> ELGO_VIEWER
+        *       current Screen capture on elgo_viewer
+        *       if capture is successed, response to elgo_control
+        *       Response Event : RESPONSE_SCREEN_CAPTURE
+        * @param
+        *       QString payload.src
+        *       QString payload.dest
+        */
+        REQUEST_SCREEN_CAPTURE = 775,
+
 
         MAX_VIEWER_EVENT = 1023
     };

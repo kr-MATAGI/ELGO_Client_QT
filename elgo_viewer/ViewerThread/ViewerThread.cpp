@@ -1,9 +1,11 @@
 // QT
+#include <QGuiApplication>
+#include <QScreen>
 #include <QQuickView>
 #include <QThread>
 
 // EFC
-#include "ShardMem/ShmCtrl.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 // Viewer
 #include "Definition/ViewerDefinition.h"
@@ -61,6 +63,10 @@ void ViewerThread::run()
     else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
     {
         ExecRecvFixedPlayData();
+    }
+    else if(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE == m_event)
+    {
+        ExecScreenCapture();
     }
     else
     {
@@ -163,3 +169,92 @@ void ViewerThread::ExecRecvFixedPlayData()
     ELGO_VIEWER_LOG("fixed name : %s", fixedPlayData.playData.name.toStdString().c_str());
 }
 
+//========================================================
+void ViewerThread::ExecScreenCapture()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       current Screen capture on elgo_viewer
+    *       if capture is successed, response to elgo_control
+    *       Response Event : RESPONSE_SCREEN_CAPTURE
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    */
+
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    QString payloadSrc;
+    QString payloadDest;
+    recvStream >> payloadSrc;
+    recvStream >> payloadDest;
+    ELGO_VIEWER_LOG("Recv src - %s, dest - %s",
+                    payloadSrc.toUtf8().constData(), payloadDest.toUtf8().constData());
+
+    // Screen capture
+    bool bIsSuccessed = false;
+    const QString& savedPath = CAPATURE_SAVE_PATH;
+    const bool bIsCaptured = CaptureCurrentScreen(savedPath);
+    if(true == bIsCaptured)
+    {
+        bIsSuccessed = true;
+    }
+
+    // Send response
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Receive screen capture response from elgo_viewer
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    *       QString imagePath
+    *       bool    bIsSuccessed
+    */
+
+    QByteArray sendBytes;
+    QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+    sendStream << payloadSrc;
+    sendStream << payloadDest;
+    sendStream << savedPath;
+    sendStream << bIsSuccessed;
+
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
+                                                CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE, sendBytes);
+    if(false == bSendEvent)
+    {
+        ELGO_VIEWER_LOG("Error - Send Event : %d", CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE);
+    }
+}
+
+//========================================================
+bool ViewerThread::CaptureCurrentScreen(const QString& savedPath)
+//========================================================
+{
+    bool retValue = true;
+
+    QScreen *screen = QGuiApplication::primaryScreen();
+    if(NULL == screen)
+    {
+        ELGO_VIEWER_LOG("ERROR - NULL == screen");
+    }
+    else
+    {
+        QPixmap pixmap = screen->grabWindow(0);
+        if(false == pixmap.save(savedPath))
+        {
+            retValue = false;
+            ELGO_VIEWER_LOG("ERROR - Not saved pixmap { path : %s }", savedPath.toStdString().c_str());
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("Saved Pixmap { path : %s }", savedPath.toStdString().c_str());
+        }
+    }
+
+    delete screen;
+    screen = NULL;
+
+    return retValue;
+}

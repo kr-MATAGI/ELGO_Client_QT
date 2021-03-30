@@ -51,9 +51,7 @@ void DownloadThread::run()
 void DownloadThread::ExecDownloadSinglePlayData()
 //========================================================
 {
-    QString resourceUrl;
-    QDataStream readStream(&m_bytes, QIODevice::ReadOnly);
-    readStream >> resourceUrl;
+    const QString& resourceUrl = m_serverJson.payload.url;
 
     QString response;
     const bool bIsResponse = CurlDownload::DownloadResourceList(resourceUrl, response);
@@ -171,9 +169,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
 void DownloadThread::ExecDownloadPlaySchedules()
 //========================================================
 {
-    QString scheduleListUrl;
-    QDataStream readStream(&m_bytes, QIODevice::ReadOnly);
-    readStream >> scheduleListUrl;
+    const QString& scheduleListUrl = m_serverJson.payload.url;
 
     QString response;
     const bool bIsResponse = CurlDownload::DownloadResourceList(scheduleListUrl, response);

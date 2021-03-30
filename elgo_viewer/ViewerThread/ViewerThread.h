@@ -38,12 +38,19 @@ public:
     /** @brief */
     void ExecRecvFixedPlayData();
 
+    /** @brief */
+    void ExecScreenCapture();
+
 public:
     /** @brief */
     void SetViewerEvent(VIEWER_EVENT::Event event);
 
     /** @brief */
     void SetRecvBytes(const QByteArray &src);
+
+private:
+    /** @brief */
+    bool CaptureCurrentScreen(const QString& savedPath);
 
 private:
     VIEWER_EVENT::Event m_event;

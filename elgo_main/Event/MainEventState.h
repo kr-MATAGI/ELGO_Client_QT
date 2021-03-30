@@ -19,13 +19,13 @@ public:
 
 public:
     /** @brief */
-    void ExecState(quint16 event, QByteArray &src);
+    void ExecState(const quint16 event, const QByteArray &src);
 
     /** @brief */
-    void RecvProcecssReady(QByteArray& src);
+    void RecvProcecssReady(const QByteArray& src);
 
     /** @brief */
-    void RecvChangeDeviceOptions(QByteArray& src);
+    void RecvChangeDeviceOptions(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

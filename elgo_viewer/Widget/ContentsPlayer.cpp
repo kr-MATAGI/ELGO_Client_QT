@@ -1,6 +1,7 @@
 // QT
 #include <QRect>
 #include <QScreen>
+#include <QWindow>
 
 // Viewer
 #include "ContentsPlayer.h"
@@ -84,7 +85,11 @@ bool ContentsPlayer::GetCurrentScreenCapture()
     bool retValue = true;
 
     QScreen *screen = QGuiApplication::primaryScreen();
-    if(NULL == screen)
+    if(const QWindow *window = windowHandle())
+    {
+        screen = window->screen();
+    }
+    else if(nullptr == screen)
     {
         retValue = false;
         ELGO_VIEWER_LOG("ERROR - NULL == screen");
@@ -104,9 +109,6 @@ bool ContentsPlayer::GetCurrentScreenCapture()
             ELGO_VIEWER_LOG("Saved Pixmap { path : %s }", path.toStdString().c_str());
         }
     }
-
-    delete screen;
-    screen = NULL;
 
     return retValue;
 }

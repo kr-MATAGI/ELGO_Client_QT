@@ -62,7 +62,6 @@ bool CurlDownload::DownloadNewsFeedXml(DownloadDef::NewsCategory category, QStri
         }
     }
     curl_easy_cleanup(curl);
-    curl = NULL;
 
     return retValue;
 }
@@ -120,7 +119,6 @@ bool CurlDownload::DownloadWeatherInfoJson(const DownloadDef::Weather::Request& 
         }
     }
     curl_easy_cleanup(curl);
-    curl = NULL;
 
     return retValue;
 }
@@ -162,7 +160,6 @@ bool CurlDownload::DownloadResourceList(const QString& url, QString& dest)
     }
 
     curl_easy_cleanup(curl);
-    curl = NULL;
 
     return retValue;
 }
@@ -206,7 +203,6 @@ bool CurlDownload::DownloadObjectJson(const QString& url, QString& dest)
 
     }
     curl_easy_cleanup(curl);
-    curl = NULL;
 
     return retValue;
 }
@@ -276,7 +272,6 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
         fclose(file);
     }
     curl_easy_cleanup(curl);
-    curl = NULL;
 
     return retValue;
 }

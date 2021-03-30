@@ -22,23 +22,26 @@ public:
 
 public:
     /** @brief */
-    void ExecState(quint16 event, QByteArray &src);
+    void ExecState(const quint16 event, const QByteArray &src);
 
     /** @brief */
-    void MakeQrCodeAndDisplay(QByteArray& src);
+    void MakeQrCodeAndDisplay(const QByteArray& src);
 
     /** @brief */
-    void RotateDeviceDisplay(QByteArray& src);
+    void RotateDeviceDisplay(const QByteArray& src);
 
     /** @brief */
-    void RecvCustomPlayData(QByteArray& src);
+    void RecvCustomPlayData(const QByteArray& src);
     /** @brief */
-    void RecvFixedPlayData(QByteArray& src);
+    void RecvFixedPlayData(const QByteArray& src);
 
     /** @brief */
-    void RecvCustomPlaySchedules(QByteArray& src);
+    void RecvCustomPlaySchedules(const QByteArray& src);
     /** @brief */
-    void RecvFixedPlaySchedules(QByteArray& src);
+    void RecvFixedPlaySchedules(const QByteArray& src);
+
+    /** @brief */
+    void RecvRequestScreenCapture(const QByteArray& src);
 
 public:
     QThreadPool *m_threadPool;

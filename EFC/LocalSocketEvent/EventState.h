@@ -17,14 +17,14 @@ public:
     }
 
     /** @brief */
-    void RegisterEvent(quint16 keyEvent, std::function<void(T&, QByteArray&)> linkedFunc)
+    void RegisterEvent(quint16 keyEvent, std::function<void(T&, const QByteArray&)> linkedFunc)
     {
-        std::pair<quint16, std::function<void(T&, QByteArray&)>> eventCallBack(keyEvent, linkedFunc);
+        std::pair<quint16, std::function<void(T&, const QByteArray&)>> eventCallBack(keyEvent, linkedFunc);
         m_eventList.insert(eventCallBack);
     }
 
     /** @brief */
-    void Exec(quint16 keyEvent, QByteArray& src)
+    void Exec(const quint16 keyEvent, const QByteArray& src)
     {
         if(m_eventList.end() == m_eventList.find(keyEvent))
         {
@@ -33,13 +33,13 @@ public:
         else
         {
             T templateClass;
-            std::function<void(T&, QByteArray&)> linkedFunc = m_eventList.at(keyEvent);
+            std::function<void(T&, const QByteArray&)> linkedFunc = m_eventList.at(keyEvent);
             linkedFunc(templateClass, src);
         }
     }
 
 protected:
-    std::unordered_map<quint16, std::function<void(T&, QByteArray&)>> m_eventList;
+    std::unordered_map<quint16, std::function<void(T&, const QByteArray&)>> m_eventList;
 };
 
 #endif // EVENTSTATE_H

@@ -42,7 +42,7 @@ public:
     void ExecDisplayOnOffEvent();
 
     /** @brief */
-    void ExecScreenCaptureEvent();
+    void ExecScreenCaptureEvent(const ContentSchema::Summary& serverJson);
 
     /** @brief */
     void ExecSystemRebootEvent();

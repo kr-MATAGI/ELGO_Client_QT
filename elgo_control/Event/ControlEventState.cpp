@@ -20,9 +20,10 @@ ControlEventState::ControlEventState()
     // proc Event
     m_state.RegisterEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN,
                           &ControlEventState::RecvServerInfoFromMain);
-
     m_state.RegisterEvent(CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS,
                           &ControlEventState::RecvUpdateDisplaySleepStatus);
+    m_state.RegisterEvent(CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE,
+                          &ControlEventState::RecvResponseScreenCapture);
 }
 
 //========================================================
@@ -34,32 +35,35 @@ ControlEventState::~ControlEventState()
 }
 
 //========================================================
-void ControlEventState::ExecState(quint16 event, QByteArray &src)
+void ControlEventState::ExecState(const quint16 event, const QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);
 }
 
 //========================================================
-void ControlEventState::RecvServerInfoFromMain(QByteArray &src)
+void ControlEventState::RecvServerInfoFromMain(const QByteArray &src)
 //========================================================
 {
     /**
-     *  @brief  receive WIFI information from main process
+     *  @note
+     *          ELGO_MAIN -> ELGO_CONTROL
+     *          receive WIFI information from main process
      *  @param
      *          QString wasHost,
-     *          int wasHostPort,
+     *          quint16 wasHostPort,
      *          QString remoteTCPHost
      */
 
     ControlThread *thread = new ControlThread;
     thread->SetControlEvent(CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
+void ControlEventState::RecvUpdateDisplaySleepStatus(const QByteArray& src)
 //========================================================
 {
     /**
@@ -70,7 +74,8 @@ void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
      *          bool isDisplaySleep
      */
 
-    QDataStream out(&src, QIODevice::ReadOnly);
+    QByteArray recvBytes = src;
+    QDataStream out(&recvBytes, QIODevice::ReadOnly);
     bool bIsDisplaySleep = false;
     out >> bIsDisplaySleep;
 
@@ -84,4 +89,26 @@ void ControlEventState::RecvUpdateDisplaySleepStatus(QByteArray& src)
     {
         ELGO_CONTROL_LOG("NOT Updated Display sleep status : %d", prevStatus);
     }
+}
+
+//========================================================
+void ControlEventState::RecvResponseScreenCapture(const QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Receive screen capture response from elgo_viewer
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    *       QString imagePath
+    *       bool    bIsSuccessed
+    */
+
+    ControlThread *thread = new ControlThread;
+    thread->SetControlEvent(CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE);
+    thread->SetRecvBytes(src);
+
+    m_threadPool->start(thread);
 }

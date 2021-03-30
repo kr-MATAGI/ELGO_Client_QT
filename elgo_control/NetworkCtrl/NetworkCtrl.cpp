@@ -123,9 +123,8 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         ELGO_CONTROL_LOG("curl_version() : %s", curl_version());
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);
 
-        CURLcode res = curl_easy_perform(curl);
-        ELGO_CONTROL_LOG("cURL Response Code : %ld", resCode);
-        if(CURLE_OK == res)
+        CURLcode curlCode = curl_easy_perform(curl);
+        if(CURLE_OK == curlCode)
         {
             retValue = true;
             dest = dataBuffer.c_str();
@@ -134,10 +133,72 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         }
         else
         {
-            QString errorStr = curl_easy_strerror(res);
-            ELGO_CONTROL_LOG("Error - str : %s, errorBuf : %s", errorStr.toUtf8().constData(), errorBuffer);
+            QString errorStr = curl_easy_strerror(curlCode);
+            ELGO_CONTROL_LOG("Error - resCode : %ld , str : %s, errorBuf : %s", resCode, errorStr.toUtf8().constData(), errorBuffer);
         }
         curl_slist_free_all(headers);
+    }
+    curl_easy_cleanup(curl);
+
+    return retValue;
+}
+
+//========================================================
+bool NetworkCtrl::UploadScreenCaptureImage(const QString& savedPath, QString& uploadedPath)
+//========================================================
+{
+    bool retValue = false;
+
+
+    CURL *curl = curl_easy_init();
+
+    if(curl)
+    {
+        // url
+        QString url = "https://";
+        url.append(m_connecInfo.WAS_HOST);
+        url.append("/api/device/capture/upload");
+        ELGO_CONTROL_LOG("URL : %s", url.toUtf8().constData());
+
+        // curl_form
+        struct curl_httppost *formpost = NULL;
+        struct curl_httppost *lastPtr = NULL;
+        curl_formadd(&formpost,
+                     &lastPtr,
+                     CURLFORM_COPYNAME, "file",
+                     CURLFORM_FILE, savedPath.toStdString().c_str(),
+                     CURLFORM_END);
+
+        // set_opt
+        std::string responsePath;
+        char errorBuffer[CURL_ERROR_SIZE] = {'\0',};
+        curl_easy_setopt(curl, CURLOPT_URL, url.toUtf8().constData());
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, CONN_TIMEOUT::DEFAULT_TIMEOUT);
+        curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responsePath);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &NetworkCtrl::WriteFunction);
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
+
+        // for debug
+        long resCode;
+        ELGO_CONTROL_LOG("curl_version() : %s", curl_version());
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);
+
+        CURLcode curlCode = curl_easy_perform(curl);
+        if(CURLE_OK == curlCode)
+        {
+            retValue = true;
+            uploadedPath = responsePath.c_str();
+            ELGO_CONTROL_LOG("Response Path : %s", uploadedPath.toUtf8().constData());
+        }
+        else
+        {
+            QString errorStr = curl_easy_strerror(curlCode);
+            ELGO_CONTROL_LOG("Error - resCode : %ld , str : %s, errorBuf : %s", resCode, errorStr.toUtf8().constData(), errorBuffer);
+        }
+
+        curl_formfree(formpost);
+        formpost = NULL;
     }
     curl_easy_cleanup(curl);
     curl = NULL;

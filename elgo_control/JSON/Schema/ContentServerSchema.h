@@ -46,6 +46,7 @@ namespace ContentSchema
         QString message;
         QString deviceName;
         QString url;
+        QString path;
         PayloadType type;
         bool displayPower;
     };

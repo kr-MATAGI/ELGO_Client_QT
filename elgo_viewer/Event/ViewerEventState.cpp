@@ -23,6 +23,8 @@ ViewerEventState::ViewerEventState()
                           &ViewerEventState::RecvCustomPlaySchedules);
     m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES,
                           &ViewerEventState::RecvFixedPlaySchedules);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
+                          &ViewerEventState::RecvRequestScreenCapture);
 }
 
 //========================================================
@@ -34,14 +36,14 @@ ViewerEventState::~ViewerEventState()
 }
 
 //========================================================
-void ViewerEventState::ExecState(quint16 event, QByteArray &src)
+void ViewerEventState::ExecState(const quint16 event, const QByteArray &src)
 //========================================================
 {
     m_state.Exec(event, src);;
 }
 
 //========================================================
-void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
+void ViewerEventState::MakeQrCodeAndDisplay(const QByteArray &src)
 //========================================================
 {
     /**
@@ -54,11 +56,12 @@ void ViewerEventState::MakeQrCodeAndDisplay(QByteArray &src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::MAKE_QRCODE);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RotateDeviceDisplay(QByteArray& src)
+void ViewerEventState::RotateDeviceDisplay(const QByteArray& src)
 //========================================================
 {
     /**
@@ -71,11 +74,12 @@ void ViewerEventState::RotateDeviceDisplay(QByteArray& src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvCustomPlayData(QByteArray& src)
+void ViewerEventState::RecvCustomPlayData(const QByteArray& src)
 //========================================================
 {
     /**
@@ -88,11 +92,12 @@ void ViewerEventState::RecvCustomPlayData(QByteArray& src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvFixedPlayData(QByteArray& src)
+void ViewerEventState::RecvFixedPlayData(const QByteArray& src)
 //========================================================
 {
     /**
@@ -105,11 +110,12 @@ void ViewerEventState::RecvFixedPlayData(QByteArray& src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvCustomPlaySchedules(QByteArray& src)
+void ViewerEventState::RecvCustomPlaySchedules(const QByteArray& src)
 //========================================================
 {
     /**
@@ -125,11 +131,12 @@ void ViewerEventState::RecvCustomPlaySchedules(QByteArray& src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES);
     thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvFixedPlaySchedules(QByteArray& src)
+void ViewerEventState::RecvFixedPlaySchedules(const QByteArray& src)
 //========================================================
 {
     /**
@@ -145,5 +152,26 @@ void ViewerEventState::RecvFixedPlaySchedules(QByteArray& src)
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES);
     thread->SetRecvBytes(src);
+
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvRequestScreenCapture(const QByteArray& src)
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       current Screen capture on elgo_viewer
+    *       if capture is successed, response to elgo_control
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    */
+    ViewerThread *thread = new ViewerThread;
+    thread->SetViewerEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE);
+    thread->SetRecvBytes(src);
+
     m_threadPool->start(thread);
 }

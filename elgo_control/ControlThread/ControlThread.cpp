@@ -7,8 +7,10 @@
 #include "LocalSocketEvent/EFCEvent.h"
 
 // Control
-#include "Logger/ControlLogger.h"
 #include "ControlThread.h"
+#include "Logger/ControlLogger.h"
+#include "JSON/JsonWriter.h"
+
 
 //========================================================
 ControlThread::ControlThread()
@@ -47,6 +49,10 @@ void ControlThread::run()
     {
         ExecRecvServerInfoFromMain();
     }
+    else if(CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE == m_event)
+    {
+        ExecResponseScreenCapture();
+    }
     else
     {
         ELGO_CONTROL_LOG("Unkwon Event %d", m_event);
@@ -67,15 +73,14 @@ void ControlThread::ExecRecvServerInfoFromMain()
      *          QString remoteTCPHost
      */
 
-    QByteArray recvBytes = m_bytes;
-    QDataStream out(&recvBytes, QIODevice::ReadOnly);
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     QString wasHost;
     quint16 wasHostPort;
     QString remoteTCPHost;
 
-    out >> wasHost;
-    out >> wasHostPort;
-    out >> remoteTCPHost;
+    recvStream >> wasHost;
+    recvStream >> wasHostPort;
+    recvStream >> remoteTCPHost;
     ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteHost : %s",
                      wasHost.toUtf8().constData(), wasHostPort, remoteTCPHost.toUtf8().constData());
 
@@ -88,4 +93,55 @@ void ControlThread::ExecRecvServerInfoFromMain()
 
     // Connect Content Server
     NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
+}
+
+//========================================================
+void ControlThread::ExecResponseScreenCapture()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Receive screen capture response from elgo_viewer
+    * @param
+    *       QString payload.src
+    *       QString payload.dest
+    *       QString imagePath
+    *       bool    bIsSuccessed
+    */
+
+    ContentSchema::Summary response;
+    QString imgSavedPath;
+    bool bIsSuccessed = false;
+
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    response.event = ContentSchema::Event::SCREEN_CAPTURE;
+    response.payload.type = ContentSchema::PayloadType::RESPONSE;
+    recvStream >> response.payload.dest;
+    recvStream >> response.payload.src;
+    recvStream >> imgSavedPath;
+    recvStream >> bIsSuccessed;
+
+    if(true == bIsSuccessed)
+    {
+        QString uploadedPath;
+        const bool bIsUploaded =
+                NetworkController::GetInstance()->GetNetworkCtrl().UploadScreenCaptureImage(imgSavedPath, uploadedPath);
+        if(true == bIsUploaded)
+        {
+            response.payload.path = uploadedPath;
+
+            QString sendJson;
+            JsonWriter::WriteContentServerScreenCaptureEvent(response, sendJson);
+            NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(sendJson);
+        }
+        else
+        {
+
+        }
+    }
+    else
+    {
+        // TODO : Error Response
+    }
 }
