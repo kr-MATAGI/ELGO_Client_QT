@@ -79,12 +79,13 @@ void ContentsPlayer::DestoryInstance()
 }
 
 //========================================================
-bool ContentsPlayer::GetCurrentScreenCapture()
+bool ContentsPlayer::GetCurrentWidgetCapture()
 //========================================================
 {
     bool retValue = true;
 
     QScreen *screen = QGuiApplication::primaryScreen();
+
     if(const QWindow *window = windowHandle())
     {
         screen = window->screen();
@@ -96,9 +97,10 @@ bool ContentsPlayer::GetCurrentScreenCapture()
     }
     else
     {
+        const WId wid = QWidget::winId();
         QString path = CAPATURE_SAVE_PATH;
         path.append("screenCapture.png");
-        QPixmap pixmap = screen->grabWindow(0);
+        QPixmap pixmap = screen->grabWindow(wid);
         if(false == pixmap.save(path))
         {
             retValue = false;

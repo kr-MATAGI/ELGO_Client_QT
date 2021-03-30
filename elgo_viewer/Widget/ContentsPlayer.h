@@ -37,7 +37,7 @@ public:
 
 public:
     /** @brief */
-    bool GetCurrentScreenCapture();
+    bool GetCurrentWidgetCapture();
 
     /** @brief */
     void StartContentsPlayer();

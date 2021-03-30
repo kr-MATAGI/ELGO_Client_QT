@@ -1,6 +1,7 @@
 // QT
 #include <QGuiApplication>
 #include <QScreen>
+#include <QWindow>
 #include <QQuickView>
 #include <QThread>
 
@@ -235,6 +236,7 @@ bool ViewerThread::CaptureCurrentScreen(const QString& savedPath)
     bool retValue = true;
 
     QScreen *screen = QGuiApplication::primaryScreen();
+
     if(NULL == screen)
     {
         ELGO_VIEWER_LOG("ERROR - NULL == screen");
@@ -252,9 +254,6 @@ bool ViewerThread::CaptureCurrentScreen(const QString& savedPath)
             ELGO_VIEWER_LOG("Saved Pixmap { path : %s }", savedPath.toStdString().c_str());
         }
     }
-
-    delete screen;
-    screen = NULL;
 
     return retValue;
 }
