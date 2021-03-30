@@ -39,6 +39,15 @@ public:
     void ExecPowerSchedulesEvent();
 
     /** @brief */
+    void ExecDisplayOnOffEvent();
+
+    /** @brief */
+    void ExecScreenCaptureEvent();
+
+    /** @brief */
+    void ExecSystemRebootEvent();
+
+    /** @brief */
     void ExecClearPlaySchdules();
 
     /** @brief */

@@ -48,6 +48,19 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     {
 
     }
+    else if(ContentSchema::Event::DISPLAY_ON == serverJson.event ||
+            ContentSchema::Event::DISPLAY_OFF == serverJson.event)
+    {
+
+    }
+    else if(ContentSchema::Event::SCREEN_CAPTURE == serverJson.event)
+    {
+
+    }
+    else if(ContentSchema::Event::SYSTEM_REBOOT == serverJson.event)
+    {
+
+    }
     else if(ContentSchema::Event::CLEAR_PLAY_SCHEDULE == serverJson.event)
     {
 

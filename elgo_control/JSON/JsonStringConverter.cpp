@@ -1,3 +1,5 @@
+// std
+#include <sstream>
 
 // Control
 #include "Logger/ControlLogger.h"
@@ -944,9 +946,9 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
     }
     else
     {
-        QString typeId = typeid(src.toInt()).name();
-        ELGO_CONTROL_LOG("TEST TYPE NAME : %s", typeId.toStdString().c_str());
-        if( 0 == typeId.compare("i"))
+        std::stringstream strStream(src.toStdString());
+        int number = 0;
+        if( false == (strStream >> number).fail())
         {
             if(ScheduleJson::CronFormat::DOW == format)
             {
