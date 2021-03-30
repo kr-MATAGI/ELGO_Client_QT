@@ -181,9 +181,11 @@ void DownloadThread::ExecDownloadPlaySchedules()
         ObjectJson::FixedPlayDataJson fixedPlayData;
         QList<ScheduleJson::PlaySchedules> playScheduleList;
 
+        // video Info
+        QList<QPair<QString, qint64>> videoInfoList;
+
         QList<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
-
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
         {
@@ -248,7 +250,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
                     if(ResourceJson::ResourceType::VIDEO == resource[idx].type)
                     {
                         const qint64 duration = VideoInfoHelper::GetVideoDuration(resource[idx].name);
-                        ELGO_CONTROL_LOG("TEST Duration : %lld", duration);
+                        videoInfoList.push_back(QPair<QString, qint64>(resource[idx].name, duration));
                     }
                 }
             }
@@ -257,7 +259,21 @@ void DownloadThread::ExecDownloadPlaySchedules()
         // elgo_control -> elgo_viewer
         if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
         {
-            // Get Duration
+            // Get Video Duration
+            foreach(auto pageData, customPlayData.pageDataList)
+            {
+                foreach(auto layerData, pageData.layerDataList)
+                {
+                    foreach(auto videoInfo, videoInfoList)
+                    {
+                        if(0 == strcmp(videoInfo.first.toStdString().c_str(),
+                                       layerData.layerContent.name.toStdString().c_str()))
+                        {
+                            layerData.layerContent.duration = videoInfo.second;
+                        }
+                    }
+                }
+            }
 
             /**
             * @note
