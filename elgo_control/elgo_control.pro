@@ -60,11 +60,6 @@ HEADERS += \
     XML/XmlParser.h
 
 
-#openssl
-unix {
-    PKGCONFIG += openssl
-}
-
 #EFC
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../EFC/release/ -lEFC
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../EFC/debug/ -lEFC
