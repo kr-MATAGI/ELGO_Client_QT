@@ -131,14 +131,14 @@ namespace VIEWER_EVENT
         /**
         * @note
         *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Send fixed play data information
+        *       Send custom play data information
         *       with schedules
         * @param
-        *       FixedPlayDataJson customPlayData
+        *       CustomPlayDataJson customPlayData
         *       int scheduleCount
-        *       PlaySchedules schedules
+        *       QList<PlaySchedules> schedules
         */
-        CUSTOM_PLAY_DATA_SCHEDULES = 773,
+        CUSTOM_PLAY_SCHEDULES = 773,
 
         /**
         * @note
@@ -148,9 +148,9 @@ namespace VIEWER_EVENT
         * @param
         *       FixedPlayDataJson customPlayData
         *       int scheduleCount
-        *       PlaySchedules schedules
+        *       QList<PlaySchedules> schedules
         */
-        FIXED_PLAY_DATA_SCHEDULES = 774,
+        FIXED_PLAY_SCHEDULES = 774,
 
 
         /**

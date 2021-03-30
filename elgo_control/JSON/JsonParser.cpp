@@ -622,7 +622,7 @@ void JsonParser::ParsePageDataJson(const QJsonArray& pageDataArr, QList<ObjectJs
         const QJsonObject& pageDataObj = pageDataArr[idx].toObject();
         if(pageDataObj.end() != pageDataObj.find("pgd_duration"))
         {
-            const int duration = pageDataObj["pgd_duration"].toInt();
+            const qint64 duration = static_cast<qint64>( pageDataObj["pgd_duration"].toInt());
             pageData.duration = duration;
         }
 

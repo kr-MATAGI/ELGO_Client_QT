@@ -16,6 +16,7 @@
 
 // Common
 #include "Common/Interface/ContentsPlayDataImpl.h"
+#include "Common/Interface/ScheduleImpl.h"
 
 //========================================================
 ViewerThread::ViewerThread()
@@ -59,11 +60,19 @@ void ViewerThread::run()
     }
     else if(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA == m_event)
     {
-        ExecRecvCustomPlayData();
+        ExecCustomPlayData();
+    }
+    else if(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES == m_event)
+    {
+        ExecCustomPlaySchedules();
+    }
+    else if(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES == m_event)
+    {
+        ExecFixedPlaySchedules();
     }
     else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
     {
-        ExecRecvFixedPlayData();
+        ExecFixedPlayData();
     }
     else if(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE == m_event)
     {
@@ -133,7 +142,7 @@ void ViewerThread::ExecRotateDeviceDisplay()
 }
 
 //========================================================
-void ViewerThread::ExecRecvCustomPlayData()
+void ViewerThread::ExecCustomPlayData()
 //========================================================
 {
     /**
@@ -152,7 +161,7 @@ void ViewerThread::ExecRecvCustomPlayData()
 }
 
 //========================================================
-void ViewerThread::ExecRecvFixedPlayData()
+void ViewerThread::ExecFixedPlayData()
 //========================================================
 {
     /**
@@ -168,6 +177,57 @@ void ViewerThread::ExecRecvFixedPlayData()
     recvStream >> fixedPlayData;
 
     ELGO_VIEWER_LOG("fixed name : %s", fixedPlayData.playData.name.toStdString().c_str());
+}
+
+//========================================================
+void ViewerThread::ExecCustomPlaySchedules()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send custom play data information
+    *       with schedules
+    * @param
+    *       CustomPlayDataJson customPlayData
+    *       int scheduleCount
+    *       QList<PlaySchedules> schedules
+    */
+
+    // deserialize
+    ObjectJson::CustomPlayDataJson customPlayData;
+    int scheduleCount;
+    QList<ScheduleJson::PlaySchedules> scheduleList;
+
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    recvStream >> customPlayData;
+    recvStream >> scheduleCount;
+    for(int idx = 0; idx < scheduleCount; idx++)
+    {
+        ScheduleJson::PlaySchedules schedule;
+        recvStream >> schedule;
+        scheduleList.push_back(schedule);
+    }
+
+
+}
+
+//========================================================
+void ViewerThread::ExecFixedPlaySchedules()
+//========================================================
+{
+    /**
+    * @note
+    *       ELGO_CONTROL -> ELGO_VIEWER
+    *       Send fixed play data information
+    *       with schedules
+    * @param
+    *       FixedPlayDataJson customPlayData
+    *       int scheduleCount
+    *       QList<PlaySchedules> schedules
+    */
+
+
 }
 
 //========================================================

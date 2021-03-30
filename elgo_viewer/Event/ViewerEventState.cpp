@@ -19,9 +19,9 @@ ViewerEventState::ViewerEventState()
                           &ViewerEventState::RecvCustomPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA,
                           &ViewerEventState::RecvFixedPlayData);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES,
+    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES,
                           &ViewerEventState::RecvCustomPlaySchedules);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES,
+    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES,
                           &ViewerEventState::RecvFixedPlaySchedules);
     m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
                           &ViewerEventState::RecvRequestScreenCapture);
@@ -129,7 +129,7 @@ void ViewerEventState::RecvCustomPlaySchedules(const QByteArray& src)
     *       PlaySchedules schedules
     */
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
@@ -150,7 +150,7 @@ void ViewerEventState::RecvFixedPlaySchedules(const QByteArray& src)
     *       PlaySchedules schedules
     */
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);

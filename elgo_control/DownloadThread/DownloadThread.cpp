@@ -251,12 +251,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
             /**
             * @note
             *       ELGO_CONTROL -> ELGO_VIEWER
-            *       Send fixed play data information
+            *       Send custom play data information
             *       with schedules
             * @param
-            *       FixedPlayDataJson customPlayData
+            *       CustomPlayDataJson customPlayData
             *       int scheduleCount
-            *       PlaySchedules schedules
+            *       QList<PlaySchedules> schedules
             */
 
             QByteArray bytes;
@@ -265,10 +265,10 @@ void DownloadThread::ExecDownloadPlaySchedules()
             stream << playScheduleList.size();
             stream << playScheduleList;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES, bytes);
+                                                          VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES, bytes);
             if(false == bIsSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_DATA_SCHEDULES);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES);
             }
         }
         else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
@@ -281,7 +281,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
             * @param
             *       FixedPlayDataJson customPlayData
             *       int scheduleCount
-            *       PlaySchedules schedules
+            *       QList<PlaySchedules> schedules
             */
 
             QByteArray bytes;
@@ -290,10 +290,10 @@ void DownloadThread::ExecDownloadPlaySchedules()
             stream << playScheduleList.size();
             stream << playScheduleList;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES, bytes);
+                                                          VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES, bytes);
             if(false == bIsSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_DATA_SCHEDULES);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES);
             }
         }
         else

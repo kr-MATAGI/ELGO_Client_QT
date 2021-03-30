@@ -176,7 +176,7 @@ namespace ObjectJson
     /** @brief */
     struct PageData
     {
-        int duration;
+        qint64 duration;
         QList<LayerData> layerDataList;
         QList<SubtitleData> subtitleDataList;
     };

@@ -12,6 +12,7 @@
 #include "MainWindow.h"
 #include "ViewerCtrl/ViewerController.h"
 
+
 class MainWindow;
 class ViewerController;
 
@@ -33,10 +34,14 @@ public:
     void ExecRotateDeviceDisplay();
 
     /** @brief */
-    void ExecRecvCustomPlayData();
+    void ExecCustomPlayData();
+    /** @brief */
+    void ExecFixedPlayData();
 
     /** @brief */
-    void ExecRecvFixedPlayData();
+    void ExecCustomPlaySchedules();
+    /** @brief */
+    void ExecFixedPlaySchedules();
 
     /** @brief */
     void ExecScreenCapture();
