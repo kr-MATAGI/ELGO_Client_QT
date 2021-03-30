@@ -31,7 +31,12 @@ namespace JsonWriter
     void WriteContentServerScreenCaptureEvent(const ContentSchema::Summary& src, QString& dest);
 
     /** @brief */
-    void WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest);
+    void WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest,
+                                   const bool bIsError = false, const QString& errorStr = QString());
+
+    /** @brief */
+    void WriteContentServerErrorResponse(const ContentSchema::Summary& src, QString& dest,
+                                         const bool bIsError, const QString& errorStr);
 
 
     /// elgo_remote <-> elgo_control

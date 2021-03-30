@@ -122,11 +122,11 @@ void ControlThread::ExecResponseScreenCapture()
     recvStream >> imgSavedPath;
     recvStream >> bIsSuccessed;
 
+    bool bIsUploaded = false;
     if(true == bIsSuccessed)
     {
         QString uploadedPath;
-        const bool bIsUploaded =
-                NetworkController::GetInstance()->GetNetworkCtrl().UploadScreenCaptureImage(imgSavedPath, uploadedPath);
+        bIsUploaded = NetworkController::GetInstance()->GetNetworkCtrl().UploadScreenCaptureImage(imgSavedPath, uploadedPath);
         if(true == bIsUploaded)
         {
             response.payload.path = uploadedPath;
@@ -142,6 +142,16 @@ void ControlThread::ExecResponseScreenCapture()
     }
     else
     {
-        // TODO : Error Response
+        QString sendJson;
+        QString errorStr;
+        if(false == bIsSuccessed)
+        {
+            errorStr = "Failed Screen Capture";
+        }
+        else if(false == bIsUploaded)
+        {
+            errorStr = "Failed Upload File";
+        }
+        JsonWriter::WriteContentServerErrorResponse(response, sendJson, true, errorStr);
     }
 }

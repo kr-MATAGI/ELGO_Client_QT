@@ -250,7 +250,8 @@ void JsonWriter::WriteContentServerScreenCaptureEvent(const ContentSchema::Summa
 }
 
 //========================================================
-void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest)
+void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest,
+                                           const bool bIsError, const QString& errorStr)
 //========================================================
 {
     QJsonObject jsonObj;
@@ -266,21 +267,52 @@ void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJ
     JsonStringConverter::ContentServerPayloadTypeEnumToString(src.payload.type, type);
     jsonObj["type"] = type;
 
-    // displayPower - Required on ACCESS Event
-    if(ContentSchema::Event::ACCESS == src.event)
+    if(false == bIsError)
     {
-        bool displayPower = src.payload.displayPower;
-        QJsonValue displayPowerValue(displayPower);
-        jsonObj["displayPower"] = displayPowerValue.toInt();
-    }
+        // displayPower - Required on ACCESS Event
+        if(ContentSchema::Event::ACCESS == src.event)
+        {
+            bool displayPower = src.payload.displayPower;
+            QJsonValue displayPowerValue(displayPower);
+            jsonObj["displayPower"] = displayPowerValue.toInt();
+        }
 
-    // path - Required on Capture Event
-    if(ContentSchema::Event::SCREEN_CAPTURE == src.event)
+        // path - Required on Capture Event
+        if(ContentSchema::Event::SCREEN_CAPTURE == src.event)
+        {
+            jsonObj["path"] = src.payload.path;
+        }
+    }
+    else
     {
-        jsonObj["path"] = src.payload.path;
+        jsonObj["error"] = errorStr;
     }
 
     dest = jsonObj;
+}
+
+//========================================================
+void JsonWriter::WriteContentServerErrorResponse(const ContentSchema::Summary& src, QString& dest,
+                                                 const bool bIsError, const QString& errorStr)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // event
+    QString event;
+    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
+    jsonObj["event"] = event;
+
+    // playload
+    QJsonObject payloadObj;
+    WriteContentServerPayload(src, payloadObj, bIsError, errorStr);
+    jsonObj["payload"] = payloadObj;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
 //========================================================
