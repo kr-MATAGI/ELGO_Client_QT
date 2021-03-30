@@ -137,7 +137,7 @@ void ControlThread::ExecResponseScreenCapture()
         }
         else
         {
-
+            ELGO_CONTROL_LOG("Error - Failed Upload : %s", imgSavedPath.toUtf8().constData());
         }
     }
     else
