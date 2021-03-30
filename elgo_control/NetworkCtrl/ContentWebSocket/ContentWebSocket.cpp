@@ -49,6 +49,7 @@ void ContentWebSocket::SendTextMessageToServer(const QString& textMsg)
         if(0 < textMsg.length())
         {
             m_socket->sendTextMessage(textMsg);
+            ELGO_CONTROL_LOG("Send : %s", textMsg.toUtf8().constData());
         }
         else
         {
