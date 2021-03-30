@@ -248,6 +248,8 @@ void DownloadThread::ExecDownloadPlaySchedules()
         // elgo_control -> elgo_viewer
         if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
         {
+            // Get Duration
+
             /**
             * @note
             *       ELGO_CONTROL -> ELGO_VIEWER
