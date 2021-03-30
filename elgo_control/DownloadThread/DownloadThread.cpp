@@ -8,6 +8,7 @@
 #include "JSON/JsonParser.h"
 #include "JSON/JsonWriter.h"
 #include "Logger/ControlLogger.h"
+#include "Utils/VideoInfoHelper.h"
 
 // Common
 #include "Common/Interface/ContentsPlayDataImpl.h"
@@ -241,6 +242,14 @@ void DownloadThread::ExecDownloadPlaySchedules()
                 if(false == bIsDownload)
                 {
                     ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
+                }
+                else
+                {
+                    if(ResourceJson::ResourceType::VIDEO == resource[idx].type)
+                    {
+                        const qint64 duration = VideoInfoHelper::GetVideoDuration(resource[idx].name);
+                        ELGO_CONTROL_LOG("TEST Duration : %lld", duration);
+                    }
                 }
             }
         }

@@ -14,6 +14,7 @@ SOURCES += \
         DB/NetworkDBCtrl.cpp \
         DownloadThread/CurlDownload.cpp \
         DownloadThread/DownloadThread.cpp \
+        DownloadThread/Utils/VideoInfoHelper.cpp \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     DownloadThread/CurlDownload.h \
     DownloadThread/DownloadDef.h \
     DownloadThread/DownloadThread.h \
+    DownloadThread/Utils/VideoInfoHelper.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \
@@ -86,8 +88,9 @@ else:unix:!macx: LIBS += -L$$PWD/ext_libs/libcurl/lib/ -lcurl
 INCLUDEPATH += $$PWD/ext_libs/libcurl/include
 DEPENDPATH += $$PWD/ext_libs/libcurl/include
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/release/libcurl.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/debug/libcurl.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/release/curl.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/debug/curl.lib
-else:unix:!macx: PRE_TARGETDEPS += $$PWD/ext_libs/libcurl/lib/libcurl.a
+#ffmpeg
+unix:!macx|win32: LIBS += -lavcodec
+unix:!macx|win32: LIBS += -lavformat
+unix:!macx|win32: LIBS += -lavutil
+
+

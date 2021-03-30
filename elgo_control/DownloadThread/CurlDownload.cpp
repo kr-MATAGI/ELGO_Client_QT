@@ -8,11 +8,6 @@
 // ext_libs
 #include <curl/curl.h>
 
-#define NEWS_BASE_URL    "https://www.yonhapnewstv.co.kr/"
-#define WEATHER_BASE_URL    "http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtFcst?serviceKey="
-#define WEATHER_KEY "0E%2Fz8rMxyn%2FK9t68RkJW2vlWcYJJN1M%2FF9Ai56KLbT2mEeDaZXSI24liwFcTuTKXM1RHJzmOA8Nwr5YWXpphhg%3D%3D"
-
-#define RESOURCE_SAVE_PATH  "/home/jaehoon/바탕화면/ELGO/resource/"
 
 //========================================================
 bool CurlDownload::DownloadNewsFeedXml(DownloadDef::NewsCategory category, QString& dest)
