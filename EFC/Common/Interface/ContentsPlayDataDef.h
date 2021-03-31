@@ -2,7 +2,7 @@
 #define CONETNSPLAYDATADEF_H
 
 #include <QString>
-#include <QList>
+#include <QVector>
 
 namespace PlayJson
 {
@@ -144,7 +144,7 @@ namespace PlayJson
         int top;
         int width;
         int height;
-        QList<ContentData> contentDataList;
+        QVector<ContentData> contentDataList;
     };
 
     /** @brief */
@@ -188,24 +188,48 @@ namespace PlayJson
     struct PageData
     {
         qint64 duration;
-        QList<CustomLayerData> layerDataList;
-        QList<SubtitleData> subtitleDataList;
+        QVector<CustomLayerData> layerDataList;
+        QVector<SubtitleData> subtitleDataList;
     };
 
     /** @brief  Custom Play */
     struct CustomPlayDataJson
     {
         PlayData playData;
-        QList<PageData> pageDataList;
+        QVector<PageData> pageDataList;
     };
 
     /** @brief  Fixed Play */
     struct FixedPlayDataJson
     {
         PlayData playData;
-        QList<FixedLayerData> layerDataList;
-        QList<SubtitleData> subtitleDataList;
+        QVector<FixedLayerData> layerDataList;
+        QVector<SubtitleData> subtitleDataList;
     };
+
+
+    /**
+     *  @note   operator ==
+     */
+    /** @brief */
+    bool operator==(const PlayJson::FixedPlayDataJson& lhs, const PlayJson::FixedPlayDataJson& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::CustomPlayDataJson& lhs, const PlayJson::CustomPlayDataJson& rhs);
+
+    /** @brief */
+    bool operator==(const PlayJson::PlayData& lhs, const PlayJson::PlayData& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::FixedLayerData& lhs, const PlayJson::FixedLayerData& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::ContentData& lhs, const PlayJson::ContentData& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::LayerContentType& lhs, const PlayJson::LayerContentType& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::SubtitleData& lhs, const PlayJson::SubtitleData& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::PageData& lhs, const PlayJson::PageData& rhs);
+    /** @brief */
+    bool operator==(const PlayJson::CustomLayerData& lhs, const PlayJson::CustomLayerData& rhs);
 }
 
 #endif // CONETNSPLAYDATADEF_H

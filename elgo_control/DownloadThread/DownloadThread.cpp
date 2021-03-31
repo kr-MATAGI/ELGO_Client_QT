@@ -66,7 +66,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
         JsonParser::ParseResourceResponse(response, resource);
 
         // video duration info
-        QList<QPair<QString, qint64>> videoInfoList;
+        QVector<QPair<QString, qint64>> videoInfoList;
 
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
@@ -156,7 +156,6 @@ void DownloadThread::ExecDownloadSinglePlayData()
         {
             // Get Video Duration
             VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
-
             /**
              * @note
              *       ELGO_CONTROL -> ELGO_VIEWER
@@ -211,7 +210,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
         QList<ScheduleJson::PlaySchedules> playScheduleList;
 
         // video duration info
-        QList<QPair<QString, qint64>> videoInfoList;
+        QVector<QPair<QString, qint64>> videoInfoList;
 
         QList<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);

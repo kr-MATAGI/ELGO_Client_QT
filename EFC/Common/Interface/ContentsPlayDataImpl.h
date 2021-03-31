@@ -5,7 +5,7 @@
 #include <QDataStream>
 
 //
-#include "ConetnsPlayDataDef.h"
+#include "ContentsPlayDataDef.h"
 
 
 /**
@@ -56,6 +56,9 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::SubtitleData& dest);
 QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest);
 /** @brief */
 QDataStream &operator>>(QDataStream& ds, PlayJson::LayerContentType& dest);
+
+
+
 
 
 #endif // ELGODATASTREAM_H

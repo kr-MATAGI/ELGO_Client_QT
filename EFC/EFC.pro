@@ -17,10 +17,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    Common/CommonDef.h \
     Common/Deifinition.h \
     Common/DBDefinition.h \
     Common/EventList.h \
-    Common/Interface/ConetnsPlayDataDef.h \
+    Common/Interface/ContentsPlayDataDef.h \
     Common/Interface/ContentsPlayDataImpl.h \
     Common/Interface/ScheduleDef.h \
     Common/Interface/ScheduleImpl.h \
@@ -33,7 +34,7 @@ HEADERS += \
 
 
 SOURCES += \
-    Common/Interface/ContensPlayDataImpl.cpp \
+    Common/Interface/ContentsPlayDataImpl.cpp \
     Common/Interface/ScheduleImpl.cpp \
     LocalSocketEvent/EFCEvent.cpp \
     LocalSocketEvent/LocalSocketServer.cpp \

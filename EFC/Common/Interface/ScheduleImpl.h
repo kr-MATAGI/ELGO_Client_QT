@@ -52,9 +52,9 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedules& dest);
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest);
 
 
-/** @brief  Single Play Schdeuls Serialize */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest);
+/** @brief  Single Play Schdeuls Deserialize */
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules& dest);
 /** @brief */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData dest);
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData& dest);
 
 #endif // PLAYSCHEDULEIMPL_H

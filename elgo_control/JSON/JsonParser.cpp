@@ -428,8 +428,13 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
                 // name
                 if(arrObj.end() != arrObj.find("name"))
                 {
+                    QString nameToIdStr;
+                    QString nameToTypeStr;
                     const QString& name = arrObj["name"].toString();
-                    JsonStringConverter::GetSchedulePlayDataIdInName(name, scheduleData.id);
+
+                    JsonStringConverter::GetSchedulePlayDataIdInName(name, nameToIdStr, nameToTypeStr);
+                    scheduleData.playDataId = nameToIdStr.toInt();
+                    scheduleData.type = JsonStringConverter::PlayDataTypeStringToEnum(nameToTypeStr);
                 }
                 else
                 {
@@ -511,7 +516,7 @@ void JsonParser::ParseCustomPlayDataJson(const QString& src, PlayJson::CustomPla
         const QJsonArray& pageDataArr = jsonObj["page_data"].toArray();
         if(0 < pageDataArr.size())
         {
-            QList<PlayJson::PageData> pageDataList;
+            QVector<PlayJson::PageData> pageDataList;
             ParsePageDataJson(pageDataArr, pageDataList);
             dest.pageDataList = pageDataList;
         }
@@ -533,7 +538,7 @@ void JsonParser::ParseFixedPlayDataJson(const QString& src, PlayJson::FixedPlayD
     if(jsonObj.end() != jsonObj.find("layer_data"))
     {
 
-        QList<PlayJson::FixedLayerData> layerDataList;
+        QVector<PlayJson::FixedLayerData> layerDataList;
         const QJsonArray& layerDataArr = jsonObj["layer_data"].toArray();
         ParseFixedLayerDataJson(layerDataArr, layerDataList);
 
@@ -550,7 +555,7 @@ void JsonParser::ParseFixedPlayDataJson(const QString& src, PlayJson::FixedPlayD
         const QJsonArray& subtitleDataArr = jsonObj["subtitle_data"].toArray();
         if(0 < subtitleDataArr.size())
         {
-            QList<PlayJson::SubtitleData> subtitleDataList;
+            QVector<PlayJson::SubtitleData> subtitleDataList;
             ParseSubtitleDataJson(subtitleDataArr, subtitleDataList);
 
             dest.subtitleDataList = subtitleDataList;
@@ -611,7 +616,7 @@ void JsonParser::ParsePlayDataJson(const QString& src, PlayJson::PlayData& dest)
 }
 
 //========================================================
-void JsonParser::ParsePageDataJson(const QJsonArray& pageDataArr, QList<PlayJson::PageData>& dest)
+void JsonParser::ParsePageDataJson(const QJsonArray& pageDataArr, QVector<PlayJson::PageData>& dest)
 //========================================================
 {
     const int pageDataArrSize = pageDataArr.size();
@@ -639,7 +644,7 @@ void JsonParser::ParsePageDataJson(const QJsonArray& pageDataArr, QList<PlayJson
 }
 
 //========================================================
-void JsonParser::ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QList<PlayJson::CustomLayerData>& dest)
+void JsonParser::ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QVector<PlayJson::CustomLayerData>& dest)
 //========================================================
 {
     const int layerDataArrSize = layerDataArr.size();
@@ -684,7 +689,7 @@ void JsonParser::ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QList<
 }
 
 //========================================================
-void JsonParser::ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QList<PlayJson::FixedLayerData>& dest)
+void JsonParser::ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QVector<PlayJson::FixedLayerData>& dest)
 //========================================================
 {
     const int layerDataArrSize = layerDataArr.size();
@@ -722,10 +727,10 @@ void JsonParser::ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QList<P
         {
             const QJsonArray& layerContentArr = layerDataObj["content_data"].toArray();
             const int layerContentArrSize = layerContentArr.size();
-            for(int cIdx = 0; cIdx < layerContentArrSize; cIdx++ )
+            for(int contentIdx = 0; contentIdx < layerContentArrSize; contentIdx++ )
             {
                 PlayJson::ContentData contentData;
-                const QJsonObject& layerContentObj = layerContentArr[idx].toObject();
+                const QJsonObject& layerContentObj = layerContentArr[contentIdx].toObject();
                 ParseFixedLayerContentJson(layerContentObj, contentData);
                 layerData.contentDataList.push_back(contentData);
             }
@@ -1011,7 +1016,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
 }
 
 //========================================================
-void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<PlayJson::SubtitleData>& dest)
+void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QVector<PlayJson::SubtitleData>& dest)
 //========================================================
 {
     const int subtitleArrSize = subtitleDataArr.size();
@@ -1266,8 +1271,13 @@ void JsonParser::ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::
 
                     if(singleObj.end() != singleObj.find("name"))
                     {
+                        QString nameToIdStr;
+                        QString nameToTypeStr;
+
                         const QString& name = singleObj["name"].toString();
-                        JsonStringConverter::GetSchedulePlayDataIdInName(name, singlePlayData.id);
+                        JsonStringConverter::GetSchedulePlayDataIdInName(name, nameToIdStr, nameToTypeStr);
+                        singlePlayData.playDataId = nameToIdStr.toInt();
+                        singlePlayData.type = JsonStringConverter::PlayDataTypeStringToEnum(nameToTypeStr);
                     }
 
                     dest.schduleList.push_back(singlePlayData);

@@ -8,7 +8,7 @@
 #include "Schema/ContentServerSchema.h"
 
 // Common
-#include "Common/Interface/ConetnsPlayDataDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 #include "Common/Interface/ScheduleDef.h"
 
 namespace JsonStringConverter
@@ -86,7 +86,7 @@ namespace JsonStringConverter
     int GetConvertedDayOfWeek(const int cronDow);
 
     /** @brief */
-    void GetSchedulePlayDataIdInName(const QString& src, QString& dest);
+    void GetSchedulePlayDataIdInName(const QString& src, QString& playDataId, QString& playDataType);
 }
 
 #endif // JSONSTRINGCONVERTER_H

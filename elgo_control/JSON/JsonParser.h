@@ -58,17 +58,17 @@ namespace JsonParser
     /** @brief  Fixed Play Data */
     void ParseFixedPlayDataJson(const QString& src, PlayJson::FixedPlayDataJson& dest);
     /** @brief */
-    void ParsePageDataJson(const QJsonArray& pageDataArr, QList<PlayJson::PageData>& dest);
+    void ParsePageDataJson(const QJsonArray& pageDataArr, QVector<PlayJson::PageData>& dest);
     /** @brief */
-    void ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QList<PlayJson::CustomLayerData>& dest);
+    void ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QVector<PlayJson::CustomLayerData>& dest);
     /** @brief */
-    void ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QList<PlayJson::FixedLayerData>& dest);
+    void ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QVector<PlayJson::FixedLayerData>& dest);
     /** @brief */
     void ParseCustomLayerContentJson(const QJsonObject& layerContentObj, PlayJson::ContentData& dest);
     /** @brief */
     void ParseFixedLayerContentJson(const QJsonObject& layerContentObj, PlayJson::ContentData& dest);
     /** @brief */
-    void ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QList<PlayJson::SubtitleData>& dest);
+    void ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QVector<PlayJson::SubtitleData>& dest);
 
 
     /** @brief  Power Schedules */

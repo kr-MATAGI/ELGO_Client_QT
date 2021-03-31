@@ -111,6 +111,8 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedLayerData& src)
     {
         ds << src.contentDataList[idx];
     }
+
+    return ds;
 }
 
 //========================================================
@@ -372,4 +374,196 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::LayerContentType& dest)
     ds >> dest.mediaType;
 
     return ds;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::FixedPlayDataJson& lhs, const PlayJson::FixedPlayDataJson& rhs)
+//========================================================
+{
+    if(!(lhs.playData == rhs.playData))
+        return false;
+    if(!(lhs.layerDataList == rhs.layerDataList))
+        return false;
+    if(!(lhs.subtitleDataList == rhs.subtitleDataList))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::CustomPlayDataJson& lhs, const PlayJson::CustomPlayDataJson& rhs)
+//========================================================
+{
+    if(!(lhs.playData == rhs.playData))
+        return false;
+    if(!(lhs.pageDataList == rhs.pageDataList))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::PlayData& lhs, const PlayJson::PlayData& rhs)
+//========================================================
+{
+    if(!(lhs.id == rhs.id))
+        return false;
+    if(!(lhs.name == rhs.name))
+        return false;
+    if(!(lhs.memo == rhs.memo))
+        return false;
+    if(!(lhs.width == rhs.width))
+        return false;
+    if(!(lhs.height == rhs.height))
+        return false;
+    if(!(lhs.orientation == rhs.orientation))
+        return false;
+    if(!(lhs.playDataType == rhs.playDataType))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::FixedLayerData& lhs, const PlayJson::FixedLayerData& rhs)
+//========================================================
+{
+    if(!(lhs.left == rhs.left))
+        return false;
+    if(!(lhs.top == rhs.top))
+        return false;
+    if(!(lhs.width == rhs.width))
+        return false;
+    if(!(lhs.height == rhs.height))
+        return false;
+    if(!(lhs.contentDataList == rhs.contentDataList))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::ContentData& rhs)
+//========================================================
+{
+    if(!(lhs.contentType == rhs.contentType))
+        return false;
+    if(!(lhs.name == rhs.name))
+        return false;
+    if(!(lhs.fileDuration == rhs.fileDuration))
+        return false;
+    if(!(lhs.userDuration == rhs.userDuration))
+        return false;
+    if(!(lhs.metropolCity == rhs.metropolCity))
+        return false;
+    if(!(lhs.metropolCityName == rhs.metropolCityName))
+        return false;
+    if(!(lhs.city == rhs.city))
+        return false;
+    if(!(lhs.cityName == rhs.cityName))
+        return false;
+    if(!(lhs.fontColor == rhs.fontColor))
+        return false;
+    if(!(lhs.backgroundColor == rhs.backgroundColor))
+        return false;
+    if(!(lhs.bBackgroundOpacity == rhs.bBackgroundOpacity))
+        return false;
+    if(!(lhs.nx == rhs.nx))
+        return false;
+    if(!(lhs.ny == rhs.ny))
+        return false;
+    if(!(lhs.hourType == rhs.hourType))
+        return false;
+    if(!(lhs.dateType == rhs.dateType))
+        return false;
+    if(!(lhs.newsCategory == rhs.newsCategory))
+        return false;
+    if(!(lhs.newsfontSize == rhs.newsfontSize))
+        return false;
+    if(!(lhs.newsBoxCount == rhs.newsBoxCount))
+        return false;
+    if(!(lhs.newsBoxColor == rhs.newsBoxColor))
+        return false;
+    if(!(lhs.bNewsBoxOpacity == rhs.bNewsBoxOpacity))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::LayerContentType& lhs, const PlayJson::LayerContentType& rhs)
+//========================================================
+{
+    if(!(lhs.contentType == rhs.contentType))
+        return false;
+    if(!(lhs.mediaType == rhs.mediaType))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::SubtitleData& lhs, const PlayJson::SubtitleData& rhs)
+//========================================================
+{
+    if(!(lhs.left == rhs.left))
+        return false;
+    if(!(lhs.top == rhs.top))
+        return false;
+    if(!(lhs.width == rhs.width))
+        return false;
+    if(!(lhs.height == rhs.height))
+        return false;
+    if(!(lhs.text == rhs.text))
+        return false;
+    if(!(lhs.bIsFixed == rhs.bIsFixed))
+        return false;
+    if(!(lhs.direction == rhs.direction))
+        return false;
+    if(!(lhs.orientation == rhs.orientation))
+        return false;
+    if(!(lhs.action == rhs.action))
+        return false;
+    if(!(lhs.speed == rhs.speed))
+        return false;
+    if(!(lhs.backgroundColor == rhs.backgroundColor))
+        return false;
+    if(!(lhs.fontColor == rhs.fontColor))
+        return false;
+    if(!(lhs.fontSize == rhs.fontSize))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::PageData& lhs, const PlayJson::PageData& rhs)
+//========================================================
+{
+    if(!(lhs.duration == rhs.duration))
+        return false;
+    if(!(lhs.layerDataList == rhs.layerDataList))
+        return false;
+    if(!(lhs.subtitleDataList == rhs.subtitleDataList))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool PlayJson::operator==(const PlayJson::CustomLayerData& lhs, const PlayJson::CustomLayerData& rhs)
+//========================================================
+{
+    if(!(lhs.left == rhs.left))
+        return false;
+    if(!(lhs.top == rhs.top))
+        return false;
+    if(!(lhs.width == rhs.width))
+        return false;
+    if(!(lhs.height == rhs.height))
+        return false;
+    if(!(lhs.layerContent == rhs.layerContent))
+        return false;
+
+    return true;
 }

@@ -5,9 +5,11 @@
 #include "CurlDownload.h"
 #include "Logger/ControlLogger.h"
 
+// Common
+#include "Common/CommonDef.h"
+
 // ext_libs
 #include <curl/curl.h>
-
 
 //========================================================
 bool CurlDownload::DownloadNewsFeedXml(DownloadDef::NewsCategory category, QString& dest)

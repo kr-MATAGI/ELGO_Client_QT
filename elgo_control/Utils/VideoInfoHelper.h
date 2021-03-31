@@ -16,7 +16,7 @@ extern "C" {
 #include "JSON/Schema/ContentServerSchema.h"
 
 // Common
-#include "Common/Interface/ConetnsPlayDataDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 
 namespace VideoInfoHelper
 {
@@ -24,11 +24,11 @@ namespace VideoInfoHelper
     qint64 GetVideoDuration(const QString& name);
 
     /** @brief */
-    void MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
-                            QList<PlayJson::CustomLayerData>& dest);
+    void MatchVideoDuration(const QVector<QPair<QString, qint64>>& src,
+                            QVector<PlayJson::CustomLayerData>& dest);
     /** @brief */
-    void MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
-                            QList<PlayJson::FixedLayerData>& dest);
+    void MatchVideoDuration(const QVector<QPair<QString, qint64>>& src,
+                            QVector<PlayJson::FixedLayerData>& dest);
 }
 
 #endif // VIDEOINFOHELPER_H

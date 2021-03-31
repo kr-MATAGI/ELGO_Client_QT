@@ -1,9 +1,14 @@
 #ifndef PLAYSCHEDULEDEF_H
 #define PLAYSCHEDULEDEF_H
 
+// QT
 #include <QList>
+#include <QVector>
 #include <QString>
 #include <QDateTime>
+
+// Common
+#include "ContentsPlayDataDef.h"
 
 namespace ScheduleJson
 {
@@ -50,14 +55,15 @@ namespace ScheduleJson
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
-        QString id; // name
+        int playDataId; // name
+        PlayJson::PlayDataType type;
     };
 
     /** @brief  Play Schedules */
     struct PlaySchedules
     {
         QString id;
-        QList<PlayScheduleData> scheduleList;
+        QVector<PlayScheduleData> scheduleList;
     };
 
 
@@ -72,8 +78,8 @@ namespace ScheduleJson
 
     struct PowerSchedules
     {
-        QList<PowerScheduleData> onScheduleList;
-        QList<PowerScheduleData> offScheduleList;
+        QVector<PowerScheduleData> onScheduleList;
+        QVector<PowerScheduleData> offScheduleList;
     };
 
 
@@ -88,12 +94,13 @@ namespace ScheduleJson
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
-        QString id;
+        int playDataId;
+        PlayJson::PlayDataType type;
     };
 
     struct SinglePlaySchedules
     {
-        QList<SinglePlayScheduleData> schduleList;
+        QVector<SinglePlayScheduleData> schduleList;
     };
 }
 

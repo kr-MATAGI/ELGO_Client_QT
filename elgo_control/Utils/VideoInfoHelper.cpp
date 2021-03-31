@@ -3,6 +3,8 @@
 #include "VideoInfoHelper.h"
 #include "DownloadThread/DownloadDef.h"
 
+// Common
+#include "Common/CommonDef.h"
 
 //========================================================
 qint64 VideoInfoHelper::GetVideoDuration(const QString& name)
@@ -26,8 +28,8 @@ qint64 VideoInfoHelper::GetVideoDuration(const QString& name)
 }
 
 //========================================================
-void VideoInfoHelper::MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
-                                         QList<PlayJson::CustomLayerData>& dest)
+void VideoInfoHelper::MatchVideoDuration(const QVector<QPair<QString, qint64>>& src,
+                                         QVector<PlayJson::CustomLayerData>& dest)
 //========================================================
 {
     foreach(PlayJson::CustomLayerData layerData, dest)
@@ -44,8 +46,8 @@ void VideoInfoHelper::MatchVideoDuration(const QList<QPair<QString, qint64>>& sr
 }
 
 //========================================================
-void VideoInfoHelper::MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
-                        QList<PlayJson::FixedLayerData>& dest)
+void VideoInfoHelper::MatchVideoDuration(const QVector<QPair<QString, qint64>>& src,
+                        QVector<PlayJson::FixedLayerData>& dest)
 //========================================================
 {
     foreach(PlayJson::FixedLayerData layerData, dest)

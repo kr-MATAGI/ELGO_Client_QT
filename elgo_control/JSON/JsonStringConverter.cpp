@@ -1026,13 +1026,15 @@ int JsonStringConverter::GetConvertedDayOfWeek(const int cronDow)
 }
 
 //========================================================
-void JsonStringConverter::GetSchedulePlayDataIdInName(const QString& src, QString& dest)
+void JsonStringConverter::GetSchedulePlayDataIdInName(const QString& src, QString& playDataId,
+                                                      QString& playDataType)
 //========================================================
 {
     QStringList nameSplit = src.split("_");
     if(2 < nameSplit.size())
     {
-        dest = nameSplit[1];
+        playDataId = nameSplit[1];
+        playDataType = nameSplit[2];
     }
     else
     {

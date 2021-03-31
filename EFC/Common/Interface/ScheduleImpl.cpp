@@ -23,7 +23,8 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& s
     ds << src.startTime;
     ds << src.endTime;
     ds << src.cron;
-    ds << src.id;
+    ds << src.playDataId;
+    ds << src.type;
 
     return ds;
 }
@@ -150,7 +151,8 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleD
     ds << src.startTime;
     ds << src.endTime;
     ds << src.cron;
-    ds << src.id;
+    ds << src.playDataId;
+    ds << src.type;
 
     return ds;
 }
@@ -180,7 +182,8 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest)
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
-    ds >> dest.id;
+    ds >> dest.playDataId;
+    ds >> dest.type;
 
     return ds;
 }
@@ -305,7 +308,7 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest)
 }
 
 //========================================================
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest)
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules& dest)
 //========================================================
 {
     int scheduleListSize = 0;
@@ -321,13 +324,14 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest)
 }
 
 //========================================================
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData dest)
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData& dest)
 //========================================================
 {
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
-    ds >> dest.id;
+    ds >> dest.playDataId;
+    ds >> dest.type;
 
     return ds;
 }

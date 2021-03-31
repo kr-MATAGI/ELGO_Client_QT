@@ -134,3 +134,10 @@ void ContentsPlayer::DisplayImageContent(const QString& path, const QPointF& pos
     pixmapItem->setPixmap(scaledPixmap);
     m_pixmapList.push_back(pixmapItem);
 }
+
+//========================================================
+SchedulesTimer& ContentsPlayer::GetSchedulesTimer()
+//========================================================
+{
+    return m_timer;
+}
