@@ -12,7 +12,7 @@
 #include "Common/Interface/ContentsPlayDataDef.h"
 #include "Common/Interface/ScheduleDef.h"
 
-// std::pair<PlayDataId, PlayJson::PlayDataType>
+/** @brief  std::pair<PlayDataId, PlayJson::PlayDataType> */
 typedef std::pair<int, PlayJson::PlayDataType> PlayDataInfo;
 
 class SchedulesTimer : public QTimer
