@@ -23,23 +23,23 @@ namespace JsonStringConverter
     ResourceJson::ResourceType ResourceTypeStringToEnum(const QString& src);
 
     /** @brief */
-    ObjectJson::PlayDataType PlayDataTypeStringToEnum(const QString& src);
+    PlayJson::PlayDataType PlayDataTypeStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::Orientation OrientationTypeStringToEnum(const QString& src);
+    PlayJson::Orientation OrientationTypeStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::ContentType ContentTypeStringToEnum(const QString& src);
+    PlayJson::ContentType ContentTypeStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::MediaType MediaTypeStringToEunum(const QString& src);
+    PlayJson::MediaType MediaTypeStringToEunum(const QString& src);
     /** @brief */
-    ObjectJson::HourType HourTypeStringToEnum(const QString& src);
+    PlayJson::HourType HourTypeStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::DateType DateTypeStringToEnum(const QString& src);
+    PlayJson::DateType DateTypeStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::NewsCategory NewsCategoryStringToEnum(const QString& src);
+    PlayJson::NewsCategory NewsCategoryStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::SubtitleDirection SubtitleDirectionStringToEnum(const QString& src);
+    PlayJson::SubtitleDirection SubtitleDirectionStringToEnum(const QString& src);
     /** @brief */
-    ObjectJson::SubtitleAction SubtitleActionStringToEnum(const QString& src);
+    PlayJson::SubtitleAction SubtitleActionStringToEnum(const QString& src);
 
 
     /// enum to string
@@ -52,23 +52,23 @@ namespace JsonStringConverter
     void ResourceTypeEnumToString(const ResourceJson::ResourceType type, QString& dest);
 
     /** @brief */
-    void PlayDataTypeEnumToString(const ObjectJson::PlayDataType type, QString& dest);
+    void PlayDataTypeEnumToString(const PlayJson::PlayDataType type, QString& dest);
     /** @brief */
-    void OrientationTypeEnumToString(const ObjectJson::Orientation type, QString& dest);
+    void OrientationTypeEnumToString(const PlayJson::Orientation type, QString& dest);
     /** @brief */
-    void ContentTypeEnumToString(const ObjectJson::ContentType type, QString& dest);
+    void ContentTypeEnumToString(const PlayJson::ContentType type, QString& dest);
     /** @brief */
-    void MediaTypeEnumToString(const ObjectJson::MediaType type, QString& dest);
+    void MediaTypeEnumToString(const PlayJson::MediaType type, QString& dest);
     /** @brief */
-    void HourTypeEnumToString(const ObjectJson::HourType type, QString& dest);
+    void HourTypeEnumToString(const PlayJson::HourType type, QString& dest);
     /** @brief */
-    void DateTypeEnumToString(const ObjectJson::DateType type, QString& dest);
+    void DateTypeEnumToString(const PlayJson::DateType type, QString& dest);
     /** @brief */
-    void NewsCategoryEnumToString(const ObjectJson::NewsCategory type, QString& dest);
+    void NewsCategoryEnumToString(const PlayJson::NewsCategory type, QString& dest);
     /** @brief */
-    void SubtitleDirectionEnumToString(const ObjectJson::SubtitleDirection type, QString& dest);
+    void SubtitleDirectionEnumToString(const PlayJson::SubtitleDirection type, QString& dest);
     /** @brief */
-    void SubtitleActionEnumToString(const ObjectJson::SubtitleAction type, QString& dest);
+    void SubtitleActionEnumToString(const PlayJson::SubtitleAction type, QString& dest);
 
 
     /// String to DataType

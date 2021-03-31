@@ -35,7 +35,6 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     ui->playerView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     ui->playerView->setRenderHint(QPainter::Antialiasing);
     ui->playerView->setScene(m_scene);
-
 }
 
 //========================================================
@@ -119,7 +118,6 @@ bool ContentsPlayer::GetCurrentWidgetCapture()
 void ContentsPlayer::StartContentsPlayer()
 //========================================================
 {
-    // TODO : Check Schdule and Display Contents
     ELGO_VIEWER_LOG("Start Contents Player");
     this->showFullScreen();
 }

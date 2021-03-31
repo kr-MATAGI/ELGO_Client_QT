@@ -13,22 +13,24 @@
  */
 
 /** @brief  Custom Play Data */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::CustomPlayDataJson& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::CustomPlayDataJson& src);
 /** @brief  Fixed Play Data */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::FixedPlayDataJson& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedPlayDataJson& src);
 
 /** @@brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::PlayData& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::PlayData& src);
 /** @@brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::PageData& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::PageData& src);
 /** @@brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerData& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::CustomLayerData& src);
 /** @@brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::SubtitleData& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedLayerData& src);
+/** @@brief */
+QDataStream &operator<<(QDataStream& ds, const PlayJson::SubtitleData& src);
 /** @brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerContent& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src);
 /** @brief */
-QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerContentType& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::LayerContentType& src);
 
 
 /**
@@ -36,22 +38,24 @@ QDataStream &operator<<(QDataStream& ds, const ObjectJson::LayerContentType& src
  */
 
 /** @brief  Custom Play Data */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::CustomPlayDataJson& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::CustomPlayDataJson& dest);
 /** @brief  Fixed Play Data */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::FixedPlayDataJson& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::FixedPlayDataJson& dest);
 
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::PlayData& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::PlayData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::PageData& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::PageData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerData& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::CustomLayerData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::SubtitleData& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::FixedLayerData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerContent& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::SubtitleData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, ObjectJson::LayerContentType& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest);
+/** @brief */
+QDataStream &operator>>(QDataStream& ds, PlayJson::LayerContentType& dest);
 
 
 #endif // ELGODATASTREAM_H

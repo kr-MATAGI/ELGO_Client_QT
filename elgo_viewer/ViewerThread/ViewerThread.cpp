@@ -62,6 +62,10 @@ void ViewerThread::run()
     {
         ExecCustomPlayData();
     }
+    else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
+    {
+        ExecFixedPlayData();
+    }
     else if(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES == m_event)
     {
         ExecCustomPlaySchedules();
@@ -69,10 +73,6 @@ void ViewerThread::run()
     else if(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES == m_event)
     {
         ExecFixedPlaySchedules();
-    }
-    else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
-    {
-        ExecFixedPlayData();
     }
     else if(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE == m_event)
     {
@@ -154,7 +154,7 @@ void ViewerThread::ExecCustomPlayData()
     */
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
-    ObjectJson::CustomPlayDataJson customPlayData;
+    PlayJson::CustomPlayDataJson customPlayData;
     recvStream >> customPlayData;
 
     ELGO_VIEWER_LOG("custom name : %s", customPlayData.playData.name.toStdString().c_str());
@@ -173,7 +173,7 @@ void ViewerThread::ExecFixedPlayData()
     */
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
-    ObjectJson::FixedPlayDataJson fixedPlayData;
+    PlayJson::FixedPlayDataJson fixedPlayData;
     recvStream >> fixedPlayData;
 
     ELGO_VIEWER_LOG("fixed name : %s", fixedPlayData.playData.name.toStdString().c_str());
@@ -195,7 +195,7 @@ void ViewerThread::ExecCustomPlaySchedules()
     */
 
     // deserialize
-    ObjectJson::CustomPlayDataJson customPlayData;
+    PlayJson::CustomPlayDataJson customPlayData;
     int scheduleCount;
     QList<ScheduleJson::PlaySchedules> scheduleList;
 
@@ -208,8 +208,6 @@ void ViewerThread::ExecCustomPlaySchedules()
         recvStream >> schedule;
         scheduleList.push_back(schedule);
     }
-
-
 }
 
 //========================================================

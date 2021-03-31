@@ -14,7 +14,7 @@ SOURCES += \
         DB/NetworkDBCtrl.cpp \
         DownloadThread/CurlDownload.cpp \
         DownloadThread/DownloadThread.cpp \
-        DownloadThread/Utils/VideoInfoHelper.cpp \
+        Utils/VideoInfoHelper.cpp \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
         JSON/JsonParser.cpp \
@@ -40,7 +40,7 @@ HEADERS += \
     DownloadThread/CurlDownload.h \
     DownloadThread/DownloadDef.h \
     DownloadThread/DownloadThread.h \
-    DownloadThread/Utils/VideoInfoHelper.h \
+    Utils/VideoInfoHelper.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \
     JSON/JsonParser.h \

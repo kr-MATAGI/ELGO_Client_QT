@@ -58,8 +58,15 @@ void DownloadThread::ExecDownloadSinglePlayData()
     const bool bIsResponse = CurlDownload::DownloadResourceList(resourceUrl, response);
     if(true == bIsResponse)
     {
+        PlayJson::CustomPlayDataJson customPlayData;
+        PlayJson::FixedPlayDataJson fixedPlayData;
+        PlayJson::PlayData playData;
+
         QList<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
+
+        // video duration info
+        QList<QPair<QString, qint64>> videoInfoList;
 
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
@@ -75,56 +82,17 @@ void DownloadThread::ExecDownloadSinglePlayData()
                 if(true == bIsObjectDownload)
                 {
                     // object.json, elgo_control -> elgo_viewer
-                    ObjectJson::PlayData playData;
                     JsonParser::ParsePlayDataJson(objectResponse, playData);
 
-                    if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+                    if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
                     {
-                        ObjectJson::CustomPlayDataJson customPlayData;
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
-
-                        /**
-                        * @note
-                        *       ELGO_CONTROL -> ELGO_VIEWER
-                        *       Send custom play data information
-                        * @param
-                        *       CustomPlayDataJson customPlayData
-                        */
-                        QByteArray bytes;
-                        QDataStream outStream(&bytes, QIODevice::WriteOnly);
-                        outStream << customPlayData;
-
-                        const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                                      VIEWER_EVENT::Event::CUSTOM_PLAY_DATA, bytes);
-                        if(false == bIsSendEvent)
-                        {
-                            ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
-                        }
                     }
-                    else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
+                    else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
-                        ObjectJson::FixedPlayDataJson fixedPlayData;
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
-
-                        /**
-                        * @note
-                        *       ELGO_CONTROL -> ELGO_VIEWER
-                        *       Send fixed play data information
-                        * @param
-                        *       FixedPlayDataJson customPlayData
-                        */
-                        QByteArray bytes;
-                        QDataStream outStream(&bytes, QIODevice::WriteOnly);
-                        outStream << fixedPlayData;
-
-                        const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                                      VIEWER_EVENT::Event::FIXED_PLAY_DATA, bytes);
-                        if(false == bIsSendEvent)
-                        {
-                            ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_DATA);
-                        }
                     }
                     else
                     {
@@ -147,7 +115,68 @@ void DownloadThread::ExecDownloadSinglePlayData()
                 {
                     ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
                 }
+                else
+                {
+                    if(ResourceJson::ResourceType::VIDEO == resource[idx].type)
+                    {
+                        const qint64 duration = VideoInfoHelper::GetVideoDuration(resource[idx].name);
+                        videoInfoList.push_back(QPair<QString, qint64>(resource[idx].name, duration));
+                    }
+                }
             }
+        }
+
+        // elgo_control -> elgo_viewer
+        if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
+        {
+            // Get Video Duration
+            foreach(PlayJson::PageData pageData, customPlayData.pageDataList)
+            {
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, pageData.layerDataList);
+            }
+
+            /**
+             * @note
+             *       ELGO_CONTROL -> ELGO_VIEWER
+             *       Send custom play data information
+             * @param
+             *       CustomPlayDataJson customPlayData
+             */
+            QByteArray bytes;
+            QDataStream stream(&bytes, QIODevice::WriteOnly);
+            stream << customPlayData;
+            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                          VIEWER_EVENT::Event::CUSTOM_PLAY_DATA, bytes);
+            if(false == bIsSendEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
+            }
+        }
+        else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
+        {
+            // Get Video Duration
+            VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
+
+            /**
+             * @note
+             *       ELGO_CONTROL -> ELGO_VIEWER
+             *       Send fixed play data information
+             * @param
+             *       FixedPlayDataJson customPlayData
+             */
+            QByteArray bytes;
+            QDataStream stream(&bytes, QIODevice::WriteOnly);
+            stream << fixedPlayData;
+            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                          VIEWER_EVENT::Event::FIXED_PLAY_DATA, bytes);
+            if(false == bIsSendEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_DATA);
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
         }
 
         // send response to content server
@@ -176,12 +205,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
     const bool bIsResponse = CurlDownload::DownloadResourceList(scheduleListUrl, response);
     if(true == bIsResponse)
     {
-        ObjectJson::PlayData playData;
-        ObjectJson::CustomPlayDataJson customPlayData;
-        ObjectJson::FixedPlayDataJson fixedPlayData;
+        PlayJson::PlayData playData;
+        PlayJson::CustomPlayDataJson customPlayData;
+        PlayJson::FixedPlayDataJson fixedPlayData;
         QList<ScheduleJson::PlaySchedules> playScheduleList;
 
-        // video Info
+        // video duration info
         QList<QPair<QString, qint64>> videoInfoList;
 
         QList<ResourceJson::Resource> resource;
@@ -201,12 +230,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
                 {
                     JsonParser::ParsePlayDataJson(objectResponse, playData);
 
-                    if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+                    if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
                     {
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
                     }
-                    else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
+                    else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
@@ -257,22 +286,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
         }
 
         // elgo_control -> elgo_viewer
-        if(ObjectJson::PlayDataType::CUSTOM == playData.playDataType)
+        if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
         {
             // Get Video Duration
-            foreach(auto pageData, customPlayData.pageDataList)
+            foreach(PlayJson::PageData pageData, customPlayData.pageDataList)
             {
-                foreach(auto layerData, pageData.layerDataList)
-                {
-                    foreach(auto videoInfo, videoInfoList)
-                    {
-                        if(0 == strcmp(videoInfo.first.toStdString().c_str(),
-                                       layerData.layerContent.name.toStdString().c_str()))
-                        {
-                            layerData.layerContent.duration = videoInfo.second;
-                        }
-                    }
-                }
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, pageData.layerDataList);
             }
 
             /**
@@ -298,8 +317,11 @@ void DownloadThread::ExecDownloadPlaySchedules()
                 ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES);
             }
         }
-        else if(ObjectJson::PlayDataType::FIXED == playData.playDataType)
+        else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
         {
+            // Get Video Duration
+            VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
+
             /**
             * @note
             *       ELGO_CONTROL -> ELGO_VIEWER
@@ -325,7 +347,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - Unkwon Play data type : %d", playData.playDataType);
+            ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
         }
 
         // send response to content server

@@ -4,9 +4,8 @@
 #include <QString>
 #include <QList>
 
-namespace ObjectJson
+namespace PlayJson
 {
-    // Object
     /** @brief */
     enum Orientation
     {
@@ -94,11 +93,12 @@ namespace ObjectJson
     };
 
     /** @brief */
-    struct LayerContent
+    struct ContentData
     {
         LayerContentType contentType;
         QString name;
-        qint64 duration;
+        qint64 fileDuration;
+        qint64 userDuration;
 
         // weather
         /** @note   below Area info will be replace nx, ny */
@@ -126,14 +126,25 @@ namespace ObjectJson
         bool bNewsBoxOpacity;
     };
 
+
     /** @brief */
-    struct LayerData
+    struct CustomLayerData
     {
         int left;
         int top;
         int width;
         int height;
-        LayerContent layerContent;
+        ContentData layerContent;
+    };
+
+    /** @brief */
+    struct FixedLayerData
+    {
+        int left;
+        int top;
+        int width;
+        int height;
+        QList<ContentData> contentDataList;
     };
 
     /** @brief */
@@ -177,7 +188,7 @@ namespace ObjectJson
     struct PageData
     {
         qint64 duration;
-        QList<LayerData> layerDataList;
+        QList<CustomLayerData> layerDataList;
         QList<SubtitleData> subtitleDataList;
     };
 
@@ -192,7 +203,7 @@ namespace ObjectJson
     struct FixedPlayDataJson
     {
         PlayData playData;
-        QList<LayerData> layerDataList;
+        QList<FixedLayerData> layerDataList;
         QList<SubtitleData> subtitleDataList;
     };
 }

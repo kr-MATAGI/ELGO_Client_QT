@@ -22,6 +22,13 @@ namespace VideoInfoHelper
 {
     /** @brief */
     qint64 GetVideoDuration(const QString& name);
+
+    /** @brief */
+    void MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
+                            QList<PlayJson::CustomLayerData>& dest);
+    /** @brief */
+    void MatchVideoDuration(const QList<QPair<QString, qint64>>& src,
+                            QList<PlayJson::FixedLayerData>& dest);
 }
 
 #endif // VIDEOINFOHELPER_H

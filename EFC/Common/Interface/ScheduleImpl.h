@@ -30,7 +30,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& 
 /** @brief  Single Play Schdeuls Serialize */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlaySchedules& src);
 /** @brief */
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayData& src);
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleData& src);
 
 
 /**
@@ -55,6 +55,6 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest);
 /** @brief  Single Play Schdeuls Serialize */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules dest);
 /** @brief */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayData dest);
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData dest);
 
 #endif // PLAYSCHEDULEIMPL_H

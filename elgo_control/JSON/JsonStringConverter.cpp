@@ -144,18 +144,18 @@ ResourceJson::ResourceType JsonStringConverter::ResourceTypeStringToEnum(const Q
 }
 
 //========================================================
-ObjectJson::PlayDataType JsonStringConverter::PlayDataTypeStringToEnum(const QString& src)
+PlayJson::PlayDataType JsonStringConverter::PlayDataTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::PlayDataType retValue = ObjectJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+    PlayJson::PlayDataType retValue = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
 
     if(0 == strcmp("custom", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::PlayDataType::CUSTOM;
+        retValue = PlayJson::PlayDataType::CUSTOM;
     }
     else if(0 == strcmp("fixed", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::PlayDataType::FIXED;
+        retValue = PlayJson::PlayDataType::FIXED;
     }
     else
     {
@@ -166,18 +166,18 @@ ObjectJson::PlayDataType JsonStringConverter::PlayDataTypeStringToEnum(const QSt
 }
 
 //========================================================
-ObjectJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const QString& src)
+PlayJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::Orientation retValue = ObjectJson::Orientation::NONE_ORIENTATION;
+    PlayJson::Orientation retValue = PlayJson::Orientation::NONE_ORIENTATION;
 
     if(0 == strcmp("landscape", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::Orientation::HORIZONTAL;
+        retValue = PlayJson::Orientation::HORIZONTAL;
     }
     else if(0 == strcmp("portrait", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::Orientation::VERTICAL;
+        retValue = PlayJson::Orientation::VERTICAL;
     }
     else
     {
@@ -188,18 +188,18 @@ ObjectJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const Q
 }
 
 //========================================================
-ObjectJson::ContentType JsonStringConverter::ContentTypeStringToEnum(const QString& src)
+PlayJson::ContentType JsonStringConverter::ContentTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::ContentType retValue = ObjectJson::ContentType::NONE_CONTENT;
+    PlayJson::ContentType retValue = PlayJson::ContentType::NONE_CONTENT;
 
     if(0 == strcmp("file", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::ContentType::FILE;
+        retValue = PlayJson::ContentType::FILE;
     }
     else if(0 == strcmp("widget", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::ContentType::WIDGET;
+        retValue = PlayJson::ContentType::WIDGET;
     }
     else
     {
@@ -210,34 +210,34 @@ ObjectJson::ContentType JsonStringConverter::ContentTypeStringToEnum(const QStri
 }
 
 //========================================================
-ObjectJson::MediaType JsonStringConverter::MediaTypeStringToEunum(const QString& src)
+PlayJson::MediaType JsonStringConverter::MediaTypeStringToEunum(const QString& src)
 //========================================================
 {
-    ObjectJson::MediaType retValue = ObjectJson::MediaType::NONE_MEDIA;
+    PlayJson::MediaType retValue = PlayJson::MediaType::NONE_MEDIA;
 
     if(0 == strcmp("image", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::IMAGE;
+        retValue = PlayJson::MediaType::IMAGE;
     }
     else if(0 == strcmp("video", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::VIDEO;
+        retValue = PlayJson::MediaType::VIDEO;
     }
     else if(0 == strcmp("clock", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::CLOCK;
+        retValue = PlayJson::MediaType::CLOCK;
     }
     else if(0 == strcmp("date", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::DATE;
+        retValue = PlayJson::MediaType::DATE;
     }
     else if(0 == strcmp("weather", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::WEATHER;
+        retValue = PlayJson::MediaType::WEATHER;
     }
     else if(0 == strcmp("news", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::MediaType::NEWS;
+        retValue = PlayJson::MediaType::NEWS;
     }
     else
     {
@@ -248,18 +248,18 @@ ObjectJson::MediaType JsonStringConverter::MediaTypeStringToEunum(const QString&
 }
 
 //========================================================
-ObjectJson::HourType JsonStringConverter::HourTypeStringToEnum(const QString& src)
+PlayJson::HourType JsonStringConverter::HourTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::HourType retValue = ObjectJson::HourType::NONE_HOUR_TYPE;
+    PlayJson::HourType retValue = PlayJson::HourType::NONE_HOUR_TYPE;
 
     if(0 == strcmp("12h", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::HourType::HOUR_12;
+        retValue = PlayJson::HourType::HOUR_12;
     }
     else if(0 == strcmp("24h", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::HourType::HOUR_24;
+        retValue = PlayJson::HourType::HOUR_24;
     }
     else
     {
@@ -270,18 +270,18 @@ ObjectJson::HourType JsonStringConverter::HourTypeStringToEnum(const QString& sr
 }
 
 //========================================================
-ObjectJson::DateType JsonStringConverter::DateTypeStringToEnum(const QString& src)
+PlayJson::DateType JsonStringConverter::DateTypeStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::DateType retValue = ObjectJson::DateType::NONE_DATE_TYPE;
+    PlayJson::DateType retValue = PlayJson::DateType::NONE_DATE_TYPE;
 
     if(0 == strcmp("yes", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::DateType::YES;
+        retValue = PlayJson::DateType::YES;
     }
     else if(0 == strcmp("no", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::DateType::NO;
+        retValue = PlayJson::DateType::NO;
     }
     else
     {
@@ -292,50 +292,50 @@ ObjectJson::DateType JsonStringConverter::DateTypeStringToEnum(const QString& sr
 }
 
 //========================================================
-ObjectJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QString& src)
+PlayJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::NewsCategory retValue = ObjectJson::NewsCategory::NONE_NEWS_CATEGORY;
+    PlayJson::NewsCategory retValue = PlayJson::NewsCategory::NONE_NEWS_CATEGORY;
 
     if(0 == strcmp("browse", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::LATEST;
+        retValue = PlayJson::NewsCategory::LATEST;
     }
     else if(0 == strcmp("headline", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::HEADLINE;
+        retValue = PlayJson::NewsCategory::HEADLINE;
     }
     else if(0 == strcmp("politics", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::POLITICS;
+        retValue = PlayJson::NewsCategory::POLITICS;
     }
     else if(0 == strcmp("economy", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::ECONOMY;
+        retValue = PlayJson::NewsCategory::ECONOMY;
     }
     else if(0 == strcmp("society", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::SOCIETY;
+        retValue = PlayJson::NewsCategory::SOCIETY;
     }
     else if(0 == strcmp("local", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::LOCAL;
+        retValue = PlayJson::NewsCategory::LOCAL;
     }
     else if(0 == strcmp("international", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::GLBOAL;
+        retValue = PlayJson::NewsCategory::GLBOAL;
     }
     else if(0 == strcmp("culture", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::CULTURE;
+        retValue = PlayJson::NewsCategory::CULTURE;
     }
     else if(0 == strcmp("sports", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::SPORT;
+        retValue = PlayJson::NewsCategory::SPORT;
     }
     else if(0 == strcmp("weather", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::NewsCategory::NEWS_WEATHER;
+        retValue = PlayJson::NewsCategory::NEWS_WEATHER;
     }
     else
     {
@@ -346,30 +346,30 @@ ObjectJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QSt
 }
 
 //========================================================
-ObjectJson::SubtitleDirection JsonStringConverter::SubtitleDirectionStringToEnum(const QString& src)
+PlayJson::SubtitleDirection JsonStringConverter::SubtitleDirectionStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::SubtitleDirection retValue = ObjectJson::SubtitleDirection::NONE_DIRECTION;
+    PlayJson::SubtitleDirection retValue = PlayJson::SubtitleDirection::NONE_DIRECTION;
 
     if(0 == strcmp("null", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleDirection::FIXED_SUBTITLE;
+        retValue = PlayJson::SubtitleDirection::FIXED_SUBTITLE;
     }
     else if(0 == strcmp("left", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleDirection::LEFT_TO_RIGHT;
+        retValue = PlayJson::SubtitleDirection::LEFT_TO_RIGHT;
     }
     else if(0 == strcmp("right", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleDirection::RIGHT_TO_LEFT;
+        retValue = PlayJson::SubtitleDirection::RIGHT_TO_LEFT;
     }
     else if(0 == strcmp("up", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleDirection::BOTTOM_TO_TOP;
+        retValue = PlayJson::SubtitleDirection::BOTTOM_TO_TOP;
     }
     else if(0 == strcmp("down", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleDirection::TOP_TO_BOTTOM;
+        retValue = PlayJson::SubtitleDirection::TOP_TO_BOTTOM;
     }
     else
     {
@@ -380,18 +380,18 @@ ObjectJson::SubtitleDirection JsonStringConverter::SubtitleDirectionStringToEnum
 }
 
 //========================================================
-ObjectJson::SubtitleAction JsonStringConverter::SubtitleActionStringToEnum(const QString& src)
+PlayJson::SubtitleAction JsonStringConverter::SubtitleActionStringToEnum(const QString& src)
 //========================================================
 {
-    ObjectJson::SubtitleAction retValue = ObjectJson::SubtitleAction::NONE_ACTION;
+    PlayJson::SubtitleAction retValue = PlayJson::SubtitleAction::NONE_ACTION;
 
     if(0 == strcmp("scroll", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleAction::SCROLL;
+        retValue = PlayJson::SubtitleAction::SCROLL;
     }
     else if(0 == strcmp("alternate", src.toStdString().c_str()))
     {
-        retValue = ObjectJson::SubtitleAction::LOOP;
+        retValue = PlayJson::SubtitleAction::LOOP;
     }
     else
     {
@@ -528,14 +528,14 @@ void JsonStringConverter::ResourceTypeEnumToString(const ResourceJson::ResourceT
 }
 
 //========================================================
-void JsonStringConverter::PlayDataTypeEnumToString(const ObjectJson::PlayDataType type, QString& dest)
+void JsonStringConverter::PlayDataTypeEnumToString(const PlayJson::PlayDataType type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::PlayDataType::CUSTOM == type)
+    if(PlayJson::PlayDataType::CUSTOM == type)
     {
         dest = "custom";
     }
-    else if(ObjectJson::PlayDataType::FIXED == type)
+    else if(PlayJson::PlayDataType::FIXED == type)
     {
         dest = "fixed";
     }
@@ -546,14 +546,14 @@ void JsonStringConverter::PlayDataTypeEnumToString(const ObjectJson::PlayDataTyp
 }
 
 //========================================================
-void JsonStringConverter::OrientationTypeEnumToString(const ObjectJson::Orientation type, QString& dest)
+void JsonStringConverter::OrientationTypeEnumToString(const PlayJson::Orientation type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::Orientation::HORIZONTAL == type)
+    if(PlayJson::Orientation::HORIZONTAL == type)
     {
         dest = "landscape";
     }
-    else if(ObjectJson::Orientation::VERTICAL == type)
+    else if(PlayJson::Orientation::VERTICAL == type)
     {
         dest = "portrait";
     }
@@ -564,14 +564,14 @@ void JsonStringConverter::OrientationTypeEnumToString(const ObjectJson::Orientat
 }
 
 //========================================================
-void JsonStringConverter::ContentTypeEnumToString(const ObjectJson::ContentType type, QString& dest)
+void JsonStringConverter::ContentTypeEnumToString(const PlayJson::ContentType type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::ContentType::FILE == type)
+    if(PlayJson::ContentType::FILE == type)
     {
         dest = "file";
     }
-    else if(ObjectJson::ContentType::WIDGET == type)
+    else if(PlayJson::ContentType::WIDGET == type)
     {
         dest = "widget";
     }
@@ -582,30 +582,30 @@ void JsonStringConverter::ContentTypeEnumToString(const ObjectJson::ContentType 
 }
 
 //========================================================
-void JsonStringConverter::MediaTypeEnumToString(const ObjectJson::MediaType type, QString& dest)
+void JsonStringConverter::MediaTypeEnumToString(const PlayJson::MediaType type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::MediaType::IMAGE == type)
+    if(PlayJson::MediaType::IMAGE == type)
     {
         dest = "image";
     }
-    else if(ObjectJson::MediaType::VIDEO == type)
+    else if(PlayJson::MediaType::VIDEO == type)
     {
         dest = "video";
     }
-    else if(ObjectJson::MediaType::CLOCK == type)
+    else if(PlayJson::MediaType::CLOCK == type)
     {
         dest = "clock";
     }
-    else if(ObjectJson::MediaType::DATE == type)
+    else if(PlayJson::MediaType::DATE == type)
     {
         dest = "date";
     }
-    else if(ObjectJson::MediaType::WEATHER == type)
+    else if(PlayJson::MediaType::WEATHER == type)
     {
         dest = "weather";
     }
-    else if(ObjectJson::MediaType::NEWS == type)
+    else if(PlayJson::MediaType::NEWS == type)
     {
         dest = "news";
     }
@@ -616,14 +616,14 @@ void JsonStringConverter::MediaTypeEnumToString(const ObjectJson::MediaType type
 }
 
 //========================================================
-void JsonStringConverter::HourTypeEnumToString(const ObjectJson::HourType type, QString& dest)
+void JsonStringConverter::HourTypeEnumToString(const PlayJson::HourType type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::HourType::HOUR_12 == type)
+    if(PlayJson::HourType::HOUR_12 == type)
     {
         dest = "12h";
     }
-    else if(ObjectJson::HourType::HOUR_24 == type)
+    else if(PlayJson::HourType::HOUR_24 == type)
     {
         dest = "24h";
     }
@@ -634,14 +634,14 @@ void JsonStringConverter::HourTypeEnumToString(const ObjectJson::HourType type, 
 }
 
 //========================================================
-void JsonStringConverter::DateTypeEnumToString(const ObjectJson::DateType type, QString& dest)
+void JsonStringConverter::DateTypeEnumToString(const PlayJson::DateType type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::DateType::YES == type)
+    if(PlayJson::DateType::YES == type)
     {
         dest = "yes";
     }
-    else if(ObjectJson::DateType::NO == type)
+    else if(PlayJson::DateType::NO == type)
     {
         dest = "no";
     }
@@ -652,72 +652,72 @@ void JsonStringConverter::DateTypeEnumToString(const ObjectJson::DateType type, 
 }
 
 //========================================================
-void JsonStringConverter::NewsCategoryEnumToString(const ObjectJson::NewsCategory type, QString& dest)
+void JsonStringConverter::NewsCategoryEnumToString(const PlayJson::NewsCategory type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::NewsCategory::LATEST == type)
+    if(PlayJson::NewsCategory::LATEST == type)
     {
         dest = "browse";
     }
-    else if(ObjectJson::NewsCategory::HEADLINE == type)
+    else if(PlayJson::NewsCategory::HEADLINE == type)
     {
         dest = "headline";
     }
-    else if(ObjectJson::NewsCategory::POLITICS == type)
+    else if(PlayJson::NewsCategory::POLITICS == type)
     {
         dest = "politics";
     }
-    else if(ObjectJson::NewsCategory::ECONOMY == type)
+    else if(PlayJson::NewsCategory::ECONOMY == type)
     {
         dest = "economy";
     }
-    else if(ObjectJson::NewsCategory::SOCIETY == type)
+    else if(PlayJson::NewsCategory::SOCIETY == type)
     {
         dest = "society";
     }
-    else if(ObjectJson::NewsCategory::LOCAL == type)
+    else if(PlayJson::NewsCategory::LOCAL == type)
     {
         dest = "local";
     }
-    else if(ObjectJson::NewsCategory::GLBOAL == type)
+    else if(PlayJson::NewsCategory::GLBOAL == type)
     {
         dest = "international";
     }
-    else if(ObjectJson::NewsCategory::CULTURE == type)
+    else if(PlayJson::NewsCategory::CULTURE == type)
     {
         dest = "culture";
     }
-    else if(ObjectJson::NewsCategory::SPORT == type)
+    else if(PlayJson::NewsCategory::SPORT == type)
     {
         dest = "sports";
     }
-    else if(ObjectJson::NewsCategory::NEWS_WEATHER == type)
+    else if(PlayJson::NewsCategory::NEWS_WEATHER == type)
     {
         dest = "weather";
     }
 }
 
 //========================================================
-void JsonStringConverter::SubtitleDirectionEnumToString(const ObjectJson::SubtitleDirection type, QString& dest)
+void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::SubtitleDirection type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::SubtitleDirection::FIXED_SUBTITLE == type)
+    if(PlayJson::SubtitleDirection::FIXED_SUBTITLE == type)
     {
         dest = "fixed";
     }
-    else if(ObjectJson::SubtitleDirection::LEFT_TO_RIGHT == type)
+    else if(PlayJson::SubtitleDirection::LEFT_TO_RIGHT == type)
     {
         dest = "left";
     }
-    else if(ObjectJson::SubtitleDirection::RIGHT_TO_LEFT == type)
+    else if(PlayJson::SubtitleDirection::RIGHT_TO_LEFT == type)
     {
         dest = "right";
     }
-    else if(ObjectJson::SubtitleDirection::TOP_TO_BOTTOM == type)
+    else if(PlayJson::SubtitleDirection::TOP_TO_BOTTOM == type)
     {
         dest = "down";
     }
-    else if(ObjectJson::SubtitleDirection::BOTTOM_TO_TOP == type)
+    else if(PlayJson::SubtitleDirection::BOTTOM_TO_TOP == type)
     {
         dest = "up";
     }
@@ -728,14 +728,14 @@ void JsonStringConverter::SubtitleDirectionEnumToString(const ObjectJson::Subtit
 }
 
 //========================================================
-void JsonStringConverter::SubtitleActionEnumToString(const ObjectJson::SubtitleAction type, QString& dest)
+void JsonStringConverter::SubtitleActionEnumToString(const PlayJson::SubtitleAction type, QString& dest)
 //========================================================
 {
-    if(ObjectJson::SubtitleAction::SCROLL == type)
+    if(PlayJson::SubtitleAction::SCROLL == type)
     {
         dest = "scroll";
     }
-    else if(ObjectJson::SubtitleAction::LOOP == type)
+    else if(PlayJson::SubtitleAction::LOOP == type)
     {
         dest = "alternate";
     }

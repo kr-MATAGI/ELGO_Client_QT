@@ -71,15 +71,15 @@ namespace CONTROL_EVENT
         UPDATE_DISPLAY_SLEEP_STATUS = 514,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Receive screen capture response from elgo_viewer
-        * @param
-        *       QString payload.src
-        *       QString payload.dest
-        *       QString imagePath
-        *       bool    bIsSuccessed
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Receive screen capture response from elgo_viewer
+         * @param
+         *       QString payload.src
+         *       QString payload.dest
+         *       QString imagePath
+         *       bool    bIsSuccessed
+         */
         RESPONSE_SCREEN_CAPTURE = 515,
 
         MAX_CONTROL_EVENT = 767
@@ -93,76 +93,76 @@ namespace VIEWER_EVENT
         NONE_VIEWER_EVENT = 768,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Viewer will make qr code image and display.
-        * @param
-        *       QString ip
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Viewer will make qr code image and display.
+         * @param
+         *       QString ip
+         */
         MAKE_QRCODE = 769,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Rotate Display accroding to heading enum value.
-        * @param
-        *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Rotate Display accroding to heading enum value.
+         * @param
+         *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
+         */
         ROTATE_DISPLAY = 770,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Send custom play data information
-        * @param
-        *       CustomPlayDataJson customPlayData
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Send custom play data information
+         * @param
+         *       CustomPlayDataJson customPlayData
+         */
         CUSTOM_PLAY_DATA = 771,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Send fixed play data information
-        * @param
-        *       FixedPlayDataJson customPlayData
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Send fixed play data information
+         * @param
+         *       FixedPlayDataJson customPlayData
+         */
         FIXED_PLAY_DATA = 772,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Send custom play data information
-        *       with schedules
-        * @param
-        *       CustomPlayDataJson customPlayData
-        *       int scheduleCount
-        *       QList<PlaySchedules> schedules
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Send custom play data information
+         *       with schedules
+         * @param
+         *       CustomPlayDataJson customPlayData
+         *       int scheduleCount
+         *       QList<PlaySchedules> schedules
+         */
         CUSTOM_PLAY_SCHEDULES = 773,
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Send fixed play data information
-        *       with schedules
-        * @param
-        *       FixedPlayDataJson customPlayData
-        *       int scheduleCount
-        *       QList<PlaySchedules> schedules
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Send fixed play data information
+         *       with schedules
+         * @param
+         *       FixedPlayDataJson customPlayData
+         *       int scheduleCount
+         *       QList<PlaySchedules> schedules
+         */
         FIXED_PLAY_SCHEDULES = 774,
 
 
         /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       current Screen capture on elgo_viewer
-        *       if capture is successed, response to elgo_control
-        *       Response Event : RESPONSE_SCREEN_CAPTURE
-        * @param
-        *       QString payload.src
-        *       QString payload.dest
-        */
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       current Screen capture on elgo_viewer
+         *       if capture is successed, response to elgo_control
+         *       Response Event : RESPONSE_SCREEN_CAPTURE
+         * @param
+         *       QString payload.src
+         *       QString payload.dest
+         */
         REQUEST_SCREEN_CAPTURE = 775,
 
 
