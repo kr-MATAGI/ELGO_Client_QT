@@ -817,7 +817,7 @@ void JsonStringConverter::CronCommandStringToStruct(const QString& src, Schedule
 
 //========================================================
 void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
-                                                QList<int>& dest, ScheduleJson::CronOption& options)
+                                                QVector<int>& dest, ScheduleJson::CronOption& options)
 //========================================================
 {
     const int limitValue = GetCronFormatLimitValue(format);

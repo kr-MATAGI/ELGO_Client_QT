@@ -31,7 +31,7 @@ namespace ScheduleJson
     /** @brief */
     struct CronOption
     {
-        QList<CronFormat> last;
+        QVector<CronFormat> last;
         int numOfWeek;
         int weekday;
     };
@@ -39,12 +39,12 @@ namespace ScheduleJson
     /** @brief */
     struct Cron
     {
-        QList<int> secRepeat;
-        QList<int> minRepeat;
-        QList<int> hourRepeat;
-        QList<int> dayRepeat;
-        QList<int> monthRepeat;
-        QList<int> dowRepeat;
+        QVector<int> secRepeat;
+        QVector<int> minRepeat;
+        QVector<int> hourRepeat;
+        QVector<int> dayRepeat;
+        QVector<int> monthRepeat;
+        QVector<int> dowRepeat;
 
         CronOption options;
     };

@@ -79,7 +79,7 @@ namespace JsonStringConverter
     void CronCommandStringToStruct(const QString& src, ScheduleJson::Cron& dest);
     /** @brief */
     void GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
-                               QList<int>& dest, ScheduleJson::CronOption& options);
+                               QVector<int>& dest, ScheduleJson::CronOption& options);
     /** @brief */
     int GetCronFormatLimitValue(const ScheduleJson::CronFormat format);
     /** @brief  cron format -> QDate */
