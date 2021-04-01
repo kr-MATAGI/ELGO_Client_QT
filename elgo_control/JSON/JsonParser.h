@@ -45,10 +45,10 @@ namespace JsonParser
     bool ParsePayloadResponse(const QJsonObject& payloadObj, ContentSchema::Payload& dest);
 
     /** @brief  Schedules */
-    bool ParseSchedulesResponse(const QString& src, QList<ScheduleJson::PlaySchedules>& dest);
+    bool ParseSchedulesResponse(const QString& src, QVector<ScheduleJson::PlaySchedules>& dest);
 
     /** @brief  Resource */
-    void ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest);
+    void ParseResourceResponse(const QString& src, QVector<ResourceJson::Resource>& dest);
 
 
     /** @brief  Play Data */

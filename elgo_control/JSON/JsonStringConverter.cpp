@@ -775,6 +775,11 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
 
     dest.setTime(time);
     dest.setDate(date);
+
+    const qint64 utcSec = dest.toSecsSinceEpoch();
+
+    // utc -> local(kor)
+    dest.setMSecsSinceEpoch(utcSec + 86400);
 }
 
 //========================================================

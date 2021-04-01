@@ -229,8 +229,8 @@ void SchedulesTimer::CheckPlayDateTimeSchedules(const QDateTime& currentDateTime
             {
                 ELGO_VIEWER_LOG("Expired - id : %s, start : %s, end : %s",
                                 playScheduleIter->id.toUtf8().constData(),
-                                ConvertDateTimeFormat(scheduleDataIter->startTime).toUtf8().constData(),
-                                ConvertDateTimeFormat(scheduleDataIter->endTime).toUtf8().constData());
+                                ConvertDateTimeFormat(scheduleDataIter->startTime).toStdString().c_str(),
+                                ConvertDateTimeFormat(scheduleDataIter->endTime).toStdString().c_str());
 
                 playScheduleIter->scheduleList.erase(scheduleDataIter);
 

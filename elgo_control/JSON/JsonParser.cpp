@@ -357,7 +357,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
-bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::PlaySchedules>& dest)
+bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson::PlaySchedules>& dest)
 //========================================================
 {
     bool retValue = true;
@@ -460,7 +460,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QList<ScheduleJson::
 }
 
 //========================================================
-void JsonParser::ParseResourceResponse(const QString& src, QList<ResourceJson::Resource>& dest)
+void JsonParser::ParseResourceResponse(const QString& src, QVector<ResourceJson::Resource>& dest)
 //========================================================
 {
     const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());

@@ -135,7 +135,6 @@ namespace VIEWER_EVENT
          *       with schedules
          * @param
          *       CustomPlayDataJson customPlayData
-         *       int scheduleCount
          *       QList<PlaySchedules> schedules
          */
         CUSTOM_PLAY_SCHEDULES = 773,
@@ -147,7 +146,6 @@ namespace VIEWER_EVENT
          *       with schedules
          * @param
          *       FixedPlayDataJson customPlayData
-         *       int scheduleCount
          *       QList<PlaySchedules> schedules
          */
         FIXED_PLAY_SCHEDULES = 774,

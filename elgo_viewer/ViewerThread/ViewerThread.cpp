@@ -198,21 +198,18 @@ void ViewerThread::ExecCustomPlaySchedules()
     *       with schedules
     * @param
     *       CustomPlayDataJson customPlayData
-    *       int scheduleCount
-    *       QList<PlaySchedules> schedules
+    *       QVector<PlaySchedules> schedules
     */
 
     PlayJson::CustomPlayDataJson customPlayData;
-    int scheduleCount;
+    QVector<ScheduleJson::PlaySchedules> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> customPlayData;
-    recvStream >> scheduleCount;
-    for(int idx = 0; idx < scheduleCount; idx++)
+    recvStream >> scheduleList;
+    for(int idx = 0; idx < scheduleList.size(); idx++)
     {
-        ScheduleJson::PlaySchedules schedule;
-        recvStream >> schedule;
-        SchedulesTimer::GetInstance()->AddPlaySchedule(schedule);
+        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
     }
 
     SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
@@ -229,21 +226,19 @@ void ViewerThread::ExecFixedPlaySchedules()
     *       with schedules
     * @param
     *       FixedPlayDataJson customPlayData
-    *       int scheduleCount
-    *       QList<PlaySchedules> schedules
+    *       QVector<PlaySchedules> schedules
     */
 
     PlayJson::FixedPlayDataJson fixedPlayData;
-    int scheduleCount;
+    QVector<ScheduleJson::PlaySchedules> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> fixedPlayData;
-    recvStream >> scheduleCount;
-    for(int idx = 0; idx < scheduleCount; idx++)
+    recvStream >> scheduleList;
+
+    for(int idx = 0; idx < scheduleList.size(); idx++)
     {
-        ScheduleJson::PlaySchedules schedule;
-        recvStream >> schedule;
-        SchedulesTimer::GetInstance()->AddPlaySchedule(schedule);
+        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
     }
     SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
 }

@@ -62,7 +62,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
         PlayJson::FixedPlayDataJson fixedPlayData;
         PlayJson::PlayData playData;
 
-        QList<ResourceJson::Resource> resource;
+        QVector<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
 
         // video duration info
@@ -207,12 +207,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
         PlayJson::PlayData playData;
         PlayJson::CustomPlayDataJson customPlayData;
         PlayJson::FixedPlayDataJson fixedPlayData;
-        QList<ScheduleJson::PlaySchedules> playScheduleList;
+        QVector<ScheduleJson::PlaySchedules> playScheduleList;
 
         // video duration info
         QVector<QPair<QString, qint64>> videoInfoList;
 
-        QList<ResourceJson::Resource> resource;
+        QVector<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
@@ -300,14 +300,12 @@ void DownloadThread::ExecDownloadPlaySchedules()
             *       with schedules
             * @param
             *       CustomPlayDataJson customPlayData
-            *       int scheduleCount
-            *       QList<PlaySchedules> schedules
+            *       QVector<PlaySchedules> schedules
             */
 
             QByteArray bytes;
             QDataStream stream(&bytes, QIODevice::WriteOnly);
             stream << customPlayData;
-            stream << playScheduleList.size();
             stream << playScheduleList;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                           VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES, bytes);
@@ -328,8 +326,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
             *       with schedules
             * @param
             *       FixedPlayDataJson customPlayData
-            *       int scheduleCount
-            *       QList<PlaySchedules> schedules
+            *       QVector<PlaySchedules> schedules
             */
 
             QByteArray bytes;
