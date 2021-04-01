@@ -24,7 +24,7 @@ public:
     ~ClockWidget();
 
     /** @brief */
-    void MakeClockWidget(Clock::Kinds kind);
+    void MakeClockWidget(ClockInfo::Kinds kind);
     /** @brief */
     void SetStyleSheet(const StyleSheet::StyleInfo& style);
 
@@ -38,7 +38,7 @@ private:
     QRect m_amPmLabelRect;
     QRect m_timeLabelRect;
 
-    Clock::Kinds m_clockKinds;
+    ClockInfo::Kinds m_clockKinds;
     StyleSheet::StyleInfo m_styleInfo;
     QDateTime m_dateTime;
     QString m_amPmStr;

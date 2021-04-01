@@ -10,9 +10,10 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 
-/** @brief */
+
 namespace StyleSheet
 {
+    /** @brief */
     struct StyleInfo
     {
         StyleInfo()
@@ -25,11 +26,21 @@ namespace StyleSheet
         quint32 fontSize;
         bool bTransparency;
     };
+
+    /** @brief */
+    struct WidgetInfo
+    {
+        QString fileName;
+        QPointF pos;
+        QSize size;
+        StyleInfo styleInfo;
+    };
 }
 
-/** @brief */
-namespace Clock
+
+namespace ClockInfo
 {
+    /** @brief */
     enum Kinds
     {
         HOUR_12 = 1,
@@ -37,26 +48,29 @@ namespace Clock
     };
 }
 
-/** @brief */
-namespace Weather
+
+namespace WeatherInfo
 {
+    /** @brief */
     enum Value
     {
         e_SUNNY = 1,
     };
 
+    /** @brief */
     struct DisplayInfo
     {
-        Weather::Value weather;
+        WeatherInfo::Value weather;
         QString city;
         QString status;
         int temperature;
     };
 }
 
-/** @brief */
-namespace News
+
+namespace NewsInfo
 {
+    /** @brief */
     enum Topic
     {
         e_NONE = 0,
@@ -77,6 +91,7 @@ namespace News
                                           "스포츠", "문화연예", "지역",
                                           "세계", "날씨"};
 
+    /** @brief */
     struct FeedData
     {
         ~FeedData()
@@ -92,6 +107,7 @@ namespace News
         bool bIsTextOverflow;
     };
 
+    /** @brief */
     struct FeedAnimation
     {
         ~FeedAnimation()
@@ -111,22 +127,24 @@ namespace News
     };
 }
 
-/** @brief */
-namespace Video
+
+namespace VideoInfo
 {
+    /** @brief */
     struct Duration
     {
         Duration()
             : user(1)
-            , video(1)
+            , file(1)
         {
 
         }
         qint64 user;
-        qint64 video;
+        qint64 file;
     };
 
-    struct ContentInfo
+    /** @brief */
+    struct MetaData
     {
         QString fileName;
         Duration duration;

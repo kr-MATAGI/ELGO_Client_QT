@@ -21,7 +21,7 @@ public:
     ~NewsFeedWidget();
 
     /** @brief */
-    void SetNewsFeedList(const News::Topic topic, const QList<QString>& feeds);
+    void SetNewsFeedList(const NewsInfo::Topic topic, const QList<QString>& feeds);
 
     /** @brief */
     void SetBackgroundStyleSheet(const StyleSheet::StyleInfo& style);
@@ -36,9 +36,9 @@ private:
     Ui::NewsFeedWidget *ui;
     StyleSheet::StyleInfo m_style;
 
-    News::Topic m_topic;
-    QList<News::FeedData*> m_newsFeedList;
-    QList<News::FeedAnimation*> m_newsFeedAniList;
+    NewsInfo::Topic m_topic;
+    QList<NewsInfo::FeedData*> m_newsFeedList;
+    QList<NewsInfo::FeedAnimation*> m_newsFeedAniList;
     QSequentialAnimationGroup *m_seqAniGroup;
 };
 

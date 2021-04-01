@@ -19,10 +19,12 @@ public:
     ~VideoItem();
 
     /** @brief */
-    bool SetVideoContentToBuffer(const QString& path, const Video::Duration& duration);
+    bool SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaData& metaData);
 
     /** @brief */
-    void ShowVideoItemToScreen();
+    void PlayVideoItem();
+    /** @brief */
+    void StopVideoItem();
 
 private slots:
     /** @brief */
@@ -39,7 +41,7 @@ private:
 
     QByteArray *m_bytes;
     QBuffer *m_buffer;
-    Video::ContentInfo m_videoInfo;
+    VideoInfo::MetaData m_videoInfo;
 };
 
 #endif // VIDEOITEM_H

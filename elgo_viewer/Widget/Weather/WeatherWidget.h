@@ -22,7 +22,7 @@ public:
     ~WeatherWidget();
 
     /** @brief */
-    void SetWeatherInfo(const Weather::DisplayInfo& info);
+    void SetWeatherInfo(const WeatherInfo::DisplayInfo& info);
 
     /** @brief */
     void SetStyleSheet(const StyleSheet::StyleInfo& style);
@@ -31,7 +31,7 @@ private:
     Ui::WeatherWidget *ui;
 
     StyleSheet::StyleInfo m_styleInfo;
-    Weather::DisplayInfo m_weatherInfo;
+    WeatherInfo::DisplayInfo m_weatherInfo;
     QGraphicsScene *m_weatherScene;
     QSvgWidget *m_iconWidget;
 };

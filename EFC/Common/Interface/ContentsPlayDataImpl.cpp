@@ -119,7 +119,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedLayerData& src)
 QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
 //========================================================
 {
-    ds << src.contentType;
+    ds << src.contentInfo;
     ds << src.name;
     ds << src.fileDuration;
     ds << src.userDuration;
@@ -152,7 +152,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
 }
 
 //========================================================
-QDataStream &operator<<(QDataStream& ds, const PlayJson::LayerContentType& src)
+QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentInfo& src)
 //========================================================
 {
     ds << src.contentType;
@@ -313,7 +313,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::FixedLayerData& dest)
 QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest)
 //========================================================
 {
-    ds >> dest.contentType;
+    ds >> dest.contentInfo;
     ds >> dest.name;
     ds >> dest.fileDuration;
     ds >> dest.userDuration;
@@ -367,7 +367,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::SubtitleData& dest)
 }
 
 //========================================================
-QDataStream &operator>>(QDataStream& ds, PlayJson::LayerContentType& dest)
+QDataStream &operator>>(QDataStream& ds, PlayJson::ContentInfo& dest)
 //========================================================
 {
     ds >> dest.contentType;
@@ -446,7 +446,7 @@ bool PlayJson::operator==(const PlayJson::FixedLayerData& lhs, const PlayJson::F
 bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::ContentData& rhs)
 //========================================================
 {
-    if(!(lhs.contentType == rhs.contentType))
+    if(!(lhs.contentInfo == rhs.contentInfo))
         return false;
     if(!(lhs.name == rhs.name))
         return false;
@@ -491,7 +491,7 @@ bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::Cont
 }
 
 //========================================================
-bool PlayJson::operator==(const PlayJson::LayerContentType& lhs, const PlayJson::LayerContentType& rhs)
+bool PlayJson::operator==(const PlayJson::ContentInfo& lhs, const PlayJson::ContentInfo& rhs)
 //========================================================
 {
     if(!(lhs.contentType == rhs.contentType))

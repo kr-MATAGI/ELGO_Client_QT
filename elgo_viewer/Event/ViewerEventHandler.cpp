@@ -24,6 +24,7 @@ void ViewerEventHandler::ReadEventSlot()
 //========================================================
 {
     QLocalSocket *socket = (QLocalSocket *)sender();
+
     QByteArray recvBytes = socket->readAll();
     QDataStream recvStream(&recvBytes, QIODevice::ReadOnly);
 

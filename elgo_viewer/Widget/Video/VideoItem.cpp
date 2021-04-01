@@ -38,9 +38,11 @@ VideoItem::~VideoItem()
 }
 
 //========================================================
-bool VideoItem::SetVideoContentToBuffer(const QString& path, const Video::Duration& duration)
+bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaData& metaData)
 //========================================================
 {
+    m_videoInfo = metaData;
+
     bool retValue = true;
     QFile mediaFile(path);
 
@@ -53,7 +55,7 @@ bool VideoItem::SetVideoContentToBuffer(const QString& path, const Video::Durati
     {
         QString fileName = QString(path).split("/", Qt::SkipEmptyParts).back();
         m_videoInfo.fileName = fileName;
-        m_videoInfo.duration = duration;
+        m_videoInfo.duration = metaData.duration;
 
         m_bytes = new QByteArray;
         m_bytes->append(mediaFile.readAll());
@@ -70,10 +72,17 @@ bool VideoItem::SetVideoContentToBuffer(const QString& path, const Video::Durati
 }
 
 //========================================================
-void VideoItem::ShowVideoItemToScreen()
+void VideoItem::PlayVideoItem()
 //========================================================
 {
     m_player->play();
+}
+
+//========================================================
+void VideoItem::StopVideoItem()
+//========================================================
+{
+    m_player->stop();
 }
 
 //========================================================

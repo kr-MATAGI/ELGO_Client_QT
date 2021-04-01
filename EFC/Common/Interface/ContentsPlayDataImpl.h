@@ -30,7 +30,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::SubtitleData& src);
 /** @brief */
 QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src);
 /** @brief */
-QDataStream &operator<<(QDataStream& ds, const PlayJson::LayerContentType& src);
+QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentInfo& src);
 
 
 /**
@@ -55,7 +55,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::SubtitleData& dest);
 /** @brief */
 QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest);
 /** @brief */
-QDataStream &operator>>(QDataStream& ds, PlayJson::LayerContentType& dest);
+QDataStream &operator>>(QDataStream& ds, PlayJson::ContentInfo& dest);
 
 
 

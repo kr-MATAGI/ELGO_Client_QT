@@ -74,6 +74,7 @@ void ContentWebSocket::ConnectContentSocketSlot()
 
     netRequest.setUrl(url);
     netRequest.setRawHeader("Authorization", jwtBytes);
+
     m_socket->open(netRequest);
 }
 
@@ -97,8 +98,7 @@ void ContentWebSocket::ConnectedSocketSlot()
 void ContentWebSocket::DisconnectedSocketSlot()
 //========================================================
 {
-    // TODO
-    ELGO_CONTROL_LOG("");
+    ELGO_CONTROL_LOG("Content Server WebSocket - Disconnected");
 }
 
 //========================================================

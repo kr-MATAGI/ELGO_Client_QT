@@ -42,7 +42,7 @@ NewsFeedWidget::~NewsFeedWidget()
 }
 
 //========================================================
-void NewsFeedWidget::SetNewsFeedList(const News::Topic topic, const QList<QString>& feeds)
+void NewsFeedWidget::SetNewsFeedList(const NewsInfo::Topic topic, const QList<QString>& feeds)
 //========================================================
 {
     // for test
@@ -50,7 +50,7 @@ void NewsFeedWidget::SetNewsFeedList(const News::Topic topic, const QList<QStrin
 
     foreach(auto item, feeds)
     {
-        News::FeedData *feed = new News::FeedData();
+        NewsInfo::FeedData *feed = new NewsInfo::FeedData();
         feed->originLabel = new QLabel(this);
         feed->changedLabel = new QLabel(this);
 
@@ -84,7 +84,7 @@ void NewsFeedWidget::SetFeedLabelStyleSheet(const StyleSheet::StyleInfo &style)
 void NewsFeedWidget::MakeNewsFeedWidget()
 //========================================================
 {
-    QString title = QString("오늘의 %1 소식").arg(News::topicEnumToStr[m_topic]);
+    QString title = QString("오늘의 %1 소식").arg(NewsInfo::topicEnumToStr[m_topic]);
 
     // title
     ui->titleLabel->setText(title);
@@ -119,7 +119,7 @@ void NewsFeedWidget::MakeNewsFeedWidget()
         QPoint curPos = item->originLabel->geometry().topLeft();
         QPoint movePos = QPoint(curPos.x(), curPos.y() + height);
 
-        News::FeedAnimation *feedAni = new News::FeedAnimation();
+        NewsInfo::FeedAnimation *feedAni = new NewsInfo::FeedAnimation();
         feedAni->originLabelAni = new QPropertyAnimation(item->originLabel, "geometry");
         feedAni->originLabelAni->setDuration(LABEL_ANIMATION_DURATION);
         feedAni->originLabelAni->setStartValue(QRect(curPos, QSize(width, height)));

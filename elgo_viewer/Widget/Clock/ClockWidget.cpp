@@ -10,7 +10,7 @@
 ClockWidget::ClockWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ClockWidget)
-    , m_clockKinds(Clock::Kinds::HOUR_12)
+    , m_clockKinds(ClockInfo::Kinds::HOUR_12)
     , m_bIsTimerStarted(false)
 //========================================================
 {
@@ -73,7 +73,7 @@ void ClockWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
 }
 
 //========================================================
-void ClockWidget::MakeClockWidget(Clock::Kinds kind)
+void ClockWidget::MakeClockWidget(ClockInfo::Kinds kind)
 //========================================================
 {
     m_dateTime = QDateTime::currentDateTime();
@@ -84,7 +84,7 @@ void ClockWidget::MakeClockWidget(Clock::Kinds kind)
     const int hour = time.hour();
     const int min = time.minute();
 
-    if(Clock::Kinds::HOUR_12 == kind)
+    if(ClockInfo::Kinds::HOUR_12 == kind)
     {
         int newHour = hour;
         if(13 <= hour)
@@ -104,7 +104,7 @@ void ClockWidget::MakeClockWidget(Clock::Kinds kind)
         ui->amPmLabel->setText(m_amPmStr);
         ui->timeLabel->setText(m_timeStr);
     }
-    else if(Clock::Kinds::HOUR_24 == kind)
+    else if(ClockInfo::Kinds::HOUR_24 == kind)
     {
         const QRect newLabelRect = QRect(m_amPmLabelRect.topLeft(),
                                          QSize(m_amPmLabelRect.width() + m_timeLabelRect.width(),

@@ -41,23 +41,14 @@ public:
     bool GetCurrentWidgetCapture();
 
     /** @brief */
+    void UpdatePlayerScene(QGraphicsScene& scene);
+
+    /** @brief */
     void StartContentsPlayer();
-
-    /** @brief */
-    void DisplayImageContent(const QString& path, const QPointF& pos, const QSize& size);
-
-    /** @brief */
-    SchedulesTimer& GetSchedulesTimer();
 
 private:
     Ui::ContentsPlayer *ui;
     QSize m_displaySize;
-
-    QGraphicsScene *m_scene;
-    SchedulesTimer m_timer;
-
-    // Contents List
-    QList<QGraphicsPixmapItem*> m_pixmapList;
 };
 
 #endif // CONTENTSPLAYER_H

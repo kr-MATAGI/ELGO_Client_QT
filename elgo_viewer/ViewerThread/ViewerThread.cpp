@@ -161,7 +161,7 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
-    ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlayDataList(customPlayData, true);
+    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData, true);
 }
 
 //========================================================
@@ -184,7 +184,7 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.id,
                     fixedPlayData.playData.name.toStdString().c_str());
 
-    ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlayDataList(fixedPlayData, true);
+    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData, true);
 }
 
 //========================================================
@@ -204,7 +204,6 @@ void ViewerThread::ExecCustomPlaySchedules()
 
     PlayJson::CustomPlayDataJson customPlayData;
     int scheduleCount;
-    QVector<ScheduleJson::PlaySchedules> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> customPlayData;
@@ -213,14 +212,10 @@ void ViewerThread::ExecCustomPlaySchedules()
     {
         ScheduleJson::PlaySchedules schedule;
         recvStream >> schedule;
-        scheduleList.push_back(schedule);
+        SchedulesTimer::GetInstance()->AddPlaySchedule(schedule);
     }
 
-    ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlayDataList(customPlayData);
-    for(int idx = 0; idx < scheduleList.size(); idx++)
-    {
-        ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlaySchedule(scheduleList[idx]);
-    }
+    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
 }
 
 //========================================================
@@ -240,7 +235,6 @@ void ViewerThread::ExecFixedPlaySchedules()
 
     PlayJson::FixedPlayDataJson fixedPlayData;
     int scheduleCount;
-    QVector<ScheduleJson::PlaySchedules> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> fixedPlayData;
@@ -249,15 +243,9 @@ void ViewerThread::ExecFixedPlaySchedules()
     {
         ScheduleJson::PlaySchedules schedule;
         recvStream >> schedule;
-        scheduleList.push_back(schedule);
+        SchedulesTimer::GetInstance()->AddPlaySchedule(schedule);
     }
-
-    ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlayDataList(fixedPlayData);
-    for(int idx = 0; idx < scheduleList.size(); idx++)
-    {
-        ContentsPlayer::GetInstance()->GetSchedulesTimer().AddPlaySchedule(scheduleList[idx]);
-    }
-
+    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
 }
 
 //========================================================

@@ -27,14 +27,11 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
 
     const QRect screenRect = QRect(QPoint(0.0, 0.0), m_displaySize);
     ui->playerView->setGeometry(screenRect);
-    m_scene = new QGraphicsScene(this);
-    m_scene->setSceneRect(screenRect);
-
     ui->playerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     ui->playerView->setRenderHint(QPainter::Antialiasing);
-    ui->playerView->setScene(m_scene);
+
 }
 
 //========================================================
@@ -42,16 +39,6 @@ ContentsPlayer::~ContentsPlayer()
 //========================================================
 {
     delete ui;
-
-    delete m_scene;
-    m_scene = NULL;
-
-    // pixmap
-    foreach(auto item, m_pixmapList)
-    {
-        delete item;
-        item = NULL;
-    }
 }
 
 //========================================================
@@ -115,29 +102,20 @@ bool ContentsPlayer::GetCurrentWidgetCapture()
 }
 
 //========================================================
+void ContentsPlayer::UpdatePlayerScene(QGraphicsScene& scene)
+//========================================================
+{
+    ELGO_VIEWER_LOG("Update Scene !");
+    const QRect screenRect = QRect(QPoint(0.0, 0.0), m_displaySize);
+
+    scene.setSceneRect(screenRect);
+    ui->playerView->setScene(&scene);
+}
+
+//========================================================
 void ContentsPlayer::StartContentsPlayer()
 //========================================================
 {
     ELGO_VIEWER_LOG("Start Contents Player");
     this->showFullScreen();
-}
-
-//========================================================
-void ContentsPlayer::DisplayImageContent(const QString& path, const QPointF& pos, const QSize& size)
-//========================================================
-{
-    QPixmap pixmap(path);
-    QPixmap scaledPixmap = pixmap.scaled(size, Qt::IgnoreAspectRatio);
-
-    QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem();
-    pixmapItem->setPos(pos);
-    pixmapItem->setPixmap(scaledPixmap);
-    m_pixmapList.push_back(pixmapItem);
-}
-
-//========================================================
-SchedulesTimer& ContentsPlayer::GetSchedulesTimer()
-//========================================================
-{
-    return m_timer;
 }

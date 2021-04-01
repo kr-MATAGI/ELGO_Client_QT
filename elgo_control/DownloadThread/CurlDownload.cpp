@@ -210,11 +210,6 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
 {
     bool retValue = false;
 
-    // url
-    std::string url = src.url.toStdString();
-    url += "/";
-    url += src.name.toStdString();
-
     // save path
     std::string savePath = RESOURCE_SAVE_PATH;
     savePath += ResourceJson::ResourceTypeEnumToStr[src.type];
@@ -242,6 +237,13 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
     if(curl)
     {
         FILE *file = std::fopen(savePath.c_str(), "wb");
+
+        // url
+        char *escapeName = curl_easy_escape(curl, src.name.toStdString().c_str(), src.name.toStdString().length());
+        std::string url = src.url.toStdString();
+        url += "/";
+        url += escapeName;
+
 
         char errorBuffer[CURL_ERROR_SIZE] = {'\0', };
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());

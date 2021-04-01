@@ -86,7 +86,7 @@ namespace PlayJson
     };
 
     /** @brief */
-    struct LayerContentType
+    struct ContentInfo
     {
         ContentType contentType;
         MediaType mediaType;
@@ -95,7 +95,7 @@ namespace PlayJson
     /** @brief */
     struct ContentData
     {
-        LayerContentType contentType;
+        ContentInfo contentInfo;
         QString name;
         qint64 fileDuration;
         qint64 userDuration;
@@ -223,7 +223,7 @@ namespace PlayJson
     /** @brief */
     bool operator==(const PlayJson::ContentData& lhs, const PlayJson::ContentData& rhs);
     /** @brief */
-    bool operator==(const PlayJson::LayerContentType& lhs, const PlayJson::LayerContentType& rhs);
+    bool operator==(const PlayJson::ContentInfo& lhs, const PlayJson::ContentInfo& rhs);
     /** @brief */
     bool operator==(const PlayJson::SubtitleData& lhs, const PlayJson::SubtitleData& rhs);
     /** @brief */

@@ -755,8 +755,8 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
         const PlayJson::MediaType mediaType
                 = JsonStringConverter::MediaTypeStringToEunum(mediaTypeStr);
 
-        dest.contentType.contentType = contentType;
-        dest.contentType.mediaType = mediaType;
+        dest.contentInfo.contentType = contentType;
+        dest.contentInfo.mediaType = mediaType;
     }
 
     if(layerContentObj.end() != layerContentObj.find("name"))
@@ -784,7 +784,7 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
     }
 
     // clock
-    if(PlayJson::MediaType::CLOCK == dest.contentType.mediaType)
+    if(PlayJson::MediaType::CLOCK == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("hour_type"))
         {
@@ -796,7 +796,7 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
     }
 
     // date
-    if(PlayJson::MediaType::DATE == dest.contentType.mediaType)
+    if(PlayJson::MediaType::DATE == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("date_type"))
         {
@@ -808,7 +808,7 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
     }
 
     // weather
-    if(PlayJson::MediaType::WEATHER == dest.contentType.mediaType)
+    if(PlayJson::MediaType::WEATHER == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("area"))
         {
@@ -836,7 +836,7 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
     }
 
     // news
-    if(PlayJson::MediaType::NEWS == dest.contentType.mediaType)
+    if(PlayJson::MediaType::NEWS == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("category"))
         {
@@ -890,8 +890,8 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
         const PlayJson::MediaType mediaType
                 = JsonStringConverter::MediaTypeStringToEunum(mediaTypeStr);
 
-        dest.contentType.contentType = contentType;
-        dest.contentType.mediaType = mediaType;
+        dest.contentInfo.contentType = contentType;
+        dest.contentInfo.mediaType = mediaType;
     }
 
     if(layerContentObj.end() != layerContentObj.find("cd_name"))
@@ -925,7 +925,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
     }
 
     // clock
-    if(PlayJson::MediaType::CLOCK == dest.contentType.mediaType)
+    if(PlayJson::MediaType::CLOCK == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("cd_hour_type"))
         {
@@ -937,7 +937,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
     }
 
     // date
-    if(PlayJson::MediaType::DATE == dest.contentType.mediaType)
+    if(PlayJson::MediaType::DATE == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("cd_date_type"))
         {
@@ -949,7 +949,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
     }
 
     // weather
-    if(PlayJson::MediaType::WEATHER == dest.contentType.mediaType)
+    if(PlayJson::MediaType::WEATHER == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("cd_area"))
         {
@@ -977,7 +977,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
     }
 
     // news
-    if(PlayJson::MediaType::NEWS == dest.contentType.mediaType)
+    if(PlayJson::MediaType::NEWS == dest.contentInfo.mediaType)
     {
         if(layerContentObj.end() != layerContentObj.find("cd_category"))
         {

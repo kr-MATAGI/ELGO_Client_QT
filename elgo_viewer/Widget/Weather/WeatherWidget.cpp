@@ -72,7 +72,7 @@ void WeatherWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
 }
 
 //========================================================
-void WeatherWidget::SetWeatherInfo(const Weather::DisplayInfo& info)
+void WeatherWidget::SetWeatherInfo(const WeatherInfo::DisplayInfo& info)
 //========================================================
 {
     m_weatherInfo = info;

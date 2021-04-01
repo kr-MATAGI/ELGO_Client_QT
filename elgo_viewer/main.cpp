@@ -12,17 +12,18 @@
 #include "ViewerCtrl/ViewerCtrl.h"
 #include "ViewerCtrl/ViewerController.h"
 #include "Widget/ContentsPlayer.h"
+#include "Widget/SchedulesTimer/SchedulesTimer.h"
 
 static ViewerController *g_ViewerController = ViewerController::GetInstance();
 static ContentsPlayer *g_ContentsPlayer = NULL;
 static MainWindow *g_MainWindow = NULL;
 static ViewerEventHandler *g_EventHandler = NULL;
+static SchedulesTimer *g_ScheduleTimer = NULL;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     g_MainWindow = MainWindow::GetInstance();
-//    g_MainWindow->setStyleSheet("background-color: rgb(255, 255, 0);");
 
     // Event Listenner
     g_EventHandler = new ViewerEventHandler(ELGO_SYS::Proc::ELGO_VIEWER);
@@ -31,8 +32,10 @@ int main(int argc, char *argv[])
     // TODO : If socket is not opened, occured App crush.
     g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
-    // Contetns Player Init
+    // Contents Player Init
     g_ContentsPlayer = ContentsPlayer::GetInstance();
+    g_ScheduleTimer = SchedulesTimer::GetInstance();
+    g_ScheduleTimer->start(900);
 
     // Display Main Window
 //    g_MainWindow->showFullScreen();

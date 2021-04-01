@@ -29,7 +29,7 @@ LocalSocketServer::LocalSocketServer(::ELGO_SYS::Proc proc, QObject *parent)
 LocalSocketServer::~LocalSocketServer()
 //========================================================
 {
-    for(QLocalSocket *socket : m_connectedList)
+    foreach(QLocalSocket *socket, m_connectedList)
     {
         socket->close();
         socket->deleteLater();
@@ -41,7 +41,6 @@ LocalSocketServer::~LocalSocketServer()
 void LocalSocketServer::AddToList(QLocalSocket *socket)
 //========================================================
 {
-
     m_connectedList.push_back(socket);
     connect(socket, &QLocalSocket::readyRead, this, &LocalSocketServer::ReadEventSlot);
     connect(socket, &QLocalSocket::disconnected, this, &LocalSocketServer::DiscardSocketSlot);

@@ -15,6 +15,7 @@ HEADERS += \
         Widget/ContentsPlayer.h \
         Widget/Date/DateWidget.h \
         Widget/Definition/ContentsDef.h \
+        Widget/Image/ImageItem.h \
         Widget/News/NewsFeedWidget.h \
         Widget/SchedulesTimer/SchedulesTimer.h \
         Widget/Video/VideoItem.h \
@@ -33,6 +34,7 @@ SOURCES += \
         Widget/Clock/ClockWidget.cpp \
         Widget/ContentsPlayer.cpp \
         Widget/Date/DateWidget.cpp \
+        Widget/Image/ImageItem.cpp \
         Widget/News/NewsFeedWidget.cpp \
         Widget/SchedulesTimer/SchedulesTimer.cpp \
         Widget/Video/VideoItem.cpp \
