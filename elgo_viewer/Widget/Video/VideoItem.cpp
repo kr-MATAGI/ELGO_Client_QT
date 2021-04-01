@@ -13,12 +13,13 @@ VideoItem::VideoItem(QGraphicsItem *parent)
     // init
     m_player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     m_player->setVideoOutput(this);
+    m_player->setNotifyInterval(100);
 
     // connect
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
             this, SLOT(CheckMediaStatus(QMediaPlayer::MediaStatus)));
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)),
-            this, SLOT(CheckStateChanged(QMeidaPlayer::State)));
+            this, SLOT(CheckStateChanged(QMediaPlayer::State)));
     connect(m_player, SIGNAL(positionChanged(qint64)),
             this, SLOT(CheckPositionChanged(qint64)));
 }
@@ -53,10 +54,6 @@ bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaD
     }
     else
     {
-        QString fileName = QString(path).split("/", Qt::SkipEmptyParts).back();
-        m_videoInfo.fileName = fileName;
-        m_videoInfo.duration = metaData.duration;
-
         m_bytes = new QByteArray;
         m_bytes->append(mediaFile.readAll());
 
@@ -64,11 +61,24 @@ bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaD
         m_buffer->open(QIODevice::ReadOnly);
 
         m_player->setMedia(QMediaContent(), m_buffer);
-    }
-
-    mediaFile.close();
+        mediaFile.close();
+    }    
 
     return retValue;
+}
+
+//========================================================
+void VideoItem::SetVideoPosAndSize(const StyleSheet::WidgetInfo& widgetInfo)
+//========================================================
+{
+    m_widgetInfo = widgetInfo;
+
+    this->setPos(m_widgetInfo.pos);
+    this->setSize(m_widgetInfo.size);
+    ELGO_VIEWER_LOG("name : %s { pos : %f,%f, size : %d x %d }",
+                    widgetInfo.fileName.toUtf8().constData(),
+                    widgetInfo.pos.x(), widgetInfo.pos.y(),
+                    widgetInfo.size.width(), widgetInfo.size.height());
 }
 
 //========================================================

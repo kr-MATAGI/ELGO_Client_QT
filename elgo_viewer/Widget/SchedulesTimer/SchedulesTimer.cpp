@@ -137,7 +137,8 @@ void SchedulesTimer::AddFileContentData(const PlayDataInfo& playDataInfo, const 
     }
     else if(PlayJson::MediaType::VIDEO == contentData.contentInfo.mediaType)
     {
-        VideoItem *videoItem = new VideoItem;
+        VideoItem *videoItem = new VideoItem();
+
         VideoInfo::MetaData videoInfo;
         videoInfo.fileName = contentData.name;
         videoInfo.duration.user = contentData.userDuration;
@@ -146,6 +147,7 @@ void SchedulesTimer::AddFileContentData(const PlayDataInfo& playDataInfo, const 
         const bool bIsSetItem = videoItem->SetVideoFileToBuffer(fullPath, videoInfo);
         if(true == bIsSetItem)
         {
+            videoItem->SetVideoPosAndSize(widgetInfo);
             m_videoItemList.push_back(std::make_pair(playDataInfo, videoItem));
             scene.addItem(videoItem);
         }
@@ -333,7 +335,6 @@ void SchedulesTimer::ExecSchedule(const QString& scheduleId, const PlayDataInfo&
 
     UpdatePlayerScene(playDataInfo, true);
     m_currentScheduleId = scheduleId;
-    ELGO_VIEWER_LOG("FOR TEST : Success Update Content Player Scene");
 }
 
 //========================================================
@@ -345,7 +346,6 @@ void SchedulesTimer::ExecSinglePlay()
     m_sceneList.push_back(std::make_pair(m_currentPlayData, scene));
 
     UpdatePlayerScene(m_currentPlayData);
-    ELGO_VIEWER_LOG("FOR TEST : Success Update Content Player Scene");
 }
 
 //========================================================
@@ -456,7 +456,7 @@ void SchedulesTimer::SetPlayDataContentToScene(const PlayDataInfo& playDataInfo,
 void SchedulesTimer::UpdatePlayerScene(const PlayDataInfo& playDataInfo, const bool bIsSchedule)
 //========================================================
 {
-    // Find scene
+    // Find New Scene
     QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
     for(; sceneIter != m_sceneList.end(); ++sceneIter)
     {
@@ -466,23 +466,34 @@ void SchedulesTimer::UpdatePlayerScene(const PlayDataInfo& playDataInfo, const b
             // Update scene
             ContentsPlayer::GetInstance()->UpdatePlayerScene(*(sceneIter->second));
 
+            // PlayVideo
+            QVector<VideoItemInfo>::const_iterator videoIter = m_videoItemList.constBegin();
+            for(; videoIter != m_videoItemList.constEnd(); ++videoIter)
+            {
+                if( (playDataInfo.first == videoIter->first.first) &&
+                    (playDataInfo.second == videoIter->first.second))
+                {
+                    videoIter->second->PlayVideoItem();
+                }
+            }
+
             break;
         }
     }
 
     // Prev Video Item Stop and Erase
-    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
-    for(; videoIter != m_videoItemList.end(); ++videoIter)
+    QVector<VideoItemInfo>::iterator prevVideoIter = m_videoItemList.begin();
+    for(; prevVideoIter != m_videoItemList.end(); ++prevVideoIter)
     {
-        if( (m_prevPlayData.first == videoIter->first.first) &&
-            (m_prevPlayData.second == videoIter->first.second))
+        if( (m_prevPlayData.first == prevVideoIter->first.first) &&
+            (m_prevPlayData.second == prevVideoIter->first.second))
         {
-            videoIter->second->StopVideoItem();
+            prevVideoIter->second->StopVideoItem();
 
-            delete videoIter->second;
-            videoIter->second = NULL;
+            delete prevVideoIter->second;
+            prevVideoIter->second = NULL;
 
-            m_videoItemList.erase(videoIter);
+            m_videoItemList.erase(prevVideoIter);
         }
     }
 
