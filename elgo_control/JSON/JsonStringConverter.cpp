@@ -779,7 +779,7 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
     const qint64 utcSec = dest.toSecsSinceEpoch();
 
     // utc -> local(kor)
-    dest.setMSecsSinceEpoch(utcSec + 86400);
+    dest.setSecsSinceEpoch(utcSec + 32400);
 }
 
 //========================================================

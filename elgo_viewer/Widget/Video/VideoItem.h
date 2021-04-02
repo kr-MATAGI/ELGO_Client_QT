@@ -21,7 +21,7 @@ public:
     /** @brief */
     bool SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaData& metaData);
     /** @brief */
-    void SetVideoPosAndSize(const StyleSheet::WidgetInfo& widgetInfo);
+    void SetVideoPosAndSize(const StyleSheet::PosSizeInfo& posSizeInfo);
 
     /** @brief */
     void PlayVideoItem();
@@ -45,7 +45,7 @@ private:
     QBuffer *m_buffer;
 
     VideoInfo::MetaData m_videoInfo;
-    StyleSheet::WidgetInfo m_widgetInfo;
+    StyleSheet::PosSizeInfo m_posSizeInfo;
 };
 
 #endif // VIDEOITEM_H

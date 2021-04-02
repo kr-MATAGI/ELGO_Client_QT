@@ -130,9 +130,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
         if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
         {
             // Get Video Duration
-            foreach(PlayJson::PageData pageData, customPlayData.pageDataList)
+            const int pageDataListSize = customPlayData.pageDataList.size();
+            for(int idx = 0; idx < pageDataListSize; idx++)
             {
-                VideoInfoHelper::MatchVideoDuration(videoInfoList, pageData.layerDataList);
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
             }
 
             /**
@@ -288,9 +289,10 @@ void DownloadThread::ExecDownloadPlaySchedules()
         if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
         {
             // Get Video Duration
-            foreach(PlayJson::PageData pageData, customPlayData.pageDataList)
+            const int pageDataListSize = customPlayData.pageDataList.size();
+            for(int idx = 0; idx < pageDataListSize; idx++)
             {
-                VideoInfoHelper::MatchVideoDuration(videoInfoList, pageData.layerDataList);
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
             }
 
             /**

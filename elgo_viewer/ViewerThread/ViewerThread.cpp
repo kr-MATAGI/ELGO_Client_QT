@@ -161,7 +161,7 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
-    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData, true);
+    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
 }
 
 //========================================================
@@ -184,7 +184,7 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.id,
                     fixedPlayData.playData.name.toStdString().c_str());
 
-    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData, true);
+    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
 }
 
 //========================================================
@@ -207,6 +207,7 @@ void ViewerThread::ExecCustomPlaySchedules()
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> customPlayData;
     recvStream >> scheduleList;
+
     for(int idx = 0; idx < scheduleList.size(); idx++)
     {
         SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);

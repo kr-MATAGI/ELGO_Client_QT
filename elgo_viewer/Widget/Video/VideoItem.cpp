@@ -11,7 +11,7 @@ VideoItem::VideoItem(QGraphicsItem *parent)
 //========================================================
 {
     // init
-    m_player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
+    m_player = new QMediaPlayer;
     m_player->setVideoOutput(this);
     m_player->setNotifyInterval(100);
 
@@ -28,9 +28,11 @@ VideoItem::VideoItem(QGraphicsItem *parent)
 VideoItem::~VideoItem()
 //========================================================
 {
+    m_bytes->clear();
     delete m_bytes;
     m_bytes = NULL;
 
+    m_buffer->close();
     delete m_buffer;
     m_buffer = NULL;
 
@@ -68,23 +70,26 @@ bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaD
 }
 
 //========================================================
-void VideoItem::SetVideoPosAndSize(const StyleSheet::WidgetInfo& widgetInfo)
+void VideoItem::SetVideoPosAndSize(const StyleSheet::PosSizeInfo& posSizeInfo)
 //========================================================
 {
-    m_widgetInfo = widgetInfo;
+    m_posSizeInfo = posSizeInfo;
 
-    this->setPos(m_widgetInfo.pos);
-    this->setSize(m_widgetInfo.size);
+    this->setPos(m_posSizeInfo.pos);
+    this->setSize(m_posSizeInfo.size);
     ELGO_VIEWER_LOG("name : %s { pos : %f,%f, size : %d x %d }",
-                    widgetInfo.fileName.toUtf8().constData(),
-                    widgetInfo.pos.x(), widgetInfo.pos.y(),
-                    widgetInfo.size.width(), widgetInfo.size.height());
+                    m_videoInfo.fileName.toUtf8().constData(),
+                    m_posSizeInfo.pos.x(), m_posSizeInfo.pos.y(),
+                    m_posSizeInfo.size.width(), m_posSizeInfo.size.height());
 }
 
 //========================================================
 void VideoItem::PlayVideoItem()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Play Video : %s, duration {file : %lld, user : %lld }",
+                    m_videoInfo.fileName.toUtf8().constData(),
+                    m_videoInfo.duration.file, m_videoInfo.duration.user);
     m_player->play();
 }
 

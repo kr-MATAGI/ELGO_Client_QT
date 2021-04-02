@@ -95,6 +95,17 @@ namespace PlayJson
     /** @brief */
     struct ContentData
     {
+        ContentData()
+            : fileDuration(0)
+            , userDuration(0)
+            , bBackgroundOpacity(false)
+            , nx(0)
+            , ny(0)
+            , newsfontSize(0)
+            , newsBoxCount(0)
+            , bNewsBoxOpacity(false)
+        {
+        }
         ContentInfo contentInfo;
         QString name;
         qint64 fileDuration;

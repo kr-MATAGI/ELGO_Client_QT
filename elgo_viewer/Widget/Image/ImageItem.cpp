@@ -22,19 +22,19 @@ ImageItem::~ImageItem()
 }
 
 //========================================================
-bool ImageItem::SetImageItem(const QString& filePath, const StyleSheet::WidgetInfo& widgetInfo)
+bool ImageItem::SetImageItem(const QString& filePath,  const StyleSheet::PosSizeInfo& posSizeInfo)
 //========================================================
 {
     bool retValue = true;
 
-    m_widgetInfo = widgetInfo;
+    m_posSizeInfo = posSizeInfo;
     QPixmap originPximap;
     const bool bIsLoad = originPximap.load(filePath);
     if(true == bIsLoad)
     {
-        QPixmap scaledPximap = originPximap.scaled(m_widgetInfo.size, Qt::IgnoreAspectRatio);
+        QPixmap scaledPximap = originPximap.scaled(m_posSizeInfo.size, Qt::IgnoreAspectRatio);
 
-        this->setPos(m_widgetInfo.pos);
+        this->setPos(m_posSizeInfo.pos);
         this->setPixmap(scaledPximap);
     }
     else

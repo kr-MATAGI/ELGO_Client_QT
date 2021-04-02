@@ -17,7 +17,9 @@ HEADERS += \
         Widget/Definition/ContentsDef.h \
         Widget/Image/ImageItem.h \
         Widget/News/NewsFeedWidget.h \
+        Widget/SchedulesTimer/SchedulerDef.h \
         Widget/SchedulesTimer/SchedulesTimer.h \
+        Widget/SchedulesTimer/SinglePlayTimer.h \
         Widget/Video/VideoItem.h \
         Widget/Weather/WeatherWidget.h \
         ext_libs/QrCode/QrCode.h \
@@ -37,6 +39,7 @@ SOURCES += \
         Widget/Image/ImageItem.cpp \
         Widget/News/NewsFeedWidget.cpp \
         Widget/SchedulesTimer/SchedulesTimer.cpp \
+        Widget/SchedulesTimer/SinglePlayTimer.cpp \
         Widget/Video/VideoItem.cpp \
         Widget/Weather/WeatherWidget.cpp \
         main.cpp \

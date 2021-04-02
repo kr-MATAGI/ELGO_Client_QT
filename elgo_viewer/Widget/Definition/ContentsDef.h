@@ -28,12 +28,10 @@ namespace StyleSheet
     };
 
     /** @brief */
-    struct WidgetInfo
+    struct PosSizeInfo
     {
-        QString fileName;
         QPointF pos;
         QSize size;
-        StyleInfo styleInfo;
     };
 }
 

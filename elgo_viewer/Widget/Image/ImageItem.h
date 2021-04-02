@@ -15,10 +15,10 @@ public:
     virtual ~ImageItem();
 
     /** @brief */
-    bool SetImageItem(const QString& filePath, const StyleSheet::WidgetInfo& widgetInfo);
+    bool SetImageItem(const QString& filePath, const StyleSheet::PosSizeInfo& posSizeInfo);
 
 private:
-    StyleSheet::WidgetInfo m_widgetInfo;
+    StyleSheet::PosSizeInfo m_posSizeInfo;
 };
 
 #endif // IMAGEITEM_H

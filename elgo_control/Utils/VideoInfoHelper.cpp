@@ -19,6 +19,8 @@ qint64 VideoInfoHelper::GetVideoDuration(const QString& name)
     AVFormatContext *pFormatCtx = avformat_alloc_context();
     avformat_open_input(&pFormatCtx, filePath.c_str(), NULL, NULL);
     avformat_find_stream_info(pFormatCtx, NULL);
+
+    // usec -> msec
     retValue = static_cast<qint64>(pFormatCtx->duration / 1000);
 
     avformat_close_input(&pFormatCtx);
@@ -32,14 +34,16 @@ void VideoInfoHelper::MatchVideoDuration(const QVector<QPair<QString, qint64>>& 
                                          QVector<PlayJson::CustomLayerData>& dest)
 //========================================================
 {
-    foreach(PlayJson::CustomLayerData layerData, dest)
+    QVector<PlayJson::CustomLayerData>::iterator iter = dest.begin();
+
+    for(; iter != dest.end(); ++iter)
     {
         foreach(auto videoInfo, src)
         {
             if(0 == strcmp(videoInfo.first.toStdString().c_str(),
-                           layerData.layerContent.name.toStdString().c_str()))
+                           iter->layerContent.name.toStdString().c_str()))
             {
-                layerData.layerContent.fileDuration = videoInfo.second;
+                iter->layerContent.fileDuration = videoInfo.second;
             }
         }
     }
@@ -50,16 +54,20 @@ void VideoInfoHelper::MatchVideoDuration(const QVector<QPair<QString, qint64>>& 
                         QVector<PlayJson::FixedLayerData>& dest)
 //========================================================
 {
-    foreach(PlayJson::FixedLayerData layerData, dest)
+    QVector<PlayJson::FixedLayerData>::iterator layerIter = dest.begin();
+
+    for(; layerIter != dest.end(); ++layerIter)
     {
-        foreach(PlayJson::ContentData contentData, layerData.contentDataList)
+        QVector<PlayJson::ContentData>::iterator cdIter = layerIter->contentDataList.begin();
+
+        for(; cdIter != layerIter->contentDataList.end(); ++cdIter)
         {
             foreach(auto videoInfo, src)
             {
                 if(0 == strcmp(videoInfo.first.toStdString().c_str(),
-                               contentData.name.toStdString().c_str()))
+                               cdIter->name.toStdString().c_str()))
                 {
-                    contentData.fileDuration = videoInfo.second;
+                    cdIter->fileDuration = videoInfo.second;
                 }
             }
         }

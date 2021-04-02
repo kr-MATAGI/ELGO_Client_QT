@@ -3,16 +3,14 @@
 
 // QT
 #include <QWidget>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
 
 // Viewer
 #include "Definition/ContentsDef.h"
 #include "ViewerCtrl/ViewerController.h"
-#include "Widget/SchedulesTimer/SchedulesTimer.h"
+
+#include "Widget/Video/VideoItem.h"
 
 class ViewerController;
-
 
 namespace Ui {
 class ContentsPlayer;
