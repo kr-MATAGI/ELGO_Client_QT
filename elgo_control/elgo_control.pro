@@ -83,9 +83,26 @@ else:unix:!macx: LIBS += -L$$PWD/ext_libs/libcurl/lib/ -lcurl
 INCLUDEPATH += $$PWD/ext_libs/libcurl/include
 DEPENDPATH += $$PWD/ext_libs/libcurl/include
 
-#ffmpeg
-unix:!macx|win32: LIBS += -lavcodec
-unix:!macx|win32: LIBS += -lavformat
-unix:!macx|win32: LIBS += -lavutil
+#ffmpeg - avcodec
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/release/ -lavcodec
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/debug/ -lavcodec
+else:unix:!macx: LIBS += -L$$PWD/ext_libs/ffmpeg/lib/ -lavcodec
 
+INCLUDEPATH += $$PWD/ext_libs/ffmpeg/include
+DEPENDPATH += $$PWD/ext_libs/ffmpeg/include
 
+#ffmpeg - avformat
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/release/ -lavformat
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/debug/ -lavformat
+else:unix:!macx: LIBS += -L$$PWD/ext_libs/ffmpeg/lib/ -lavformat
+
+INCLUDEPATH += $$PWD/ext_libs/ffmpeg/include
+DEPENDPATH += $$PWD/ext_libs/ffmpeg/include
+
+#ffmpeg - avutil
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/release/ -lavutil
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ext_libs/ffmpeg/lib/debug/ -lavutil
+else:unix:!macx: LIBS += -L$$PWD/ext_libs/ffmpeg/lib/ -lavutil
+
+INCLUDEPATH += $$PWD/ext_libs/ffmpeg/include
+DEPENDPATH += $$PWD/ext_libs/ffmpeg/include

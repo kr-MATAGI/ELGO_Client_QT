@@ -56,6 +56,7 @@ private slots:
 
 private:
     SchedulerDef::PlayDataInfo m_currPlayInfo;
+    SchedulerDef::ContentIndxInfo m_currCountDownInfo;
 
     QVector<PlayJson::CustomPlayDataJson> m_customPlayDataList;
     QVector<PlayJson::FixedPlayDataJson> m_fixedPlayDataList;

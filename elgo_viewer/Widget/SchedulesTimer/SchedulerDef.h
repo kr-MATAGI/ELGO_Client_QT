@@ -24,8 +24,6 @@ namespace SchedulerDef
     /** @brief */
     struct ContentIndxInfo
     {
-        PlayDataInfo playDataInfo;
-
         // custom
         int pageIdx;
 
@@ -53,13 +51,13 @@ namespace SchedulerDef
     };
 
     /** @brief */
-    struct CountDownInfo
+    struct CountdownInfo
     {
         PlayDataInfo playDataInfo;
 
         // custom
         int maxPage;
-        CustomTimeCnt customTimeCnt;
+        QVector<CustomTimeCnt> customTimeCnt;
 
         // fixed
         int maxLayer;

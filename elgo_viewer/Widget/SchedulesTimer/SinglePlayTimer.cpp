@@ -83,7 +83,7 @@ void SinglePlayTimer::ExecPlayData(const SchedulerDef::PlayDataInfo& playDataInf
             MakeFixedPlayDataContents(playDataInfo, *newScene);
         }
 
-//        ContentsPlayer::GetInstance()->UpdatePlayerScene(*newScene);
+        ContentsPlayer::GetInstance()->UpdatePlayerScene(*newScene);
     }
     else
     {
@@ -108,7 +108,7 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
 
     if(NOT_EXISTED_DATA == customPlayIdx)
     {
-        ELGO_VIEWER_LOG("Failed found custom play data - id: %d", playDataInfo.id);
+        ELGO_VIEWER_LOG("Not Existed customPlayData - id: %d", playDataInfo.id);
 
         return;
     }
@@ -116,9 +116,9 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
     const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[customPlayIdx];
 
     // Make Page CountDown Info
-    SchedulerDef::CountDownInfo countDownInfo;
-    countDownInfo.playDataInfo = playDataInfo;
-    countDownInfo.maxPage = customPlayData.pageDataList.size();
+    SchedulerDef::CountdownInfo countdownInfo;
+    countdownInfo.playDataInfo = playDataInfo;
+    countdownInfo.maxPage = customPlayData.pageDataList.size();
 
     // Make Content Data - Widget / File
     const int pageDataListSize = customPlayData.pageDataList.size();
@@ -152,7 +152,7 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
             }
         }
 
-        // SubTitle Data
+        // Subtitle Data
         pageData.subtitleDataList;
     }
 }
@@ -161,7 +161,81 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
 void SinglePlayTimer::MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo& playDataInfo, QGraphicsScene& scene)
 //========================================================
 {
+    int fixedPlayIdx = NOT_EXISTED_DATA;
+    const int fixedPlayListSize = m_fixedPlayDataList.size();
+    for(int idx = 0; idx < fixedPlayListSize; idx++)
+    {
+        if(playDataInfo.id == m_fixedPlayDataList[idx].playData.id)
+        {
+            fixedPlayIdx = idx;
+        }
+    }
 
+    if(NOT_EXISTED_DATA == fixedPlayIdx)
+    {
+        ELGO_VIEWER_LOG("Not Existed fixedPlayData - id: %d", playDataInfo.id);
+
+        return;
+    }
+
+    const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[fixedPlayIdx];
+
+    // Make Layer Countdon Info
+    SchedulerDef::CountdownInfo countdownInfo;
+    countdownInfo.playDataInfo = playDataInfo;
+    countdownInfo.maxLayer = fixedPlayData.layerDataList.size();
+
+    countdownInfo.layerTimeCntList.reserve(countdownInfo.maxLayer);
+    for(int layIdx = 0; layIdx < countdownInfo.maxLayer; layIdx++)
+    {
+        const int maxContentNum = fixedPlayData.layerDataList[layIdx].contentDataList.size();
+        countdownInfo.layerTimeCntList[layIdx].maxContent = maxContentNum;
+
+        countdownInfo.layerTimeCntList[layIdx].contentTimeout.reserve(maxContentNum);
+        for(int cdIdx = 0; cdIdx < maxContentNum; cdIdx++)
+        {
+            const int contentTimeout = fixedPlayData.layerDataList[layIdx].contentDataList[cdIdx].userDuration;
+            countdownInfo.layerTimeCntList[layIdx].contentTimeout[cdIdx] = contentTimeout;
+        }
+    }
+
+
+    // Make Content Data - Widget / File
+    const int layerListSize = fixedPlayData.layerDataList.size();
+    for(int layIdx = 0; layIdx < layerListSize; layIdx++)
+    {
+        const PlayJson::FixedLayerData& layerData = fixedPlayData.layerDataList[layIdx];
+
+        // Conetnt Index Info
+        SchedulerDef::ContentIndxInfo contentIdxInfo;
+        contentIdxInfo.playDataInfo = playDataInfo;
+        contentIdxInfo.layerIdx = layIdx;
+
+        // pos, size
+        StyleSheet::PosSizeInfo posSizeInfo;
+        posSizeInfo.pos = QPointF(QPoint(layerData.left, layerData.top));
+        posSizeInfo.size = QSize(layerData.width, layerData.height);
+
+        const int contentListSize = layerData.contentDataList.size();
+        for(int cdIdx = 0; cdIdx < contentListSize; cdIdx++)
+        {
+            contentIdxInfo.contentIdx = cdIdx;
+
+            // make content data
+            const PlayJson::ContentData& contentData = layerData.contentDataList[cdIdx];
+            if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
+            {
+                MakeFileTypeContent(contentIdxInfo, contentData, posSizeInfo, scene);
+            }
+            else
+            {
+                MakeWidgetTypeContent(contentIdxInfo, contentData, posSizeInfo, scene);
+            }
+        }
+    }
+
+    // Subtitle Data
+    fixedPlayData.subtitleDataList;
 }
 
 //========================================================
@@ -258,5 +332,6 @@ QString SinglePlayTimer::ConvertMediaTypeEnumToString(const PlayJson::MediaType 
 void SinglePlayTimer::SinglePlayTimeout()
 //========================================================
 {
-    // Check PlayData Page or fixed Content timeout by duration
+
+
 }

@@ -87,7 +87,10 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
     bool retValue = false;
 
     std::string sendJson;
+
+    // for test - "d335fd2a4-88b4-9dba-bbdf-2dc416a3018";
     QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
+
     QString os = QSysInfo::productType();
     JsonWriter::WriteGetJwtRequest(udid, os, sendJson);
     ELGO_CONTROL_LOG("sendJson : %s", sendJson.c_str());

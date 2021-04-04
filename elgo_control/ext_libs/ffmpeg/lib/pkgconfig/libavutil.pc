@@ -1,0 +1,14 @@
+prefix=/home/jaehoon/LIB/ffmpeg
+exec_prefix=${prefix}
+libdir=/home/jaehoon/LIB/ffmpeg/lib
+includedir=/home/jaehoon/LIB/ffmpeg/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 56.51.100
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: -pthread -lm
+Cflags: -I${includedir}
