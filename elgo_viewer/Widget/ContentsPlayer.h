@@ -39,6 +39,8 @@ public:
 
     /** @brief */
     void UpdatePlayerScene(QGraphicsScene* scene);
+    /** @brief */
+    void DeletePlayerSceneItem(QGraphicsItem* item);
 
     /** @brief */
     void StartContentsPlayer();

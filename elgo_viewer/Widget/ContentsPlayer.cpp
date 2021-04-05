@@ -116,6 +116,13 @@ void ContentsPlayer::UpdatePlayerScene(QGraphicsScene* scene)
 }
 
 //========================================================
+void ContentsPlayer::DeletePlayerSceneItem(QGraphicsItem* item)
+//========================================================
+{
+    ui->playerView->scene()->removeItem(item);
+}
+
+//========================================================
 void ContentsPlayer::StartContentsPlayer()
 //========================================================
 {

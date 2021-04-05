@@ -543,6 +543,7 @@ void SinglePlayTimer::UpdateFixedContentToScene(const SchedulerDef::PlayDataInde
                 if(imageIter->first == prevDataIdxInfo)
                 {
                     sceneIter->second->removeItem(imageIter->second);
+                    ContentsPlayer::GetInstance()->DeletePlayerSceneItem(imageIter->second);
 
                     ELGO_VIEWER_LOG("Remove Image Item to Scene : %s, Index {layer: %d, content: %d}",
                                     imageIter->second->GetImageFileName().toUtf8().constData(),
