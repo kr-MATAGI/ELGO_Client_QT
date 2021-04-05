@@ -27,6 +27,9 @@ bool ImageItem::SetImageItem(const QString& filePath,  const StyleSheet::PosSize
 {
     bool retValue = true;
 
+    QStringList pathSplit = filePath.split("/");
+    m_fileName = pathSplit.back();
+
     m_posSizeInfo = posSizeInfo;
     QPixmap originPximap;
     const bool bIsLoad = originPximap.load(filePath);
@@ -44,4 +47,11 @@ bool ImageItem::SetImageItem(const QString& filePath,  const StyleSheet::PosSize
     }
 
     return retValue;
+}
+
+//========================================================
+QString ImageItem::GetImageFileName()
+//========================================================
+{
+    return m_fileName;
 }

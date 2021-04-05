@@ -137,8 +137,8 @@ namespace VideoInfo
         {
 
         }
-        qint64 user;
-        qint64 file;
+        qint64 user; // msec
+        qint64 file; // msec
     };
 
     /** @brief */

@@ -902,7 +902,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
 
     if(layerContentObj.end() != layerContentObj.find("cd_duration"))
     {
-        const qint64 duration = static_cast<qint64>(layerContentObj["cd_duration"].toInt() * 1000);
+        const int duration = layerContentObj["cd_duration"].toInt();
         dest.userDuration = duration;
     }
 

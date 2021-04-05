@@ -7,14 +7,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::CustomPlayDataJson &src
 //========================================================
 {
     ds << src.playData;
-
-    const int pageDataListSize = src.pageDataList.size();
-    ds << pageDataListSize;
-
-    for(int idx = 0; idx < pageDataListSize; idx++)
-    {
-        ds << src.pageDataList[idx];
-    }
+    ds << src.pageDataList;
 
     return ds;
 }
@@ -24,22 +17,8 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedPlayDataJson &src)
 //========================================================
 {
     ds << src.playData;
-
-    const int layerDataListSize = src.layerDataList.size();
-    ds << layerDataListSize;
-
-    for(int idx = 0; idx < layerDataListSize; idx++)
-    {
-        ds << src.layerDataList[idx];
-    }
-
-    const int subtitleDataListSize = src.subtitleDataList.size();
-    ds << subtitleDataListSize;
-
-    for(int idx = 0; idx < subtitleDataListSize; idx++)
-    {
-        ds << src.subtitleDataList[idx];
-    }
+    ds << src.layerDataList;
+    ds << src.subtitleDataList;
 
     return ds;
 }
@@ -64,22 +43,8 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::PageData& src)
 //========================================================
 {
     ds << src.duration;
-
-    const int layerDataListSize = src.layerDataList.size();
-    ds << layerDataListSize;
-
-    for(int idx = 0; idx < layerDataListSize; idx++)
-    {
-        ds << src.layerDataList[idx];
-    }
-
-    const int subtitleDataListSize = src.subtitleDataList.size();
-    ds << subtitleDataListSize;
-
-    for(int idx = 0; idx < subtitleDataListSize; idx++)
-    {
-        ds << src.subtitleDataList[idx];
-    }
+    ds << src.layerDataList;
+    ds << src.subtitleDataList;
 
     return ds;
 }
@@ -105,12 +70,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::FixedLayerData& src)
     ds << src.top;
     ds << src.width;
     ds << src.height;
-
-    const int contentDataListSize = src.contentDataList.size();
-    for(int idx = 0; idx < contentDataListSize; idx++)
-    {
-        ds << src.contentDataList[idx];
-    }
+    ds << src.contentDataList;
 
     return ds;
 }
@@ -188,16 +148,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::CustomPlayDataJson& dest)
 //========================================================
 {
     ds >> dest.playData;
-
-    int pageDataListSize = 0;
-    ds >> pageDataListSize;
-
-    for(int idx = 0; idx < pageDataListSize; idx++)
-    {
-        PlayJson::PageData pageData;
-        ds >> pageData;
-        dest.pageDataList.push_back(pageData);
-    }
+    ds >> dest.pageDataList;
 
     return ds;
 }
@@ -207,26 +158,8 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::FixedPlayDataJson& dest)
 //========================================================
 {
     ds >> dest.playData;
-
-    int layDataListSize = 0;
-    ds >> layDataListSize;
-
-    for(int idx = 0; idx < layDataListSize; idx++)
-    {
-        PlayJson::FixedLayerData layerData;
-        ds >> layerData;
-        dest.layerDataList.push_back(layerData);
-    }
-
-    int subtitleDataListSize = 0;
-    ds >> subtitleDataListSize;
-
-    for(int idx = 0; idx < subtitleDataListSize; idx++)
-    {
-        PlayJson::SubtitleData subtitleData;
-        ds >> subtitleData;
-        dest.subtitleDataList.push_back(subtitleData);
-    }
+    ds >> dest.layerDataList;
+    ds >> dest.subtitleDataList;
 
     return ds;
 }
@@ -251,26 +184,8 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::PageData& dest)
 //========================================================
 {
     ds >> dest.duration;
-
-    int layDataListSize = 0;
-    ds >> layDataListSize;
-
-    for(int idx = 0; idx < layDataListSize; idx++)
-    {
-        PlayJson::CustomLayerData layerData;
-        ds >> layerData;
-        dest.layerDataList.push_back(layerData);
-    }
-
-    int subtitleDataListSize = 0;
-    ds >> subtitleDataListSize;
-
-    for(int idx = 0; idx < subtitleDataListSize; idx++)
-    {
-        PlayJson::SubtitleData subtitleData;
-        ds >> subtitleData;
-        dest.subtitleDataList.push_back(subtitleData);
-    }
+    ds >> dest.layerDataList;
+    ds >> dest.subtitleDataList;
 
     return ds;
 }
@@ -296,15 +211,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::FixedLayerData& dest)
     ds >> dest.top;
     ds >> dest.width;
     ds >> dest.height;
-
-    int contentDataListSize = 0;
-    ds >> contentDataListSize;
-    for(int idx = 0; idx < contentDataListSize; idx++)
-    {
-        PlayJson::ContentData contentData;
-        ds >> contentData;
-        dest.contentDataList.push_back(contentData);
-    }
+    ds >> dest.contentDataList;
 
     return ds;
 }

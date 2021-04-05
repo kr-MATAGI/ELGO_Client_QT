@@ -31,6 +31,10 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     ui->playerView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     ui->playerView->setRenderHint(QPainter::Antialiasing);
+
+    // connect
+    connect(this, SIGNAL(EmitUpdateScene(QGraphicsScene*)),
+            this, SLOT(UpdatePlayerScene(QGraphicsScene*)));
 }
 
 //========================================================
@@ -101,14 +105,14 @@ bool ContentsPlayer::GetCurrentWidgetCapture()
 }
 
 //========================================================
-void ContentsPlayer::UpdatePlayerScene(QGraphicsScene& scene)
+void ContentsPlayer::UpdatePlayerScene(QGraphicsScene* scene)
 //========================================================
 {
-    ELGO_VIEWER_LOG("Update Scene - {items size : %d}", scene.items().size());
-    const QRect screenRect = QRect(QPoint(0.0, 0.0), m_displaySize);
+    ELGO_VIEWER_LOG("Update Scene - {items size : %d}", scene->items().size());
+    const QRect screenRect = QRect(QPoint(0, 0), m_displaySize);
 
-    scene.setSceneRect(screenRect);
-    ui->playerView->setScene(&scene);
+    scene->setSceneRect(screenRect);
+    ui->playerView->setScene(scene);
 }
 
 //========================================================
@@ -117,22 +121,4 @@ void ContentsPlayer::StartContentsPlayer()
 {
     ELGO_VIEWER_LOG("Start Contents Player");
     this->showFullScreen();
-
-    // TEST
-//    QGraphicsScene *scene = new QGraphicsScene;
-//    scene->setSceneRect(QRect(0,0, 1950, 1080));
-
-//    VideoItem *videoItem = new VideoItem;
-//    StyleSheet::PosSizeInfo widgetInfo;
-//    widgetInfo.fileName = "Mountains.mp4";
-//    widgetInfo.pos = QPointF(0.0, 0.0);
-//    widgetInfo.size = QSize(500, 500);
-
-//    videoItem->SetVideoFileToBuffer("/home/jaehoon/바탕화면/ELGO/resource/video/1615956328721_18mb_1920x1080_earth.mp4", VideoInfo::MetaData());
-//    videoItem->SetVideoPosAndSize(widgetInfo);
-
-//    scene->addItem(videoItem);
-//    videoItem->PlayVideoItem();
-
-//    ui->playerView->setScene(scene);
 }

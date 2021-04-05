@@ -28,7 +28,6 @@ VideoItem::VideoItem(QGraphicsItem *parent)
 VideoItem::~VideoItem()
 //========================================================
 {
-    m_bytes->clear();
     delete m_bytes;
     m_bytes = NULL;
 
@@ -64,7 +63,7 @@ bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaD
 
         m_player->setMedia(QMediaContent(), m_buffer);
         mediaFile.close();
-    }    
+    }
 
     return retValue;
 }
@@ -98,6 +97,20 @@ void VideoItem::StopVideoItem()
 //========================================================
 {
     m_player->stop();
+}
+
+//========================================================
+QString VideoItem::GetVideoFileName()
+//========================================================
+{
+    return m_videoInfo.fileName;
+}
+
+//========================================================
+qint64 VideoItem::GetDuration()
+//========================================================
+{
+    return m_player->duration();
 }
 
 //========================================================
@@ -136,5 +149,8 @@ void VideoItem::CheckStateChanged(QMediaPlayer::State state)
 void VideoItem::CheckPositionChanged(qint64 pos)
 //========================================================
 {
-
+    if(pos >= m_videoInfo.duration.file)
+    {
+        m_player->setPosition(0);
+    }
 }

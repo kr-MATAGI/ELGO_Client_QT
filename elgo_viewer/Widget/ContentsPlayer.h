@@ -3,12 +3,11 @@
 
 // QT
 #include <QWidget>
+#include <QGraphicsScene>
 
 // Viewer
 #include "Definition/ContentsDef.h"
 #include "ViewerCtrl/ViewerController.h"
-
-#include "Widget/Video/VideoItem.h"
 
 class ViewerController;
 
@@ -39,14 +38,14 @@ public:
     bool GetCurrentWidgetCapture();
 
     /** @brief */
-    void UpdatePlayerScene(QGraphicsScene& scene);
+    void UpdatePlayerScene(QGraphicsScene* scene);
 
     /** @brief */
     void StartContentsPlayer();
 
 private:
     Ui::ContentsPlayer *ui;
-    QSize m_displaySize;
+    QSize m_displaySize;    
 };
 
 #endif // CONTENTSPLAYER_H

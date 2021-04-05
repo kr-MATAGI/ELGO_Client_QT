@@ -162,6 +162,7 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.name.toStdString().c_str());
 
     SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
+    SchedulesTimer::GetInstance()->ExecSinglePlayEvent(customPlayData.playData);
 }
 
 //========================================================
@@ -185,6 +186,7 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.name.toStdString().c_str());
 
     SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
+    SchedulesTimer::GetInstance()->ExecSinglePlayEvent(fixedPlayData.playData);
 }
 
 //========================================================

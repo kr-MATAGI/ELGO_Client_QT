@@ -17,7 +17,11 @@ public:
     /** @brief */
     bool SetImageItem(const QString& filePath, const StyleSheet::PosSizeInfo& posSizeInfo);
 
+    /** @brief */
+    QString GetImageFileName();
+
 private:
+    QString m_fileName;
     StyleSheet::PosSizeInfo m_posSizeInfo;
 };
 

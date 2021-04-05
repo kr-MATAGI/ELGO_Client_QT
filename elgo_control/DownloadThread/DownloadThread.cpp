@@ -334,7 +334,6 @@ void DownloadThread::ExecDownloadPlaySchedules()
             QByteArray bytes;
             QDataStream stream(&bytes, QIODevice::WriteOnly);
             stream << fixedPlayData;
-            stream << playScheduleList.size();
             stream << playScheduleList;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                           VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES, bytes);

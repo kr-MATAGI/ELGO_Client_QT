@@ -33,6 +33,9 @@ public:
     /** @brief */
     void AddPlaySchedule(const ScheduleJson::PlaySchedules& src);
 
+    /** @brief */
+    void ExecSinglePlayEvent(const PlayJson::PlayData& src);
+
 private:
     /** @brief */
     void ExecSchedule(const QString& scheduleId);

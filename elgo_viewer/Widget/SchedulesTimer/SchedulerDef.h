@@ -22,8 +22,15 @@ namespace SchedulerDef
     };
 
     /** @brief */
-    struct ContentIndxInfo
+    struct PlayDataIndexInfo
     {
+        PlayDataIndexInfo()
+            : pageIdx(0)
+            , layerIdx(0)
+            , contentIdx(0)
+        { }
+        PlayDataInfo playDataInfo;
+
         // custom
         int pageIdx;
 
@@ -33,19 +40,20 @@ namespace SchedulerDef
     };
 
     /** @brief */
-    struct CustomTimeCnt
+    struct CurrFixedPlayInfo
     {
-        CustomTimeCnt()
-            : pageIdx(0)
-            , timeCount(0)
-        { }
-        int pageIdx;
-        int timeCount;
+        PlayDataInfo playDataInfo;
+
+        // content index per layer
+        QVector<int> layerInfo;
     };
 
     /** @brief  for countdown */
     struct FixedLayerTimeCnt
     {
+        FixedLayerTimeCnt()
+            : maxContent(0)
+        { }
         int maxContent;
         QVector<int> contentTimeout;
     };
@@ -57,11 +65,11 @@ namespace SchedulerDef
 
         // custom
         int maxPage;
-        QVector<CustomTimeCnt> customTimeCnt;
+        QVector<int> pageTimecount;
 
         // fixed
         int maxLayer;
-        QVector<FixedLayerTimeCnt> layerTimeCntList;
+        QVector<FixedLayerTimeCnt> layerTimecountList;
     };
 
 
@@ -77,6 +85,19 @@ namespace SchedulerDef
 
         return true;
     }
+    inline bool operator==(const PlayDataIndexInfo& lhs, const PlayDataIndexInfo& rhs)
+    {
+        if(!(lhs.playDataInfo == rhs.playDataInfo))
+            return false;
+        if(!(lhs.pageIdx == rhs.pageIdx))
+            return false;
+        if(!(lhs.layerIdx == rhs.layerIdx))
+            return false;
+        if(!(lhs.contentIdx == rhs.contentIdx))
+            return false;
+
+        return true;
+    }
 
     /**
      *  @brief  operator !=
@@ -88,9 +109,9 @@ namespace SchedulerDef
 /**
  *  @brief  std::pair<PlayDataId, PlayJson::PlayDataType>
  */
-typedef std::pair<SchedulerDef::ContentIndxInfo, QGraphicsScene *> SceneInfo;
-typedef std::pair<SchedulerDef::ContentIndxInfo, VideoItem *> VideoItemInfo;
-typedef std::pair<SchedulerDef::ContentIndxInfo, ImageItem *> ImageItemInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, QGraphicsScene *> SceneInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, VideoItem *> VideoItemInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, ImageItem *> ImageItemInfo;
 
 
 #endif // SCHEDULERDEF_H

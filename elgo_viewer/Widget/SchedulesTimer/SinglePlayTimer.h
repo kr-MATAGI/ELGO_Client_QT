@@ -1,4 +1,4 @@
-#ifndef SINGLEPLAYTIMER_H
+﻿#ifndef SINGLEPLAYTIMER_H
 #define SINGLEPLAYTIMER_H
 
 // QT
@@ -24,27 +24,30 @@ public:
     void AddPlayData(const PlayJson::FixedPlayDataJson& src);
 
     /** @brief */
-    void ExecPlayData(const SchedulerDef::PlayDataInfo& playDataInfo);
+    void ExecPlayData(SchedulerDef::PlayDataInfo& playDataInfo);
 
 private:
     /** @brief */
-    void MakeCustomPlayDataContents(const SchedulerDef::PlayDataInfo& playDataInfo, QGraphicsScene& scene);
+    void MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
     /** @brief */
-    void MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo& playDataInfo, QGraphicsScene& scene);
+    void MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
 
     /** @brief */
-    void MakeFileTypeContent(const SchedulerDef::ContentIndxInfo& contentIndxInfo,
+    void MakeFileTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
                              const PlayJson::ContentData& contentData,
-                             const StyleSheet::PosSizeInfo& posSizeInfo,
-                             QGraphicsScene& scene);
+                             const StyleSheet::PosSizeInfo& posSizeInfo);
     /** @brief */
-    void MakeWidgetTypeContent(const SchedulerDef::ContentIndxInfo& contentIndxInfo,
+    void MakeWidgetTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
                                const PlayJson::ContentData& contentData,
-                               const StyleSheet::PosSizeInfo& posSizeInfo,
-                               QGraphicsScene& scene);
+                               const StyleSheet::PosSizeInfo& posSizeInfo);
 
     /** @brief */
-    void ManageContentItemList();
+    void UpdatePlayerNewScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
+    /** @brief */
+    void UpdateFixedContentToScene(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
+                                   const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo);
+    /** @brief */
+    void SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo, QGraphicsScene* scene);
 
 
     /** @brief */
@@ -55,8 +58,9 @@ private slots:
     void SinglePlayTimeout();
 
 private:
-    SchedulerDef::PlayDataInfo m_currPlayInfo;
-    SchedulerDef::ContentIndxInfo m_currCountDownInfo;
+    SchedulerDef::PlayDataIndexInfo m_customPlayDataInfo;
+    SchedulerDef::CurrFixedPlayInfo m_fixedPlayDataInfo;
+    SchedulerDef::CountdownInfo m_countdownInfo;
 
     QVector<PlayJson::CustomPlayDataJson> m_customPlayDataList;
     QVector<PlayJson::FixedPlayDataJson> m_fixedPlayDataList;
@@ -64,6 +68,8 @@ private:
     QVector<SceneInfo> m_sceneList;
     QVector<ImageItemInfo> m_imageItemList;
     QVector<VideoItemInfo> m_videoItemList;
+    // QVector<Widget> m_widgetItemList;
+    // QVector<Subtitle> m_subtitleItemList;
 };
 
 #endif // SINGLEPLAYTIMER_H

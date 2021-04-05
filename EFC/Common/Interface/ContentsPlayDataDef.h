@@ -108,8 +108,8 @@ namespace PlayJson
         }
         ContentInfo contentInfo;
         QString name;
-        qint64 fileDuration;
-        qint64 userDuration;
+        qint64 fileDuration; // msec
+        int userDuration; // sec
 
         // weather
         /** @note   below Area info will be replace nx, ny */

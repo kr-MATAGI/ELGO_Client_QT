@@ -28,6 +28,12 @@ public:
     /** @brief */
     void StopVideoItem();
 
+    /** @brief */
+    QString GetVideoFileName();
+
+    /** @brief */
+    qint64 GetDuration();
+
 private slots:
     /** @brief */
     void CheckMediaStatus(QMediaPlayer::MediaStatus status);

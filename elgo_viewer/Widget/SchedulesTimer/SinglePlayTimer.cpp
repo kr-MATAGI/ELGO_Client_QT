@@ -66,24 +66,26 @@ void SinglePlayTimer::AddPlayData(const PlayJson::FixedPlayDataJson& src)
 }
 
 //========================================================
-void SinglePlayTimer::ExecPlayData(const SchedulerDef::PlayDataInfo& playDataInfo)
+void SinglePlayTimer::ExecPlayData(SchedulerDef::PlayDataInfo& playDataInfo)
 //========================================================
 {
-    if(m_currPlayInfo != playDataInfo)
+    if(m_customPlayDataInfo.playDataInfo != playDataInfo)
     {
-        QGraphicsScene *newScene = new QGraphicsScene;
-
         // Make Custom or Fixed Contents
+        SchedulerDef::PlayDataIndexInfo playDataIdxInfo;
+        playDataIdxInfo.playDataInfo = playDataInfo;
+
         if(PlayJson::PlayDataType::CUSTOM == playDataInfo.type)
         {
-            MakeCustomPlayDataContents(playDataInfo, *newScene);
+            MakeCustomPlayDataContents(playDataIdxInfo);
         }
         else
         {
-            MakeFixedPlayDataContents(playDataInfo, *newScene);
+            MakeFixedPlayDataContents(playDataIdxInfo);
         }
 
-        ContentsPlayer::GetInstance()->UpdatePlayerScene(*newScene);
+        // Update Scene
+        UpdatePlayerNewScene(playDataIdxInfo);
     }
     else
     {
@@ -93,9 +95,11 @@ void SinglePlayTimer::ExecPlayData(const SchedulerDef::PlayDataInfo& playDataInf
 }
 
 //========================================================
-void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInfo& playDataInfo, QGraphicsScene& scene)
+void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
+    const SchedulerDef::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
+
     int customPlayIdx = NOT_EXISTED_DATA;
     const int customPlayListSize = m_customPlayDataList.size();
     for(int idx = 0; idx < customPlayListSize; idx++)
@@ -116,9 +120,9 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
     const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[customPlayIdx];
 
     // Make Page CountDown Info
-    SchedulerDef::CountdownInfo countdownInfo;
-    countdownInfo.playDataInfo = playDataInfo;
-    countdownInfo.maxPage = customPlayData.pageDataList.size();
+    SchedulerDef::CountdownInfo maxCountDown;
+    maxCountDown.playDataInfo = playDataInfo;
+    maxCountDown.maxPage = customPlayData.pageDataList.size();
 
     // Make Content Data - Widget / File
     const int pageDataListSize = customPlayData.pageDataList.size();
@@ -126,13 +130,16 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
     {
         const PlayJson::PageData& pageData = customPlayData.pageDataList[pageIdx];
 
+        // timecount
+        maxCountDown.pageTimecount.push_back(0);
+
         const int layerDataListSize = pageData.layerDataList.size();
         for(int layIdx = 0; layIdx < layerDataListSize; layIdx++)
         {
             const PlayJson::CustomLayerData& layerData = pageData.layerDataList[layIdx];
 
             // Content Index Info
-            SchedulerDef::ContentIndxInfo contentIdxInfo;
+            SchedulerDef::PlayDataIndexInfo contentIdxInfo;
             contentIdxInfo.playDataInfo = playDataInfo;
             contentIdxInfo.pageIdx = pageIdx;
 
@@ -144,23 +151,28 @@ void SinglePlayTimer::MakeCustomPlayDataContents(const SchedulerDef::PlayDataInf
             // make content data
             if(PlayJson::ContentType::FILE == layerData.layerContent.contentInfo.contentType)
             {
-                MakeFileTypeContent(contentIdxInfo, layerData.layerContent, posSizeInfo, scene);
+                MakeFileTypeContent(contentIdxInfo, layerData.layerContent, posSizeInfo);
             }
             else
             {
-                MakeWidgetTypeContent(contentIdxInfo, layerData.layerContent, posSizeInfo, scene);
+                MakeWidgetTypeContent(contentIdxInfo, layerData.layerContent, posSizeInfo);
             }
         }
 
         // Subtitle Data
         pageData.subtitleDataList;
     }
+
+    m_countdownInfo = maxCountDown;
+    playDataIdxInfo.pageIdx = 0;
 }
 
 //========================================================
-void SinglePlayTimer::MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo& playDataInfo, QGraphicsScene& scene)
+void SinglePlayTimer::MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
+    const SchedulerDef::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
+
     int fixedPlayIdx = NOT_EXISTED_DATA;
     const int fixedPlayListSize = m_fixedPlayDataList.size();
     for(int idx = 0; idx < fixedPlayListSize; idx++)
@@ -181,34 +193,39 @@ void SinglePlayTimer::MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo
     const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[fixedPlayIdx];
 
     // Make Layer Countdon Info
-    SchedulerDef::CountdownInfo countdownInfo;
-    countdownInfo.playDataInfo = playDataInfo;
-    countdownInfo.maxLayer = fixedPlayData.layerDataList.size();
+    SchedulerDef::CountdownInfo maxCountdownInfo;
+    SchedulerDef::CurrFixedPlayInfo fixdPlayContentIdxInfo;
 
-    countdownInfo.layerTimeCntList.reserve(countdownInfo.maxLayer);
-    for(int layIdx = 0; layIdx < countdownInfo.maxLayer; layIdx++)
+    maxCountdownInfo.playDataInfo = playDataInfo;
+    fixdPlayContentIdxInfo.playDataInfo = playDataInfo;
+
+    maxCountdownInfo.maxLayer = fixedPlayData.layerDataList.size();
+    maxCountdownInfo.layerTimecountList.resize(maxCountdownInfo.maxLayer);
+    fixdPlayContentIdxInfo.layerInfo.resize(maxCountdownInfo.maxLayer);
+
+    for(int layIdx = 0; layIdx < maxCountdownInfo.maxLayer; layIdx++)
     {
         const int maxContentNum = fixedPlayData.layerDataList[layIdx].contentDataList.size();
-        countdownInfo.layerTimeCntList[layIdx].maxContent = maxContentNum;
+        maxCountdownInfo.layerTimecountList[layIdx].maxContent = maxContentNum;
+        fixdPlayContentIdxInfo.layerInfo[layIdx] = 0;
 
-        countdownInfo.layerTimeCntList[layIdx].contentTimeout.reserve(maxContentNum);
         for(int cdIdx = 0; cdIdx < maxContentNum; cdIdx++)
         {
-            const int contentTimeout = fixedPlayData.layerDataList[layIdx].contentDataList[cdIdx].userDuration;
-            countdownInfo.layerTimeCntList[layIdx].contentTimeout[cdIdx] = contentTimeout;
+            maxCountdownInfo.layerTimecountList[layIdx].contentTimeout.push_back(0);
         }
     }
+    m_countdownInfo = maxCountdownInfo;
+    m_fixedPlayDataInfo = fixdPlayContentIdxInfo;
 
+    // Conetnt Index Info
+    SchedulerDef::PlayDataIndexInfo contentIdxInfo;
+    contentIdxInfo.playDataInfo = playDataInfo;
 
     // Make Content Data - Widget / File
     const int layerListSize = fixedPlayData.layerDataList.size();
     for(int layIdx = 0; layIdx < layerListSize; layIdx++)
     {
         const PlayJson::FixedLayerData& layerData = fixedPlayData.layerDataList[layIdx];
-
-        // Conetnt Index Info
-        SchedulerDef::ContentIndxInfo contentIdxInfo;
-        contentIdxInfo.playDataInfo = playDataInfo;
         contentIdxInfo.layerIdx = layIdx;
 
         // pos, size
@@ -225,11 +242,11 @@ void SinglePlayTimer::MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo
             const PlayJson::ContentData& contentData = layerData.contentDataList[cdIdx];
             if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
             {
-                MakeFileTypeContent(contentIdxInfo, contentData, posSizeInfo, scene);
+                MakeFileTypeContent(contentIdxInfo, contentData, posSizeInfo);
             }
             else
             {
-                MakeWidgetTypeContent(contentIdxInfo, contentData, posSizeInfo, scene);
+                MakeWidgetTypeContent(contentIdxInfo, contentData, posSizeInfo);
             }
         }
     }
@@ -239,10 +256,9 @@ void SinglePlayTimer::MakeFixedPlayDataContents(const SchedulerDef::PlayDataInfo
 }
 
 //========================================================
-void SinglePlayTimer::MakeFileTypeContent(const SchedulerDef::ContentIndxInfo& contentIndxInfo,
+void SinglePlayTimer::MakeFileTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
                                           const PlayJson::ContentData& contentData,
-                                          const StyleSheet::PosSizeInfo& posSizeInfo,
-                                          QGraphicsScene& scene)
+                                          const StyleSheet::PosSizeInfo& posSizeInfo)
 //========================================================
 {
     QString fullPath = RESOURCE_SAVE_PATH;
@@ -262,7 +278,6 @@ void SinglePlayTimer::MakeFileTypeContent(const SchedulerDef::ContentIndxInfo& c
         const bool bIsSetItem = imageItem->SetImageItem(fullPath, posSizeInfo);
         if(true == bIsSetItem)
         {
-            scene.addItem(imageItem);
             m_imageItemList.push_back(std::make_pair(contentIndxInfo, imageItem));
         }
         else
@@ -284,8 +299,6 @@ void SinglePlayTimer::MakeFileTypeContent(const SchedulerDef::ContentIndxInfo& c
         if(true == bIsSetItem)
         {
             videoItem->SetVideoPosAndSize(posSizeInfo);
-
-            scene.addItem(videoItem);
             m_videoItemList.push_back(std::make_pair(contentIndxInfo, videoItem));
         }
         else
@@ -297,10 +310,9 @@ void SinglePlayTimer::MakeFileTypeContent(const SchedulerDef::ContentIndxInfo& c
 }
 
 //========================================================
-void SinglePlayTimer::MakeWidgetTypeContent(const SchedulerDef::ContentIndxInfo& contentIndxInfo,
+void SinglePlayTimer::MakeWidgetTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
                                             const PlayJson::ContentData& contentData,
-                                            const StyleSheet::PosSizeInfo& posSizeInfo,
-                                            QGraphicsScene& scene)
+                                            const StyleSheet::PosSizeInfo& posSizeInfo)
 //========================================================
 {
 
@@ -332,6 +344,275 @@ QString SinglePlayTimer::ConvertMediaTypeEnumToString(const PlayJson::MediaType 
 void SinglePlayTimer::SinglePlayTimeout()
 //========================================================
 {
+    // Check Current Played Page or Content Index
+    if(PlayJson::PlayDataType::CUSTOM == m_customPlayDataInfo.playDataInfo.type)
+    {
+        // Custom
+        QVector<PlayJson::CustomPlayDataJson>::const_iterator cusIter = m_customPlayDataList.constBegin();
+        for(; cusIter != m_customPlayDataList.constEnd(); ++cusIter)
+        {
+            if(cusIter->playData.id == m_customPlayDataInfo.playDataInfo.id)
+            {
+                // Get currPage
+                const int currPageIdx = m_customPlayDataInfo.pageIdx;
+                const PlayJson::PageData& currPageData = cusIter->pageDataList[currPageIdx];
 
+                if( 1 ==  m_countdownInfo.maxPage)
+                {
+                    ELGO_VIEWER_LOG("Not Update Scene - Max Page Size : %d", m_countdownInfo.maxPage);
+                    return;
+                }
 
+                if( m_countdownInfo.pageTimecount[currPageIdx] == currPageData.duration )
+                {
+                    // currPage timecount init
+                    m_countdownInfo.pageTimecount[currPageIdx] = 0;
+
+                    // nextPage
+                    int nextPageIdx = currPageIdx + 1;
+                    if(m_countdownInfo.maxPage <= nextPageIdx)
+                    {
+                        nextPageIdx = 0;
+                    }
+
+                    SchedulerDef::PlayDataIndexInfo nextPagePlayData = m_customPlayDataInfo;
+                    nextPagePlayData.pageIdx = nextPageIdx;
+                    ELGO_VIEWER_LOG("Update NextPage- id: %d, pageIdx: %d, currPageTimeCnt{ %d : %d }",
+                                    nextPagePlayData.playDataInfo.id, nextPageIdx,
+                                    m_countdownInfo.pageTimecount[currPageIdx], currPageData.duration);
+
+                    UpdatePlayerNewScene(nextPagePlayData);
+                }
+                else
+                {
+                    // Plus Timecount
+                    m_countdownInfo.pageTimecount[currPageIdx]++;
+                    ELGO_VIEWER_LOG("Custom Page[%d] Countdown : %d", currPageIdx, m_countdownInfo.pageTimecount[currPageIdx]);
+                }
+            }
+        }
+    }
+    else
+    {
+        // Fixed
+        QVector<PlayJson::FixedPlayDataJson>::const_iterator fixIter = m_fixedPlayDataList.constBegin();
+        for(; fixIter != m_fixedPlayDataList.constEnd(); ++fixIter)
+        {
+            if(fixIter->playData.id == m_fixedPlayDataInfo.playDataInfo.id)
+            {
+                const int layerListSize = m_fixedPlayDataInfo.layerInfo.size();
+                if(1 == layerListSize && 1 == fixIter->layerDataList[0].contentDataList.size())
+                {
+                    ELGO_VIEWER_LOG("Not Update Scene - List Size {layer:%d content: %d}",
+                                    layerListSize, fixIter->layerDataList[0].contentDataList.size());
+                    return;
+                }
+
+                for(int layIdx = 0; layIdx < layerListSize; layIdx++)
+                {
+                    const int currContnetIdx = m_fixedPlayDataInfo.layerInfo[layIdx];
+                    const int currContentTimeout = m_countdownInfo.layerTimecountList[layIdx].contentTimeout[currContnetIdx];
+
+                    if(currContentTimeout == fixIter->layerDataList[layIdx].contentDataList[currContnetIdx].userDuration)
+                    {
+                        // change content in layer
+                        m_countdownInfo.layerTimecountList[layIdx].contentTimeout[currContnetIdx] = 0;
+
+                        // next content
+                        int nextContentIdx = currContnetIdx + 1;
+                        if(m_countdownInfo.layerTimecountList[layIdx].maxContent <= nextContentIdx)
+                        {
+                            nextContentIdx = 0;
+                        }
+
+                        SchedulerDef::PlayDataIndexInfo prevPlayContentData;
+                        prevPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
+                        prevPlayContentData.layerIdx = layIdx;
+                        prevPlayContentData.contentIdx = currContnetIdx;
+
+                        SchedulerDef::PlayDataIndexInfo nextPlayContentData;
+                        nextPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
+                        nextPlayContentData.layerIdx = layIdx;
+                        nextPlayContentData.contentIdx = nextContentIdx;
+
+                        // Update
+                        UpdateFixedContentToScene(prevPlayContentData, nextPlayContentData);
+                        m_fixedPlayDataInfo.layerInfo[layIdx] = nextContentIdx;
+                    }
+                    else
+                    {
+                        // plus content timeout
+                        m_countdownInfo.layerTimecountList[layIdx].contentTimeout[currContnetIdx]++;
+                        ELGO_VIEWER_LOG("Fixd Layer[%d] Content[%d] Countdown : %d, userDuration : %d",
+                                        layIdx, currContnetIdx,
+                                        m_countdownInfo.layerTimecountList[layIdx].contentTimeout[currContnetIdx],
+                                        fixIter->layerDataList[layIdx].contentDataList[currContnetIdx].userDuration);
+                    }
+                }
+            }
+        }
+    }
+}
+
+//========================================================
+void SinglePlayTimer::UpdatePlayerNewScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
+//========================================================
+{
+    if(PlayJson::PlayDataType::CUSTOM == playDataIdxInfo.playDataInfo.type)
+    {
+        bool bIsFindScene = false;
+
+        QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
+        for(; sceneIter != m_sceneList.end(); ++sceneIter)
+        {
+            if(sceneIter->first == playDataIdxInfo)
+            {
+                bIsFindScene = true;
+                ELGO_VIEWER_LOG("Success Find Scene {id: %d, pageIdx: %d, itemSize: %d",
+                                sceneIter->first.playDataInfo.id, sceneIter->first.pageIdx,
+                                sceneIter->second->items().size());
+                ContentsPlayer::GetInstance()->UpdatePlayerScene(sceneIter->second);
+                break;
+            }
+        }
+
+        if(false == bIsFindScene)
+        {
+            QGraphicsScene *newScene = new QGraphicsScene;
+            ELGO_VIEWER_LOG("Made New Custom Scene {id: %d, pageIdx: %d}",
+                            playDataIdxInfo.playDataInfo.id, playDataIdxInfo.pageIdx);
+
+            SearchItemAndAddToScene(playDataIdxInfo, newScene);
+
+            m_sceneList.push_back(std::make_pair(playDataIdxInfo, newScene));
+            ELGO_VIEWER_LOG("ScencList Size : %d", m_sceneList.size());
+            ContentsPlayer::GetInstance()->UpdatePlayerScene(newScene);
+        }
+    }
+    else
+    {
+        // Fixed Play Data
+        QGraphicsScene *newScene = new QGraphicsScene;
+
+        // Find Image Item
+        for(int idx =0 ;idx < m_countdownInfo.maxLayer; idx++)
+        {
+            SearchItemAndAddToScene(playDataIdxInfo, newScene);
+
+            playDataIdxInfo.layerIdx++;
+        }
+
+        m_sceneList.push_back(std::make_pair(playDataIdxInfo, newScene));
+        ELGO_VIEWER_LOG("ScencList Size : %d", m_sceneList.size());
+        ContentsPlayer::GetInstance()->UpdatePlayerScene(newScene);
+    }
+
+    m_customPlayDataInfo = playDataIdxInfo;
+}
+
+//========================================================
+void SinglePlayTimer::UpdateFixedContentToScene(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
+                                                const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo)
+//========================================================
+{
+    // Find Scene
+    QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
+    for(; sceneIter != m_sceneList.end(); ++sceneIter)
+    {
+        if( (sceneIter->first.playDataInfo.id == newDataIdxInfo.playDataInfo.id) &&
+            (sceneIter->first.playDataInfo.type == newDataIdxInfo.playDataInfo.type) )
+        {
+            // ADD New Image
+            QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
+            for(; imageIter != m_imageItemList.end(); ++imageIter)
+            {
+                if(imageIter->first == newDataIdxInfo)
+                {
+                    sceneIter->second->addItem(imageIter->second);
+
+                    ELGO_VIEWER_LOG("ADD Image Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    imageIter->second->GetImageFileName().toUtf8().constData(),
+                                    newDataIdxInfo.layerIdx, newDataIdxInfo.contentIdx);
+                }
+            }
+
+            // Remove Prev Image
+            imageIter = m_imageItemList.begin();
+            for(; imageIter != m_imageItemList.end(); ++imageIter)
+            {
+                if(imageIter->first == prevDataIdxInfo)
+                {
+                    sceneIter->second->removeItem(imageIter->second);
+
+                    ELGO_VIEWER_LOG("Remove Image Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    imageIter->second->GetImageFileName().toUtf8().constData(),
+                                    prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
+                }
+            }
+
+            // ADD New Video
+            QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+            for(; videoIter != m_videoItemList.end(); ++videoIter)
+            {
+                if(videoIter->first == newDataIdxInfo)
+                {
+                    sceneIter->second->addItem(videoIter->second);
+
+                    ELGO_VIEWER_LOG("ADD Video Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    videoIter->second->GetVideoFileName().toUtf8().constData(),
+                                    newDataIdxInfo.layerIdx, newDataIdxInfo.contentIdx);
+                }
+            }
+
+            // Remove Prev Video
+            videoIter = m_videoItemList.begin();
+            for(; videoIter != m_videoItemList.end(); ++videoIter)
+            {
+                if(videoIter->first == prevDataIdxInfo)
+                {
+                    sceneIter->second->removeItem(videoIter->second);
+
+                    ELGO_VIEWER_LOG("ADD Video Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    videoIter->second->GetVideoFileName().toUtf8().constData(),
+                                    prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
+                }
+            }
+
+            break;
+        }
+    }
+}
+
+//========================================================
+void SinglePlayTimer::SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo,
+                                              QGraphicsScene* scene)
+//========================================================
+{
+    // Find Image Item
+    QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
+    for(; imageIter != m_imageItemList.end(); ++imageIter)
+    {
+        if(imageIter->first == playDataIdxInfo)
+        {
+            scene->addItem(imageIter->second);
+            ELGO_VIEWER_LOG("ADD Image Item to Scene : %s",
+                            imageIter->second->GetImageFileName().toUtf8().constData());
+        }
+    }
+
+    // Find Widget Item
+
+    // Find Subtitle Item
+
+    // Find Video Item
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for(; videoIter != m_videoItemList.end(); ++videoIter)
+    {
+        if(videoIter->first == playDataIdxInfo)
+        {
+            scene->addItem(videoIter->second);
+            ELGO_VIEWER_LOG("ADD Video Item to Scene : %s",
+                            videoIter->second->GetVideoFileName().toUtf8().constData());
+        }
+    }
 }

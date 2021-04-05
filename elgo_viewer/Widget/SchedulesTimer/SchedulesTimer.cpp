@@ -13,7 +13,7 @@ SchedulesTimer::SchedulesTimer(QObject *parent)
 //========================================================
 {
     // content play control (custom / fixed)
-    m_singleTimer.start(900);
+    m_singleTimer.start(990);
 
     // connect
     connect(this, SIGNAL(timeout()), this, SLOT(SchedulerTimeout()));
@@ -68,6 +68,17 @@ void SchedulesTimer::AddPlaySchedule(const ScheduleJson::PlaySchedules& src)
 //========================================================
 {
     m_playScheduleList.push_back(src);
+}
+
+//========================================================
+void SchedulesTimer::ExecSinglePlayEvent(const PlayJson::PlayData& src)
+//========================================================
+{
+    SchedulerDef::PlayDataInfo playDataInfo;
+    playDataInfo.id = src.id;
+    playDataInfo.type = src.playDataType;
+
+    m_singleTimer.ExecPlayData(playDataInfo);
 }
 
 //========================================================
