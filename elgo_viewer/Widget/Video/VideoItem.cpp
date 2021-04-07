@@ -1,6 +1,3 @@
-// QT
-#include <QFile>
-
 // Viewer
 #include "VideoItem.h"
 #include "Logger/ViewerLogger.h"

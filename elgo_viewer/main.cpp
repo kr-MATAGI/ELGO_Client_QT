@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
     // Contents Player Init
     g_ContentsPlayer = ContentsPlayer::GetInstance();
 
-
     // Display Main Window
 //    g_MainWindow->showFullScreen();
+
     g_MainWindow->show();
 
     return app.exec();

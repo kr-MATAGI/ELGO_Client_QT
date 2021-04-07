@@ -1,5 +1,4 @@
 // QT
-#include <QRect>
 #include <QScreen>
 #include <QWindow>
 #include <QGraphicsScene>
