@@ -14,15 +14,16 @@
 #include "Widget/ContentsPlayer.h"
 #include "Widget/SchedulesTimer/SchedulesTimer.h"
 
-static ViewerController *g_ViewerController = ViewerController::GetInstance();
+static ViewerController *g_ViewerController = NULL;
 static ContentsPlayer *g_ContentsPlayer = NULL;
 static MainWindow *g_MainWindow = NULL;
 static ViewerEventHandler *g_EventHandler = NULL;
-static SchedulesTimer *g_ScheduleTimer = NULL;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    g_ViewerController = ViewerController::GetInstance();
     g_MainWindow = MainWindow::GetInstance();
 
     // Event Listenner
@@ -34,8 +35,7 @@ int main(int argc, char *argv[])
 
     // Contents Player Init
     g_ContentsPlayer = ContentsPlayer::GetInstance();
-    g_ScheduleTimer = SchedulesTimer::GetInstance();
-    g_ScheduleTimer->start(900);
+
 
     // Display Main Window
 //    g_MainWindow->showFullScreen();

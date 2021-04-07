@@ -1,5 +1,7 @@
 QT += quick multimedia svg multimediawidgets
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 CONFIG += c++11
 
 HEADERS += \
@@ -17,7 +19,7 @@ HEADERS += \
         Widget/Definition/ContentsDef.h \
         Widget/Image/ImageItem.h \
         Widget/News/NewsFeedWidget.h \
-        Widget/SchedulesTimer/SchedulerDef.h \
+        Widget/SchedulesTimer/ScheduleTimerDef.h \
         Widget/SchedulesTimer/SchedulesTimer.h \
         Widget/SchedulesTimer/SinglePlayTimer.h \
         Widget/Video/VideoItem.h \

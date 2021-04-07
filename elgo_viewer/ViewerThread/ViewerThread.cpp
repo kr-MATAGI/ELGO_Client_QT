@@ -161,8 +161,8 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
-    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
-    SchedulesTimer::GetInstance()->ExecSinglePlayEvent(customPlayData.playData);
+    ContentsPlayer::GetInstance()->AddPlayDataList(customPlayData);
+    ContentsPlayer::GetInstance()->ExecSinglePlayData(customPlayData.playData);
 }
 
 //========================================================
@@ -185,8 +185,8 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.id,
                     fixedPlayData.playData.name.toStdString().c_str());
 
-    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
-    SchedulesTimer::GetInstance()->ExecSinglePlayEvent(fixedPlayData.playData);
+    ContentsPlayer::GetInstance()->AddPlayDataList(fixedPlayData);
+    ContentsPlayer::GetInstance()->ExecSinglePlayData(fixedPlayData.playData);
 }
 
 //========================================================
@@ -212,10 +212,10 @@ void ViewerThread::ExecCustomPlaySchedules()
 
     for(int idx = 0; idx < scheduleList.size(); idx++)
     {
-        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
+//        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
     }
 
-    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
+//    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
 }
 
 //========================================================
@@ -241,9 +241,9 @@ void ViewerThread::ExecFixedPlaySchedules()
 
     for(int idx = 0; idx < scheduleList.size(); idx++)
     {
-        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
+//        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
     }
-    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
+//    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
 }
 
 //========================================================

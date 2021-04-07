@@ -5,16 +5,11 @@
 // Viewer
 #include "SchedulesTimer.h"
 
-SchedulesTimer* SchedulesTimer::pInstance = nullptr;
-
 //========================================================
 SchedulesTimer::SchedulesTimer(QObject *parent)
     : QTimer(parent)
 //========================================================
 {
-    // content play control (custom / fixed)
-    m_singleTimer.start(990);
-
     // connect
     connect(this, SIGNAL(timeout()), this, SLOT(SchedulerTimeout()));
 }
@@ -23,44 +18,7 @@ SchedulesTimer::SchedulesTimer(QObject *parent)
 SchedulesTimer::~SchedulesTimer()
 //========================================================
 {
-    m_singleTimer.stop();
-}
 
-//========================================================
-SchedulesTimer* SchedulesTimer::GetInstance()
-//========================================================
-{
-    if(nullptr == pInstance)
-    {
-        pInstance = new SchedulesTimer();
-    }
-    return pInstance;
-}
-
-//========================================================
-void SchedulesTimer::DestoryInstance()
-//========================================================
-{
-    if(nullptr != pInstance)
-    {
-        return;
-    }
-    delete pInstance;
-    pInstance = NULL;
-}
-
-//========================================================
-void SchedulesTimer::AddPlayDataList(const PlayJson::CustomPlayDataJson& src)
-//========================================================
-{
-    m_singleTimer.AddPlayData(src);
-}
-
-//========================================================
-void SchedulesTimer::AddPlayDataList(const PlayJson::FixedPlayDataJson& src)
-//========================================================
-{
-    m_singleTimer.AddPlayData(src);
 }
 
 //========================================================
@@ -74,11 +32,7 @@ void SchedulesTimer::AddPlaySchedule(const ScheduleJson::PlaySchedules& src)
 void SchedulesTimer::ExecSinglePlayEvent(const PlayJson::PlayData& src)
 //========================================================
 {
-    SchedulerDef::PlayDataInfo playDataInfo;
-    playDataInfo.id = src.id;
-    playDataInfo.type = src.playDataType;
-
-    m_singleTimer.ExecPlayData(playDataInfo);
+    ContentsPlayer::GetInstance()->ExecSinglePlayData(src);
 }
 
 //========================================================
@@ -197,101 +151,6 @@ void SchedulesTimer::ExecSchedule(const QString& scheduleId)
 {
 
 }
-
-#if 0
-//========================================================
-void SchedulesTimer::UpdatePlayerScene(const PlayDataInfo& playDataInfo, const bool bIsSchedule)
-//========================================================
-{
-    // Find New Scene
-    QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
-    for(; sceneIter != m_sceneList.end(); ++sceneIter)
-    {
-        if( (playDataInfo.first == sceneIter->first.first) &&
-            (playDataInfo.second == sceneIter->first.second) )
-        {
-            // Update scene
-//            ContentsPlayer::GetInstance()->UpdatePlayerScene(*sceneIter->second);
-            ELGO_VIEWER_LOG("Updated Scene - id : %d, type : %d", sceneIter->first.first, sceneIter->first.second);
-
-            // PlayVideo
-            QVector<VideoItemInfo>::const_iterator videoIter = m_videoItemList.constBegin();
-            for(; videoIter != m_videoItemList.constEnd(); ++videoIter)
-            {
-                if( (playDataInfo.first == videoIter->first.first) &&
-                    (playDataInfo.second == videoIter->first.second))
-                {
-                    videoIter->second->PlayVideoItem();
-                }
-            }
-
-            break;
-        }
-    }
-
-    // Prev Video Item Stop and Erase
-    QVector<VideoItemInfo>::iterator prevVideoIter = m_videoItemList.begin();
-    for(; prevVideoIter != m_videoItemList.end(); ++prevVideoIter)
-    {
-        if( (m_prevPlayData.first == prevVideoIter->first.first) &&
-            (m_prevPlayData.second == prevVideoIter->first.second))
-        {
-            ELGO_VIEWER_LOG("Erase Image - id : %d, type : %d", prevVideoIter->first.first, prevVideoIter->first.second);
-
-            prevVideoIter->second->StopVideoItem();
-
-            delete prevVideoIter->second;
-            prevVideoIter->second = NULL;
-
-            m_videoItemList.erase(prevVideoIter);
-        }
-    }
-
-    // Erase Image Item
-    QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
-    for(; imageIter != m_imageItemList.end(); ++imageIter)
-    {
-        if( (m_prevPlayData.first == imageIter->first.first) &&
-            (m_prevPlayData.second == imageIter->first.second) )
-
-        {
-            ELGO_VIEWER_LOG("Erase Image - id : %d, type : %d", imageIter->first.first, imageIter->first.second);
-
-            delete imageIter->second;
-            imageIter->second = NULL;
-
-            m_imageItemList.erase(imageIter);
-        }
-    }
-
-    // earse widget
-    // earse subtitle
-    // erase scene
-    sceneIter = m_sceneList.begin();
-    for(; sceneIter != m_sceneList.end(); ++sceneIter)
-    {
-        if( (m_prevPlayData.first == sceneIter->first.first) &&
-            (m_prevPlayData.second == sceneIter->first.second) )
-        {
-            ELGO_VIEWER_LOG("Erase Scene - id : %d, type : %d", sceneIter->first.first, sceneIter->first.second);
-
-            delete sceneIter->second;
-            sceneIter->second = NULL;
-
-            m_sceneList.erase(sceneIter);
-        }
-    }
-
-    // Update value
-    m_bIsSchedule = bIsSchedule;
-    if(true == m_bIsSchedule)
-    {
-        m_prevSinglePlayData = m_currentPlayData;
-        m_prevPlayData = m_currentPlayData;
-        m_currentPlayData = playDataInfo;
-    }
-}
-#endif
 
 //========================================================
 QString SchedulesTimer::ConvertDateTimeFormat(const QDateTime &src)

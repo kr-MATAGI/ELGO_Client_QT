@@ -11,11 +11,13 @@ VideoItem::VideoItem(QGraphicsItem *parent)
 //========================================================
 {
     // init
-    m_player = new QMediaPlayer;
+    m_player = new QMediaPlayer(this);
     m_player->setVideoOutput(this);
     m_player->setNotifyInterval(100);
 
     // connect
+    connect(m_player, SIGNAL(error(QMediaPlayer::Error)),
+           this, SLOT(CheckMediaPlayerError(QMediaPlayer::Error)));
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
             this, SLOT(CheckMediaStatus(QMediaPlayer::MediaStatus)));
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)),
@@ -28,44 +30,17 @@ VideoItem::VideoItem(QGraphicsItem *parent)
 VideoItem::~VideoItem()
 //========================================================
 {
-    delete m_bytes;
-    m_bytes = NULL;
-
-    m_buffer->close();
-    delete m_buffer;
-    m_buffer = NULL;
-
     delete m_player;
     m_player = NULL;
 }
 
 //========================================================
-bool VideoItem::SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaData& metaData)
+void VideoItem::SetVideoFile(const QString& path, const VideoInfo::MetaData& metaData)
 //========================================================
 {
     m_videoInfo = metaData;
-
-    bool retValue = true;
-    QFile mediaFile(path);
-
-    if(false == mediaFile.open(QIODevice::ReadOnly))
-    {
-        retValue = false;
-        ELGO_VIEWER_LOG("Error - Not opend video item : %s", path.toStdString().c_str());
-    }
-    else
-    {
-        m_bytes = new QByteArray;
-        m_bytes->append(mediaFile.readAll());
-
-        m_buffer = new QBuffer(m_bytes);
-        m_buffer->open(QIODevice::ReadOnly);
-
-        m_player->setMedia(QMediaContent(), m_buffer);
-        mediaFile.close();
-    }
-
-    return retValue;
+    m_player->setMedia(QUrl::fromLocalFile(path));
+    ELGO_VIEWER_LOG("Set Video File : %s", path.toUtf8().constData());
 }
 
 //========================================================
@@ -111,6 +86,13 @@ qint64 VideoItem::GetDuration()
 //========================================================
 {
     return m_player->duration();
+}
+
+//========================================================
+void VideoItem::CheckMediaPlayerError(QMediaPlayer::Error error)
+//========================================================
+{
+    ELGO_VIEWER_LOG("Media player ERROR - %d", error);
 }
 
 //========================================================

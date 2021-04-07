@@ -5,31 +5,23 @@
 #include <QTimer>
 
 // Viewer
-#include "SinglePlayTimer.h"
+#include "ScheduleTimerDef.h"
 #include "Logger/ViewerLogger.h"
+#include "Widget/ContentsPlayer.h"
+
+class ContentsPlayer;
 
 class SchedulesTimer : public QTimer
 {
     Q_OBJECT
 public:
-    /** @brief */
-    static SchedulesTimer *pInstance;
 
     /** @brief */
     SchedulesTimer(QObject *parent = nullptr);
     /** @brief */
     virtual ~SchedulesTimer();
 
-    /** @brief */
-    static SchedulesTimer* GetInstance();
-    /** @brief */
-    void DestoryInstance();
-
 public:
-    /** @brief */
-    void AddPlayDataList(const PlayJson::FixedPlayDataJson& src);
-    /** @brief */
-    void AddPlayDataList(const PlayJson::CustomPlayDataJson& src);
     /** @brief */
     void AddPlaySchedule(const ScheduleJson::PlaySchedules& src);
 
@@ -39,9 +31,6 @@ public:
 private:
     /** @brief */
     void ExecSchedule(const QString& scheduleId);
-    /** @brief */
-//    void UpdatePlayerScene(const PlayDataInfo& playDataInfom, const bool bIsSchedule = false);
-
 
     /** @brief */
     bool IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron);
@@ -55,8 +44,6 @@ private slots:
     void SchedulerTimeout();
 
 private:
-    SinglePlayTimer m_singleTimer;
-
     QString m_currScheduleId;
     SchedulerDef::PlayDataInfo m_currPlayDataInfo;
     SchedulerDef::PlayDataInfo m_prevSinglePlayDataInfo;

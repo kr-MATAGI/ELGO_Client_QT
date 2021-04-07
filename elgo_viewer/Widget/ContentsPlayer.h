@@ -3,13 +3,17 @@
 
 // QT
 #include <QWidget>
-#include <QGraphicsScene>
 
 // Viewer
 #include "Definition/ContentsDef.h"
 #include "ViewerCtrl/ViewerController.h"
+#include "Common/Interface/ScheduleDef.h"
+#include "SchedulesTimer/SinglePlayTimer.h"
+#include "SchedulesTimer/SchedulesTimer.h"
 
 class ViewerController;
+class SchedulesTimer;
+class SinglePlayTimer;
 
 namespace Ui {
 class ContentsPlayer;
@@ -38,16 +42,52 @@ public:
     bool GetCurrentWidgetCapture();
 
     /** @brief */
-    void UpdatePlayerScene(QGraphicsScene* scene);
+    void StartContentsPlayer();
     /** @brief */
-    void DeletePlayerSceneItem(QGraphicsItem* item);
+    void StartScheduleTimer();
+
+public:
+    /** @note   Related to Scheduler */
+    /** @brief */
+    void AddPlayDataList(const PlayJson::CustomPlayDataJson& src);
+    /** @brief */
+    void AddPlayDataList(const PlayJson::FixedPlayDataJson& src);
+    /** @brief */
+    void ExecSinglePlayData(const PlayJson::PlayData& src);
 
     /** @brief */
-    void StartContentsPlayer();
+    void UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
+    /** @brief */
+    void UpdatePlayerNewFixedScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo, const int layerCount);
+    /** @brief */
+    void UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
+                                       const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo);
+
+    /** @brief */
+    void MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
+                          const PlayJson::ContentData& contentData,
+                          const StyleSheet::PosSizeInfo& posSizeInfo);
+
+
+    /** @brief */
+    void SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo,
+                                                  QGraphicsScene* scene);
+
+    /** @note   Simple Utils */
+    QString ConvertMediaTypeEnumToString(const PlayJson::MediaType type);
 
 private:
     Ui::ContentsPlayer *ui;
-    QSize m_displaySize;    
+    QSize m_displaySize;
+
+    SchedulesTimer *m_schedulerTimer;
+    SinglePlayTimer *m_singleTimer;
+
+    QVector<SceneInfo> m_sceneList;
+    QVector<ImageItemInfo> m_imageItemList;
+    QVector<VideoItemInfo> m_videoItemList;
+    // QVector<Widget> m_widgetItemList;
+    // QVector<Subtitle> m_subtitleItemList;
 };
 
 #endif // CONTENTSPLAYER_H

@@ -16,10 +16,10 @@ class VideoItem : public QGraphicsVideoItem
     Q_OBJECT
 public:
     explicit VideoItem(QGraphicsItem *parent = nullptr);
-    ~VideoItem();
+    virtual ~VideoItem();
 
     /** @brief */
-    bool SetVideoFileToBuffer(const QString& path, const VideoInfo::MetaData& metaData);
+    void SetVideoFile(const QString& path, const VideoInfo::MetaData& metaData);
     /** @brief */
     void SetVideoPosAndSize(const StyleSheet::PosSizeInfo& posSizeInfo);
 
@@ -36,6 +36,9 @@ public:
 
 private slots:
     /** @brief */
+    void CheckMediaPlayerError(QMediaPlayer::Error error);
+
+    /** @brief */
     void CheckMediaStatus(QMediaPlayer::MediaStatus status);
 
     /** @brief */
@@ -46,9 +49,6 @@ private slots:
 
 private:
     QMediaPlayer *m_player;
-
-    QByteArray *m_bytes;
-    QBuffer *m_buffer;
 
     VideoInfo::MetaData m_videoInfo;
     StyleSheet::PosSizeInfo m_posSizeInfo;

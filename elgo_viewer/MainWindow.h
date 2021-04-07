@@ -13,9 +13,11 @@
 // Viewer
 #include "ViewerCtrl/ViewerController.h"
 #include "Widget/ContentsPlayer.h"
+#include "Widget/SchedulesTimer/SchedulesTimer.h"
 
 class ViewerController;
 class ContentsPlayer;
+class SchedulesTimer;
 
 namespace Ui {
 class MainWindow;
@@ -58,7 +60,7 @@ private:
 
     QGraphicsScene *m_logoScene;
     QSvgWidget *m_logoWidget;
-    QTimer *m_closeTimer;
+    QTimer m_closeTimer;
 };
 
 #endif // MAINWINDOW_H

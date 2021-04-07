@@ -5,7 +5,7 @@
 #include <QTimer>
 
 // Viewer
-#include "SchedulerDef.h"
+#include "ScheduleTimerDef.h"
 #include "Widget/ContentsPlayer.h"
 
 class ContentsPlayer;
@@ -33,25 +33,7 @@ private:
     void MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
 
     /** @brief */
-    void MakeFileTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
-                             const PlayJson::ContentData& contentData,
-                             const StyleSheet::PosSizeInfo& posSizeInfo);
-    /** @brief */
-    void MakeWidgetTypeContent(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
-                               const PlayJson::ContentData& contentData,
-                               const StyleSheet::PosSizeInfo& posSizeInfo);
-
-    /** @brief */
     void UpdatePlayerNewScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
-    /** @brief */
-    void UpdateFixedContentToScene(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
-                                   const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo);
-    /** @brief */
-    void SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo, QGraphicsScene* scene);
-
-
-    /** @brief */
-    QString ConvertMediaTypeEnumToString(const PlayJson::MediaType type);
 
 private slots:
     /** @brief */
@@ -64,12 +46,6 @@ private:
 
     QVector<PlayJson::CustomPlayDataJson> m_customPlayDataList;
     QVector<PlayJson::FixedPlayDataJson> m_fixedPlayDataList;
-
-    QVector<SceneInfo> m_sceneList;
-    QVector<ImageItemInfo> m_imageItemList;
-    QVector<VideoItemInfo> m_videoItemList;
-    // QVector<Widget> m_widgetItemList;
-    // QVector<Subtitle> m_subtitleItemList;
 };
 
 #endif // SINGLEPLAYTIMER_H

@@ -11,11 +11,9 @@
 // Viewer
 #include "MainWindow.h"
 #include "ViewerCtrl/ViewerController.h"
-#include "Widget/SchedulesTimer/SchedulesTimer.h"
 
 class MainWindow;
 class ViewerController;
-class SchedulesTimer;
 
 class ViewerThread : public QRunnable
 {

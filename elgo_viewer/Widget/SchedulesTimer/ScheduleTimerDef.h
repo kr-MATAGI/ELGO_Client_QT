@@ -109,9 +109,9 @@ namespace SchedulerDef
 /**
  *  @brief  std::pair<PlayDataId, PlayJson::PlayDataType>
  */
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, QGraphicsScene *> SceneInfo;
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, VideoItem *> VideoItemInfo;
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, ImageItem *> ImageItemInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
+typedef std::pair<SchedulerDef::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
 
 
 #endif // SCHEDULERDEF_H
