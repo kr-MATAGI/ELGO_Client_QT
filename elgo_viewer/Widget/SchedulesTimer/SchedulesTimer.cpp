@@ -29,13 +29,6 @@ void SchedulesTimer::AddPlaySchedule(const ScheduleJson::PlaySchedules& src)
 }
 
 //========================================================
-void SchedulesTimer::ExecSinglePlayEvent(const PlayJson::PlayData& src)
-//========================================================
-{
-    ContentsPlayer::GetInstance()->ExecSinglePlayData(src);
-}
-
-//========================================================
 void SchedulesTimer::SchedulerTimeout()
 //========================================================
 {

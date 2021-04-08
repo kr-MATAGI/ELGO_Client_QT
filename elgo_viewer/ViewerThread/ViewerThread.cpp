@@ -161,8 +161,8 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
-    ContentsPlayer::GetInstance()->AddPlayDataList(customPlayData);
-    ContentsPlayer::GetInstance()->ExecSinglePlayData(customPlayData.playData);
+    emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSingal(customPlayData.playData);
 }
 
 //========================================================
@@ -185,8 +185,8 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.id,
                     fixedPlayData.playData.name.toStdString().c_str());
 
-    ContentsPlayer::GetInstance()->AddPlayDataList(fixedPlayData);
-    ContentsPlayer::GetInstance()->ExecSinglePlayData(fixedPlayData.playData);
+    emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSingal(fixedPlayData.playData);
 }
 
 //========================================================

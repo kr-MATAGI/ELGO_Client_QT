@@ -5,12 +5,15 @@
 //========================================================
 VideoItem::VideoItem(QGraphicsItem *parent)
     : QGraphicsVideoItem(parent)
+    , m_bIsPlaying(false)
 //========================================================
 {
     // init
-    m_player = new QMediaPlayer(this);
+    m_player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     m_player->setVideoOutput(this);
     m_player->setNotifyInterval(100);
+
+    this->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
     // connect
     connect(m_player, SIGNAL(error(QMediaPlayer::Error)),
@@ -62,13 +65,18 @@ void VideoItem::PlayVideoItem()
                     m_videoInfo.fileName.toUtf8().constData(),
                     m_videoInfo.duration.file, m_videoInfo.duration.user);
     m_player->play();
+    m_bIsPlaying = true;
 }
 
 //========================================================
 void VideoItem::StopVideoItem()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Stop Video : %s, duration {file : %lld, user : %lld }",
+                    m_videoInfo.fileName.toUtf8().constData(),
+                    m_videoInfo.duration.file, m_videoInfo.duration.user);
     m_player->stop();
+    m_bIsPlaying = false;
 }
 
 //========================================================
@@ -83,6 +91,13 @@ qint64 VideoItem::GetDuration()
 //========================================================
 {
     return m_player->duration();
+}
+
+//========================================================
+bool VideoItem::IsPlayingVideo()
+//========================================================
+{
+    return m_bIsPlaying;
 }
 
 //========================================================
@@ -128,8 +143,12 @@ void VideoItem::CheckStateChanged(QMediaPlayer::State state)
 void VideoItem::CheckPositionChanged(qint64 pos)
 //========================================================
 {
-    if(pos >= m_videoInfo.duration.file)
+    const qint64 secUnit = 1000 * (m_videoInfo.duration.file / 1000);
+    if(pos >= secUnit)
     {
+        ELGO_VIEWER_LOG("Replay - %s (0:%lld) ",
+                        m_videoInfo.fileName.toStdString().c_str(),
+                        secUnit)
         m_player->setPosition(0);
     }
 }

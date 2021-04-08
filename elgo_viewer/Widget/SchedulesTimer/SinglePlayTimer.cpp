@@ -64,13 +64,13 @@ void SinglePlayTimer::AddPlayData(const PlayJson::FixedPlayDataJson& src)
 }
 
 //========================================================
-void SinglePlayTimer::ExecPlayData(SchedulerDef::PlayDataInfo& playDataInfo)
+void SinglePlayTimer::ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo)
 //========================================================
 {
     if(m_customPlayDataInfo.playDataInfo != playDataInfo)
     {
         // Make Custom or Fixed Contents
-        SchedulerDef::PlayDataIndexInfo playDataIdxInfo;
+        ScheduleTimer::PlayDataIndexInfo playDataIdxInfo;
         playDataIdxInfo.playDataInfo = playDataInfo;
 
         if(PlayJson::PlayDataType::CUSTOM == playDataInfo.type)
@@ -93,10 +93,10 @@ void SinglePlayTimer::ExecPlayData(SchedulerDef::PlayDataInfo& playDataInfo)
 }
 
 //========================================================
-void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
+void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
-    const SchedulerDef::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
+    const ScheduleTimer::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
 
     int customPlayIdx = NOT_EXISTED_DATA;
     const int customPlayListSize = m_customPlayDataList.size();
@@ -118,7 +118,7 @@ void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo
     const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[customPlayIdx];
 
     // Make Page CountDown Info
-    SchedulerDef::CountdownInfo maxCountDown;
+    ScheduleTimer::CountdownInfo maxCountDown;
     maxCountDown.playDataInfo = playDataInfo;
     maxCountDown.maxPage = customPlayData.pageDataList.size();
 
@@ -137,7 +137,7 @@ void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo
             const PlayJson::CustomLayerData& layerData = pageData.layerDataList[layIdx];
 
             // Content Index Info
-            SchedulerDef::PlayDataIndexInfo contentIdxInfo;
+            ScheduleTimer::PlayDataIndexInfo contentIdxInfo;
             contentIdxInfo.playDataInfo = playDataInfo;
             contentIdxInfo.pageIdx = pageIdx;
 
@@ -149,7 +149,7 @@ void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo
             // make content data
             if(PlayJson::ContentType::FILE == layerData.layerContent.contentInfo.contentType)
             {
-                ContentsPlayer::GetInstance()->MakeFileTypeItem(contentIdxInfo, layerData.layerContent, posSizeInfo);
+                emit ContentsPlayer::GetInstance()->MakeFileTypeItemSignal(contentIdxInfo, layerData.layerContent, posSizeInfo);
             }
             else
             {
@@ -166,10 +166,10 @@ void SinglePlayTimer::MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo
 }
 
 //========================================================
-void SinglePlayTimer::MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
+void SinglePlayTimer::MakeFixedPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
-    const SchedulerDef::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
+    const ScheduleTimer::PlayDataInfo& playDataInfo = playDataIdxInfo.playDataInfo;
 
     int fixedPlayIdx = NOT_EXISTED_DATA;
     const int fixedPlayListSize = m_fixedPlayDataList.size();
@@ -191,8 +191,8 @@ void SinglePlayTimer::MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo&
     const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[fixedPlayIdx];
 
     // Make Layer Countdon Info
-    SchedulerDef::CountdownInfo maxCountdownInfo;
-    SchedulerDef::CurrFixedPlayInfo fixdPlayContentIdxInfo;
+    ScheduleTimer::CountdownInfo maxCountdownInfo;
+    ScheduleTimer::FixedPlayIndexInfo fixdPlayContentIdxInfo;
 
     maxCountdownInfo.playDataInfo = playDataInfo;
     fixdPlayContentIdxInfo.playDataInfo = playDataInfo;
@@ -216,7 +216,7 @@ void SinglePlayTimer::MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo&
     m_fixedPlayDataInfo = fixdPlayContentIdxInfo;
 
     // Conetnt Index Info
-    SchedulerDef::PlayDataIndexInfo contentIdxInfo;
+    ScheduleTimer::PlayDataIndexInfo contentIdxInfo;
     contentIdxInfo.playDataInfo = playDataInfo;
 
     // Make Content Data - Widget / File
@@ -240,7 +240,7 @@ void SinglePlayTimer::MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo&
             const PlayJson::ContentData& contentData = layerData.contentDataList[cdIdx];
             if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
             {
-                ContentsPlayer::GetInstance()->MakeFileTypeItem(contentIdxInfo, contentData, posSizeInfo);
+                emit ContentsPlayer::GetInstance()->MakeFileTypeItemSignal(contentIdxInfo, contentData, posSizeInfo);
             }
             else
             {
@@ -288,9 +288,9 @@ void SinglePlayTimer::SinglePlayTimeout()
                         nextPageIdx = 0;
                     }
 
-                    SchedulerDef::PlayDataIndexInfo nextPagePlayData = m_customPlayDataInfo;
+                    ScheduleTimer::PlayDataIndexInfo nextPagePlayData = m_customPlayDataInfo;
                     nextPagePlayData.pageIdx = nextPageIdx;
-                    ELGO_VIEWER_LOG("Update NextPage- id: %d, pageIdx: %d, currPageTimeCnt{ %d : %d }",
+                    ELGO_VIEWER_LOG("Update NextPage - id: %d, pageIdx: %d, currPageTimeCnt{ %d : %d }",
                                     nextPagePlayData.playDataInfo.id, nextPageIdx,
                                     m_countdownInfo.pageTimecount[currPageIdx], currPageData.duration);
 
@@ -338,18 +338,18 @@ void SinglePlayTimer::SinglePlayTimeout()
                             nextContentIdx = 0;
                         }
 
-                        SchedulerDef::PlayDataIndexInfo prevPlayContentData;
+                        ScheduleTimer::PlayDataIndexInfo prevPlayContentData;
                         prevPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
                         prevPlayContentData.layerIdx = layIdx;
                         prevPlayContentData.contentIdx = currContnetIdx;
 
-                        SchedulerDef::PlayDataIndexInfo nextPlayContentData;
+                        ScheduleTimer::PlayDataIndexInfo nextPlayContentData;
                         nextPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
                         nextPlayContentData.layerIdx = layIdx;
                         nextPlayContentData.contentIdx = nextContentIdx;
 
                         // Update
-                        ContentsPlayer::GetInstance()->UpdatePlayerFixedLayerContent(prevPlayContentData, nextPlayContentData);
+                        emit ContentsPlayer::GetInstance()->UpdatePlayerFixedLayerContentSignal(prevPlayContentData, nextPlayContentData);
                         m_fixedPlayDataInfo.layerInfo[layIdx] = nextContentIdx;
                     }
                     else
@@ -368,17 +368,18 @@ void SinglePlayTimer::SinglePlayTimeout()
 }
 
 //========================================================
-void SinglePlayTimer::UpdatePlayerNewScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
+void SinglePlayTimer::UpdatePlayerNewScene(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
     if(PlayJson::PlayDataType::CUSTOM == playDataIdxInfo.playDataInfo.type)
     {
-        ContentsPlayer::GetInstance()->UpdatePlayerNewCustomScene(playDataIdxInfo);
+        emit ContentsPlayer::GetInstance()->UpdatePlayerNewCustomSceneSignal(playDataIdxInfo);
     }
     else
     {
-        ContentsPlayer::GetInstance()->UpdatePlayerNewFixedScene(playDataIdxInfo, m_countdownInfo.maxLayer);
+        emit ContentsPlayer::GetInstance()->UpdatePlayerNewFixedSceneSignal(playDataIdxInfo, m_countdownInfo.maxLayer);
     }
+    emit ContentsPlayer::GetInstance()->PausePrevPlayDataSignal(m_customPlayDataInfo);
 
     m_customPlayDataInfo = playDataIdxInfo;
 }

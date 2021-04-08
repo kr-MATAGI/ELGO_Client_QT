@@ -34,6 +34,9 @@ public:
     /** @brief */
     qint64 GetDuration();
 
+    /** @brief */
+    bool IsPlayingVideo();
+
 private slots:
     /** @brief */
     void CheckMediaPlayerError(QMediaPlayer::Error error);
@@ -49,6 +52,7 @@ private slots:
 
 private:
     QMediaPlayer *m_player;
+    bool m_bIsPlaying;
 
     VideoInfo::MetaData m_videoInfo;
     StyleSheet::PosSizeInfo m_posSizeInfo;

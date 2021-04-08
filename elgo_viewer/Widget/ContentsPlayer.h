@@ -46,32 +46,72 @@ public:
     /** @brief */
     void StartScheduleTimer();
 
-public:
+
+signals:
+    /** @note   Related to Schedule Timer */
+    /** @brief */
+    void AddPlayDataSignal(PlayJson::CustomPlayDataJson src);
+    /** @brief */
+    void AddPlayDataSignal(PlayJson::FixedPlayDataJson src);
+
+    /** @brief */
+    void AddPlayScheduleListSignal(ScheduleJson::PlaySchedules src);
+
+    /** @brief */
+    void ExecPlayDataSingal(PlayJson::PlayData playData);
+
+    /** @brief */
+    void MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,
+                              PlayJson::ContentData contentData,
+                              StyleSheet::PosSizeInfo posSizeInfo);
+
+    /** @brief */
+    void UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
+    /** @brief */
+    void PausePrevPlayDataSignal(ScheduleTimer::PlayDataIndexInfo prevPlayDataIdxInfo);
+
+    /** @brief */
+    void UpdatePlayerNewFixedSceneSignal(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo, const int layerCount);
+    /** @brief */
+    void UpdatePlayerFixedLayerContentSignal(ScheduleTimer::PlayDataIndexInfo prevDataIdxInfo,
+                                       ScheduleTimer::PlayDataIndexInfo newDataIdxInfo);
+
+private slots:
     /** @note   Related to Scheduler */
     /** @brief */
-    void AddPlayDataList(const PlayJson::CustomPlayDataJson& src);
+    void AddPlayDataSlot(PlayJson::CustomPlayDataJson src);
     /** @brief */
-    void AddPlayDataList(const PlayJson::FixedPlayDataJson& src);
-    /** @brief */
-    void ExecSinglePlayData(const PlayJson::PlayData& src);
+    void AddPlayDataSlot(PlayJson::FixedPlayDataJson src);
 
     /** @brief */
-    void UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
-    /** @brief */
-    void UpdatePlayerNewFixedScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo, const int layerCount);
-    /** @brief */
-    void UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
-                                       const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo);
+    void AddPlayScheduleListSlot(ScheduleJson::PlaySchedules src);
 
     /** @brief */
-    void MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
-                          const PlayJson::ContentData& contentData,
-                          const StyleSheet::PosSizeInfo& posSizeInfo);
-
+    void ExecPlayDataSlot(PlayJson::PlayData playData);
 
     /** @brief */
-    void SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo,
+    void MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,
+                              PlayJson::ContentData contentData,
+                              StyleSheet::PosSizeInfo posSizeInfo);
+
+    /** @brief */
+    void UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
+    /** @brief */
+    void PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prevPlayDataIdxInfo);
+
+    /** @brief */
+    void UpdatePlayerNewFixedSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo, const int layerCount);
+    /** @brief */
+    void UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIndexInfo prevDataIdxInfo,
+                                       ScheduleTimer::PlayDataIndexInfo newDataIdxInfo);
+
+private:
+    /** @brief */
+    void SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo,
                                                   QGraphicsScene* scene);
+
+    /** @brief */
+    void ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo);
 
     /** @note   Simple Utils */
     QString ConvertMediaTypeEnumToString(const PlayJson::MediaType type);

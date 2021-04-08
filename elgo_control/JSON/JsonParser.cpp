@@ -651,6 +651,7 @@ void JsonParser::ParseCustomLayerDataJson(const QJsonArray& layerDataArr, QVecto
     for(int idx = 0; idx < layerDataArrSize; idx++)
     {
         PlayJson::CustomLayerData layerData;
+        layerData.layerContent.zIndex = idx;
 
         const QJsonObject& layerDataObj = layerDataArr[idx].toObject();
         if(layerDataObj.end() != layerDataObj.find("ld_top"))
@@ -732,6 +733,8 @@ void JsonParser::ParseFixedLayerDataJson(const QJsonArray& layerDataArr, QVector
                 PlayJson::ContentData contentData;
                 const QJsonObject& layerContentObj = layerContentArr[contentIdx].toObject();
                 ParseFixedLayerContentJson(layerContentObj, contentData);
+                contentData.zIndex = static_cast<double>(idx); // for add / remove item on ContentsPlayer
+
                 layerData.contentDataList.push_back(contentData);
             }
         }

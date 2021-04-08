@@ -19,7 +19,7 @@ HEADERS += \
         Widget/Definition/ContentsDef.h \
         Widget/Image/ImageItem.h \
         Widget/News/NewsFeedWidget.h \
-        Widget/SchedulesTimer/ScheduleTimerDef.h \
+        Widget/Definition/ScheduleTimerDef.h \
         Widget/SchedulesTimer/SchedulesTimer.h \
         Widget/SchedulesTimer/SinglePlayTimer.h \
         Widget/Video/VideoItem.h \

@@ -5,7 +5,7 @@
 #include <QTimer>
 
 // Viewer
-#include "ScheduleTimerDef.h"
+#include "Widget/Definition/ScheduleTimerDef.h"
 #include "Logger/ViewerLogger.h"
 #include "Widget/ContentsPlayer.h"
 
@@ -25,9 +25,6 @@ public:
     /** @brief */
     void AddPlaySchedule(const ScheduleJson::PlaySchedules& src);
 
-    /** @brief */
-    void ExecSinglePlayEvent(const PlayJson::PlayData& src);
-
 private:
     /** @brief */
     void ExecSchedule(const QString& scheduleId);
@@ -45,11 +42,11 @@ private slots:
 
 private:
     QString m_currScheduleId;
-    SchedulerDef::PlayDataInfo m_currPlayDataInfo;
-    SchedulerDef::PlayDataInfo m_prevSinglePlayDataInfo;
+    ScheduleTimer::PlayDataInfo m_currPlayDataInfo;
+    ScheduleTimer::PlayDataInfo m_prevSinglePlayDataInfo;
 
     QVector<ScheduleJson::PlaySchedules> m_playScheduleList;
-    QVector<SchedulerDef::PlayDataInfo> m_playDataInfoList;
+    QVector<ScheduleTimer::PlayDataInfo> m_playDataInfoList;
 };
 
 #endif // PLAYTIMER_H

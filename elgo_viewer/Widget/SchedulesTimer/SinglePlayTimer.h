@@ -5,7 +5,7 @@
 #include <QTimer>
 
 // Viewer
-#include "ScheduleTimerDef.h"
+#include "Widget/Definition/ScheduleTimerDef.h"
 #include "Widget/ContentsPlayer.h"
 
 class ContentsPlayer;
@@ -24,25 +24,25 @@ public:
     void AddPlayData(const PlayJson::FixedPlayDataJson& src);
 
     /** @brief */
-    void ExecPlayData(SchedulerDef::PlayDataInfo& playDataInfo);
+    void ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo);
 
 private:
     /** @brief */
-    void MakeCustomPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
+    void MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo);
     /** @brief */
-    void MakeFixedPlayDataContents(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
+    void MakeFixedPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo);
 
     /** @brief */
-    void UpdatePlayerNewScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo);
+    void UpdatePlayerNewScene(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo);
 
 private slots:
     /** @brief */
     void SinglePlayTimeout();
 
 private:
-    SchedulerDef::PlayDataIndexInfo m_customPlayDataInfo;
-    SchedulerDef::CurrFixedPlayInfo m_fixedPlayDataInfo;
-    SchedulerDef::CountdownInfo m_countdownInfo;
+    ScheduleTimer::PlayDataIndexInfo m_customPlayDataInfo;
+    ScheduleTimer::FixedPlayIndexInfo m_fixedPlayDataInfo;
+    ScheduleTimer::CountdownInfo m_countdownInfo;
 
     QVector<PlayJson::CustomPlayDataJson> m_customPlayDataList;
     QVector<PlayJson::FixedPlayDataJson> m_fixedPlayDataList;

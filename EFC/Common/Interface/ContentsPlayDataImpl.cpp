@@ -83,6 +83,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
     ds << src.name;
     ds << src.fileDuration;
     ds << src.userDuration;
+    ds << src.zIndex;
 
     // weather
     ds << src.metropolCity;
@@ -224,6 +225,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest)
     ds >> dest.name;
     ds >> dest.fileDuration;
     ds >> dest.userDuration;
+    ds >> dest.zIndex;
 
     // weather
     ds >> dest.metropolCity;

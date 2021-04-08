@@ -12,7 +12,7 @@
 
 #define NOT_EXISTED_DATA    -1
 
-namespace SchedulerDef
+namespace ScheduleTimer
 {
     /** @brief */
     struct PlayDataInfo
@@ -40,7 +40,7 @@ namespace SchedulerDef
     };
 
     /** @brief */
-    struct CurrFixedPlayInfo
+    struct FixedPlayIndexInfo
     {
         PlayDataInfo playDataInfo;
 
@@ -109,9 +109,9 @@ namespace SchedulerDef
 /**
  *  @brief  std::pair<PlayDataId, PlayJson::PlayDataType>
  */
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
-typedef std::pair<SchedulerDef::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
 
 
 #endif // SCHEDULERDEF_H

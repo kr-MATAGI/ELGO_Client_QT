@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QMetaType>
 
 namespace PlayJson
 {
@@ -98,6 +99,7 @@ namespace PlayJson
         ContentData()
             : fileDuration(0)
             , userDuration(0)
+            , zIndex(0.0)
             , bBackgroundOpacity(false)
             , nx(0)
             , ny(0)
@@ -110,6 +112,7 @@ namespace PlayJson
         QString name;
         qint64 fileDuration; // msec
         int userDuration; // sec
+        double zIndex;
 
         // weather
         /** @note   below Area info will be replace nx, ny */

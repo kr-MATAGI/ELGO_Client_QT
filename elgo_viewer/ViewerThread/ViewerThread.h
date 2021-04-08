@@ -17,7 +17,6 @@ class ViewerController;
 
 class ViewerThread : public QRunnable
 {
-
 public:
     ViewerThread();
     ~ViewerThread();

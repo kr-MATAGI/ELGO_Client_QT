@@ -1,8 +1,6 @@
 // QT
 #include <QScreen>
 #include <QWindow>
-#include <QGraphicsScene>
-#include <QGraphicsItem>
 
 // Viewer
 #include "ContentsPlayer.h"
@@ -13,6 +11,15 @@
 #include "Common/CommonDef.h"
 
 ContentsPlayer* ContentsPlayer::pInstance = nullptr;
+
+Q_DECLARE_METATYPE(PlayJson::CustomPlayDataJson);
+Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson);
+Q_DECLARE_METATYPE(ScheduleJson::PlaySchedules);
+Q_DECLARE_METATYPE(PlayJson::PlayData);
+
+Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
+Q_DECLARE_METATYPE(PlayJson::ContentData);
+Q_DECLARE_METATYPE(StyleSheet::PosSizeInfo);
 
 //========================================================
 ContentsPlayer::ContentsPlayer(QWidget *parent)
@@ -35,6 +42,47 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     ui->playerView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     ui->playerView->setRenderHint(QPainter::Antialiasing);
+
+    // connect
+    qRegisterMetaType<PlayJson::CustomPlayDataJson>("PlayJson::CustomPlayDataJson");
+    qRegisterMetaType<PlayJson::FixedPlayDataJson>("PlayJson::FixedPlayDataJson");
+    qRegisterMetaType<ScheduleJson::PlaySchedules>("ScheduleJson::PlaySchedules");
+    qRegisterMetaType<PlayJson::PlayData>("PlayJson::PlayData");
+
+    qRegisterMetaType<ScheduleTimer::PlayDataIndexInfo>("ScheduleTimer::PlayDataIndexInfo");
+    qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
+    qRegisterMetaType<StyleSheet::PosSizeInfo>("StyleSheet::PosSizeInfo");
+
+    connect(this, SIGNAL(AddPlayDataSignal(PlayJson::CustomPlayDataJson)),
+            this, SLOT(AddPlayDataSlot(PlayJson::CustomPlayDataJson)));
+
+    connect(this, SIGNAL(AddPlayDataSignal(PlayJson::FixedPlayDataJson)),
+            this, SLOT(AddPlayDataSlot(PlayJson::FixedPlayDataJson)));
+
+    connect(this, SIGNAL(AddPlayScheduleListSignal(ScheduleJson::PlaySchedules)),
+            this, SLOT(AddPlayScheduleListSlot(ScheduleJson::PlaySchedules)));
+
+    connect(this, SIGNAL(ExecPlayDataSingal(PlayJson::PlayData)),
+            this, SLOT(ExecPlayDataSlot(PlayJson::PlayData)));
+
+    connect(this, SIGNAL(MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo,
+                                                PlayJson::ContentData,
+                                                StyleSheet::PosSizeInfo)),
+            this, SLOT(MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo,
+                                            PlayJson::ContentData,
+                                            StyleSheet::PosSizeInfo)));
+
+    connect(this, SIGNAL(UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo)),
+            this, SLOT(UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo)));
+
+    connect(this, SIGNAL(PausePrevPlayDataSignal(ScheduleTimer::PlayDataIndexInfo)),
+            this, SLOT(PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo)));
+
+    connect(this, SIGNAL(UpdatePlayerNewFixedSceneSignal(ScheduleTimer::PlayDataIndexInfo, const int)),
+            this, SLOT(UpdatePlayerNewFixedSceneSlot(ScheduleTimer::PlayDataIndexInfo, const int)));
+
+    connect(this, SIGNAL(UpdatePlayerFixedLayerContentSignal(ScheduleTimer::PlayDataIndexInfo, ScheduleTimer::PlayDataIndexInfo)),
+            this, SLOT(UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIndexInfo, ScheduleTimer::PlayDataIndexInfo)));
 }
 
 //========================================================
@@ -129,24 +177,31 @@ void ContentsPlayer::StartScheduleTimer()
 }
 
 //========================================================
-void ContentsPlayer::AddPlayDataList(const PlayJson::CustomPlayDataJson& src)
+void ContentsPlayer::AddPlayDataSlot(PlayJson::CustomPlayDataJson src)
 //========================================================
 {
     m_singleTimer->AddPlayData(src);
 }
 
 //========================================================
-void ContentsPlayer::AddPlayDataList(const PlayJson::FixedPlayDataJson& src)
+void ContentsPlayer::AddPlayDataSlot(PlayJson::FixedPlayDataJson src)
 //========================================================
 {
     m_singleTimer->AddPlayData(src);
 }
 
 //========================================================
-void ContentsPlayer::ExecSinglePlayData(const PlayJson::PlayData& src)
+void ContentsPlayer::AddPlayScheduleListSlot(ScheduleJson::PlaySchedules src)
 //========================================================
 {
-    SchedulerDef::PlayDataInfo playDataInfo;
+    m_schedulerTimer->AddPlaySchedule(src);
+}
+
+//========================================================
+void ContentsPlayer::ExecPlayDataSlot(PlayJson::PlayData src)
+//========================================================
+{
+    ScheduleTimer::PlayDataInfo playDataInfo;
     playDataInfo.id = src.id;
     playDataInfo.type = src.playDataType;
 
@@ -154,7 +209,7 @@ void ContentsPlayer::ExecSinglePlayData(const PlayJson::PlayData& src)
 }
 
 //========================================================
-void ContentsPlayer::UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo)
+void ContentsPlayer::UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo)
 //========================================================
 {
     if(PlayJson::PlayDataType::CUSTOM == playDataIdxInfo.playDataInfo.type)
@@ -173,6 +228,7 @@ void ContentsPlayer::UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataInde
                                 sceneIter->second->items().size());
 
                 ui->playerView->setScene(sceneIter->second);
+                ExecPlayDataItemList(playDataIdxInfo);
 
                 break;
             }
@@ -180,7 +236,7 @@ void ContentsPlayer::UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataInde
 
         if(false == bIsFindScene)
         {
-            QGraphicsScene *newScene = new QGraphicsScene;
+            QGraphicsScene *newScene = new QGraphicsScene(this);
             newScene->setSceneRect(ui->playerView->rect());
 
             SearchItemAndAddToScene(playDataIdxInfo, newScene);
@@ -188,10 +244,12 @@ void ContentsPlayer::UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataInde
                             playDataIdxInfo.playDataInfo.id, playDataIdxInfo.pageIdx, newScene->items().size());
 
             ui->playerView->setScene(newScene);
+            ExecPlayDataItemList(playDataIdxInfo);
 
             SceneInfo newSceneInfo;
             newSceneInfo.first = playDataIdxInfo;
             newSceneInfo.second = newScene;
+
             m_sceneList.push_back(newSceneInfo);
             ELGO_VIEWER_LOG("SceneList Size : %d", m_sceneList.size());
         }
@@ -203,23 +261,26 @@ void ContentsPlayer::UpdatePlayerNewCustomScene(const SchedulerDef::PlayDataInde
 }
 
 //========================================================
-void ContentsPlayer::UpdatePlayerNewFixedScene(SchedulerDef::PlayDataIndexInfo& playDataIdxInfo, const int layerCount)
+void ContentsPlayer::UpdatePlayerNewFixedSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo, const int layerCount)
 //========================================================
 {
     if(PlayJson::PlayDataType::FIXED == playDataIdxInfo.playDataInfo.type)
     {
         QGraphicsScene *newScene = new QGraphicsScene;
         newScene->setSceneRect(ui->playerView->rect());
+
         for(int idx =0; idx < layerCount; idx++)
         {
             SearchItemAndAddToScene(playDataIdxInfo, newScene);
+            ExecPlayDataItemList(playDataIdxInfo);
             playDataIdxInfo.layerIdx++;
         }
-
         ui->playerView->setScene(newScene);
+
         SceneInfo newSceneInfo;
         newSceneInfo.first = playDataIdxInfo;
         newSceneInfo.second = newScene;
+
         m_sceneList.push_back(newSceneInfo);
         ELGO_VIEWER_LOG("SceneList Size : %d", m_sceneList.size());
     }
@@ -230,8 +291,8 @@ void ContentsPlayer::UpdatePlayerNewFixedScene(SchedulerDef::PlayDataIndexInfo& 
 }
 
 //========================================================
-void ContentsPlayer::UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataIndexInfo& prevDataIdxInfo,
-                                                    const SchedulerDef::PlayDataIndexInfo& newDataIdxInfo)
+void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIndexInfo prevDataIdxInfo,
+                                                       ScheduleTimer::PlayDataIndexInfo newDataIdxInfo)
 //========================================================
 {
     // Find Scene
@@ -241,23 +302,9 @@ void ContentsPlayer::UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataI
         if( (sceneIter->first.playDataInfo.id == newDataIdxInfo.playDataInfo.id) &&
             (sceneIter->first.playDataInfo.type == newDataIdxInfo.playDataInfo.type) )
         {
-            // ADD New Image
+
+            // Add Prev Image
             QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
-            // Remove Prev Image
-
-            for(; imageIter != m_imageItemList.end(); ++imageIter)
-            {
-                if(imageIter->first == prevDataIdxInfo)
-                {
-                    ui->playerView->scene()->removeItem(imageIter->second);
-
-                    ELGO_VIEWER_LOG("Remove Image Item to Scene : %s, Index {layer: %d, content: %d}",
-                                    imageIter->second->GetImageFileName().toUtf8().constData(),
-                                    prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
-                }
-            }
-
-            imageIter = m_imageItemList.begin();
             for(; imageIter != m_imageItemList.end(); ++imageIter)
             {
                 if(imageIter->first == newDataIdxInfo)
@@ -270,27 +317,29 @@ void ContentsPlayer::UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataI
                 }
             }
 
-            QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
-            // Remove Prev Video
-            for(; videoIter != m_videoItemList.end(); ++videoIter)
+            // Remove New Image
+            imageIter = m_imageItemList.begin();
+            for(; imageIter != m_imageItemList.end(); ++imageIter)
             {
-                if(videoIter->first == prevDataIdxInfo)
+                if(imageIter->first == prevDataIdxInfo)
                 {
-                    ui->playerView->scene()->removeItem(videoIter->second);
+                    ui->playerView->scene()->removeItem(imageIter->second);
 
-                    ELGO_VIEWER_LOG("ADD Video Item to Scene : %s, Index {layer: %d, content: %d}",
-                                    videoIter->second->GetVideoFileName().toUtf8().constData(),
+                    ELGO_VIEWER_LOG("Remove Image Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    imageIter->second->GetImageFileName().toUtf8().constData(),
                                     prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
                 }
             }
 
+
+            QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
             // ADD New Video
-            videoIter = m_videoItemList.begin();
             for(; videoIter != m_videoItemList.end(); ++videoIter)
             {
                 if(videoIter->first == newDataIdxInfo)
                 {
                     ui->playerView->scene()->addItem(videoIter->second);
+                    videoIter->second->PlayVideoItem();
 
                     ELGO_VIEWER_LOG("ADD Video Item to Scene : %s, Index {layer: %d, content: %d}",
                                     videoIter->second->GetVideoFileName().toUtf8().constData(),
@@ -298,7 +347,20 @@ void ContentsPlayer::UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataI
                 }
             }
 
+            // Remove Prev Video
+            videoIter = m_videoItemList.begin();
+            for(; videoIter != m_videoItemList.end(); ++videoIter)
+            {
+                if(videoIter->first == prevDataIdxInfo)
+                {
+                    ui->playerView->scene()->removeItem(videoIter->second);
+                    videoIter->second->StopVideoItem();
 
+                    ELGO_VIEWER_LOG("Remove Video Item to Scene : %s, Index {layer: %d, content: %d}",
+                                    videoIter->second->GetVideoFileName().toUtf8().constData(),
+                                    prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
+                }
+            }
 
             break;
         }
@@ -306,9 +368,26 @@ void ContentsPlayer::UpdatePlayerFixedLayerContent(const SchedulerDef::PlayDataI
 }
 
 //========================================================
-void ContentsPlayer::MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& contentIndxInfo,
-                      const PlayJson::ContentData& contentData,
-                      const StyleSheet::PosSizeInfo& posSizeInfo)
+void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prevPlayDataIdxInfo)
+//========================================================
+{
+    // Video
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for(; videoIter != m_videoItemList.end(); ++videoIter)
+    {
+        if(videoIter->first == prevPlayDataIdxInfo && true == videoIter->second->IsPlayingVideo())
+        {
+            videoIter->second->StopVideoItem();
+        }
+    }
+
+    // Animation - News Feed
+}
+
+//========================================================
+void ContentsPlayer::MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,
+                                          PlayJson::ContentData contentData,
+                                          StyleSheet::PosSizeInfo posSizeInfo)
 //========================================================
 {
     QString fullPath = RESOURCE_SAVE_PATH;
@@ -325,6 +404,8 @@ void ContentsPlayer::MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& con
     if(PlayJson::MediaType::IMAGE == contentData.contentInfo.mediaType)
     {
         ImageItem *imageItem = new ImageItem;
+        imageItem->setZValue(contentData.zIndex);
+
         const bool bIsSetItem = imageItem->SetImageItem(fullPath, posSizeInfo);
         if(true == bIsSetItem)
         {
@@ -350,6 +431,7 @@ void ContentsPlayer::MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& con
 
         videoItem->SetVideoFile(fullPath, videoInfo);
         videoItem->SetVideoPosAndSize(posSizeInfo);
+        videoItem->setZValue(contentData.zIndex);
 
         VideoItemInfo newVideoItem;
         newVideoItem.first = contentIndxInfo;
@@ -359,7 +441,7 @@ void ContentsPlayer::MakeFileTypeItem(const SchedulerDef::PlayDataIndexInfo& con
 }
 
 //========================================================
-void ContentsPlayer::SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexInfo& playDataIdxInfo,
+void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo,
                                               QGraphicsScene* scene)
 //========================================================
 {
@@ -388,7 +470,6 @@ void ContentsPlayer::SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexIn
             if(videoIter->first == playDataIdxInfo)
             {
                 scene->addItem(videoIter->second);
-                videoIter->second->setZValue(100);
                 ELGO_VIEWER_LOG("ADD Video Item to Scene : %s",
                                 videoIter->second->GetVideoFileName().toUtf8().constData());
             }
@@ -398,6 +479,26 @@ void ContentsPlayer::SearchItemAndAddToScene(const SchedulerDef::PlayDataIndexIn
     {
         ELGO_VIEWER_LOG("Error - Scene is NULL");
     }
+}
+
+//========================================================
+void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
+//========================================================
+{
+    // Video
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for(; videoIter != m_videoItemList.end(); ++videoIter)
+    {
+        if(videoIter->first == playDataIdxInfo)
+        {
+            if(videoIter->first == playDataIdxInfo)
+            {
+                videoIter->second->PlayVideoItem();
+            }
+        }
+    }
+
+    // Animation
 }
 
 //========================================================
