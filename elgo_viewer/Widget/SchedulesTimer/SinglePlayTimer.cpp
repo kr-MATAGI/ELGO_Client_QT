@@ -374,12 +374,11 @@ void SinglePlayTimer::UpdatePlayerNewScene(ScheduleTimer::PlayDataIndexInfo& pla
     if(PlayJson::PlayDataType::CUSTOM == playDataIdxInfo.playDataInfo.type)
     {
         emit ContentsPlayer::GetInstance()->UpdatePlayerNewCustomSceneSignal(playDataIdxInfo);
+        emit ContentsPlayer::GetInstance()->PausePrevPlayDataSignal(m_customPlayDataInfo);
+        m_customPlayDataInfo = playDataIdxInfo;
     }
     else
     {
         emit ContentsPlayer::GetInstance()->UpdatePlayerNewFixedSceneSignal(playDataIdxInfo, m_countdownInfo.maxLayer);
     }
-    emit ContentsPlayer::GetInstance()->PausePrevPlayDataSignal(m_customPlayDataInfo);
-
-    m_customPlayDataInfo = playDataIdxInfo;
 }

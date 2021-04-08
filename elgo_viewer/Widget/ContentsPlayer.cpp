@@ -38,6 +38,7 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
 
     const QRect screenRect = QRect(QPoint(0.0, 0.0), m_displaySize);
     ui->playerView->setGeometry(screenRect);
+    ui->playerView->setStyleSheet("border: 0px");
     ui->playerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->playerView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -169,6 +170,8 @@ void ContentsPlayer::StartContentsPlayer()
 void ContentsPlayer::StartScheduleTimer()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Start Schedule / Signle Timer !")
+
     m_schedulerTimer = new SchedulesTimer;
     m_schedulerTimer->start(900);
 
