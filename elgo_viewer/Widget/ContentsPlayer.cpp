@@ -2,6 +2,7 @@
 #include <QScreen>
 #include <QWindow>
 
+
 // Viewer
 #include "ContentsPlayer.h"
 #include "ui_ContentsPlayer.h"
@@ -170,12 +171,12 @@ void ContentsPlayer::StartContentsPlayer()
 void ContentsPlayer::StartScheduleTimer()
 //========================================================
 {
-    ELGO_VIEWER_LOG("Start Schedule / Signle Timer !")
+    ELGO_VIEWER_LOG("Start Schedule / Signle Timer !");
 
     m_schedulerTimer = new SchedulesTimer;
-    m_schedulerTimer->start(900);
-
     m_singleTimer = new SinglePlayTimer;
+
+    m_schedulerTimer->start(900);
     m_singleTimer->start(990);
 }
 

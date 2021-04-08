@@ -46,7 +46,6 @@ public:
     /** @brief */
     void StartScheduleTimer();
 
-
 signals:
     /** @note   Related to Schedule Timer */
     /** @brief */
