@@ -5,6 +5,7 @@
 #include "Widget/Definition/ContentsDef.h"
 #include "Widget/Image/ImageItem.h"
 #include "Widget/Video/VideoItem.h"
+#include "Widget/Clock/ClockWidget.h"
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
@@ -30,6 +31,7 @@ namespace ScheduleTimer
             , contentIdx(0)
         { }
         PlayDataInfo playDataInfo;
+        PlayJson::MediaType mediaType;
 
         // custom
         int pageIdx;
@@ -112,6 +114,7 @@ namespace ScheduleTimer
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ClockWidget*> ClockWidgetInfo;
 
 
 #endif // SCHEDULERDEF_H

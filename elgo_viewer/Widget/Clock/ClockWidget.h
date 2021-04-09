@@ -8,6 +8,7 @@
 
 // Viewer
 #include "Widget/Definition/ContentsDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 
 namespace Ui {
 class ClockWidget;
@@ -24,9 +25,21 @@ public:
     ~ClockWidget();
 
     /** @brief */
-    void MakeClockWidget(ClockInfo::Kinds kind);
+    void MakeClockTimeString(PlayJson::HourType type);
     /** @brief */
-    void SetStyleSheet(const StyleSheet::StyleInfo& style);
+    void SetStyleSheet(const StyleSheet::StyleInfo& styleInfo);
+    /** @brief */
+    void SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo);
+
+    /** @brief */
+    void StartClock();
+    /** @brief */
+    void StopClock();
+    /** @brief */
+    bool IsStartedClock();
+
+    /** @brief */
+    int CalcLabelFontSize(const int labelWidth);
 
 private slots:
     /** @brief */
@@ -35,14 +48,14 @@ private slots:
 private:
     Ui::ClockWidget *ui;
 
-    QRect m_amPmLabelRect;
-    QRect m_timeLabelRect;
-
-    ClockInfo::Kinds m_clockKinds;
+    PlayJson::HourType m_hourType;
     StyleSheet::StyleInfo m_styleInfo;
+    StyleSheet::PosSizeInfo m_posSizeInfo;
+
     QDateTime m_dateTime;
     QString m_amPmStr;
     QString m_timeStr;
+
     QTimer *m_updateTimer;
     bool m_bIsTimerStarted;
 };

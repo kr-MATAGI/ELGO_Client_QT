@@ -2,11 +2,16 @@
 #include <QScreen>
 #include <QWindow>
 
-
 // Viewer
 #include "ContentsPlayer.h"
 #include "ui_ContentsPlayer.h"
 #include "Logger/ViewerLogger.h"
+
+// Widget
+#include "Widget/Clock/ClockWidget.h"
+#include "Widget/Date/DateWidget.h"
+#include "Widget/News/NewsFeedWidget.h"
+#include "Widget/Weather/WeatherWidget.h"
 
 // Common
 #include "Common/CommonDef.h"
@@ -21,6 +26,7 @@ Q_DECLARE_METATYPE(PlayJson::PlayData);
 Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
 Q_DECLARE_METATYPE(PlayJson::ContentData);
 Q_DECLARE_METATYPE(StyleSheet::PosSizeInfo);
+Q_DECLARE_METATYPE(StyleSheet::StyleInfo);
 
 //========================================================
 ContentsPlayer::ContentsPlayer(QWidget *parent)
@@ -54,6 +60,7 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     qRegisterMetaType<ScheduleTimer::PlayDataIndexInfo>("ScheduleTimer::PlayDataIndexInfo");
     qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
     qRegisterMetaType<StyleSheet::PosSizeInfo>("StyleSheet::PosSizeInfo");
+    qRegisterMetaType<StyleSheet::StyleInfo>("StyleSheet::StyleInfo");
 
     connect(this, SIGNAL(AddPlayDataSignal(PlayJson::CustomPlayDataJson)),
             this, SLOT(AddPlayDataSlot(PlayJson::CustomPlayDataJson)));
@@ -73,6 +80,13 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
             this, SLOT(MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo,
                                             PlayJson::ContentData,
                                             StyleSheet::PosSizeInfo)));
+
+    connect(this, SIGNAL(MakeWidgetTypeItemSingal(ScheduleTimer::PlayDataIndexInfo,
+                                                  PlayJson::ContentData,
+                                                  StyleSheet::PosSizeInfo)),
+            this, SLOT(MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo,
+                                              PlayJson::ContentData,
+                                              StyleSheet::PosSizeInfo)));
 
     connect(this, SIGNAL(UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo)),
             this, SLOT(UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo)));
@@ -385,6 +399,16 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
         }
     }
 
+    // Clock
+    QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+    for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+    {
+        if(clockIter->first == prevPlayDataIdxInfo && true == clockIter->second->IsStartedClock())
+        {
+            clockIter->second->StopClock();
+        }
+    }
+
     // Animation - News Feed
 }
 
@@ -445,6 +469,42 @@ void ContentsPlayer::MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo conte
 }
 
 //========================================================
+void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                              PlayJson::ContentData contentData,
+                              StyleSheet::PosSizeInfo posSizeinfo)
+//========================================================
+{
+    if(PlayJson::MediaType::CLOCK == contentData.contentInfo.mediaType)
+    {
+        ClockWidget *newClcok = new ClockWidget;
+        newClcok->MakeClockTimeString(contentData.hourType);
+
+        StyleSheet::StyleInfo styleInfo;
+        styleInfo.bTransparency = contentData.bBackgroundOpacity;
+        styleInfo.backgroundColor = contentData.backgroundColor;
+        styleInfo.fontColor = contentData.fontColor;
+        newClcok->SetStyleSheet(styleInfo);
+        newClcok->SetPosSizeInfo(posSizeinfo);
+
+
+        ClockWidgetInfo newClockWidgetInfo(contentIndexInfo, newClcok);
+        m_clockWidgetList.push_back(newClockWidgetInfo);
+    }
+    else if(PlayJson::MediaType::DATE == contentData.contentInfo.mediaType)
+    {
+
+    }
+    else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
+    {
+        QString fullPath = RESOURCE_SAVE_PATH;
+    }
+    else if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
+    {
+
+    }
+}
+
+//========================================================
 void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo,
                                               QGraphicsScene* scene)
 //========================================================
@@ -455,7 +515,7 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
         QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
         for(; imageIter != m_imageItemList.end(); ++imageIter)
         {
-            if(imageIter->first == playDataIdxInfo)
+            if(playDataIdxInfo == imageIter->first)
             {
                 scene->addItem(imageIter->second);
                 ELGO_VIEWER_LOG("ADD Image Item to Scene : %s",
@@ -463,21 +523,30 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
             }
         }
 
-        // Find Widget Item
-
-        // Find Subtitle Item
+        // Find ClcokWidget Item
+        QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+        for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+        {
+            if(playDataIdxInfo == clockIter->first)
+            {
+                scene->addWidget(clockIter->second);
+                ELGO_VIEWER_LOG("ADD Clock Widget to Scene");
+            }
+        }
 
         // Find Video Item
         QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
         for(; videoIter != m_videoItemList.end(); ++videoIter)
         {
-            if(videoIter->first == playDataIdxInfo)
+            if(playDataIdxInfo == videoIter->first)
             {
                 scene->addItem(videoIter->second);
                 ELGO_VIEWER_LOG("ADD Video Item to Scene : %s",
                                 videoIter->second->GetVideoFileName().toUtf8().constData());
             }
         }
+
+        // Find Subtitle Item
     }
     else
     {
@@ -493,12 +562,19 @@ void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo
     QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
     for(; videoIter != m_videoItemList.end(); ++videoIter)
     {
-        if(videoIter->first == playDataIdxInfo)
+        if(playDataIdxInfo == videoIter->first)
         {
-            if(videoIter->first == playDataIdxInfo)
-            {
-                videoIter->second->PlayVideoItem();
-            }
+            videoIter->second->PlayVideoItem();
+        }
+    }
+
+    // Clock
+    QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+    for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+    {
+        if(playDataIdxInfo == clockIter->first)
+        {
+            clockIter->second->StartClock();
         }
     }
 

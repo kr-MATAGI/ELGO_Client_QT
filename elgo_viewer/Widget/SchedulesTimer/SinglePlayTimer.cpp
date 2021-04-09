@@ -153,7 +153,8 @@ void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInf
             }
             else
             {
-//                MakeWidgetTypeContent(contentIdxInfo, layerData.layerContent, posSizeInfo);
+                contentIdxInfo.mediaType = layerData.layerContent.contentInfo.mediaType;
+                emit ContentsPlayer::GetInstance()->MakeWidgetTypeItemSingal(contentIdxInfo, layerData.layerContent, posSizeInfo);
             }
         }
 
@@ -244,7 +245,8 @@ void SinglePlayTimer::MakeFixedPlayDataContents(ScheduleTimer::PlayDataIndexInfo
             }
             else
             {
-//                MakeWidgetTypeContent(contentIdxInfo, contentData, posSizeInfo);
+                contentIdxInfo.mediaType = contentData.contentInfo.mediaType;
+                emit ContentsPlayer::GetInstance()->MakeWidgetTypeItemSingal(contentIdxInfo, contentData, posSizeInfo);
             }
         }
     }

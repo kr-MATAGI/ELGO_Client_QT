@@ -60,9 +60,13 @@ signals:
     void ExecPlayDataSingal(PlayJson::PlayData playData);
 
     /** @brief */
-    void MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,
-                              PlayJson::ContentData contentData,
-                              StyleSheet::PosSizeInfo posSizeInfo);
+    void MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                                PlayJson::ContentData contentData,
+                                StyleSheet::PosSizeInfo posSizeInfo);
+    /** @brief */
+    void MakeWidgetTypeItemSingal(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                                  PlayJson::ContentData contentData,
+                                  StyleSheet::PosSizeInfo posSizeinfo);
 
     /** @brief */
     void UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
@@ -92,6 +96,10 @@ private slots:
     void MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,
                               PlayJson::ContentData contentData,
                               StyleSheet::PosSizeInfo posSizeInfo);
+    /** @brief */
+    void MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                                  PlayJson::ContentData contentData,
+                                  StyleSheet::PosSizeInfo posSizeinfo);
 
     /** @brief */
     void UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
@@ -125,7 +133,7 @@ private:
     QVector<SceneInfo> m_sceneList;
     QVector<ImageItemInfo> m_imageItemList;
     QVector<VideoItemInfo> m_videoItemList;
-    // QVector<Widget> m_widgetItemList;
+    QVector<ClockWidgetInfo> m_clockWidgetList;
     // QVector<Subtitle> m_subtitleItemList;
 };
 

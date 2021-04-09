@@ -35,18 +35,6 @@ namespace StyleSheet
     };
 }
 
-
-namespace ClockInfo
-{
-    /** @brief */
-    enum Kinds
-    {
-        HOUR_12 = 1,
-        HOUR_24 = 2
-    };
-}
-
-
 namespace WeatherInfo
 {
     /** @brief */

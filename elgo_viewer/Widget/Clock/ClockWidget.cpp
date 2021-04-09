@@ -6,11 +6,13 @@
 
 #include <QDebug>
 
+#define DEFAULT_FONT_SIZE 50
+
 //========================================================
 ClockWidget::ClockWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ClockWidget)
-    , m_clockKinds(ClockInfo::Kinds::HOUR_12)
+    , m_hourType(PlayJson::HourType::NONE_HOUR_TYPE)
     , m_bIsTimerStarted(false)
 //========================================================
 {
@@ -19,19 +21,6 @@ ClockWidget::ClockWidget(QWidget *parent)
     // init
     m_updateTimer = new QTimer(this);
     m_dateTime = QDateTime::currentDateTime();
-
-    QFont font;
-    font.setBold(true);
-    font.setPointSize(100);
-    ui->amPmLabel->setFont(font);
-    ui->timeLabel->setFont(font);
-
-    ui->amPmLabel->setAlignment(Qt::AlignCenter);
-    ui->timeLabel->setAlignment(Qt::AlignCenter);
-
-    // Get Geometry
-    m_amPmLabelRect = ui->amPmLabel->geometry();
-    m_timeLabelRect = ui->timeLabel->geometry();
 
     // connect
     connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(UpdateCurrentTime()));
@@ -49,17 +38,20 @@ ClockWidget::~ClockWidget()
 }
 
 //========================================================
-void ClockWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
+void ClockWidget::SetStyleSheet(const StyleSheet::StyleInfo& styleInfo)
 //========================================================
 {
-    m_styleInfo = style;
+    m_styleInfo = styleInfo;
 
     QString widgetStyleSheet = QString("QWidget {background-color: %1;}")
                                 .arg(m_styleInfo.backgroundColor);
     QString labelStyleSheet = QString("QLabel {color: %1;}")
                                 .arg(m_styleInfo.fontColor);
+    ELGO_VIEWER_LOG("widget StyleSheet : %s", widgetStyleSheet.toStdString().c_str());
+    ELGO_VIEWER_LOG("label StyleSheet : %s", labelStyleSheet.toStdString().c_str());
+    ELGO_VIEWER_LOG("background transparency : %d", styleInfo.bTransparency);
 
-    if(true == style.bTransparency)
+    if(true == styleInfo.bTransparency)
     {
         this->setAttribute(Qt::WA_TranslucentBackground, true);
     }
@@ -73,18 +65,86 @@ void ClockWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
 }
 
 //========================================================
-void ClockWidget::MakeClockWidget(ClockInfo::Kinds kind)
+void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
+//========================================================
+{
+    m_posSizeInfo = posSizeInfo;
+    const QPointF& widgetPos = m_posSizeInfo.pos;
+    const QSize& widgetSize = m_posSizeInfo.size;
+    const QRect widgetRect(widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
+    ELGO_VIEWER_LOG("Widget pos{x: %f, y: %f} size{w: %d, h: %d}",
+                    widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
+
+    this->setGeometry(widgetRect);
+    if(PlayJson::HourType::HOUR_12== m_hourType)
+    {
+        // AM/PM label
+        const QPoint amPmLabelPos(0,0);
+        const QSize amPmLabelSize(widgetSize.width() / 3, widgetSize.height());
+        const QRect amPmLabelRect(amPmLabelPos, amPmLabelSize);
+        ELGO_VIEWER_LOG("amPmStrLabel Pos{x: %f, y: %f}, size{w: %d, h: %d}",
+                        amPmLabelPos.x(), amPmLabelPos.y(), amPmLabelSize.width(), amPmLabelSize.height());
+
+        QFont amPmFont;
+        const int amPmFontSize = CalcLabelFontSize(amPmLabelSize.width());
+        amPmFont.setBold(true);
+        amPmFont.setPointSize(amPmFontSize);
+        ELGO_VIEWER_LOG("amPmFont Size : %d", amPmFontSize);
+
+        ui->amPmLabel->setGeometry(amPmLabelRect);
+        ui->amPmLabel->setFont(amPmFont);
+
+        // Time Label
+        const QPoint timeLabelPos(ui->amPmLabel->rect().right(),0);
+        const QSize timeLabelSize(widgetSize.width() / 3 * 2, widgetSize.height());
+        const QRect timeLabelRect(timeLabelPos, timeLabelSize);
+        ELGO_VIEWER_LOG("timeStrLabel Pos{x: %f, y: %f}, size{w: %d, h: %d}",
+                        timeLabelPos.x(), timeLabelPos.y(), timeLabelSize.width(), timeLabelSize.height());
+
+        QFont timeStrFont;
+        const int timeStrFontSize = CalcLabelFontSize(timeLabelSize.width());
+        timeStrFont.setBold(true);
+        timeStrFont.setPointSize(timeStrFontSize);
+        ELGO_VIEWER_LOG("timeStrFont Size : %d", timeStrFontSize);
+
+        ui->timeLabel->setGeometry(timeLabelRect);
+        ui->timeLabel->setFont(timeStrFont);
+    }
+    else
+    {
+        ui->amPmLabel->clear();
+        ui->amPmLabel->setGeometry(0,0,0,0);
+
+        const QPoint timeLabelPos(0, 0);
+        const QSize timeLabelSize(widgetSize.width(), widgetSize.height());
+        const QRect timeLabelRect(timeLabelPos, timeLabelSize);
+        ELGO_VIEWER_LOG("timeStrLabel Pos{x: %f, y: %f}, size{w: %d, h: %d}",
+                        timeLabelPos.x(), timeLabelPos.y(), timeLabelSize.width(), timeLabelSize.height());
+
+        QFont timeStrFont;
+        const int fontSize = CalcLabelFontSize(timeLabelSize.width());
+        timeStrFont.setBold(true);
+        timeStrFont.setPointSize(fontSize);
+        ELGO_VIEWER_LOG("Font Size : %d", fontSize);
+
+        ui->timeLabel->setGeometry(timeLabelRect);
+        ui->timeLabel->setFont(timeStrFont);
+    }
+}
+
+//========================================================
+void ClockWidget::MakeClockTimeString(PlayJson::HourType type)
 //========================================================
 {
     m_dateTime = QDateTime::currentDateTime();
-    m_clockKinds = kind;
+    m_hourType = type;
 
     // time
     const QTime time = m_dateTime.time();
     const int hour = time.hour();
     const int min = time.minute();
 
-    if(ClockInfo::Kinds::HOUR_12 == kind)
+    if(PlayJson::HourType::HOUR_12 == type)
     {
         int newHour = hour;
         if(13 <= hour)
@@ -104,36 +164,57 @@ void ClockWidget::MakeClockWidget(ClockInfo::Kinds kind)
         ui->amPmLabel->setText(m_amPmStr);
         ui->timeLabel->setText(m_timeStr);
     }
-    else if(ClockInfo::Kinds::HOUR_24 == kind)
+    else if(PlayJson::HourType::HOUR_24 == type)
     {
-        const QRect newLabelRect = QRect(m_amPmLabelRect.topLeft(),
-                                         QSize(m_amPmLabelRect.width() + m_timeLabelRect.width(),
-                                         m_amPmLabelRect.height() + m_timeLabelRect.height()));
-
-
         char buffer[64] = {'\0',};
         sprintf(buffer, "%02d:%02d", hour, min);
         m_timeStr = buffer;
 
         ui->amPmLabel->clear();
-        ui->timeLabel->setGeometry(newLabelRect);
         ui->timeLabel->setText(m_timeStr);
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkown Clock Kind : %d", kind);
+        ELGO_VIEWER_LOG("Error - Unkown Clock type : %d", type);
     }
+}
 
-    if(false == m_bIsTimerStarted)
-    {
-        m_bIsTimerStarted = true;
-        m_updateTimer->start(1000);
-    }
+//========================================================
+void ClockWidget::StartClock()
+//========================================================
+{
+    m_updateTimer->start(1000);
+    m_bIsTimerStarted = true;
+}
+
+//========================================================
+void ClockWidget::StopClock()
+//========================================================
+{
+    m_updateTimer->stop();
+    m_bIsTimerStarted = false;
+}
+
+//========================================================
+bool ClockWidget::IsStartedClock()
+//========================================================
+{
+    return m_bIsTimerStarted;
 }
 
 //========================================================
 void ClockWidget::UpdateCurrentTime()
 //========================================================
 {
-    MakeClockWidget(m_clockKinds);
+    MakeClockTimeString(m_hourType);
+}
+
+//========================================================
+int ClockWidget::CalcLabelFontSize(const int labelWidth)
+//========================================================
+{
+    int retValue = DEFAULT_FONT_SIZE;
+    retValue += (labelWidth / 5);
+
+    return retValue;
 }
