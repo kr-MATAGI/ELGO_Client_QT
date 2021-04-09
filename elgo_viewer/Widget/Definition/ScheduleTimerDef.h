@@ -94,6 +94,8 @@ namespace ScheduleTimer
             return false;
         if(!(lhs.pageIdx == rhs.pageIdx))
             return false;
+        if(!(lhs.mediaType == rhs.mediaType))
+            return false;
         if(!(lhs.layerIdx == rhs.layerIdx))
             return false;
         if(!(lhs.contentIdx == rhs.contentIdx))

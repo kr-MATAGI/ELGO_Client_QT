@@ -325,7 +325,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
             for(; imageIter != m_imageItemList.end(); ++imageIter)
             {
-                if(imageIter->first == newDataIdxInfo)
+                if(newDataIdxInfo == imageIter->first)
                 {
                     ui->playerView->scene()->addItem(imageIter->second);
 
@@ -339,7 +339,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             imageIter = m_imageItemList.begin();
             for(; imageIter != m_imageItemList.end(); ++imageIter)
             {
-                if(imageIter->first == prevDataIdxInfo)
+                if(prevDataIdxInfo == imageIter->first)
                 {
                     ui->playerView->scene()->removeItem(imageIter->second);
 
@@ -354,7 +354,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             // ADD New Video
             for(; videoIter != m_videoItemList.end(); ++videoIter)
             {
-                if(videoIter->first == newDataIdxInfo)
+                if(newDataIdxInfo == videoIter->first)
                 {
                     ui->playerView->scene()->addItem(videoIter->second);
                     videoIter->second->PlayVideoItem();
@@ -369,7 +369,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             videoIter = m_videoItemList.begin();
             for(; videoIter != m_videoItemList.end(); ++videoIter)
             {
-                if(videoIter->first == prevDataIdxInfo)
+                if(prevDataIdxInfo == videoIter->first)
                 {
                     ui->playerView->scene()->removeItem(videoIter->second);
                     videoIter->second->StopVideoItem();
@@ -379,6 +379,29 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                                     prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
                 }
             }
+
+            // Add New Clock Widget
+            QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+            for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+            {
+                if(newDataIdxInfo == clockIter->first)
+                {
+                    ui->playerView->scene()->addWidget(clockIter->second);
+                    ELGO_VIEWER_LOG("Add Clock Widget");
+                }
+            }
+
+            // Remove New Clock Widget
+            clockIter = m_clockWidgetList.begin();
+            for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+            {
+                if(prevDataIdxInfo == clockIter->first)
+                {
+                    clockIter->second->close();
+                    ELGO_VIEWER_LOG("Close Clock Widget");
+                }
+            }
+
 
             break;
         }
