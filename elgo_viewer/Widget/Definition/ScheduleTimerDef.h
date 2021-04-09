@@ -26,7 +26,8 @@ namespace ScheduleTimer
     struct PlayDataIndexInfo
     {
         PlayDataIndexInfo()
-            : pageIdx(0)
+            : mediaType(PlayJson::MediaType::NONE_MEDIA)
+            , pageIdx(0)
             , layerIdx(0)
             , contentIdx(0)
         { }
