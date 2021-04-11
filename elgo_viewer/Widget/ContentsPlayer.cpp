@@ -327,7 +327,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
         if( (sceneIter->first.playDataInfo.id == newDataIdxInfo.playDataInfo.id) &&
             (sceneIter->first.playDataInfo.type == newDataIdxInfo.playDataInfo.type) )
         {
-            // Add Prev Image
+            // Add / Remove Image
             QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
             for(; imageIter != m_imageItemList.end(); ++imageIter)
             {
@@ -339,12 +339,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                                     imageIter->second->GetImageFileName().toUtf8().constData(),
                                     newDataIdxInfo.layerIdx, newDataIdxInfo.contentIdx);
                 }
-            }
 
-            // Remove Prev Image
-            imageIter = m_imageItemList.begin();
-            for(; imageIter != m_imageItemList.end(); ++imageIter)
-            {
                 if(prevDataIdxInfo == imageIter->first)
                 {
                     ui->playerView->scene()->removeItem(imageIter->second);
@@ -356,7 +351,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             }
 
             QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
-            // ADD New Video
+            // ADD / Remove Video
             for(; videoIter != m_videoItemList.end(); ++videoIter)
             {
                 if(newDataIdxInfo == videoIter->first)
@@ -368,12 +363,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                                     videoIter->second->GetVideoFileName().toUtf8().constData(),
                                     newDataIdxInfo.layerIdx, newDataIdxInfo.contentIdx);
                 }
-            }
 
-            // Remove Prev Video
-            videoIter = m_videoItemList.begin();
-            for(; videoIter != m_videoItemList.end(); ++videoIter)
-            {
                 if(prevDataIdxInfo == videoIter->first)
                 {
                     ui->playerView->scene()->removeItem(videoIter->second);
@@ -385,7 +375,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                 }
             }
 
-            // Add New Clock Widget
+            // Add / Remove Clock Widget
             QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
             for(; clockIter != m_clockWidgetList.end(); ++clockIter)
             {
@@ -395,12 +385,7 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                     clockIter->second->show();
                     ELGO_VIEWER_LOG("Add Clock Widget");
                 }
-            }
 
-            // Remove Prev Clock Widget
-            clockIter = m_clockWidgetList.begin();
-            for(; clockIter != m_clockWidgetList.end(); ++clockIter)
-            {
                 if(prevDataIdxInfo == clockIter->first)
                 {
                     clockIter->second->close();
@@ -524,9 +509,6 @@ void ContentsPlayer::MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo conte
     }
 }
 
-#include <QGraphicsWidget>
-#include <QGraphicsProxyWidget>
-
 //========================================================
 void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
                               PlayJson::ContentData contentData,
@@ -604,6 +586,7 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
         {
             if(playDataIdxInfo == dateIter->first)
             {
+                scene->addWidget(dateIter->second);
                 ELGO_VIEWER_LOG("ADD Date Widget to Scenen");
             }
         }
