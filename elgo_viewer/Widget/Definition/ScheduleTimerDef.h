@@ -6,6 +6,7 @@
 #include "Widget/Image/ImageItem.h"
 #include "Widget/Video/VideoItem.h"
 #include "Widget/Clock/ClockWidget.h"
+#include "Widget/Date/DateWidget.h"
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
@@ -26,13 +27,11 @@ namespace ScheduleTimer
     struct PlayDataIndexInfo
     {
         PlayDataIndexInfo()
-            : mediaType(PlayJson::MediaType::NONE_MEDIA)
-            , pageIdx(0)
+            : pageIdx(0)
             , layerIdx(0)
             , contentIdx(0)
         { }
         PlayDataInfo playDataInfo;
-        PlayJson::MediaType mediaType;
 
         // custom
         int pageIdx;
@@ -94,8 +93,6 @@ namespace ScheduleTimer
             return false;
         if(!(lhs.pageIdx == rhs.pageIdx))
             return false;
-        if(!(lhs.mediaType == rhs.mediaType))
-            return false;
         if(!(lhs.layerIdx == rhs.layerIdx))
             return false;
         if(!(lhs.contentIdx == rhs.contentIdx))
@@ -118,6 +115,7 @@ typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ClockWidget*> ClockWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, DateWidget*> DateWidgetInfo;
 
 
 #endif // SCHEDULERDEF_H

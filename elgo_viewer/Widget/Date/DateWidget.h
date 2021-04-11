@@ -19,12 +19,24 @@ class DateWidget : public QWidget
 
 public:
     explicit DateWidget(QWidget *parent = nullptr);
-    ~DateWidget();
+    virtual ~DateWidget();
 
     /** @brief */
-    void MakeDateWidget();
+    void MakeDateLabelString();
     /** @brief */
     void SetStyleSheet(const StyleSheet::StyleInfo& style);
+    /** @brief */
+    void SetPosSizeinfo(const StyleSheet::PosSizeInfo& posSizeInfo);
+
+    /** @brief */
+    void StartDateWidget();
+    /** @brief */
+    void StopDateWidget();
+    /** @brief */
+    bool IsStartedDateTimer();
+
+    /** @brief */
+    int CalcLabelFontSize(const int labelWidth);
     /** @brief */
     void ConvertToStringFromDayOfWeek(const int src, QString& dest);
 
@@ -35,8 +47,9 @@ private slots:
 private:
     Ui::DateWidget *ui;
 
-    QRect m_dateLabelRect;
     StyleSheet::StyleInfo m_styleInfo;
+    StyleSheet::PosSizeInfo m_posSizeInfo;
+
     QDateTime m_dateTime;
     QTimer *m_updateTimer;
     bool m_bIsTimerStarted;

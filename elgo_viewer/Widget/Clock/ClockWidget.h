@@ -22,7 +22,7 @@ public:
     /** @brief */
     explicit ClockWidget(QWidget *parent = nullptr);
     /** @brief */
-    ~ClockWidget();
+    virtual ~ClockWidget();
 
     /** @brief */
     void MakeClockTimeString(PlayJson::HourType type);

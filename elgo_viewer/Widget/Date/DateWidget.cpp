@@ -1,4 +1,3 @@
-
 // QT
 #include <QDateTime>
 
@@ -25,9 +24,6 @@ DateWidget::DateWidget(QWidget *parent)
     ui->dateLabel->setFont(font);
     ui->dateLabel->setAlignment(Qt::AlignCenter);
 
-    // Get geometry
-    m_dateLabelRect = ui->dateLabel->geometry();
-
     // connect
     connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(UpdateCurrentDate()));
 }
@@ -51,8 +47,10 @@ void DateWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
 
     QString widgetStyleSheet = QString("QWidget {background-color: %1;}")
                                 .arg(style.backgroundColor);
-    QString labelStyleSheet = QString("QLabel {color: %1'}")
+    QString labelStyleSheet = QString("QLabel {color: %1;}")
                                 .arg(style.fontColor);
+    ELGO_VIEWER_LOG("StyleSheet - %s", widgetStyleSheet.toStdString().c_str());
+    ELGO_VIEWER_LOG("StyleSheet - %s", labelStyleSheet.toStdString().c_str());
 
     if(true == style.bTransparency)
     {
@@ -64,6 +62,45 @@ void DateWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
     }
 
     ui->dateLabel->setStyleSheet(labelStyleSheet);
+}
+
+//========================================================
+void DateWidget::SetPosSizeinfo(const StyleSheet::PosSizeInfo& posSizeInfo)
+//========================================================
+{
+    m_posSizeInfo = posSizeInfo;
+    const QPointF& widgetPos = posSizeInfo.pos;
+    const QSize& widgetSize = posSizeInfo.size;
+    const QRect widgetRecet(widgetPos.toPoint(), widgetSize);
+    ELGO_VIEWER_LOG("Widget pos{x: %f, y: %f} size{w: %d, h: %d}",
+                    widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
+
+    this->setGeometry(widgetRecet);
+
+    const QPoint dateLabelPos(0,0);
+    const QSize dateLabelSize(widgetSize.width(), widgetSize.height());
+    const QRect dateLabelRect(dateLabelPos, dateLabelSize);
+    ELGO_VIEWER_LOG("dateLabel Pos{x: %d, y: %d}, Size{w: %d, h: %d}",
+                    dateLabelPos.x(), dateLabelPos.y(), dateLabelSize.width(), dateLabelSize.height());
+
+    QFont dateLabelFont;
+    const int fontSize = CalcLabelFontSize(dateLabelSize.width());
+    dateLabelFont.setBold(true);
+    dateLabelFont.setPointSize(fontSize);
+    ELGO_VIEWER_LOG("Font Size : %d", fontSize);
+
+    ui->dateLabel->setGeometry(dateLabelRect);
+    ui->dateLabel->setFont(dateLabelFont);
+}
+
+//========================================================
+int DateWidget::CalcLabelFontSize(const int labelWidth)
+//========================================================
+{
+    int retValue = DEFAULT_FONT_SIZE;
+    retValue += (labelWidth / 20);
+
+    return retValue;
 }
 
 //========================================================
@@ -109,7 +146,7 @@ void DateWidget::ConvertToStringFromDayOfWeek(const int src, QString& dest)
 }
 
 //========================================================
-void DateWidget::MakeDateWidget()
+void DateWidget::MakeDateLabelString()
 //========================================================
 {
     m_dateTime = QDateTime::currentDateTime();
@@ -136,8 +173,31 @@ void DateWidget::MakeDateWidget()
 }
 
 //========================================================
+void DateWidget::StartDateWidget()
+//========================================================
+{
+    m_updateTimer->start(1000);
+    m_bIsTimerStarted = true;
+}
+
+//========================================================
+void DateWidget::StopDateWidget()
+//========================================================
+{
+    m_updateTimer->stop();
+    m_bIsTimerStarted = false;
+}
+
+//========================================================
+bool DateWidget::IsStartedDateTimer()
+//========================================================
+{
+    return m_bIsTimerStarted;
+}
+
+//========================================================
 void DateWidget::UpdateCurrentDate()
 //========================================================
 {
-    MakeDateWidget();
+    MakeDateLabelString();
 }

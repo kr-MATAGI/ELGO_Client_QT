@@ -10,6 +10,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 
+#define DEFAULT_FONT_SIZE   50;
 
 namespace StyleSheet
 {

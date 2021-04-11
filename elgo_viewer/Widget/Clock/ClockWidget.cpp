@@ -1,12 +1,7 @@
-
 // Viewer
 #include "ClockWidget.h"
 #include "ui_ClockWidget.h"
 #include "Logger/ViewerLogger.h"
-
-#include <QDebug>
-
-#define DEFAULT_FONT_SIZE 50
 
 //========================================================
 ClockWidget::ClockWidget(QWidget *parent)
@@ -71,7 +66,7 @@ void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     m_posSizeInfo = posSizeInfo;
     const QPointF& widgetPos = m_posSizeInfo.pos;
     const QSize& widgetSize = m_posSizeInfo.size;
-    const QRect widgetRect(widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
+    const QRect widgetRect(widgetPos.toPoint(), widgetSize);
     ELGO_VIEWER_LOG("Widget pos{x: %f, y: %f} size{w: %d, h: %d}",
                     widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
 
@@ -98,7 +93,7 @@ void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
         const QPoint timeLabelPos(ui->amPmLabel->rect().right(),0);
         const QSize timeLabelSize(widgetSize.width() / 3 * 2, widgetSize.height());
         const QRect timeLabelRect(timeLabelPos, timeLabelSize);
-        ELGO_VIEWER_LOG("timeStrLabel Pos{x: %f, y: %f}, size{w: %d, h: %d}",
+        ELGO_VIEWER_LOG("timeStrLabel Pos{x: %d, y: %d}, Size{w: %d, h: %d}",
                         timeLabelPos.x(), timeLabelPos.y(), timeLabelSize.width(), timeLabelSize.height());
 
         QFont timeStrFont;

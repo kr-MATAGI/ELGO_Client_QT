@@ -153,7 +153,6 @@ void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInf
             }
             else
             {
-                contentIdxInfo.mediaType = layerData.layerContent.contentInfo.mediaType;
                 emit ContentsPlayer::GetInstance()->MakeWidgetTypeItemSingal(contentIdxInfo, layerData.layerContent, posSizeInfo);
             }
         }
@@ -245,7 +244,6 @@ void SinglePlayTimer::MakeFixedPlayDataContents(ScheduleTimer::PlayDataIndexInfo
             }
             else
             {
-                contentIdxInfo.mediaType = contentData.contentInfo.mediaType;
                 emit ContentsPlayer::GetInstance()->MakeWidgetTypeItemSingal(contentIdxInfo, contentData, posSizeInfo);
             }
         }
@@ -341,16 +339,20 @@ void SinglePlayTimer::SinglePlayTimeout()
                         }
 
                         ScheduleTimer::PlayDataIndexInfo prevPlayContentData;
-                        prevPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
+                        prevPlayContentData.playDataInfo = m_fixedPlayDataInfo.playDataInfo;
                         prevPlayContentData.layerIdx = layIdx;
                         prevPlayContentData.contentIdx = currContnetIdx;
 
                         ScheduleTimer::PlayDataIndexInfo nextPlayContentData;
-                        nextPlayContentData.playDataInfo = m_customPlayDataInfo.playDataInfo;
+                        nextPlayContentData.playDataInfo = m_fixedPlayDataInfo.playDataInfo;
                         nextPlayContentData.layerIdx = layIdx;
                         nextPlayContentData.contentIdx = nextContentIdx;
 
                         // Update
+                        ELGO_VIEWER_LOG("SIGNAL TEST id: %d  %d", prevPlayContentData.playDataInfo.id,
+                                        nextPlayContentData.playDataInfo.id);
+                        ELGO_VIEWER_LOG("SIGNAL TEST type: %d  %d", prevPlayContentData.playDataInfo.type,
+                                        nextPlayContentData.playDataInfo.type);
                         emit ContentsPlayer::GetInstance()->UpdatePlayerFixedLayerContentSignal(prevPlayContentData, nextPlayContentData);
                         m_fixedPlayDataInfo.layerInfo[layIdx] = nextContentIdx;
                     }
