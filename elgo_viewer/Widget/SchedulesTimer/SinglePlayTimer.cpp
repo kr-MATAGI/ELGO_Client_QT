@@ -349,10 +349,6 @@ void SinglePlayTimer::SinglePlayTimeout()
                         nextPlayContentData.contentIdx = nextContentIdx;
 
                         // Update
-                        ELGO_VIEWER_LOG("SIGNAL TEST id: %d  %d", prevPlayContentData.playDataInfo.id,
-                                        nextPlayContentData.playDataInfo.id);
-                        ELGO_VIEWER_LOG("SIGNAL TEST type: %d  %d", prevPlayContentData.playDataInfo.type,
-                                        nextPlayContentData.playDataInfo.type);
                         emit ContentsPlayer::GetInstance()->UpdatePlayerFixedLayerContentSignal(prevPlayContentData, nextPlayContentData);
                         m_fixedPlayDataInfo.layerInfo[layIdx] = nextContentIdx;
                     }

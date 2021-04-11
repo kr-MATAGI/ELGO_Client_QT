@@ -1,6 +1,9 @@
 #ifndef SCHEDULERDEF_H
 #define SCHEDULERDEF_H
 
+// QT
+#include <QGraphicsProxyWidget>
+
 // Viewer
 #include "Widget/Definition/ContentsDef.h"
 #include "Widget/Image/ImageItem.h"
@@ -87,6 +90,7 @@ namespace ScheduleTimer
 
         return true;
     }
+
     inline bool operator==(const PlayDataIndexInfo& lhs, const PlayDataIndexInfo& rhs)
     {
         if(!(lhs.playDataInfo == rhs.playDataInfo))
@@ -116,5 +120,6 @@ typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ClockWidget*> ClockWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, DateWidget*> DateWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H

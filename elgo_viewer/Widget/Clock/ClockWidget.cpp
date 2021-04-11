@@ -12,6 +12,7 @@ ClockWidget::ClockWidget(QWidget *parent)
 //========================================================
 {
     ui->setupUi(this);
+    this->setObjectName("Clock Widget");
 
     // init
     m_updateTimer = new QTimer(this);

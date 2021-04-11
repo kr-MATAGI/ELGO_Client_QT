@@ -135,6 +135,7 @@ private:
     QVector<VideoItemInfo> m_videoItemList;
     QVector<ClockWidgetInfo> m_clockWidgetList;
     QVector<DateWidgetInfo> m_dateWidgetList;
+    QVector<ProxyWidgetInfo> m_proxyWidgetList;
     // QVector<Subtitle> m_subtitleItemList;
 };
 

@@ -14,6 +14,7 @@ DateWidget::DateWidget(QWidget *parent)
 //========================================================
 {
     ui->setupUi(this);
+    this->setObjectName("Date Widget");
 
     // init
     m_updateTimer = new QTimer(this);

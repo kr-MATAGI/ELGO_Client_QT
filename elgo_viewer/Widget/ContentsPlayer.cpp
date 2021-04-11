@@ -317,13 +317,6 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
     QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
     for(; sceneIter != m_sceneList.end(); ++sceneIter)
     {
-        ELGO_VIEWER_LOG("TES id - %d %d %d", sceneIter->first.playDataInfo.id,
-                        newDataIdxInfo.playDataInfo.id,
-                        prevDataIdxInfo.playDataInfo.id);
-        ELGO_VIEWER_LOG("TES type - %d %d %d", sceneIter->first.playDataInfo.type,
-                        newDataIdxInfo.playDataInfo.type,
-                        prevDataIdxInfo.playDataInfo.type);
-
         if( (sceneIter->first.playDataInfo.id == newDataIdxInfo.playDataInfo.id) &&
             (sceneIter->first.playDataInfo.type == newDataIdxInfo.playDataInfo.type) )
         {
@@ -350,15 +343,13 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                 }
             }
 
-            QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
             // ADD / Remove Video
+            QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
             for(; videoIter != m_videoItemList.end(); ++videoIter)
             {
                 if(newDataIdxInfo == videoIter->first)
                 {
                     ui->playerView->scene()->addItem(videoIter->second);
-                    videoIter->second->PlayVideoItem();
-
                     ELGO_VIEWER_LOG("ADD Video Item to Scene : %s, Index {layer: %d, content: %d}",
                                     videoIter->second->GetVideoFileName().toUtf8().constData(),
                                     newDataIdxInfo.layerIdx, newDataIdxInfo.contentIdx);
@@ -367,49 +358,29 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
                 if(prevDataIdxInfo == videoIter->first)
                 {
                     ui->playerView->scene()->removeItem(videoIter->second);
-                    videoIter->second->StopVideoItem();
-
                     ELGO_VIEWER_LOG("Remove Video Item to Scene : %s, Index {layer: %d, content: %d}",
                                     videoIter->second->GetVideoFileName().toUtf8().constData(),
                                     prevDataIdxInfo.layerIdx, prevDataIdxInfo.contentIdx);
                 }
             }
 
-            // Add / Remove Clock Widget
-            QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
-            for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+            // Add / Remove Proxy Widget
+            QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
+            for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
             {
-                if(newDataIdxInfo == clockIter->first)
+                if(newDataIdxInfo == proxyIter->first)
                 {
-                    ui->playerView->scene()->addWidget(clockIter->second);
-                    clockIter->second->show();
-                    ELGO_VIEWER_LOG("Add Clock Widget");
+                    ui->playerView->scene()->addItem(proxyIter->second);
                 }
 
-                if(prevDataIdxInfo == clockIter->first)
+                if(prevDataIdxInfo == proxyIter->first)
                 {
-                    clockIter->second->close();
-                    ELGO_VIEWER_LOG("Close Clock Widget");
+                    ui->playerView->scene()->removeItem(proxyIter->second);
                 }
             }
 
-            // Add / Remove New Date Widget
-            QVector<DateWidgetInfo>::iterator dateIter = m_dateWidgetList.begin();
-            for(; dateIter != m_dateWidgetList.end(); ++dateIter)
-            {
-                if(newDataIdxInfo == dateIter->first)
-                {
-                    ui->playerView->scene()->addWidget(dateIter->second);
-                    dateIter->second->show();
-                    ELGO_VIEWER_LOG("Add Date Widget");
-                }
-
-                if(prevDataIdxInfo == dateIter->first)
-                {
-                    dateIter->second->close();
-                    ELGO_VIEWER_LOG("Close Date Widget");
-                }
-            }
+            ExecPlayDataItemList(newDataIdxInfo);
+            PausePrevPlayDataSlot(prevDataIdxInfo);
 
             break;
         }
@@ -513,32 +484,45 @@ void ContentsPlayer::MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo conte
 void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
                               PlayJson::ContentData contentData,
                               StyleSheet::PosSizeInfo posSizeinfo)
-//========================================================
+//================================ ========================
 {
     StyleSheet::StyleInfo styleInfo;
     styleInfo.bTransparency = contentData.bBackgroundOpacity;
     styleInfo.backgroundColor = contentData.backgroundColor;
     styleInfo.fontColor = contentData.fontColor;
 
+    QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget;
     if(PlayJson::MediaType::CLOCK == contentData.contentInfo.mediaType)
     {
         ClockWidget *newClcok = new ClockWidget;
+        newClcok->MakeClockTimeString(contentData.hourType);
         newClcok->SetStyleSheet(styleInfo);
         newClcok->SetPosSizeInfo(posSizeinfo);
-        newClcok->MakeClockTimeString(contentData.hourType);
+
+        proxyWidget->setWidget(newClcok);
+        proxyWidget->setZValue(contentData.zIndex);
 
         ClockWidgetInfo newClockWidgetInfo(contentIndexInfo, newClcok);
         m_clockWidgetList.push_back(newClockWidgetInfo);
+
+        ProxyWidgetInfo clockProxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(clockProxyWidgetInfo);
     }
     else if(PlayJson::MediaType::DATE == contentData.contentInfo.mediaType)
     {
         DateWidget *newDate = new DateWidget;
+        newDate->MakeDateLabelString();
         newDate->SetStyleSheet(styleInfo);
         newDate->SetPosSizeinfo(posSizeinfo);
-        newDate->MakeDateLabelString();
+
+        proxyWidget->setWidget(newDate);
+        proxyWidget->setZValue(contentData.zIndex);
 
         DateWidgetInfo newDateWidgetInfo(contentIndexInfo, newDate);
         m_dateWidgetList.push_back(newDateWidgetInfo);
+
+        ProxyWidgetInfo dateProxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(dateProxyWidgetInfo);
     }
     else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
     {
@@ -569,25 +553,15 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
             }
         }
 
-        // Find ClcokWidget Item
-        QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
-        for(; clockIter != m_clockWidgetList.end(); ++clockIter)
+        // Find Widget Type Item
+        QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
+        for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
         {
-            if(playDataIdxInfo == clockIter->first)
+            if(playDataIdxInfo == proxyIter->first)
             {
-                scene->addWidget(clockIter->second);
-                ELGO_VIEWER_LOG("ADD Clock Widget to Scene");
-            }
-        }
-
-        // Find DateWidget Item
-        QVector<DateWidgetInfo>::iterator dateIter = m_dateWidgetList.begin();
-        for(; dateIter != m_dateWidgetList.end(); ++dateIter)
-        {
-            if(playDataIdxInfo == dateIter->first)
-            {
-                scene->addWidget(dateIter->second);
-                ELGO_VIEWER_LOG("ADD Date Widget to Scenen");
+                scene->addItem(proxyIter->second);
+                ELGO_VIEWER_LOG("ADD %s",
+                                proxyIter->second->widget()->objectName().toStdString().c_str());
             }
         }
 
@@ -661,6 +635,10 @@ QString ContentsPlayer::ConvertMediaTypeEnumToString(const PlayJson::MediaType t
     else if(PlayJson::MediaType::IMAGE == type)
     {
         retValue = "image/";
+    }
+    else if(PlayJson::MediaType::WEATHER == type)
+    {
+        retValue = "icon/";
     }
     else
     {
