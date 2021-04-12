@@ -8,6 +8,7 @@
 #include "Logger/ViewerLogger.h"
 
 // Widget
+#include "Widget/Definition/ContentsDef.h"
 #include "Widget/Clock/ClockWidget.h"
 #include "Widget/Date/DateWidget.h"
 #include "Widget/News/NewsFeedWidget.h"
@@ -395,7 +396,8 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
     QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
     for(; videoIter != m_videoItemList.end(); ++videoIter)
     {
-        if(prevPlayDataIdxInfo == videoIter->first && true == videoIter->second->IsPlayingVideo())
+        if( (prevPlayDataIdxInfo == videoIter->first) &&
+            (true == videoIter->second->IsPlayingVideo()))
         {
             videoIter->second->StopVideoItem();
         }
@@ -405,7 +407,8 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
     QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
     for(; clockIter != m_clockWidgetList.end(); ++clockIter)
     {
-        if(prevPlayDataIdxInfo == clockIter->first && true == clockIter->second->IsStartedClock())
+        if( (prevPlayDataIdxInfo == clockIter->first) &&
+            (true == clockIter->second->IsStartedClock()) )
         {
             clockIter->second->StopClock();
         }
@@ -415,22 +418,34 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
     QVector<DateWidgetInfo>::iterator dateIter = m_dateWidgetList.begin();
     for(; dateIter != m_dateWidgetList.end(); ++dateIter)
     {
-        if(prevPlayDataIdxInfo == dateIter->first && true == dateIter->second->IsStartedDateTimer())
+        if( (prevPlayDataIdxInfo == dateIter->first) &&
+            (true == dateIter->second->IsStartedDateTimer()) )
         {
             dateIter->second->StopDateWidget();
         }
     }
 
+    // News
     QVector<NewsFeedWidgetInfo>::iterator newsIter = m_newsFeedWigetList.begin();
     for(; newsIter != m_newsFeedWigetList.end(); ++newsIter)
     {
-        if(prevPlayDataIdxInfo == newsIter->first && true == newsIter->second->IsStartedAnimation())
+        if( (prevPlayDataIdxInfo == newsIter->first) &&
+            (true == newsIter->second->IsStartedAnimation()) )
         {
             newsIter->second->StopAnimation();
         }
     }
 
-    // Animation - News Feed
+    // Weather
+    QVector<WeatherWidgetInfo>::iterator weatherIter = m_weatherWidgetList.begin();
+    for(; weatherIter != m_weatherWidgetList.end(); ++weatherIter)
+    {
+        if( (prevPlayDataIdxInfo == weatherIter->first) &&
+            (true == weatherIter->second->IsStartedDateTimeTimer()) )
+        {
+            weatherIter->second->StopDateTimeTimer();
+        }
+    }
 }
 
 //========================================================
@@ -535,7 +550,26 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
     }
     else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
     {
-        QString fullPath = RESOURCE_SAVE_PATH;
+        WeatherWidget *newWeatherWidget = new WeatherWidget;
+        WeatherInfo::DisplayValue displayValue;
+        displayValue.metroCity = contentData.metropolCityName;
+        displayValue.city = contentData.cityName;
+        displayValue.temperature = contentData.T1H;
+        displayValue.pty = contentData.PTY;
+        displayValue.sky = contentData.SKY;
+
+        newWeatherWidget->SetStyleSheet(styleInfo);
+        newWeatherWidget->SetPosSizeInfo(posSizeinfo);
+        newWeatherWidget->MakeWeatherWidget(displayValue);
+
+        proxyWidget->setWidget(newWeatherWidget);
+        proxyWidget->setZValue(contentData.zIndex);
+
+        WeatherWidgetInfo weatherWidgetInfo(contentIndexInfo, newWeatherWidget);
+        m_weatherWidgetList.push_back(weatherWidgetInfo);
+
+        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
     {
@@ -653,6 +687,16 @@ void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo
         if(playDataIdxInfo == newsIter->first)
         {
             newsIter->second->StartAnimation();
+        }
+    }
+
+    // Weather
+    QVector<WeatherWidgetInfo>::iterator weatherIter = m_weatherWidgetList.begin();
+    for(; weatherIter != m_weatherWidgetList.end(); ++weatherIter)
+    {
+        if(playDataIdxInfo == weatherIter->first)
+        {
+            weatherIter->second->StartDateTimeTimer();
         }
     }
 }

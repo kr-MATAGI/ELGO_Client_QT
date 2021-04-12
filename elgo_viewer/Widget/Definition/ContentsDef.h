@@ -10,6 +10,9 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 
+// Common
+#include "Common/Interface/ContentsPlayDataDef.h"
+
 #define DEFAULT_FONT_SIZE   50;
 
 namespace StyleSheet
@@ -39,18 +42,20 @@ namespace StyleSheet
 namespace WeatherInfo
 {
     /** @brief */
-    enum Value
+    struct DisplayValue
     {
-        e_SUNNY = 1,
-    };
+        DisplayValue()
+            : pty(PlayJson::PTY::NO_RAIN)
+            , sky(PlayJson::SKY::SUNNY)
+        {
+        }
 
-    /** @brief */
-    struct DisplayInfo
-    {
-        WeatherInfo::Value weather;
+        PlayJson::PTY pty;
+        PlayJson::SKY sky;
+        QString metroCity;
         QString city;
         QString status;
-        int temperature;
+        QString temperature;
     };
 }
 

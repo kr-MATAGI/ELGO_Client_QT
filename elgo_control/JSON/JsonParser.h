@@ -81,9 +81,9 @@ namespace JsonParser
 
     /// Weather Info Parser
     /** @brief */
-    bool ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::Weather::Response& dest);
+    bool ParseWeatherInfoJsonResponse(const QString& src, PlayJson::ContentData& dest);
     /** @brief */
-    bool ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, DownloadDef::Weather::Response& dest);    
+    bool ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, PlayJson::ContentData& dest);
 }
 
 #endif // JSONPARSER_H

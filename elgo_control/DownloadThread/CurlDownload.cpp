@@ -64,7 +64,7 @@ bool CurlDownload::DownloadNewsFeedXml(PlayJson::NewsCategory category, QString&
 }
 
 //========================================================
-bool CurlDownload::DownloadWeatherInfoJson(const DownloadDef::Weather::Request& req, QString& dest)
+bool CurlDownload::DownloadWeatherInfoJson(const PlayJson::ContentData& request, QString& dest)
 //========================================================
 {
     bool retValue = false;
@@ -72,20 +72,23 @@ bool CurlDownload::DownloadWeatherInfoJson(const DownloadDef::Weather::Request& 
     CURL *curl = curl_easy_init();
     if(curl)
     {
-        // make request url
         /**
          *  @note   numOfRows = count(category) * count(make_time)
          */
+        QString baseDate;
+        QString baseTime;
+        MakeWeatherBaseDateTimeStr(baseDate, baseTime);
+
         std::string url = WEATHER_BASE_URL;
         url.append(WEATHER_KEY);
         url.append("&numOfRows=200&pageNo=1&nx=");
-        url.append(QString::number(req.nx).toStdString());
+        url.append(QString::number(request.nx).toStdString());
         url.append("&ny=");
-        url.append(QString::number(req.ny).toStdString());
+        url.append(QString::number(request.ny).toStdString());
         url.append("&base_date=");
-        url.append(req.baseDate.toStdString());
+        url.append(baseDate.toStdString());
         url.append("&base_time=");
-        url.append(req.baseTime.toStdString());
+        url.append(baseTime.toStdString());
         url.append("&dataType=JSON");
         ELGO_CONTROL_LOG("URL : %s", url.c_str());
 
@@ -273,6 +276,50 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
     curl_easy_cleanup(curl);
 
     return retValue;
+}
+
+//========================================================
+void CurlDownload::MakeWeatherBaseDateTimeStr(QString& baseDate, QString& baseTime)
+//========================================================
+{
+    const QDateTime& currDateTime = QDateTime::currentDateTime();
+
+    // ref - api guide
+    const QVector<int> baseTimeHourList = {2,5,8,11,14,17,20,23};
+    for(int idx = 0; idx < baseTimeHourList.size(); idx++)
+    {
+        if(currDateTime.time().hour() < baseTimeHourList[idx])
+        {
+            QDateTime reqDateTime = currDateTime;
+
+            qint64 secEpoch = reqDateTime.toSecsSinceEpoch();
+            if(0 >= (idx - 1))
+            {
+                secEpoch -= 10800; // 3 hour
+            }
+            else
+            {
+                secEpoch -= 3600; // 1 hour
+            }
+            reqDateTime.setSecsSinceEpoch(secEpoch);
+
+            char dateBuffer[16] = {'\0',};
+            sprintf(dateBuffer, "%d%02d%02d",
+                    reqDateTime.date().year(),
+                    reqDateTime.date().month(),
+                    reqDateTime.date().day());
+
+            char timeBuffer[16] = {'\0', };
+            sprintf(timeBuffer, "%02d%02d",
+                    reqDateTime.time().hour(),
+                    reqDateTime.time().minute());
+
+            baseDate = dateBuffer;
+            baseTime = timeBuffer;
+
+            break;
+        }
+    }
 }
 
 //========================================================

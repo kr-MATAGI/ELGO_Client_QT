@@ -97,6 +97,27 @@ namespace PlayJson
         MediaType mediaType;
     };
 
+    /** @brief  Weather Widget */
+    enum PTY
+    {
+        NO_RAIN = 0,
+        RAIN = 1,
+        SLEET = 2,
+        SNOW = 3,
+        SHOWER = 4,
+        RAIN_DROP = 5,
+        RAIN_DROP_SNOW = 6,
+        SNOW_DRIFT = 7
+    };
+
+    enum SKY
+    {
+        SUNNY = 1,
+        CLOUDY = 2,
+        FOG = 3
+    };
+
+
     /** @brief */
     struct ContentData
     {
@@ -107,6 +128,8 @@ namespace PlayJson
             , bBackgroundOpacity(false)
             , nx(0)
             , ny(0)
+            , PTY(NO_RAIN)
+            , SKY(SUNNY)
             , newsfontSize(0)
             , bNewsBoxOpacity(false)
         {
@@ -116,6 +139,9 @@ namespace PlayJson
         qint64 fileDuration; // msec
         int userDuration; // sec
         double zIndex;
+        QString fontColor;
+        QString backgroundColor;
+        bool bBackgroundOpacity;
 
         // weather
         /** @note   below Area info will be replace nx, ny */
@@ -123,11 +149,26 @@ namespace PlayJson
         QString metropolCityName;
         QString city; // area2
         QString cityName;
-        QString fontColor;
-        QString backgroundColor;
-        bool bBackgroundOpacity;
         int nx;
         int ny;
+
+        /**
+         *  @note
+         *          pty - precipitation form
+         *          sky - sky condition
+         *          t1h - temperature
+         *          rn1 - rainfall (1 hour)
+         *          reh - humidity
+         *          vec - direction of the wind
+         *          wsd - wind speed
+         */
+        PlayJson::PTY PTY;
+        PlayJson::SKY SKY;
+        QString T1H;
+        int RN1;
+        int REH;
+        QString VEC;
+        QString WSD;
 
         // clock
         HourType hourType;

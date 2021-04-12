@@ -84,17 +84,24 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
     ds << src.fileDuration;
     ds << src.userDuration;
     ds << src.zIndex;
+    ds << src.fontColor;
+    ds << src.backgroundColor;
+    ds << src.bBackgroundOpacity;
 
     // weather
     ds << src.metropolCity;
     ds << src.metropolCityName;
     ds << src.city;
     ds << src.cityName;
-    ds << src.fontColor;
-    ds << src.backgroundColor;
-    ds << src.bBackgroundOpacity;
     ds << src.nx;
     ds << src.ny;
+    ds << src.PTY;
+    ds << src.SKY;
+    ds << src.T1H;
+    ds << src.RN1;
+    ds << src.REH;
+    ds << src.VEC;
+    ds << src.WSD;
 
     // clock
     ds << src.hourType;
@@ -226,17 +233,24 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest)
     ds >> dest.fileDuration;
     ds >> dest.userDuration;
     ds >> dest.zIndex;
+    ds >> dest.fontColor;
+    ds >> dest.backgroundColor;
+    ds >> dest.bBackgroundOpacity;
 
     // weather
     ds >> dest.metropolCity;
     ds >> dest.metropolCityName;
     ds >> dest.city;
     ds >> dest.cityName;
-    ds >> dest.fontColor;
-    ds >> dest.backgroundColor;
-    ds >> dest.bBackgroundOpacity;
     ds >> dest.nx;
     ds >> dest.ny;
+    ds >> dest.PTY;
+    ds >> dest.SKY;
+    ds >> dest.T1H;
+    ds >> dest.RN1;
+    ds >> dest.REH;
+    ds >> dest.VEC;
+    ds >> dest.WSD;
 
     // clock
     ds >> dest.hourType;
@@ -363,6 +377,14 @@ bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::Cont
         return false;
     if(!(lhs.userDuration == rhs.userDuration))
         return false;
+    if(!(lhs.zIndex == rhs.zIndex))
+        return false;
+    if(!(lhs.fontColor == rhs.fontColor))
+        return false;
+    if(!(lhs.backgroundColor == rhs.backgroundColor))
+        return false;
+    if(!(lhs.bBackgroundOpacity == rhs.bBackgroundOpacity))
+        return false;
     if(!(lhs.metropolCity == rhs.metropolCity))
         return false;
     if(!(lhs.metropolCityName == rhs.metropolCityName))
@@ -371,15 +393,23 @@ bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::Cont
         return false;
     if(!(lhs.cityName == rhs.cityName))
         return false;
-    if(!(lhs.fontColor == rhs.fontColor))
-        return false;
-    if(!(lhs.backgroundColor == rhs.backgroundColor))
-        return false;
-    if(!(lhs.bBackgroundOpacity == rhs.bBackgroundOpacity))
-        return false;
     if(!(lhs.nx == rhs.nx))
         return false;
     if(!(lhs.ny == rhs.ny))
+        return false;
+    if(!(lhs.PTY == rhs.PTY))
+        return false;
+    if(!(lhs.SKY == rhs.SKY))
+        return false;
+    if(!(lhs.T1H == rhs.T1H))
+        return false;
+    if(!(lhs.RN1 == rhs.RN1))
+        return false;
+    if(!(lhs.REH == rhs.REH))
+        return false;
+    if(!(lhs.VEC == rhs.VEC))
+        return false;
+    if(!(lhs.WSD == rhs.WSD))
         return false;
     if(!(lhs.hourType == rhs.hourType))
         return false;

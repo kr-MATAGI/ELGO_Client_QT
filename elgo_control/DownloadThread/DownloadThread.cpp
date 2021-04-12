@@ -437,7 +437,34 @@ void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
     }
     else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
     {
+        QString recvJsonStr;
 
+        // TEST 96, 74 - sahagu
+        contentData.nx = 96;
+        contentData.ny = 74;
+        const bool bIsDownload = CurlDownload::DownloadWeatherInfoJson(contentData, recvJsonStr);
+        if(true == bIsDownload)
+        {
+            const bool bIsParsed = JsonParser::ParseWeatherInfoJsonResponse(recvJsonStr, contentData);
+            if(true == bIsParsed)
+            {
+                ELGO_CONTROL_LOG("Success - Weather Json Parsing, {areaName : %s %s, nx: %d, ny: %d}",
+                                 contentData.metropolCityName.toStdString().c_str(), contentData.cityName.toStdString().c_str(),
+                                 contentData.nx, contentData.ny);
+            }
+            else
+            {
+                ELGO_CONTROL_LOG("Error - Weather Json Parsing, {areaName : %s %s, nx: %d, ny: %d}",
+                                 contentData.metropolCityName.toStdString().c_str(), contentData.cityName.toStdString().c_str(),
+                                 contentData.nx, contentData.ny);
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Weather Info Download Failed, {areaName : %s %s, nx: %d, ny: %d}",
+                             contentData.metropolCityName.toStdString().c_str(), contentData.cityName.toStdString().c_str(),
+                             contentData.nx, contentData.ny);
+        }
     }
     else
     {

@@ -1297,7 +1297,7 @@ void JsonParser::ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::
 }
 
 //========================================================
-bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::Weather::Response& dest)
+bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, PlayJson::ContentData& dest)
 //========================================================
 {
     bool retValue = false;
@@ -1335,7 +1335,7 @@ bool JsonParser::ParseWeatherInfoJsonResponse(const QString& src, DownloadDef::W
 }
 
 //========================================================
-bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, DownloadDef::Weather::Response& dest)
+bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, PlayJson::ContentData& dest)
 //========================================================
 {
     bool retValue = true;
@@ -1350,40 +1350,40 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Down
             std::string category = itemObj["category"].toString().toStdString();
             if(0 == strcmp("PTY", category.c_str()))
             {
-                const DownloadDef::Weather::PTY pty =
-                        static_cast<DownloadDef::Weather::PTY>(itemObj["fcstValue"].toInt());
-                dest.SetPty(pty);
+                const PlayJson::PTY pty =
+                        static_cast<PlayJson::PTY>(itemObj["fcstValue"].toInt());
+                dest.PTY = pty;
             }
             else if(0 == strcmp("SKY", category.c_str()))
             {
-                const DownloadDef::Weather::SKY sky =
-                        static_cast<DownloadDef::Weather::SKY>(itemObj["fcstValue"].toInt());
-                dest.SetSky(sky);
+                const PlayJson::SKY sky =
+                        static_cast<PlayJson::SKY>(itemObj["fcstValue"].toInt());
+                dest.SKY = sky;
             }
             else if(0 == strcmp("T1H", category.c_str()))
             {
                 const QString& t1h = itemObj["fcstValue"].toString();
-                dest.SetT1h(t1h);
+                dest.T1H = t1h;
             }
             else if(0 == strcmp("RN1", category.c_str()))
             {
                 const int rn1 = itemObj["fcstValue"].toInt();
-                dest.SetRn1(rn1);
+                dest.RN1 = rn1;
             }
             else if(0 == strcmp("REH", category.c_str()))
             {
                 const int reh = itemObj["fcstValue"].toInt();
-                dest.SetReh(reh);
+                dest.REH = reh;
             }
             else if(0 == strcmp("VEC", category.c_str()))
             {
                 const QString& vec = itemObj["fcstValue"].toString();
-                dest.SetVec(vec);
+                dest.VEC = vec;
             }
             else if(0 == strcmp("WSD", category.c_str()))
             {
                 const QString& wsd = itemObj["fcstValue"].toString();
-                dest.SetWsd(wsd);
+                dest.WSD = wsd;
             }
         }
     }

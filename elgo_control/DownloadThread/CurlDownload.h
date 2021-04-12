@@ -12,7 +12,7 @@ namespace CurlDownload
     bool DownloadNewsFeedXml(PlayJson::NewsCategory category, QString& dest);
 
     /** @brief */
-    bool DownloadWeatherInfoJson(const DownloadDef::Weather::Request& req, QString& dest);
+    bool DownloadWeatherInfoJson(const PlayJson::ContentData& request, QString& dest);
 
     /** @brief */
     bool DownloadResourceList(const QString& url, QString& dest);
@@ -21,6 +21,10 @@ namespace CurlDownload
     bool DownloadResourceData(const ResourceJson::Resource& src);
     /** @brief */
     bool DownloadObjectJson(const QString& url, QString& dest);
+
+    /** @brief */
+    void MakeWeatherBaseDateTimeStr(QString& baseDate, QString& baseTime);
+
 
     /** @brief */
     static size_t WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data);
