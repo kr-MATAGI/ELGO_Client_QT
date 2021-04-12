@@ -47,13 +47,13 @@ void DateWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
     m_styleInfo = style;
 
     QString widgetStyleSheet = QString("QWidget {background-color: %1;}")
-                                .arg(style.backgroundColor);
+                                .arg(m_styleInfo.backgroundColor);
     QString labelStyleSheet = QString("QLabel {color: %1;}")
-                                .arg(style.fontColor);
+                                .arg(m_styleInfo.fontColor);
     ELGO_VIEWER_LOG("StyleSheet - %s", widgetStyleSheet.toStdString().c_str());
     ELGO_VIEWER_LOG("StyleSheet - %s", labelStyleSheet.toStdString().c_str());
 
-    if(true == style.bTransparency)
+    if(true == m_styleInfo.bTransparency)
     {
         this->setAttribute(Qt::WA_TranslucentBackground, true);
     }

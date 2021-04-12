@@ -23,28 +23,8 @@ namespace DownloadDef
     {
         DEFAULT_TIME_OUT = 1 * 1000,
         VIDEO_DOWNLOAD_TIME_OUT = 10 * 1000,
-        NEWS_FEED = 4 * 1000
+        NEWS_FEED = 5 * 1000
     };
-
-    // News Feed
-    /** @brief */
-    enum NewsCategory
-    {
-        LATEST = 1,
-        HEAD_LINE = 2,
-        POLITICS = 3,
-        ECONOMY =4,
-        SOCIETY = 5,
-        LOCAL = 6,
-        INTERNAL = 7,
-        CULTURE = 8,
-        SPORTS = 9,
-        WEATHER = 10
-    };
-
-    static const char* categoryEnumToStr[] = { "latest", "headline", "politics",
-                                               "economy", "society", "local",
-                                                "international", "culture", "sports", "weather"};
 
     // Weather Info
     namespace Weather

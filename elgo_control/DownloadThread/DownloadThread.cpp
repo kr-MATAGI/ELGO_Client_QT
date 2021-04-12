@@ -7,6 +7,7 @@
 #include "CurlDownload.h"
 #include "JSON/JsonParser.h"
 #include "JSON/JsonWriter.h"
+#include "XML/XmlParser.h"
 #include "Logger/ControlLogger.h"
 #include "Utils/VideoInfoHelper.h"
 
@@ -88,11 +89,15 @@ void DownloadThread::ExecDownloadSinglePlayData()
                     {
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
+
+                        SearchCustomDataWidgetType(customPlayData.pageDataList);
                     }
                     else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
+
+                        SearchFixedDataWidgetType(fixedPlayData.layerDataList);
                     }
                     else
                     {
@@ -234,11 +239,15 @@ void DownloadThread::ExecDownloadPlaySchedules()
                     {
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
+
+                        SearchCustomDataWidgetType(customPlayData.pageDataList);
                     }
                     else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
+
+                        SearchFixedDataWidgetType(fixedPlayData.layerDataList);
                     }
                     else
                     {
@@ -360,6 +369,79 @@ void DownloadThread::ExecDownloadPlaySchedules()
     else
     {
         ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", scheduleListUrl.toStdString().c_str());
+    }
+}
+
+
+//========================================================
+void DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList)
+//========================================================
+{
+    QVector<PlayJson::PageData>::iterator pageIter = pageDataList.begin();
+    for(; pageIter != pageDataList.end(); ++pageIter)
+    {
+        QVector<PlayJson::CustomLayerData>::iterator layerDataIter = pageIter->layerDataList.begin();
+        for(; layerDataIter != pageIter->layerDataList.end(); ++layerDataIter)
+        {
+            if(PlayJson::ContentType::WIDGET == layerDataIter->layerContent.contentInfo.contentType)
+            {
+                if( (PlayJson::MediaType::NEWS == layerDataIter->layerContent.contentInfo.mediaType) ||
+                    (PlayJson::MediaType::WEATHER == layerDataIter->layerContent.contentInfo.mediaType) )
+                {
+                    DownloadAdditionalWidgetInfo(layerDataIter->layerContent);
+                }
+            }
+        }
+    }
+}
+
+//========================================================
+void DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList)
+//========================================================
+{
+    QVector<PlayJson::FixedLayerData>::iterator layerDataIter = layerDataList.begin();
+    for(; layerDataIter != layerDataList.end(); ++layerDataIter)
+    {
+        QVector<PlayJson::ContentData>::iterator contentIter = layerDataIter->contentDataList.begin();
+        for(; contentIter != layerDataIter->contentDataList.end(); ++contentIter)
+        {
+            DownloadAdditionalWidgetInfo(*contentIter);
+        }
+    }
+}
+
+//========================================================
+void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData)
+//========================================================
+{
+    if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
+    {
+        QString recvJsonStr;
+        const bool bIsDownload = CurlDownload::DownloadNewsFeedXml(contentData.newsCategory, recvJsonStr);
+        if(true == bIsDownload)
+        {
+            const bool bIsParsed = XmlParser::ParseRssNewsFeedResponse(recvJsonStr, contentData.newsFeedList);
+            if(true == bIsParsed)
+            {
+                ELGO_CONTROL_LOG("Success - Parsing, category : %d", contentData.newsCategory);
+            }
+            else
+            {
+                ELGO_CONTROL_LOG("Error - Parsing Failed, category : %d", contentData.newsCategory);
+            }
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Download Failed, category : %d", contentData.newsCategory);
+        }
+    }
+    else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
+    {
+
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Media type : %d", contentData.contentInfo.mediaType);
     }
 }
 

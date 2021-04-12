@@ -7,7 +7,7 @@
 namespace XmlParser
 {
     /** @brief */
-    bool ParseRssNewsFeedResponse(const QString& src, QStringList& dest);
+    bool ParseRssNewsFeedResponse(const QString& src, QVector<QString>& dest);
 }
 
 #endif // XMLPARSER_H

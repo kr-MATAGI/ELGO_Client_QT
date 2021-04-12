@@ -7,6 +7,7 @@
 
 // Viewer
 #include "Widget/Definition/ContentsDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 
 namespace Ui {
 class NewsFeedWidget;
@@ -21,25 +22,40 @@ public:
     ~NewsFeedWidget();
 
     /** @brief */
-    void SetNewsFeedList(const NewsInfo::Topic topic, const QList<QString>& feeds);
-
+    void SetNewsFeedList(const PlayJson::NewsCategory category, const QVector<QString>& feedList);
     /** @brief */
-    void SetBackgroundStyleSheet(const StyleSheet::StyleInfo& style);
-
+    void SetWidgetStyleSheet(const StyleSheet::StyleInfo& style);
     /** @brief */
     void SetFeedLabelStyleSheet(const StyleSheet::StyleInfo& style);
-
+    /** @brief */
+    void SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo);
     /** @brief */
     void MakeNewsFeedWidget();
 
+    void StartAnimation();
+    void StopAnimation();
+    bool IsStartedAnimation();
+
+    /** @brief */
+    QString ConvertCategoryEnumToKrStr(const PlayJson::NewsCategory category);
+    /** @brief */
+    int CalcTitleLabelFontSize(const int height);
+    /** @brief */
+    int CalcFeedLabelFontSize(const int height);
+
 private:
     Ui::NewsFeedWidget *ui;
-    StyleSheet::StyleInfo m_style;
 
-    NewsInfo::Topic m_topic;
+    StyleSheet::StyleInfo m_widgetStyle;
+    StyleSheet::StyleInfo m_feedStyle;
+    StyleSheet::PosSizeInfo m_widgetPosSize;
+
+    PlayJson::NewsCategory m_category;
     QList<NewsInfo::FeedData*> m_newsFeedList;
+
     QList<NewsInfo::FeedAnimation*> m_newsFeedAniList;
     QSequentialAnimationGroup *m_seqAniGroup;
+    bool m_bIsStartedAnimation;
 };
 
 #endif // NEWSFEEDWIDGET_H

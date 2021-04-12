@@ -86,6 +86,10 @@ namespace PlayJson
         NEWS_WEATHER = 10,
     };
 
+    static const char* newscategoryEnumToStr[] = { "none", "latest", "headline", "politics",
+                                                    "economy", "society", "local",
+                                                    "international", "culture", "sports", "weather"};
+
     /** @brief */
     struct ContentInfo
     {
@@ -104,7 +108,6 @@ namespace PlayJson
             , nx(0)
             , ny(0)
             , newsfontSize(0)
-            , newsBoxCount(0)
             , bNewsBoxOpacity(false)
         {
         }
@@ -134,8 +137,8 @@ namespace PlayJson
 
         // news
         NewsCategory newsCategory;
+        QVector<QString> newsFeedList;
         int newsfontSize;
-        int newsBoxCount;
         QString newsBoxColor;
         bool bNewsBoxOpacity;
     };

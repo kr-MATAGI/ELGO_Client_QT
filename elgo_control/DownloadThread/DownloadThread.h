@@ -7,6 +7,7 @@
 
 // Control
 #include "DownloadDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 #include "NetworkCtrl/NetworkController.h"
 
 class NetworkController;
@@ -24,7 +25,13 @@ public:
     void ExecDownloadSinglePlayData();
     /** @brief */
     void ExecDownloadPlaySchedules();
+
     /** @brief */
+    void SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList);
+    /** @brief */
+    void SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList);
+    /** @brief */
+    void DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData);
 
 
     /** @brief */

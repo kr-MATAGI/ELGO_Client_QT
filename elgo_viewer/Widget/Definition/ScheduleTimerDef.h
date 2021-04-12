@@ -10,6 +10,8 @@
 #include "Widget/Video/VideoItem.h"
 #include "Widget/Clock/ClockWidget.h"
 #include "Widget/Date/DateWidget.h"
+#include "Widget/News/NewsFeedWidget.h"
+#include "Widget/Weather/WeatherWidget.h"
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
@@ -120,6 +122,8 @@ typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ClockWidget*> ClockWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, DateWidget*> DateWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, NewsFeedWidget*> NewsFeedWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayDataIndexInfo, WeatherWidget*> WeatherWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H

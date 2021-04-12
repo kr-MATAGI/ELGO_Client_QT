@@ -58,29 +58,12 @@ namespace WeatherInfo
 namespace NewsInfo
 {
     /** @brief */
-    enum Topic
-    {
-        e_NONE = 0,
-        e_LATEST = 1,
-        e_HEADLINE = 2,
-        e_POLITICS = 3,
-        e_ECONOMY = 4,
-        e_SOCIETY = 5,
-        e_SPORT = 6,
-        e_CULTURE = 7,
-        e_LOCAL = 8,
-        e_GLOBAL = 9,
-        e_WEATHER = 10
-    };
-
-    static const char* topicEnumToStr[] = {"NONE", "최신", "헤드라인",
-                                          "정치", "경제", "사회",
-                                          "스포츠", "문화연예", "지역",
-                                          "세계", "날씨"};
-
-    /** @brief */
     struct FeedData
     {
+        FeedData()
+            : bIsTextOverflow(false)
+        {
+        }
         ~FeedData()
         {
             delete originLabel;
@@ -105,11 +88,15 @@ namespace NewsInfo
             delete changedLabelAni;
             changedLabelAni = NULL;
 
+            delete overflowTextAni;
+            overflowTextAni = NULL;
+
             delete parallAniGroup;
             parallAniGroup = NULL;
         }
         QPropertyAnimation *originLabelAni;
         QPropertyAnimation *changedLabelAni;
+        QPropertyAnimation *overflowTextAni;
         QParallelAnimationGroup *parallAniGroup;
     };
 }

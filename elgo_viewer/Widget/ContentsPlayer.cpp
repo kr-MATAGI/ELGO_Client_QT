@@ -421,6 +421,15 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
         }
     }
 
+    QVector<NewsFeedWidgetInfo>::iterator newsIter = m_newsFeedWigetList.begin();
+    for(; newsIter != m_newsFeedWigetList.end(); ++newsIter)
+    {
+        if(prevPlayDataIdxInfo == newsIter->first && true == newsIter->second->IsStartedAnimation())
+        {
+            newsIter->second->StopAnimation();
+        }
+    }
+
     // Animation - News Feed
 }
 
@@ -494,35 +503,35 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
     QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget;
     if(PlayJson::MediaType::CLOCK == contentData.contentInfo.mediaType)
     {
-        ClockWidget *newClcok = new ClockWidget;
-        newClcok->MakeClockTimeString(contentData.hourType);
-        newClcok->SetStyleSheet(styleInfo);
-        newClcok->SetPosSizeInfo(posSizeinfo);
+        ClockWidget *newClcokWidget = new ClockWidget;
+        newClcokWidget->MakeClockTimeString(contentData.hourType);
+        newClcokWidget->SetStyleSheet(styleInfo);
+        newClcokWidget->SetPosSizeInfo(posSizeinfo);
 
-        proxyWidget->setWidget(newClcok);
+        proxyWidget->setWidget(newClcokWidget);
         proxyWidget->setZValue(contentData.zIndex);
 
-        ClockWidgetInfo newClockWidgetInfo(contentIndexInfo, newClcok);
+        ClockWidgetInfo newClockWidgetInfo(contentIndexInfo, newClcokWidget);
         m_clockWidgetList.push_back(newClockWidgetInfo);
 
-        ProxyWidgetInfo clockProxyWidgetInfo(contentIndexInfo, proxyWidget);
-        m_proxyWidgetList.push_back(clockProxyWidgetInfo);
+        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::DATE == contentData.contentInfo.mediaType)
     {
-        DateWidget *newDate = new DateWidget;
-        newDate->MakeDateLabelString();
-        newDate->SetStyleSheet(styleInfo);
-        newDate->SetPosSizeinfo(posSizeinfo);
+        DateWidget *newDateWidget = new DateWidget;
+        newDateWidget->MakeDateLabelString();
+        newDateWidget->SetStyleSheet(styleInfo);
+        newDateWidget->SetPosSizeinfo(posSizeinfo);
 
-        proxyWidget->setWidget(newDate);
+        proxyWidget->setWidget(newDateWidget);
         proxyWidget->setZValue(contentData.zIndex);
 
-        DateWidgetInfo newDateWidgetInfo(contentIndexInfo, newDate);
+        DateWidgetInfo newDateWidgetInfo(contentIndexInfo, newDateWidget);
         m_dateWidgetList.push_back(newDateWidgetInfo);
 
-        ProxyWidgetInfo dateProxyWidgetInfo(contentIndexInfo, proxyWidget);
-        m_proxyWidgetList.push_back(dateProxyWidgetInfo);
+        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
     {
@@ -530,7 +539,27 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
     }
     else if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
     {
+        NewsFeedWidget *newNewsWidget = new NewsFeedWidget;
+        StyleSheet::StyleInfo feedStyle;
+        feedStyle.backgroundColor = contentData.newsBoxColor;
+        feedStyle.fontColor = contentData.fontColor;
+        feedStyle.fontSize = contentData.newsfontSize;
+        feedStyle.bTransparency = contentData.bNewsBoxOpacity;
 
+        newNewsWidget->SetNewsFeedList(contentData.newsCategory, contentData.newsFeedList);
+        newNewsWidget->SetWidgetStyleSheet(styleInfo);
+        newNewsWidget->SetFeedLabelStyleSheet(feedStyle);
+        newNewsWidget->SetPosSizeInfo(posSizeinfo);
+        newNewsWidget->MakeNewsFeedWidget();
+
+        proxyWidget->setWidget(newNewsWidget);
+        proxyWidget->setZValue(contentData.zIndex);
+
+        NewsFeedWidgetInfo newsWidgetInfo(contentIndexInfo, newNewsWidget);
+        m_newsFeedWigetList.push_back(newsWidgetInfo);
+
+        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
 }
 
@@ -576,8 +605,6 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
                                 videoIter->second->GetVideoFileName().toUtf8().constData());
             }
         }
-
-        // Find Subtitle Item
     }
     else
     {
@@ -619,7 +646,15 @@ void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo
         }
     }
 
-    // Animation
+    // News
+    QVector<NewsFeedWidgetInfo>::iterator newsIter = m_newsFeedWigetList.begin();
+    for(; newsIter != m_newsFeedWigetList.end(); ++newsIter)
+    {
+        if(playDataIdxInfo == newsIter->first)
+        {
+            newsIter->second->StartAnimation();
+        }
+    }
 }
 
 //========================================================

@@ -3,12 +3,13 @@
 
 // Control
 #include "DownloadDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 #include "JSON/Schema/ContentServerSchema.h"
 
 namespace CurlDownload
 {
     /** @brief */
-    bool DownloadNewsFeedXml(DownloadDef::NewsCategory category, QString& dest);
+    bool DownloadNewsFeedXml(PlayJson::NewsCategory category, QString& dest);
 
     /** @brief */
     bool DownloadWeatherInfoJson(const DownloadDef::Weather::Request& req, QString& dest);

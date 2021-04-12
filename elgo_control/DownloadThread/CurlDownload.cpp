@@ -12,7 +12,7 @@
 #include <curl/curl.h>
 
 //========================================================
-bool CurlDownload::DownloadNewsFeedXml(DownloadDef::NewsCategory category, QString& dest)
+bool CurlDownload::DownloadNewsFeedXml(PlayJson::NewsCategory category, QString& dest)
 //========================================================
 {
     bool retValue = false;
@@ -21,14 +21,14 @@ bool CurlDownload::DownloadNewsFeedXml(DownloadDef::NewsCategory category, QStri
     if(curl)
     {
         std::string url = NEWS_BASE_URL;
-        if(DownloadDef::NewsCategory::LATEST == category)
+        if(PlayJson::NewsCategory::LATEST == category)
         {
             url.append("browse/feed/");
         }
         else
         {
             url.append("category/news/");
-            url.append(DownloadDef::categoryEnumToStr[category]);
+            url.append(PlayJson::newscategoryEnumToStr[category]);
             url.append("/feed");
         }
         ELGO_CONTROL_LOG("URL - %s", url.c_str());

@@ -7,7 +7,7 @@
 #include "Logger/ControlLogger.h"
 
 //========================================================
-bool XmlParser::ParseRssNewsFeedResponse(const QString& src, QStringList& dest)
+bool XmlParser::ParseRssNewsFeedResponse(const QString& src, QVector<QString>& dest)
 //========================================================
 {
     bool retValue = true;

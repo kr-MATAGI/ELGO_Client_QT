@@ -853,7 +853,6 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
         {
             const QString& newsCountStr = layerContentObj["news_count"].toString();
             const int newsCount = newsCountStr.toInt();
-            dest.newsBoxCount = newsCount;
         }
 
         if(layerContentObj.end() != layerContentObj.find("font_size"))
@@ -994,7 +993,6 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
         {
             const QString& newsCountStr = layerContentObj["cd_news_count"].toString();
             const int newsCount = newsCountStr.toInt();
-            dest.newsBoxCount = newsCount;
         }
 
         if(layerContentObj.end() != layerContentObj.find("cd_font_size"))
