@@ -47,14 +47,15 @@ namespace WeatherInfo
         DisplayValue()
             : pty(PlayJson::PTY::NO_RAIN)
             , sky(PlayJson::SKY::SUNNY)
+            , lgt(false)
         {
         }
 
         PlayJson::PTY pty;
         PlayJson::SKY sky;
+        bool lgt;
         QString metroCity;
         QString city;
-        QString status;
         QString temperature;
     };
 }

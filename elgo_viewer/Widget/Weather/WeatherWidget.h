@@ -38,6 +38,10 @@ public:
 
     /** @brief */
     QString MakeDateTimeStr();
+    /** @brief */
+    QString MakeWeatherIconFilePath(const WeatherInfo::DisplayValue& displayValue);
+    /** @brief */
+    QString MakeStatusLabelString(const WeatherInfo::DisplayValue& displayValue);
 
 private slots:
     void UpdateCurrentDateTime();

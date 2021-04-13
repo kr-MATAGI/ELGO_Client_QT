@@ -557,6 +557,7 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
         displayValue.temperature = contentData.T1H;
         displayValue.pty = contentData.PTY;
         displayValue.sky = contentData.SKY;
+        displayValue.lgt = contentData.LGT;
 
         newWeatherWidget->SetStyleSheet(styleInfo);
         newWeatherWidget->SetPosSizeInfo(posSizeinfo);

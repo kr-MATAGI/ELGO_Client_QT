@@ -113,8 +113,8 @@ namespace PlayJson
     enum SKY
     {
         SUNNY = 1,
-        CLOUDY = 2,
-        FOG = 3
+        MUCH_CLOUDY = 2,
+        CLOUDY = 3
     };
 
 
@@ -130,6 +130,7 @@ namespace PlayJson
             , ny(0)
             , PTY(NO_RAIN)
             , SKY(SUNNY)
+            , LGT(false)
             , newsfontSize(0)
             , bNewsBoxOpacity(false)
         {
@@ -161,6 +162,7 @@ namespace PlayJson
          *          reh - humidity
          *          vec - direction of the wind
          *          wsd - wind speed
+         *          lgt - falling of a thunderbolt
          */
         PlayJson::PTY PTY;
         PlayJson::SKY SKY;
@@ -169,6 +171,7 @@ namespace PlayJson
         int REH;
         QString VEC;
         QString WSD;
+        bool LGT;
 
         // clock
         HourType hourType;

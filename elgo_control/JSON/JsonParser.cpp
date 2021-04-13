@@ -1342,48 +1342,77 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Play
 
     if(false == itemsObj.isEmpty())
     {
+        // pty, sky, t1h, reh, reh, vec, wsd, lgt
+        bool bIsSetValueArr[] = { false, false, false, false,
+                                  false, false, false, false };
+
         const QJsonArray& itemArray = itemsObj["item"].toArray();
         const int itemArraySize = itemArray.size();
         for(int idx = 0; idx < itemArraySize; idx++)
         {
             const QJsonObject& itemObj = itemArray[idx].toObject();
-            std::string category = itemObj["category"].toString().toStdString();
-            if(0 == strcmp("PTY", category.c_str()))
+            const std::string& category = itemObj["category"].toString().toStdString();
+            if(0 == strcmp("PTY", category.c_str()) && false == bIsSetValueArr[0])
             {
-                const PlayJson::PTY pty =
-                        static_cast<PlayJson::PTY>(itemObj["fcstValue"].toInt());
+                bIsSetValueArr[0] = true;
+
+                const QString& ptyStr = itemObj["fcstValue"].toString();
+                const PlayJson::PTY pty = static_cast<PlayJson::PTY>(ptyStr.toInt());
                 dest.PTY = pty;
             }
-            else if(0 == strcmp("SKY", category.c_str()))
+            else if(0 == strcmp("SKY", category.c_str()) && false == bIsSetValueArr[1])
             {
+                bIsSetValueArr[1] = true;
+
+                const QString& skyStr = itemObj["fcstValue"].toString();
                 const PlayJson::SKY sky =
-                        static_cast<PlayJson::SKY>(itemObj["fcstValue"].toInt());
+                        static_cast<PlayJson::SKY>(skyStr.toInt());
                 dest.SKY = sky;
             }
-            else if(0 == strcmp("T1H", category.c_str()))
+            else if(0 == strcmp("T1H", category.c_str()) && false == bIsSetValueArr[2])
             {
+                bIsSetValueArr[2] = true;
+
                 const QString& t1h = itemObj["fcstValue"].toString();
                 dest.T1H = t1h;
             }
-            else if(0 == strcmp("RN1", category.c_str()))
+            else if(0 == strcmp("RN1", category.c_str()) && false == bIsSetValueArr[3])
             {
-                const int rn1 = itemObj["fcstValue"].toInt();
+                bIsSetValueArr[3] = true;
+
+                const QString& rn1Str = itemObj["fcstValue"].toString();
+                const int rn1 = rn1Str.toInt();
                 dest.RN1 = rn1;
             }
-            else if(0 == strcmp("REH", category.c_str()))
+            else if(0 == strcmp("REH", category.c_str()) && false == bIsSetValueArr[4])
             {
-                const int reh = itemObj["fcstValue"].toInt();
+                bIsSetValueArr[4] = true;
+
+                const QString& rehStr = itemObj["fcstValue"].toString();
+                const int reh = rehStr.toInt();
                 dest.REH = reh;
             }
-            else if(0 == strcmp("VEC", category.c_str()))
+            else if(0 == strcmp("VEC", category.c_str()) && false == bIsSetValueArr[5])
             {
+                bIsSetValueArr[5] = true;
+
                 const QString& vec = itemObj["fcstValue"].toString();
                 dest.VEC = vec;
             }
-            else if(0 == strcmp("WSD", category.c_str()))
+            else if(0 == strcmp("WSD", category.c_str()) && false == bIsSetValueArr[6])
             {
+                bIsSetValueArr[6] = true;
+
                 const QString& wsd = itemObj["fcstValue"].toString();
                 dest.WSD = wsd;
+            }
+            else if(0 == strcmp("LGT", category.c_str()) && false == bIsSetValueArr[7])
+            {
+                bIsSetValueArr[7] = true;
+
+                const QString& lgtStr = itemObj["LGT"].toString();
+                const bool lgt = static_cast<bool>(lgtStr.toInt());
+                dest.LGT = lgt;
             }
         }
     }
@@ -1391,7 +1420,7 @@ bool JsonParser::ParseWeatherItemsJsonResponse(const QJsonObject& itemsObj, Play
     {
         retValue = false;
         ELGO_CONTROL_LOG("Error - Items Object is Empty");
-    }
+    }    
 
     return retValue;
 }

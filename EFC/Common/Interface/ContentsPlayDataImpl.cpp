@@ -102,6 +102,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
     ds << src.REH;
     ds << src.VEC;
     ds << src.WSD;
+    ds << src.LGT;
 
     // clock
     ds << src.hourType;
@@ -251,6 +252,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest)
     ds >> dest.REH;
     ds >> dest.VEC;
     ds >> dest.WSD;
+    ds >> dest.LGT;
 
     // clock
     ds >> dest.hourType;
@@ -410,6 +412,8 @@ bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::Cont
     if(!(lhs.VEC == rhs.VEC))
         return false;
     if(!(lhs.WSD == rhs.WSD))
+        return false;
+    if(!(lhs.LGT == rhs.LGT))
         return false;
     if(!(lhs.hourType == rhs.hourType))
         return false;

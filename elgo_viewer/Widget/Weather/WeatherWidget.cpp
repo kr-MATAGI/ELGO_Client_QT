@@ -74,7 +74,7 @@ void WeatherWidget::SetStyleSheet(const StyleSheet::StyleInfo& style)
 void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
 //========================================================
 {
-    m_posSizeInfo = posSizeInfo;
+    m_posSizeInfo = posSizeInfo;    
 
     // widget
     const QPointF& widgetPos = posSizeInfo.pos;
@@ -84,17 +84,26 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     ELGO_VIEWER_LOG("Widget pos{x: %f, y: %f}, size{w: %d, h: %d}",
                     widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
 
+    // icon svg widget
+    const QPoint svgWidgetPos(widgetSize.width() * 0.1, widgetSize.height() * 0.1);
+    const QSize svgWidgetSize(widgetSize.width() * 0.4, widgetSize.height() * 0.6);
+    const QRect svgWidgetRect(svgWidgetPos, svgWidgetSize);
+    ui->weatherIconView->setGeometry(svgWidgetRect);
+    m_iconWidget->setGeometry(svgWidgetRect);
+    ELGO_VIEWER_LOG("svgWidget pos{x: %f, y: %f}, size{w: %d, h: %d}",
+                    svgWidgetPos.x(), svgWidgetPos.y(), svgWidgetSize.width(), svgWidgetSize.height());
+
     // city label
-    const QPoint cityLabelPos(widgetSize.width() * 0.03, widgetSize.height() * 0.03);
-    const QSize cityLabelSize(widgetSize.width() * 0.5, widgetSize.height() * 0.1);
+    const QPoint cityLabelPos(svgWidgetPos.x(), svgWidgetSize.height() * 1.1);
+    const QSize cityLabelSize(svgWidgetSize.width(), widgetSize.height() * 0.13);
     const QRect cityLabelRect(cityLabelPos, cityLabelSize);
     ui->cityLabel->setGeometry(cityLabelRect);
     ELGO_VIEWER_LOG("cityLabel pos{x: %f, y: %f}, size{w: %d, h: %d}",
                     cityLabelPos.x(), cityLabelPos.y(), cityLabelSize.width(), cityLabelSize.height());
 
     // dateTime label
-    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelPos.y() * 4);
-    const QSize dateTimeLabelSize(cityLabelSize);
+    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelPos.y() + cityLabelSize.height());
+    const QSize dateTimeLabelSize(widgetSize.width(), cityLabelSize.height());
     const QRect dateTimeLabelRect(dateTimeLabelPos, dateTimeLabelSize);
     ui->dateTimeLabel->setGeometry(dateTimeLabelRect);
     ELGO_VIEWER_LOG("dateTimeLabel pos{x: %f, y: %f}, size{w: %d, h: %d}",
@@ -108,34 +117,24 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     ui->cityLabel->setFont(leftLabelFont);
     ui->dateTimeLabel->setFont(leftLabelFont);
 
-    // icon svg widget
-    const QPoint svgWidgetPos(cityLabelPos.x(), dateTimeLabelPos.y() * 3);
-    const QSize svgWidgetSize(widgetSize.width() * 0.4, widgetSize.height() * 0.5);
-    const QRect svgWidgetRect(svgWidgetPos, svgWidgetSize);
-    ui->weatherIconView->setGeometry(svgWidgetRect);
-    m_iconWidget->setGeometry(svgWidgetRect);
-    ELGO_VIEWER_LOG("svgWidget pos{x: %f, y: %f}, size{w: %d, h: %d}",
-                    svgWidgetPos.x(), svgWidgetPos.y(), svgWidgetSize.width(), svgWidgetSize.height());
-
     // temperature label
-    const int svgRight = ui->weatherIconView->rect().right() * 2;
-    const QPoint temperLabelPos(svgRight, svgWidgetPos.y());
-    const QSize temperLabelSize(svgWidgetSize.width() * 0.4, svgWidgetSize.height() * 0.4);
+    const QPoint temperLabelPos(svgWidgetRect.right() * 1.1, svgWidgetPos.y() * 0.9);
+    const QSize temperLabelSize(widgetSize.width() * 0.4, widgetSize.height() * 0.4);
     const QRect temperLabelRect(temperLabelPos, temperLabelSize);
     ui->temperLabel->setGeometry(temperLabelRect);
     ELGO_VIEWER_LOG("temperLabel pos{x: %f, y: %f}, size{w: %d, h: %d}",
                     temperLabelPos.x(), temperLabelPos.y(), temperLabelSize.width(), temperLabelSize.height());
 
     QFont temperLabelFont;
-    const int temperLabelFontSize = temperLabelSize.height() * 0.5;
+    const int temperLabelFontSize = temperLabelSize.height() * 0.6;
     temperLabelFont.setBold(true);
     temperLabelFont.setPixelSize(temperLabelFontSize);
     ELGO_VIEWER_LOG("temperLabelFontSize : %d", temperLabelFontSize);
     ui->temperLabel->setFont(temperLabelFont);
 
     // status label
-    const QPoint statusLabelPos(temperLabelPos.x() * 0.6, temperLabelPos.y() * 2.5);
-    const QSize statusLabelSize(temperLabelSize.width() * 0.6, temperLabelSize.height() * 0.6);
+    const QPoint statusLabelPos(temperLabelPos.x(), temperLabelRect.bottom());
+    const QSize statusLabelSize(temperLabelSize.width(), temperLabelSize.height() * 0.5);
     const QRect statusLabelRect(statusLabelPos, statusLabelSize);
     ui->statusLabel->setGeometry(statusLabelRect);
     ELGO_VIEWER_LOG("statusLabel pos{x: %f, y: %f}, size{w: %d, h: %d}",
@@ -157,58 +156,8 @@ void WeatherWidget::MakeWeatherWidget(const WeatherInfo::DisplayValue& newValue)
 
     // set weather icon
     // for test
-    const QString iconPath = RESOURCE_ICON_PATH;
-
-    /**
-      * @note
-      *         sky.sunny == sunny.svg
-      *         sky.cloudy == cloud.svg
-      *         sky.fog == fog.svg
-      *         pty.rain == rain.svg
-      *         pty.sleet == s_snow.svg
-      *         pty.snow == snow.svg
-      *         pty.shower == s_rain.svg
-      *         pty.raindrop == rain.svg
-      *         pty.raindropsnw = rain_snow.svg
-      */
-
-    QString iconFile;
-    if(PlayJson::SKY::SUNNY == m_displayValue.sky)
-    {
-
-    }
-    else if(PlayJson::SKY::CLOUDY == m_displayValue.sky)
-    {
-
-    }
-    else if(PlayJson::SKY::FOG == m_displayValue.sky)
-    {
-
-    }
-    else if(PlayJson::PTY::RAIN == m_displayValue.pty)
-    {
-
-    }
-    else if(PlayJson::PTY::SLEET == m_displayValue.pty)
-    {
-
-    }
-    else if(PlayJson::PTY::SNOW == m_displayValue.pty)
-    {
-
-    }
-    else if(PlayJson::PTY::SHOWER == m_displayValue.pty)
-    {
-
-    }
-    else if(PlayJson::PTY::RAIN_DROP == m_displayValue.pty)
-    {
-
-    }
-    else if(PlayJson::PTY::RAIN_DROP_SNOW == m_displayValue.pty)
-    {
-
-    }
+    const QString iconPath = MakeWeatherIconFilePath(m_displayValue);
+    ELGO_VIEWER_LOG("Weather icon path : %s", iconPath.toStdString().c_str());
 
     m_iconWidget->load(iconPath);
     m_iconWidget->setAttribute(Qt::WA_TranslucentBackground, true);
@@ -225,7 +174,8 @@ void WeatherWidget::MakeWeatherWidget(const WeatherInfo::DisplayValue& newValue)
     ui->temperLabel->setText(temperatureStr);
 
     // set status
-    ui->statusLabel->setText(m_displayValue.status);
+    const QString statusStr = MakeStatusLabelString(m_displayValue);
+    ui->statusLabel->setText(statusStr);
 
     // set dateTime
     const QString& dateTimeStr = MakeDateTimeStr();
@@ -256,16 +206,175 @@ bool WeatherWidget::IsStartedDateTimeTimer()
 }
 
 //========================================================
+QString WeatherWidget::MakeWeatherIconFilePath(const WeatherInfo::DisplayValue& displayValue)
+//========================================================
+{
+    /**
+      * @note
+      *         sky.sunny == sunny.svg
+      *         sky.much_cloud == cloud_1_sunny.svg
+      *         sky.cloudy == cloud.svg
+      *         pty.rain == rain.svg
+      *         pty.sleet == s_snow.svg
+      *         pty.snow == snow.svg
+      *         pty.shower == s_rain.svg
+      *         pty.raindrop == s_rain.svg
+      *         pty.raindropsnow = rain_snow.svg
+      *         lgt(true) == lightning.svg
+      *         lgt(true), pty(rain) == rain_lightning
+      */
+
+    QString retValue = RESOURCE_ICON_PATH;
+    ELGO_VIEWER_LOG("Display Value : {LGT: %d, SKY: %d, PTY: %d}",
+                    displayValue.lgt, displayValue.pty, displayValue.sky);
+
+    if(true == displayValue.lgt)
+    {
+        if(PlayJson::PTY::RAIN == displayValue.pty)
+        {
+            retValue += "/rain_lightning.svg";
+        }
+        else
+        {
+            retValue += "/lightning.svg";
+        }
+    }
+    else if(PlayJson::SKY::SUNNY == displayValue.sky)
+    {
+        retValue += "/sunny.svg";
+    }
+    else if(PlayJson::SKY::MUCH_CLOUDY == displayValue.sky)
+    {
+        retValue += "/cloud_1_sunny.svg";
+    }
+    else if(PlayJson::SKY::CLOUDY == displayValue.sky)
+    {
+        retValue += "/cloud.svg";
+    }
+    else if(PlayJson::PTY::RAIN == displayValue.pty)
+    {
+        retValue += "/rain.svg";
+    }
+    else if(PlayJson::PTY::SLEET == displayValue.pty)
+    {
+        retValue += "/s_snow.svg";
+    }
+    else if(PlayJson::PTY::SNOW == displayValue.pty)
+    {
+        retValue += "/snow.svg";
+    }
+    else if(PlayJson::PTY::SHOWER == displayValue.pty)
+    {
+        retValue += "/s_rain.svg";
+    }
+    else if(PlayJson::PTY::RAIN_DROP == displayValue.pty)
+    {
+        retValue += "/s_rain.svg";
+    }
+    else if(PlayJson::PTY::RAIN_DROP_SNOW == displayValue.pty)
+    {
+        retValue += "/rain_snow.svg";
+    }
+    else
+    {
+        // Not matcing
+        retValue += "/sunny.svg";
+        ELGO_VIEWER_LOG("Error - Not matched weather icon")
+    }
+
+    return retValue;
+}
+
+//========================================================
+QString WeatherWidget::MakeStatusLabelString(const WeatherInfo::DisplayValue& displayValue)
+//========================================================
+{
+    /**
+      * @note
+      *         sky.sunny == 맑음
+      *         sky.much_cloud == 구름 많음
+      *         sky.cloudy == 흐림
+      *         pty.rain == 비
+      *         pty.sleet == 눈 조금
+      *         pty.snow == 눈
+      *         pty.shower == 소나기
+      *         pty.raindrop == 빗방울
+      *         pty.raindropsnow = 빗방울/눈날림
+      *         lgt(true) == 낙뢰
+      *         lgt(true), pty(rain) == 낙뢰/비
+      */
+
+    QString retValue;
+    ELGO_VIEWER_LOG("Display Value : {LGT: %d, SKY: %d, PTY: %d}",
+                    displayValue.lgt, displayValue.pty, displayValue.sky);
+
+    if(true == displayValue.lgt)
+    {
+        if(PlayJson::PTY::RAIN == displayValue.pty)
+        {
+            retValue = "낙뢰/비";
+        }
+        else
+        {
+            retValue = "낙뢰";
+        }
+    }
+    else if(PlayJson::SKY::SUNNY == displayValue.sky)
+    {
+        retValue = "맑음";
+    }
+    else if(PlayJson::SKY::MUCH_CLOUDY == displayValue.sky)
+    {
+        retValue = "구름 많음";
+    }
+    else if(PlayJson::SKY::CLOUDY == displayValue.sky)
+    {
+        retValue = "흐림";
+    }
+    else if(PlayJson::PTY::RAIN == displayValue.pty)
+    {
+        retValue = "비";
+    }
+    else if(PlayJson::PTY::SLEET == displayValue.pty)
+    {
+        retValue = "눈 조금";
+    }
+    else if(PlayJson::PTY::SNOW == displayValue.pty)
+    {
+        retValue = "눈";
+    }
+    else if(PlayJson::PTY::SHOWER == displayValue.pty)
+    {
+        retValue = "소나기";
+    }
+    else if(PlayJson::PTY::RAIN_DROP == displayValue.pty)
+    {
+        retValue = "빗방울/눈";
+    }
+    else if(PlayJson::PTY::RAIN_DROP_SNOW == displayValue.pty)
+    {
+        retValue = "눈날림";
+    }
+    else
+    {
+        // Not matcing
+        retValue = "맑음";
+        ELGO_VIEWER_LOG("Error - Not matched weather icon")
+    }
+
+    return retValue;
+}
+
+//========================================================
 QString WeatherWidget::MakeDateTimeStr()
 //========================================================
 {
     QString retValue;
 
     const QDateTime currDateTime = QDateTime::currentDateTime();
-
     const char* dayOfWeekStr[] = { " ", "월요일", "화요일",
-                               "수요일", "목요일", "금요일",
-                                 "토요일", "일요일"};
+                                   "수요일", "목요일", "금요일",
+                                   "토요일", "일요일"};
 
     char buffer[64] = {'\0', };
     // example - 4월 12일 월요일 오후 4:24
