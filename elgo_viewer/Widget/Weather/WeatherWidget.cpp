@@ -94,7 +94,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     svgWidgetPos.x(), svgWidgetPos.y(), svgWidgetSize.width(), svgWidgetSize.height());
 
     // city label
-    const QPoint cityLabelPos(svgWidgetPos.x(), svgWidgetSize.height() * 1.1);
+    const QPoint cityLabelPos(svgWidgetPos.x(), svgWidgetSize.height() * 1.15);
     const QSize cityLabelSize(svgWidgetSize.width(), widgetSize.height() * 0.13);
     const QRect cityLabelRect(cityLabelPos, cityLabelSize);
     ui->cityLabel->setGeometry(cityLabelRect);

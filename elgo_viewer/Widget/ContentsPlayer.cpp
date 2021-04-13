@@ -44,6 +44,10 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
         ELGO_VIEWER_LOG("Screen Size {w : %d, h : %d}", m_displaySize.width(), m_displaySize.height());
     }
 
+    // timer init
+    m_schedulerTimer = new SchedulesTimer;
+    m_singleTimer = new SinglePlayTimer;
+
     const QRect screenRect = QRect(QPoint(0.0, 0.0), m_displaySize);
     ui->playerView->setGeometry(screenRect);
     ui->playerView->setStyleSheet("border: 0px");
@@ -186,13 +190,9 @@ void ContentsPlayer::StartContentsPlayer()
 void ContentsPlayer::StartScheduleTimer()
 //========================================================
 {
-    ELGO_VIEWER_LOG("Start Schedule / Signle Timer !");
-
-    m_schedulerTimer = new SchedulesTimer;
-    m_singleTimer = new SinglePlayTimer;
+    ELGO_VIEWER_LOG("Start Schedule Timer !");
 
     m_schedulerTimer->start(900);
-    m_singleTimer->start(990);
 }
 
 //========================================================
@@ -217,14 +217,202 @@ void ContentsPlayer::AddPlayScheduleListSlot(ScheduleJson::PlaySchedules src)
 }
 
 //========================================================
+void ContentsPlayer::ClearPrevPlayDataInfo(const ScheduleTimer::PlayDataInfo& exceptPlayDataInfo)
+//========================================================
+{
+    // image
+    const int prevImageListSize = m_imageItemList.size();
+
+    QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
+    for(; imageIter != m_imageItemList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != imageIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != imageIter->first.playDataInfo.type) )
+        {
+            imageIter->second->deleteLater();
+            imageIter = m_imageItemList.erase(imageIter);
+        }
+        else
+        {
+            ++imageIter;
+        }
+    }
+
+    // video
+    const int prevVideoListSize = m_videoItemList.size();
+
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for( ; videoIter != m_videoItemList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != videoIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != videoIter->first.playDataInfo.type) )
+        {
+            videoIter->second->StopVideoItem();
+
+            videoIter->second->deleteLater();
+            videoIter = m_videoItemList.erase(videoIter);
+        }
+        else
+        {
+            ++videoIter;
+        }
+    }
+
+    // clock
+    const int prevClockListSize = m_clockWidgetList.size();
+
+    QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+    for( ; clockIter != m_clockWidgetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != clockIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != clockIter->first.playDataInfo.type) )
+        {
+            clockIter->second->StopClock();
+
+            clockIter->second->deleteLater();
+            clockIter = m_clockWidgetList.erase(clockIter);
+        }
+        else
+        {
+            ++clockIter;
+        }
+    }
+
+    // date
+    const int prevDateListSize = m_dateWidgetList.size();
+
+    QVector<DateWidgetInfo>::iterator dateIter = m_dateWidgetList.begin();
+    for( ; dateIter != m_dateWidgetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != dateIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != dateIter->first.playDataInfo.type) )
+        {
+            dateIter->second->StopDateWidget();
+
+            dateIter->second->deleteLater();
+            dateIter = m_dateWidgetList.erase(dateIter);
+        }
+        else
+        {
+            ++dateIter;
+        }
+    }
+
+    // news
+    const int prevNewsListSize = m_newsFeedWigetList.size();
+
+    QVector<NewsFeedWidgetInfo>::iterator newsIter = m_newsFeedWigetList.begin();
+    for( ; newsIter != m_newsFeedWigetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != newsIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != newsIter->first.playDataInfo.type) )
+        {
+            newsIter->second->StopAnimation();
+
+            newsIter->second->deleteLater();
+            newsIter  = m_newsFeedWigetList.erase(newsIter);
+        }
+        else
+        {
+           ++newsIter;
+        }
+    }
+
+    // weather
+    const int prevWeatherListSize = m_weatherWidgetList.size();
+
+    QVector<WeatherWidgetInfo>::iterator weatherIter = m_weatherWidgetList.begin();
+    for( ; weatherIter != m_weatherWidgetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != weatherIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != weatherIter->first.playDataInfo.type))
+        {
+            weatherIter->second->StopDateTimeTimer();
+
+            weatherIter->second->deleteLater();
+            weatherIter = m_weatherWidgetList.erase(weatherIter);
+        }
+        else
+        {
+            ++weatherIter;
+        }
+    }
+
+    // proxy
+    const int prevProxyListSize = m_proxyWidgetList.size();
+
+    QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
+    for( ; proxyIter != m_proxyWidgetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != proxyIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != proxyIter->first.playDataInfo.type) )
+        {
+            proxyIter->second->deleteLater();
+            proxyIter = m_proxyWidgetList.erase(proxyIter);
+        }
+        else
+        {
+            ++proxyIter;
+        }
+    }
+
+    ELGO_VIEWER_LOG("{image - %d : %d, video - %d : %d, clock - %d : %d, date - %d : %d}",
+                    prevImageListSize, m_imageItemList.size(),
+                    prevVideoListSize, m_videoItemList.size(),
+                    prevClockListSize, m_clockWidgetList.size(),
+                    prevDateListSize, m_dateWidgetList.size());
+    ELGO_VIEWER_LOG("{news - %d : %d, weather - %d : %d, proxy - %d : %d}",
+                    prevNewsListSize, m_newsFeedWigetList.size(),
+                    prevWeatherListSize, m_weatherWidgetList.size(),
+                    prevProxyListSize, m_proxyWidgetList.size());
+}
+
+//========================================================
+void ContentsPlayer::ClearPrevSceneList(const ScheduleTimer::PlayDataInfo& exceptPlayDataInfo)
+//========================================================
+{
+    ClearPrevPlayDataInfo(exceptPlayDataInfo);
+
+    const int prevSceneListSize = m_sceneList.size();
+
+    QVector<SceneInfo>::iterator sceneIter = m_sceneList.begin();
+    for(; sceneIter != m_sceneList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != sceneIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != sceneIter->first.playDataInfo.type) )
+        {
+            ELGO_VIEWER_LOG("Erase Scene : {id: %d, type: %d}",
+                             sceneIter->first.playDataInfo.id,
+                             sceneIter->first.playDataInfo.type);
+
+            sceneIter->second->deleteLater();
+            sceneIter = m_sceneList.erase(sceneIter);
+        }
+        else
+        {
+            ++sceneIter;
+        }
+    }
+
+    ELGO_VIEWER_LOG("Clear Scene {%d -> %d}", prevSceneListSize, m_sceneList.size());
+}
+
+//========================================================
 void ContentsPlayer::ExecPlayDataSlot(PlayJson::PlayData src)
 //========================================================
 {
+    m_singleTimer->stop();
+
     ScheduleTimer::PlayDataInfo playDataInfo;
     playDataInfo.id = src.id;
     playDataInfo.type = src.playDataType;
 
     m_singleTimer->ExecPlayData(playDataInfo);
+
+    // Prev Scene Delete
+    ClearPrevSceneList(playDataInfo);
+
+    m_singleTimer->start(990);
 }
 
 //========================================================
@@ -272,6 +460,8 @@ void ContentsPlayer::UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndex
             m_sceneList.push_back(newSceneInfo);
             ELGO_VIEWER_LOG("SceneList Size : %d", m_sceneList.size());
         }
+
+        m_singleTimer->UpdateCustomPlayDataIndexInfo(playDataIdxInfo);
     }
     else
     {

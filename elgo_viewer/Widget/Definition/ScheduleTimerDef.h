@@ -110,7 +110,15 @@ namespace ScheduleTimer
     /**
      *  @brief  operator !=
      */
-    inline bool operator!=(const PlayDataInfo& lhs, const PlayDataInfo& rhs) { return !(rhs == lhs); }
+    inline bool operator!=(const PlayDataInfo& lhs, const PlayDataInfo& rhs)
+    {
+        return !(lhs == rhs);
+    }
+
+    inline bool operator!=(const PlayDataIndexInfo& lhs, const PlayDataIndexInfo& rhs)
+    {
+        return !(lhs == rhs);
+    }
 }
 
 

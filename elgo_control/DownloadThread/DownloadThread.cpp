@@ -405,7 +405,11 @@ void DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>
         QVector<PlayJson::ContentData>::iterator contentIter = layerDataIter->contentDataList.begin();
         for(; contentIter != layerDataIter->contentDataList.end(); ++contentIter)
         {
-            DownloadAdditionalWidgetInfo(*contentIter);
+            if( (PlayJson::MediaType::NEWS == contentIter->contentInfo.mediaType) ||
+                (PlayJson::MediaType::WEATHER == contentIter->contentInfo.mediaType) )
+            {
+                DownloadAdditionalWidgetInfo(*contentIter);
+            }
         }
     }
 }

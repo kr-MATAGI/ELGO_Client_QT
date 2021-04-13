@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_logoScene->addWidget(m_logoWidget);
     ui->elgoLogo->setScene(m_logoScene);
 
-
     // connect
     connect(this, SIGNAL(DrawQRCode()), this, SLOT(DrawQRCodeByThreadSignal()));
     connect(&m_closeTimer, SIGNAL(timeout()), this, SLOT(CloseMainWindowByTimeout()));

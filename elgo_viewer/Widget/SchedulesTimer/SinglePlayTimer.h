@@ -25,6 +25,8 @@ public:
 
     /** @brief */
     void ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo);
+    /** @brief */
+    void UpdateCustomPlayDataIndexInfo(const ScheduleTimer::PlayDataIndexInfo& playDataIndexInfo);
 
 private:
     /** @brief */

@@ -93,6 +93,13 @@ void SinglePlayTimer::ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo)
 }
 
 //========================================================
+void SinglePlayTimer::UpdateCustomPlayDataIndexInfo(const ScheduleTimer::PlayDataIndexInfo& playDataIndexInfo)
+//========================================================
+{
+    m_customPlayDataInfo = playDataIndexInfo;
+}
+
+//========================================================
 void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
@@ -373,9 +380,9 @@ void SinglePlayTimer::UpdatePlayerNewScene(ScheduleTimer::PlayDataIndexInfo& pla
 {
     if(PlayJson::PlayDataType::CUSTOM == playDataIdxInfo.playDataInfo.type)
     {
+        ScheduleTimer::PlayDataIndexInfo prevPlayData = m_customPlayDataInfo;
         emit ContentsPlayer::GetInstance()->UpdatePlayerNewCustomSceneSignal(playDataIdxInfo);
-        emit ContentsPlayer::GetInstance()->PausePrevPlayDataSignal(m_customPlayDataInfo);
-        m_customPlayDataInfo = playDataIdxInfo;
+        emit ContentsPlayer::GetInstance()->PausePrevPlayDataSignal(prevPlayData);
     }
     else
     {

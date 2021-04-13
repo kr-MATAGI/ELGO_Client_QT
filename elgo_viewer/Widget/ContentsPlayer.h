@@ -120,6 +120,11 @@ private:
     /** @brief */
     void ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo);
 
+    /** @brief */
+    void ClearPrevPlayDataInfo(const ScheduleTimer::PlayDataInfo& exceptPlayDataInfo);
+    /** @brief */
+    void ClearPrevSceneList(const ScheduleTimer::PlayDataInfo& exceptPlayDataInfo);
+
     /** @note   Simple Utils */
     QString ConvertMediaTypeEnumToString(const PlayJson::MediaType type);
 
