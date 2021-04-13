@@ -11,6 +11,7 @@
 //========================================================
 SinglePlayTimer::SinglePlayTimer(QObject *parent)
     : QTimer(parent)
+    , m_currPlayDataType(PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE)
 //========================================================
 {
     // connect
@@ -84,6 +85,7 @@ void SinglePlayTimer::ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo)
 
         // Update Scene
         UpdatePlayerNewScene(playDataIdxInfo);
+        m_currPlayDataType = playDataInfo.type;
     }
     else
     {
@@ -265,7 +267,7 @@ void SinglePlayTimer::SinglePlayTimeout()
 //========================================================
 {
     // Check Current Played Page or Content Index
-    if(PlayJson::PlayDataType::CUSTOM == m_customPlayDataInfo.playDataInfo.type)
+    if(PlayJson::PlayDataType::CUSTOM == m_currPlayDataType)
     {
         // Custom
         QVector<PlayJson::CustomPlayDataJson>::const_iterator cusIter = m_customPlayDataList.constBegin();

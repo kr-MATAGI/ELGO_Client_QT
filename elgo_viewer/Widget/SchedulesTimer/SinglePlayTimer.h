@@ -42,6 +42,7 @@ private slots:
     void SinglePlayTimeout();
 
 private:
+    PlayJson::PlayDataType m_currPlayDataType;
     ScheduleTimer::PlayDataIndexInfo m_customPlayDataInfo;
     ScheduleTimer::FixedPlayIndexInfo m_fixedPlayDataInfo;
     ScheduleTimer::CountdownInfo m_countdownInfo;
