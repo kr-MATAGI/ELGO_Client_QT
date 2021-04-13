@@ -186,6 +186,7 @@ void WeatherWidget::MakeWeatherWidget(const WeatherInfo::DisplayValue& newValue)
 void WeatherWidget::StartDateTimeTimer()
 //========================================================
 {
+    UpdateCurrentDateTime();
     m_dateTimer.start(1000);
     m_bIsTimerStarted = true;
 }

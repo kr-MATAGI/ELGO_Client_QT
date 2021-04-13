@@ -179,6 +179,7 @@ void ClockWidget::MakeClockTimeString(PlayJson::HourType type)
 void ClockWidget::StartClock()
 //========================================================
 {
+    MakeClockTimeString(m_hourType);
     m_updateTimer->start(1000);
     m_bIsTimerStarted = true;
 }
