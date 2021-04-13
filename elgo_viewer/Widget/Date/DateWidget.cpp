@@ -85,23 +85,13 @@ void DateWidget::SetPosSizeinfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     dateLabelPos.x(), dateLabelPos.y(), dateLabelSize.width(), dateLabelSize.height());
 
     QFont dateLabelFont;
-    const int fontSize = CalcLabelFontSize(dateLabelSize.width());
+    const int fontSize = dateLabelSize.width() * 0.1;
     dateLabelFont.setBold(true);
     dateLabelFont.setPointSize(fontSize);
     ELGO_VIEWER_LOG("Font Size : %d", fontSize);
 
     ui->dateLabel->setGeometry(dateLabelRect);
     ui->dateLabel->setFont(dateLabelFont);
-}
-
-//========================================================
-int DateWidget::CalcLabelFontSize(const int labelWidth)
-//========================================================
-{
-    int retValue = DEFAULT_FONT_SIZE;
-    retValue += (labelWidth / 20);
-
-    return retValue;
 }
 
 //========================================================

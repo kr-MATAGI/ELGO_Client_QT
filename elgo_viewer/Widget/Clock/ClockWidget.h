@@ -38,9 +38,6 @@ public:
     /** @brief */
     bool IsStartedClock();
 
-    /** @brief */
-    int CalcLabelFontSize(const int labelWidth);
-
 private slots:
     /** @brief */
     void UpdateCurrentTime();

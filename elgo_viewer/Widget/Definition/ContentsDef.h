@@ -13,8 +13,6 @@
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
 
-#define DEFAULT_FONT_SIZE   50;
-
 namespace StyleSheet
 {
     /** @brief */

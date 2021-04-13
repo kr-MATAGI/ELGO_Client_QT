@@ -38,10 +38,6 @@ public:
 
     /** @brief */
     QString ConvertCategoryEnumToKrStr(const PlayJson::NewsCategory category);
-    /** @brief */
-    int CalcTitleLabelFontSize(const int height);
-    /** @brief */
-    int CalcFeedLabelFontSize(const int height);
 
 private:
     Ui::NewsFeedWidget *ui;

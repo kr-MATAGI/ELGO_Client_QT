@@ -139,7 +139,7 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     titlePos.x(), titlePos.y(), titleSize.width(), titleSize.height());
 
     QFont titleFont;
-    const int titleFontSize = CalcTitleLabelFontSize(titleSize.height());
+    const int titleFontSize = titleSize.height() * 0.8;
     titleFont.setBold(true);
     titleFont.setPointSize(titleFontSize);
     ELGO_VIEWER_LOG("Title Font Size : %d", titleFontSize);
@@ -168,7 +168,7 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
         ELGO_VIEWER_LOG("Changed Feed pos{x: %d, y: %d}", changedFeedPos.x(), changedFeedPos.y());
 
         QFont feedFont;
-        const int feedFontSize = CalcFeedLabelFontSize(feedSize.height());
+        const int feedFontSize = feedSize.height() * 0.7;
         feedFont.setBold(true);
         feedFont.setPointSize(feedFontSize);
         ELGO_VIEWER_LOG("Feed Font Size : %d", feedFontSize);
@@ -267,23 +267,4 @@ QString NewsFeedWidget::ConvertCategoryEnumToKrStr(const PlayJson::NewsCategory 
                                 "세계", "날씨"};
 
     return krStrArray[category];
-}
-
-//========================================================
-int NewsFeedWidget::CalcTitleLabelFontSize(const int height)
-//========================================================
-{
-    int retValue = DEFAULT_FONT_SIZE;
-    retValue += height * 0.02;
-
-    return retValue;
-}
-
-//========================================================
-int NewsFeedWidget::CalcFeedLabelFontSize(const int height)
-//========================================================
-{
-    int retValue = height * 0.7;
-
-    return retValue;
 }

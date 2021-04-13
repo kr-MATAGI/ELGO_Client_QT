@@ -82,7 +82,7 @@ void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                         amPmLabelPos.x(), amPmLabelPos.y(), amPmLabelSize.width(), amPmLabelSize.height());
 
         QFont amPmFont;
-        const int amPmFontSize = CalcLabelFontSize(amPmLabelSize.width());
+        const int amPmFontSize = amPmLabelSize.height() * 0.1;
         amPmFont.setBold(true);
         amPmFont.setPointSize(amPmFontSize);
         ELGO_VIEWER_LOG("amPmFont Size : %d", amPmFontSize);
@@ -98,7 +98,7 @@ void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                         timeLabelPos.x(), timeLabelPos.y(), timeLabelSize.width(), timeLabelSize.height());
 
         QFont timeStrFont;
-        const int timeStrFontSize = CalcLabelFontSize(timeLabelSize.width());
+        const int timeStrFontSize = timeLabelSize.height() * 0.2;
         timeStrFont.setBold(true);
         timeStrFont.setPointSize(timeStrFontSize);
         ELGO_VIEWER_LOG("timeStrFont Size : %d", timeStrFontSize);
@@ -118,7 +118,7 @@ void ClockWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                         timeLabelPos.x(), timeLabelPos.y(), timeLabelSize.width(), timeLabelSize.height());
 
         QFont timeStrFont;
-        const int fontSize = CalcLabelFontSize(timeLabelSize.width());
+        const int fontSize = timeLabelSize.height() * 0.5;
         timeStrFont.setBold(true);
         timeStrFont.setPointSize(fontSize);
         ELGO_VIEWER_LOG("Font Size : %d", fontSize);
@@ -203,14 +203,4 @@ void ClockWidget::UpdateCurrentTime()
 //========================================================
 {
     MakeClockTimeString(m_hourType);
-}
-
-//========================================================
-int ClockWidget::CalcLabelFontSize(const int labelWidth)
-//========================================================
-{
-    int retValue = DEFAULT_FONT_SIZE;
-    retValue += (labelWidth / 5);
-
-    return retValue;
 }

@@ -36,8 +36,6 @@ public:
     bool IsStartedDateTimer();
 
     /** @brief */
-    int CalcLabelFontSize(const int labelWidth);
-    /** @brief */
     void ConvertToStringFromDayOfWeek(const int src, QString& dest);
 
 private slots:
