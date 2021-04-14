@@ -37,7 +37,7 @@ namespace JsonStringConverter
     /** @brief */
     PlayJson::NewsCategory NewsCategoryStringToEnum(const QString& src);
     /** @brief */
-    PlayJson::SubtitleDirection SubtitleDirectionStringToEnum(const QString& src);
+    PlayJson::AniFlowDirection SubtitleDirectionStringToEnum(const QString& src);
     /** @brief */
     PlayJson::SubtitleAction SubtitleActionStringToEnum(const QString& src);
 
@@ -66,7 +66,7 @@ namespace JsonStringConverter
     /** @brief */
     void NewsCategoryEnumToString(const PlayJson::NewsCategory type, QString& dest);
     /** @brief */
-    void SubtitleDirectionEnumToString(const PlayJson::SubtitleDirection type, QString& dest);
+    void SubtitleDirectionEnumToString(const PlayJson::AniFlowDirection type, QString& dest);
     /** @brief */
     void SubtitleActionEnumToString(const PlayJson::SubtitleAction type, QString& dest);
 

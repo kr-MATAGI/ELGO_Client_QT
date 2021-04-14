@@ -1082,7 +1082,7 @@ void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QVecto
             if(subtitleObj.end() != subtitleObj.find("sd_direction"))
             {
                 const QString& subtitleDirStr = subtitleObj["sd_direction"].toString();
-                const PlayJson::SubtitleDirection direction
+                const PlayJson::AniFlowDirection direction
                         = JsonStringConverter::SubtitleDirectionStringToEnum(subtitleDirStr);
                 subtitleData.direction = direction;
             }

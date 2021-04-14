@@ -140,15 +140,15 @@ void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInf
         // timecount
         maxCountDown.pageTimecount.push_back(0);
 
+        // Content Index Info
+        ScheduleTimer::PlayDataIndexInfo contentIdxInfo;
+        contentIdxInfo.playDataInfo = playDataInfo;
+        contentIdxInfo.pageIdx = pageIdx;
+
         const int layerDataListSize = pageData.layerDataList.size();
         for(int layIdx = 0; layIdx < layerDataListSize; layIdx++)
         {
             const PlayJson::CustomLayerData& layerData = pageData.layerDataList[layIdx];
-
-            // Content Index Info
-            ScheduleTimer::PlayDataIndexInfo contentIdxInfo;
-            contentIdxInfo.playDataInfo = playDataInfo;
-            contentIdxInfo.pageIdx = pageIdx;
 
             // pos, size
             StyleSheet::PosSizeInfo posSizeInfo;
@@ -167,7 +167,11 @@ void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInf
         }
 
         // Subtitle Data
-        pageData.subtitleDataList;
+        const int subtitleDataListSize = pageData.subtitleDataList.size();
+        for(int subIdx = 0; subIdx < subtitleDataListSize; subIdx++)
+        {
+            emit ContentsPlayer::GetInstance()->MakeSubtitleWidgetSignal(contentIdxInfo, pageData.subtitleDataList[subIdx]);
+        }
     }
 
     m_countdownInfo = maxCountDown;
@@ -259,7 +263,11 @@ void SinglePlayTimer::MakeFixedPlayDataContents(ScheduleTimer::PlayDataIndexInfo
     }
 
     // Subtitle Data
-    fixedPlayData.subtitleDataList;
+    const int subtitleDataListSize = fixedPlayData.subtitleDataList.size();
+    for(int subIdx = 0; subIdx < subtitleDataListSize; subIdx++)
+    {
+        emit ContentsPlayer::GetInstance()->MakeSubtitleWidgetSignal(contentIdxInfo, fixedPlayData.subtitleDataList[subIdx]);
+    }
 }
 
 //========================================================

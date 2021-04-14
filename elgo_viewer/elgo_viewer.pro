@@ -22,6 +22,7 @@ HEADERS += \
         Widget/Definition/ScheduleTimerDef.h \
         Widget/SchedulesTimer/SchedulesTimer.h \
         Widget/SchedulesTimer/SinglePlayTimer.h \
+        Widget/Subtitle/SubtitleWidget.h \
         Widget/Video/VideoItem.h \
         Widget/Weather/WeatherWidget.h \
         ext_libs/QrCode/QrCode.h \
@@ -42,6 +43,7 @@ SOURCES += \
         Widget/News/NewsFeedWidget.cpp \
         Widget/SchedulesTimer/SchedulesTimer.cpp \
         Widget/SchedulesTimer/SinglePlayTimer.cpp \
+        Widget/Subtitle/SubtitleWidget.cpp \
         Widget/Video/VideoItem.cpp \
         Widget/Weather/WeatherWidget.cpp \
         main.cpp \
@@ -54,6 +56,7 @@ FORMS += \
     Widget/ContentsPlayer.ui \
     Widget/Date/DateWidget.ui \
     Widget/News/NewsFeedWidget.ui \
+    Widget/Subtitle/SubtitleWidget.ui \
     Widget/Weather/WeatherWidget.ui
 
 # You can make your code fail to compile if it uses deprecated APIs.

@@ -69,6 +69,10 @@ signals:
                                   StyleSheet::PosSizeInfo posSizeinfo);
 
     /** @brief */
+    void MakeSubtitleWidgetSignal(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                                  PlayJson::SubtitleData subtitleData);
+
+    /** @brief */
     void UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
     /** @brief */
     void PausePrevPlayDataSignal(ScheduleTimer::PlayDataIndexInfo prevPlayDataIdxInfo);
@@ -100,6 +104,10 @@ private slots:
     void MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
                                   PlayJson::ContentData contentData,
                                   StyleSheet::PosSizeInfo posSizeinfo);
+
+    /** @brief */
+    void MakeSubtitleWidgetSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                                PlayJson::SubtitleData subtitleData);
 
     /** @brief */
     void UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo playDataIdxInfo);
@@ -143,7 +151,7 @@ private:
     QVector<NewsFeedWidgetInfo> m_newsFeedWigetList;
     QVector<WeatherWidgetInfo> m_weatherWidgetList;
     QVector<ProxyWidgetInfo> m_proxyWidgetList;
-    // QVector<Subtitle> m_subtitleItemList;
+    QVector<SubtitleWidgetInfo> m_subtitleWidgetList;
 };
 
 #endif // CONTENTSPLAYER_H

@@ -21,8 +21,9 @@ ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 
 Q_DECLARE_METATYPE(PlayJson::CustomPlayDataJson);
 Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson);
-Q_DECLARE_METATYPE(ScheduleJson::PlaySchedules);
 Q_DECLARE_METATYPE(PlayJson::PlayData);
+Q_DECLARE_METATYPE(PlayJson::SubtitleData);
+Q_DECLARE_METATYPE(ScheduleJson::PlaySchedules);
 
 Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
 Q_DECLARE_METATYPE(PlayJson::ContentData);
@@ -59,8 +60,9 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     // connect
     qRegisterMetaType<PlayJson::CustomPlayDataJson>("PlayJson::CustomPlayDataJson");
     qRegisterMetaType<PlayJson::FixedPlayDataJson>("PlayJson::FixedPlayDataJson");
-    qRegisterMetaType<ScheduleJson::PlaySchedules>("ScheduleJson::PlaySchedules");
     qRegisterMetaType<PlayJson::PlayData>("PlayJson::PlayData");
+    qRegisterMetaType<PlayJson::SubtitleData>("PlayJson::SubtitleData");
+    qRegisterMetaType<ScheduleJson::PlaySchedules>("ScheduleJson::PlaySchedules");
 
     qRegisterMetaType<ScheduleTimer::PlayDataIndexInfo>("ScheduleTimer::PlayDataIndexInfo");
     qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
@@ -92,6 +94,11 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
             this, SLOT(MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo,
                                               PlayJson::ContentData,
                                               StyleSheet::PosSizeInfo)));
+
+    connect(this, SIGNAL(MakeSubtitleWidgetSignal(ScheduleTimer::PlayDataIndexInfo,
+                                                  PlayJson::SubtitleData)),
+            this, SLOT(MakeSubtitleWidgetSlot(ScheduleTimer::PlayDataIndexInfo,
+                                              PlayJson::SubtitleData)));
 
     connect(this, SIGNAL(UpdatePlayerNewCustomSceneSignal(ScheduleTimer::PlayDataIndexInfo)),
             this, SLOT(UpdatePlayerNewCustomSceneSlot(ScheduleTimer::PlayDataIndexInfo)));
@@ -338,6 +345,24 @@ void ContentsPlayer::ClearPrevPlayDataInfo(const ScheduleTimer::PlayDataInfo& ex
         }
     }
 
+    // subtitle
+    const int prevSubtitleListSize = m_subtitleWidgetList.size();
+
+    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+    for( ; subIter != m_subtitleWidgetList.end(); )
+    {
+        if( (exceptPlayDataInfo.id != subIter->first.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != subIter->first.playDataInfo.type) )
+        {
+            subIter->second->deleteLater();
+            subIter = m_subtitleWidgetList.erase(subIter);
+        }
+        else
+        {
+            ++subIter;
+        }
+    }
+
     // proxy
     const int prevProxyListSize = m_proxyWidgetList.size();
 
@@ -361,9 +386,10 @@ void ContentsPlayer::ClearPrevPlayDataInfo(const ScheduleTimer::PlayDataInfo& ex
                     prevVideoListSize, m_videoItemList.size(),
                     prevClockListSize, m_clockWidgetList.size(),
                     prevDateListSize, m_dateWidgetList.size());
-    ELGO_VIEWER_LOG("{news - %d : %d, weather - %d : %d, proxy - %d : %d}",
+    ELGO_VIEWER_LOG("{news - %d : %d, weather - %d : %d, subtitle - %d : %d, proxy - %d : %d}",
                     prevNewsListSize, m_newsFeedWigetList.size(),
                     prevWeatherListSize, m_weatherWidgetList.size(),
+                    prevSubtitleListSize, m_subtitleWidgetList.size(),
                     prevProxyListSize, m_proxyWidgetList.size());
 }
 
@@ -636,6 +662,17 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
             weatherIter->second->StopDateTimeTimer();
         }
     }
+
+    // Subtitle
+    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+    for(; subIter != m_subtitleWidgetList.end(); ++subIter)
+    {
+        if( (prevPlayDataIdxInfo == subIter->first) &&
+            (true == subIter->second->IsStartedAnimation()) )
+        {
+            subIter->second->StopAnimation();
+        }
+    }
 }
 
 //========================================================
@@ -789,6 +826,25 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
 }
 
 //========================================================
+void ContentsPlayer::MakeSubtitleWidgetSlot(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
+                            PlayJson::SubtitleData subtitleData)
+//========================================================
+{
+    QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget;
+    SubtitleWidget *newSubtitle = new SubtitleWidget;
+
+    newSubtitle->MakeSubTitleWidget(subtitleData);
+    proxyWidget->setWidget(newSubtitle);
+    proxyWidget->setZValue(100); // top level
+
+    SubtitleWidgetInfo subtitleWidgetInfo(contentIndexInfo, newSubtitle);
+    m_subtitleWidgetList.push_back(subtitleWidgetInfo);
+
+    ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+    m_proxyWidgetList.push_back(proxyWidgetInfo);
+}
+
+//========================================================
 void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo,
                                               QGraphicsScene* scene)
 //========================================================
@@ -888,6 +944,16 @@ void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo
         if(playDataIdxInfo == weatherIter->first)
         {
             weatherIter->second->StartDateTimeTimer();
+        }
+    }
+
+    // Subtitle
+    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+    for(; subIter != m_subtitleWidgetList.end(); ++subIter)
+    {
+        if(playDataIdxInfo == subIter->first)
+        {
+            subIter->second->StartAnimation();
         }
     }
 }

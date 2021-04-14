@@ -346,30 +346,30 @@ PlayJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QStri
 }
 
 //========================================================
-PlayJson::SubtitleDirection JsonStringConverter::SubtitleDirectionStringToEnum(const QString& src)
+PlayJson::AniFlowDirection JsonStringConverter::SubtitleDirectionStringToEnum(const QString& src)
 //========================================================
 {
-    PlayJson::SubtitleDirection retValue = PlayJson::SubtitleDirection::NONE_DIRECTION;
+    PlayJson::AniFlowDirection retValue = PlayJson::AniFlowDirection::NONE_DIRECTION;
 
     if(0 == strcmp("null", src.toStdString().c_str()))
     {
-        retValue = PlayJson::SubtitleDirection::FIXED_SUBTITLE;
+        retValue = PlayJson::AniFlowDirection::FIXED_SUBTITLE;
     }
     else if(0 == strcmp("left", src.toStdString().c_str()))
     {
-        retValue = PlayJson::SubtitleDirection::LEFT_TO_RIGHT;
+        retValue = PlayJson::AniFlowDirection::LEFT_TO_RIGHT;
     }
     else if(0 == strcmp("right", src.toStdString().c_str()))
     {
-        retValue = PlayJson::SubtitleDirection::RIGHT_TO_LEFT;
+        retValue = PlayJson::AniFlowDirection::RIGHT_TO_LEFT;
     }
     else if(0 == strcmp("up", src.toStdString().c_str()))
     {
-        retValue = PlayJson::SubtitleDirection::BOTTOM_TO_TOP;
+        retValue = PlayJson::AniFlowDirection::BOTTOM_TO_TOP;
     }
     else if(0 == strcmp("down", src.toStdString().c_str()))
     {
-        retValue = PlayJson::SubtitleDirection::TOP_TO_BOTTOM;
+        retValue = PlayJson::AniFlowDirection::TOP_TO_BOTTOM;
     }
     else
     {
@@ -698,26 +698,26 @@ void JsonStringConverter::NewsCategoryEnumToString(const PlayJson::NewsCategory 
 }
 
 //========================================================
-void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::SubtitleDirection type, QString& dest)
+void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::AniFlowDirection type, QString& dest)
 //========================================================
 {
-    if(PlayJson::SubtitleDirection::FIXED_SUBTITLE == type)
+    if(PlayJson::AniFlowDirection::FIXED_SUBTITLE == type)
     {
         dest = "fixed";
     }
-    else if(PlayJson::SubtitleDirection::LEFT_TO_RIGHT == type)
+    else if(PlayJson::AniFlowDirection::LEFT_TO_RIGHT == type)
     {
         dest = "left";
     }
-    else if(PlayJson::SubtitleDirection::RIGHT_TO_LEFT == type)
+    else if(PlayJson::AniFlowDirection::RIGHT_TO_LEFT == type)
     {
         dest = "right";
     }
-    else if(PlayJson::SubtitleDirection::TOP_TO_BOTTOM == type)
+    else if(PlayJson::AniFlowDirection::TOP_TO_BOTTOM == type)
     {
         dest = "down";
     }
-    else if(PlayJson::SubtitleDirection::BOTTOM_TO_TOP == type)
+    else if(PlayJson::AniFlowDirection::BOTTOM_TO_TOP == type)
     {
         dest = "up";
     }

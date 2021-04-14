@@ -129,5 +129,25 @@ namespace VideoInfo
     };
 }
 
+namespace SubtitleInfo
+{
+    struct Animation
+    {
+        Animation()
+            : bIsFixed(true)
+            , direction(PlayJson::AniFlowDirection::NONE_DIRECTION)
+            , orientation(PlayJson::Orientation::NONE_ORIENTATION)
+            , action(PlayJson::SubtitleAction::NONE_ACTION)
+            , speed(0)
+        {
+        }
+        bool bIsFixed;
+        PlayJson::AniFlowDirection direction;
+        PlayJson::Orientation orientation;
+        PlayJson::SubtitleAction action;
+        int speed;
+    };
+}
+
 
 #endif // CONTENTSDEF_H

@@ -209,7 +209,7 @@ namespace PlayJson
     };
 
     /** @brief */
-    enum SubtitleDirection
+    enum AniFlowDirection
     {
         NONE_DIRECTION = 0,
         LEFT_TO_RIGHT = 1,
@@ -230,19 +230,36 @@ namespace PlayJson
     /** @brief */
     struct SubtitleData
     {
+        SubtitleData()
+            : left(0)
+            , top(0)
+            , width(0)
+            , height(0)
+            , fontSize(0)
+            , bIsFixed(true)
+            , direction(AniFlowDirection::NONE_DIRECTION)
+            , orientation(Orientation::NONE_ORIENTATION)
+            , action(SubtitleAction::NONE_ACTION)
+            , speed(0)
+        {
+
+        }
+        QString text;
+
         int left;
         int top;
         int width;
         int height;
-        QString text;
-        bool bIsFixed;
-        SubtitleDirection direction;
-        Orientation orientation;
-        SubtitleAction action;
-        int speed;
+
         QString backgroundColor;
         QString fontColor;
         int fontSize;
+
+        bool bIsFixed;
+        AniFlowDirection direction;
+        Orientation orientation;
+        SubtitleAction action;
+        int speed;
     };
 
     /** @brief */
