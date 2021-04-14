@@ -24,7 +24,7 @@ public:
     void AddPlayData(const PlayJson::FixedPlayDataJson& src);
 
     /** @brief */
-    void ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo);
+    void ExecPlayData(const ScheduleTimer::PlayDataInfo& playDataInfo);
     /** @brief */
     void UpdateCustomPlayDataIndexInfo(const ScheduleTimer::PlayDataIndexInfo& playDataIndexInfo);
 

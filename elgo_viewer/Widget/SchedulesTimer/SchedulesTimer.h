@@ -27,7 +27,7 @@ public:
 
 private:
     /** @brief */
-    void ExecSchedule(const QString& scheduleId);
+    void ExecSchedule(const QString& scheduleId, const ScheduleTimer::PlayDataInfo& playData);
 
     /** @brief */
     bool IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron);

@@ -65,7 +65,7 @@ void SinglePlayTimer::AddPlayData(const PlayJson::FixedPlayDataJson& src)
 }
 
 //========================================================
-void SinglePlayTimer::ExecPlayData(ScheduleTimer::PlayDataInfo& playDataInfo)
+void SinglePlayTimer::ExecPlayData(const ScheduleTimer::PlayDataInfo& playDataInfo)
 //========================================================
 {
     if(m_customPlayDataInfo.playDataInfo != playDataInfo)

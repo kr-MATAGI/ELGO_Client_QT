@@ -41,7 +41,7 @@ void SchedulesTimer::SchedulerTimeout()
     for(; playScheduleIter != m_playScheduleList.end(); ++playScheduleIter)
     {
         QVector<ScheduleJson::PlayScheduleData>::iterator scheduleDataIter = playScheduleIter->scheduleList.begin();
-        for(; scheduleDataIter != playScheduleIter->scheduleList.end(); ++scheduleDataIter)
+        for(; scheduleDataIter != playScheduleIter->scheduleList.end(); )
         {
             // check end dateTime
             if(currSecEpoch >= scheduleDataIter->endTime.toSecsSinceEpoch())
@@ -51,7 +51,7 @@ void SchedulesTimer::SchedulerTimeout()
                                 ConvertDateTimeFormat(scheduleDataIter->startTime).toStdString().c_str(),
                                 ConvertDateTimeFormat(scheduleDataIter->endTime).toStdString().c_str());
 
-                playScheduleIter->scheduleList.erase(scheduleDataIter);
+                scheduleDataIter = playScheduleIter->scheduleList.erase(scheduleDataIter);
 
                 // TODO : delete DB Control
             }
@@ -65,14 +65,21 @@ void SchedulesTimer::SchedulerTimeout()
                     (scheduleDataIter->type != m_currPlayDataInfo.type) )
                 {
                     // Exec Schedule
+                    ScheduleTimer::PlayDataInfo nextPlayData;
+                    nextPlayData.id = scheduleDataIter->playDataId;
+                    nextPlayData.type = scheduleDataIter->type;
                     ELGO_VIEWER_LOG("Exec Schedule {id : %d, type : %d}",
-                                    scheduleDataIter->playDataId, scheduleDataIter->type);
+                                    nextPlayData.id, nextPlayData.type);
 
-                    ExecSchedule(playScheduleIter->id);
+                    ExecSchedule(playScheduleIter->id, nextPlayData);
                     m_playScheduleList.push_back(*playScheduleIter);
 
                     return;
                 }
+            }
+            else
+            {
+                ++scheduleDataIter;
             }
         }
 
@@ -133,16 +140,22 @@ bool SchedulesTimer::IsValidCronRuleValue(const QDateTime& currentDateTime, cons
 
     retValue = true;
 
-    // TODO : Cron options
+    // TODO : Cron options - Maybe not using on web
 
     return retValue;
 }
 
 //========================================================
-void SchedulesTimer::ExecSchedule(const QString& scheduleId)
+void SchedulesTimer::ExecSchedule(const QString& scheduleId, const ScheduleTimer::PlayDataInfo& playData)
 //========================================================
 {
+    if( m_currPlayDataInfo != playData)
+    {
+//        emit ContentsPlayer::GetInstance()->ExecPlayDataSingal();
 
+        m_currScheduleId = scheduleId;
+        m_currPlayDataInfo = playData;
+    }
 }
 
 //========================================================
