@@ -153,11 +153,25 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             if( (PlayJson::AniFlowDirection::LEFT_TO_RIGHT == m_animationInfo.direction) ||
                 (PlayJson::AniFlowDirection::RIGHT_TO_LEFT == m_animationInfo.direction) )
             {
-                m_propertyAni->setDuration(m_animationInfo.speed * 1000);
+                if(PlayJson::Orientation::VERTICAL == m_animationInfo.orientation)
+                {
+                    m_propertyAni->setDuration((m_animationInfo.speed / 3) * 1000);
+                }
+                else
+                {
+                    m_propertyAni->setDuration(m_animationInfo.speed * 1000);
+                }
             }
             else
             {
-                m_propertyAni->setDuration((m_animationInfo.speed / 3) * 1000);
+                if(PlayJson::Orientation::VERTICAL == m_animationInfo.orientation)
+                {
+                    m_propertyAni->setDuration(m_animationInfo.speed * 1000);
+                }
+                else
+                {
+                    m_propertyAni->setDuration((m_animationInfo.speed / 3) * 1000);
+                }
             }
 
             m_propertyAni->setStartValue(QRect(startPos, originRect.size()));
@@ -177,11 +191,11 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             m_stateMachine->setInitialState(endState);
 
             QSignalTransition *startSignalTrans;
-            startSignalTrans = startState->addTransition(ui->subtitleLabel, SIGNAL(StartStateMachine()), endState);
+            startSignalTrans = startState->addTransition(m_stateMachine, SIGNAL(started()), endState);
             startSignalTrans->addAnimation(new QPropertyAnimation(ui->subtitleLabel, "geometry"));
 
             QSignalTransition *endSingalTrans;
-            endSingalTrans = endState->addTransition(ui->subtitleLabel, SIGNAL(StartStateMachine()), startState);
+            endSingalTrans = endState->addTransition(ui->subtitleLabel, SIGNAL(started()), startState);
             endSingalTrans->addAnimation(new QPropertyAnimation(ui->subtitleLabel, "geometry"));
         }
     }
@@ -205,7 +219,7 @@ void SubtitleWidget::GetScrollAnimationMovePos(const QRect& originRect, QPoint& 
     }
     else if(PlayJson::AniFlowDirection::RIGHT_TO_LEFT == m_animationInfo.direction)
     {
-        startPos.setX(originRect.right() + originRect.width());
+        startPos.setX(originRect.right());
         startPos.setY(originRect.top());
 
         endPos.setX(originRect.left() - originRect.width());
@@ -214,7 +228,7 @@ void SubtitleWidget::GetScrollAnimationMovePos(const QRect& originRect, QPoint& 
     else if(PlayJson::AniFlowDirection::BOTTOM_TO_TOP == m_animationInfo.direction)
     {
         startPos.setX(originRect.left());
-        startPos.setY(originRect.bottom() + originRect.height());
+        startPos.setY(originRect.bottom());
 
         endPos.setX(originRect.left());
         endPos.setY(originRect.top() - originRect.height());
@@ -260,7 +274,6 @@ void SubtitleWidget::StartAnimation()
         }
         else
         {
-            emit StartStateMachine();
             m_stateMachine->start();
         }
     }

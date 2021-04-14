@@ -35,10 +35,6 @@ public:
     /** @brief */
     bool IsStartedAnimation();
 
-signals:
-    /** @brief */
-    void StartStateMachine();
-
 private:
     /** @brief */
     void SetStyleSheet(const StyleSheet::StyleInfo& styleInfo);
