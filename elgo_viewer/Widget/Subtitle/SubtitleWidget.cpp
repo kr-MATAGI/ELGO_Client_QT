@@ -188,11 +188,12 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             m_startyAni->setEndValue(QRect(endPos, originRect.size()));
             m_startyAni->setLoopCount(1000);
         }
-        else
+        else if(PlayJson::SubtitleAction::LOOP == m_animationInfo.action)
         {
             // Loop Action
             const QFontMetricsF fontMetrics(ui->subtitleLabel->font());
-            const QRect fontRect = fontMetrics.boundingRect(ui->subtitleLabel->text()).toRect();
+            QRect fontRect = fontMetrics.boundingRect(ui->subtitleLabel->text()).toRect();
+
             const int resizePosY = (this->geometry().height() / 2) - (fontRect.size().height() / 2);
             const QRect labelResizeRect(QPoint(0, resizePosY), fontRect.size());
             ui->subtitleLabel->setGeometry(labelResizeRect);
@@ -235,6 +236,10 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             QSignalTransition *endSingalTrans;
             endSingalTrans = endState->addTransition(m_startyAni, SIGNAL(finished()), startState);
             endSingalTrans->addAnimation(m_endAni);
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("None Animation Action !");
         }
     }
     else
@@ -292,15 +297,15 @@ void SubtitleWidget::GetLoopAnimationMovePos(const QRect& widgetRect, const QRec
     const int widgetHMid = (widgetRect.width() / 2) - (labelRect.size().width() / 2);
     if(PlayJson::AniFlowDirection::LEFT_TO_RIGHT == m_animationInfo.direction)
     {
-        startRect.setTopLeft(QPoint(widgetRect.left(), widgetVMid));
+        startRect.setTopLeft(QPoint(0, widgetVMid));
         startRect.setSize(labelRect.size());
 
-        endRect.setTopLeft(QPoint(widgetRect.right() - labelRect.width(), widgetVMid));
+        endRect.setTopLeft(QPoint(widgetRect.width() - labelRect.width(), widgetVMid));
         endRect.setSize(labelRect.size());
     }
     else if(PlayJson::AniFlowDirection::RIGHT_TO_LEFT == m_animationInfo.direction)
     {
-        startRect.setTopLeft(QPoint(widgetRect.right() - labelRect.width(), widgetVMid));
+        startRect.setTopLeft(QPoint(widgetRect.width() - labelRect.width(), widgetVMid));
         startRect.setSize(labelRect.size());
 
         endRect.setTopLeft(QPoint(0, widgetVMid));

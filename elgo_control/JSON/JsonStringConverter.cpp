@@ -357,11 +357,11 @@ PlayJson::AniFlowDirection JsonStringConverter::SubtitleDirectionStringToEnum(co
     }
     else if(0 == strcmp("left", src.toStdString().c_str()))
     {
-        retValue = PlayJson::AniFlowDirection::LEFT_TO_RIGHT;
+        retValue = PlayJson::AniFlowDirection::RIGHT_TO_LEFT;
     }
     else if(0 == strcmp("right", src.toStdString().c_str()))
     {
-        retValue = PlayJson::AniFlowDirection::RIGHT_TO_LEFT;
+        retValue = PlayJson::AniFlowDirection::LEFT_TO_RIGHT;
     }
     else if(0 == strcmp("up", src.toStdString().c_str()))
     {
