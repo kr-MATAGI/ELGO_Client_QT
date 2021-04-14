@@ -353,7 +353,7 @@ PlayJson::AniFlowDirection JsonStringConverter::SubtitleDirectionStringToEnum(co
 
     if(0 == strcmp("null", src.toStdString().c_str()))
     {
-        retValue = PlayJson::AniFlowDirection::FIXED_SUBTITLE;
+        retValue = PlayJson::AniFlowDirection::NULL_DIRECTION;
     }
     else if(0 == strcmp("left", src.toStdString().c_str()))
     {
@@ -701,7 +701,7 @@ void JsonStringConverter::NewsCategoryEnumToString(const PlayJson::NewsCategory 
 void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::AniFlowDirection type, QString& dest)
 //========================================================
 {
-    if(PlayJson::AniFlowDirection::FIXED_SUBTITLE == type)
+    if(PlayJson::AniFlowDirection::NULL_DIRECTION == type)
     {
         dest = "fixed";
     }

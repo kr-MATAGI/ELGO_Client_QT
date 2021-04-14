@@ -46,7 +46,8 @@ private:
     /** @brief */
     void GetScrollAnimationMovePos(const QRect& originRect, QPoint& startPos, QPoint& endPos);
     /** @brief */
-    void GetLoopAnimationMovePos(const QRect& originRect, QPoint& movePos);
+    void GetLoopAnimationMovePos(const QRect& widgetRect, const QRect& labelRect,
+                                 QRect& startRect, QRect& endRect);
 
 private:
     Ui::SubtitleWidget *ui;
@@ -56,7 +57,8 @@ private:
     SubtitleInfo::Animation m_animationInfo;
 
     QStateMachine *m_stateMachine;
-    QPropertyAnimation *m_propertyAni;
+    QPropertyAnimation *m_startyAni;
+    QPropertyAnimation *m_endAni;
     bool m_bIsStartedAni;
 };
 
