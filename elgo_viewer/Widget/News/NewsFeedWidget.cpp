@@ -31,6 +31,9 @@ NewsFeedWidget::~NewsFeedWidget()
 {
     delete ui;
 
+    delete m_feedScene;
+    m_feedScene = NULL;
+
     delete m_seqAniGroup;
     m_seqAniGroup = NULL;
 }

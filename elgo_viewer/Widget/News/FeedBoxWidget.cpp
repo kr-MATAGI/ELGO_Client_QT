@@ -43,6 +43,9 @@ FeedBoxWidget::~FeedBoxWidget()
     delete m_overflowStartAni;
     m_overflowStartAni = NULL;
 
+    delete m_overflowEndAni;
+    m_overflowEndAni = NULL;
+
     delete m_parallAniGroup;
     m_parallAniGroup = NULL;
 }
