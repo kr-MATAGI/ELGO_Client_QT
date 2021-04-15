@@ -51,7 +51,10 @@ namespace PlayJson
         WIDGET = 2,
     };
 
-    /** @brief */
+    /** @note
+     *          SUBTITLE is not included JSON data made by server
+     *          Just use ContentsPlayer.h,.cpp (for fixed play data's subtitle)
+     */
     enum MediaType
     {
         NONE_MEDIA = 0,
@@ -61,6 +64,7 @@ namespace PlayJson
         DATE = 4,
         WEATHER = 5,
         NEWS = 6,
+        SUBTITLE = 7,
     };
 
     /** @brief */

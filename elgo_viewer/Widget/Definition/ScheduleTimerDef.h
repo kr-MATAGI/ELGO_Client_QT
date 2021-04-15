@@ -134,6 +134,8 @@ typedef std::pair<ScheduleTimer::PlayDataIndexInfo, DateWidget*> DateWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, NewsFeedWidget*> NewsFeedWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, WeatherWidget*> WeatherWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayDataIndexInfo, SubtitleWidget*> SubtitleWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
+
+typedef std::pair<PlayJson::MediaType, ScheduleTimer::PlayDataIndexInfo> ProxyDataInfo;
+typedef std::pair<ProxyDataInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H

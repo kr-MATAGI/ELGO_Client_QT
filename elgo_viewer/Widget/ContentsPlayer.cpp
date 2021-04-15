@@ -369,8 +369,8 @@ void ContentsPlayer::ClearPrevPlayDataInfo(const ScheduleTimer::PlayDataInfo& ex
     QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
     for( ; proxyIter != m_proxyWidgetList.end(); )
     {
-        if( (exceptPlayDataInfo.id != proxyIter->first.playDataInfo.id) ||
-            (exceptPlayDataInfo.type != proxyIter->first.playDataInfo.type) )
+        if( (exceptPlayDataInfo.id != proxyIter->first.second.playDataInfo.id) ||
+            (exceptPlayDataInfo.type != proxyIter->first.second.playDataInfo.type) )
         {
             proxyIter->second->deleteLater();
             proxyIter = m_proxyWidgetList.erase(proxyIter);
@@ -585,12 +585,17 @@ void ContentsPlayer::UpdatePlayerFixedLayerContentSlot(ScheduleTimer::PlayDataIn
             QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
             for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
             {
-                if(newDataIdxInfo == proxyIter->first)
+                if(PlayJson::MediaType::SUBTITLE == proxyIter->first.first)
+                {
+                    continue;
+                }
+
+                if(newDataIdxInfo == proxyIter->first.second)
                 {
                     ui->playerView->scene()->addItem(proxyIter->second);
                 }
 
-                if(prevDataIdxInfo == proxyIter->first)
+                if(prevDataIdxInfo == proxyIter->first.second)
                 {
                     ui->playerView->scene()->removeItem(proxyIter->second);
                 }
@@ -668,6 +673,7 @@ void ContentsPlayer::PausePrevPlayDataSlot(ScheduleTimer::PlayDataIndexInfo prev
     for(; subIter != m_subtitleWidgetList.end(); ++subIter)
     {
         if( (prevPlayDataIdxInfo == subIter->first) &&
+            (PlayJson::PlayDataType::CUSTOM == subIter->first.playDataInfo.type) &&
             (true == subIter->second->IsStartedAnimation()) )
         {
             subIter->second->StopAnimation();
@@ -700,7 +706,7 @@ void ContentsPlayer::MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo conte
         const bool bIsSetItem = imageItem->SetImageItem(fullPath, posSizeInfo);
         if(true == bIsSetItem)
         {
-            ImageItemInfo newImageItem;
+            ImageItemInfo newImageItem;            
             newImageItem.first = contentIndxInfo;
             newImageItem.second = imageItem;
             m_imageItemList.push_back(newImageItem);
@@ -756,7 +762,8 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
         ClockWidgetInfo newClockWidgetInfo(contentIndexInfo, newClcokWidget);
         m_clockWidgetList.push_back(newClockWidgetInfo);
 
-        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        ProxyDataInfo proxyDataInfo(PlayJson::MediaType::CLOCK, contentIndexInfo);
+        ProxyWidgetInfo proxyWidgetInfo(proxyDataInfo, proxyWidget);
         m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::DATE == contentData.contentInfo.mediaType)
@@ -772,7 +779,8 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
         DateWidgetInfo newDateWidgetInfo(contentIndexInfo, newDateWidget);
         m_dateWidgetList.push_back(newDateWidgetInfo);
 
-        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        ProxyDataInfo proxyDataInfo(PlayJson::MediaType::DATE, contentIndexInfo);
+        ProxyWidgetInfo proxyWidgetInfo(proxyDataInfo, proxyWidget);
         m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::WEATHER == contentData.contentInfo.mediaType)
@@ -796,7 +804,8 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
         WeatherWidgetInfo weatherWidgetInfo(contentIndexInfo, newWeatherWidget);
         m_weatherWidgetList.push_back(weatherWidgetInfo);
 
-        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        ProxyDataInfo proxyDataInfo(PlayJson::MediaType::WEATHER, contentIndexInfo);
+        ProxyWidgetInfo proxyWidgetInfo(proxyDataInfo, proxyWidget);
         m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
     else if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
@@ -820,7 +829,8 @@ void ContentsPlayer::MakeWidgetTypeItemSlot(ScheduleTimer::PlayDataIndexInfo con
         NewsFeedWidgetInfo newsWidgetInfo(contentIndexInfo, newNewsWidget);
         m_newsFeedWigetList.push_back(newsWidgetInfo);
 
-        ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+        ProxyDataInfo proxyDataInfo(PlayJson::MediaType::NEWS, contentIndexInfo);
+        ProxyWidgetInfo proxyWidgetInfo(proxyDataInfo, proxyWidget);
         m_proxyWidgetList.push_back(proxyWidgetInfo);
     }
 }
@@ -840,7 +850,8 @@ void ContentsPlayer::MakeSubtitleWidgetSlot(ScheduleTimer::PlayDataIndexInfo con
     SubtitleWidgetInfo subtitleWidgetInfo(contentIndexInfo, newSubtitle);
     m_subtitleWidgetList.push_back(subtitleWidgetInfo);
 
-    ProxyWidgetInfo proxyWidgetInfo(contentIndexInfo, proxyWidget);
+    ProxyDataInfo proxyDataInfo(PlayJson::MediaType::SUBTITLE, contentIndexInfo);
+    ProxyWidgetInfo proxyWidgetInfo(proxyDataInfo, proxyWidget);
     m_proxyWidgetList.push_back(proxyWidgetInfo);
 }
 
@@ -867,7 +878,15 @@ void ContentsPlayer::SearchItemAndAddToScene(const ScheduleTimer::PlayDataIndexI
         QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
         for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
         {
-            if(playDataIdxInfo == proxyIter->first)
+            if( (PlayJson::PlayDataType::FIXED == playDataIdxInfo.playDataInfo.type) &&
+                (playDataIdxInfo.playDataInfo == proxyIter->first.second.playDataInfo) &&
+                (PlayJson::MediaType::SUBTITLE == proxyIter->first.first))
+            {
+                scene->addItem(proxyIter->second);
+                ELGO_VIEWER_LOG("ADD %s",
+                                proxyIter->second->widget()->objectName().toStdString().c_str());
+            }
+            else if(playDataIdxInfo == proxyIter->first.second)
             {
                 scene->addItem(proxyIter->second);
                 ELGO_VIEWER_LOG("ADD %s",
@@ -951,7 +970,12 @@ void ContentsPlayer::ExecPlayDataItemList(const ScheduleTimer::PlayDataIndexInfo
     QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
     for(; subIter != m_subtitleWidgetList.end(); ++subIter)
     {
-        if(playDataIdxInfo == subIter->first)
+        if( (PlayJson::PlayDataType::FIXED == playDataIdxInfo.playDataInfo.type) &&
+            (playDataIdxInfo.playDataInfo == subIter->first.playDataInfo) )
+        {
+            subIter->second->StartAnimation();
+        }
+        else if(playDataIdxInfo == subIter->first)
         {
             subIter->second->StartAnimation();
         }
