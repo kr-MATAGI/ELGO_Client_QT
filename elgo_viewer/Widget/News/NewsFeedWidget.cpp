@@ -4,8 +4,6 @@
 #include "ui_NewsFeedWidget.h"
 #include "Logger/ViewerLogger.h"
 
-#define LABEL_ANIMATION_DURATION  1500 //unit : msec
-
 //========================================================
 NewsFeedWidget::NewsFeedWidget(QWidget *parent)
     : QWidget(parent)
@@ -16,7 +14,15 @@ NewsFeedWidget::NewsFeedWidget(QWidget *parent)
     ui->setupUi(this);
     this->setObjectName("NewsFeedWidget");
 
+    m_feedScene = new QGraphicsScene(this);
     m_seqAniGroup = new QSequentialAnimationGroup(this);
+
+    ui->feedView->setScene(m_feedScene);
+//    ui->feedView->setStyleSheet("border: 0px");
+    ui->feedView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->feedView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->feedView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    ui->feedView->setRenderHint(QPainter::Antialiasing);
 }
 
 //========================================================
@@ -24,20 +30,6 @@ NewsFeedWidget::~NewsFeedWidget()
 //========================================================
 {
     delete ui;
-
-    foreach(auto item, m_newsFeedList)
-    {
-        delete item;
-        item = NULL;
-    }
-    m_newsFeedList.clear();
-
-    foreach(auto item, m_newsFeedAniList)
-    {
-        delete item;
-        item = NULL;
-    }
-    m_newsFeedAniList.clear();
 
     delete m_seqAniGroup;
     m_seqAniGroup = NULL;
@@ -52,16 +44,13 @@ void NewsFeedWidget::SetNewsFeedList(const PlayJson::NewsCategory category, cons
     const int feedListSize = feedList.size();
     for(int idx = 0; idx < feedListSize; idx++)
     {
-        NewsInfo::FeedData *feed = new NewsInfo::FeedData();
-        feed->originLabel = new QLabel(this);
-        feed->changedLabel = new QLabel(this);
+        FeedBoxWidget *feedbox = new FeedBoxWidget();
 
         QString feedStr = "  ";
         feedStr += feedList[idx];
-        feed->originLabel->setText(feedStr);
-        feed->changedLabel->setText(feedStr);
+        feedbox->SetFeedBoxText(feedStr);
 
-        m_newsFeedList.push_back(feed);
+        m_feedBoxList.push_back(feedbox);
     }
 }
 
@@ -96,24 +85,22 @@ void NewsFeedWidget::SetFeedLabelStyleSheet(const StyleSheet::StyleInfo &style)
     ui->newsTitle->setStyleSheet(titleStyleSheet);
     ELGO_VIEWER_LOG("Title StyleSheet - %s", titleStyleSheet.toStdString().c_str());
 
+    QString feedStyleSheet = QString("QLabel {background-color: %1; color: %2;}")
+                                .arg(m_feedStyle.backgroundColor)
+                                .arg(m_feedStyle.fontColor);
+    ELGO_VIEWER_LOG("Feed StyleSheet - %s", feedStyleSheet.toStdString().c_str());
+
     // news feed
-    const int feedListSize = m_newsFeedList.size();
+    const int feedListSize = m_feedBoxList.size();
     for(int idx = 0; idx < feedListSize; idx++)
     {
         if(true == m_feedStyle.bTransparency)
         {
-            m_newsFeedList[idx]->originLabel->setAttribute(Qt::WA_TranslucentBackground, true);
-            m_newsFeedList[idx]->changedLabel->setAttribute(Qt::WA_TranslucentBackground, true);
+            m_feedBoxList[idx]->SetTranslucentBackground(true);
         }
         else
         {
-            QString feedStyleSheet = QString("QLabel {background-color: %1; color: %2;}")
-                                        .arg(m_feedStyle.backgroundColor)
-                                        .arg(m_feedStyle.fontColor);
-            ELGO_VIEWER_LOG("Feed StyleSheet - %s", feedStyleSheet.toStdString().c_str());
-
-            m_newsFeedList[idx]->originLabel->setStyleSheet(feedStyleSheet);
-            m_newsFeedList[idx]->changedLabel->setStyleSheet(feedStyleSheet);
+            m_feedBoxList[idx]->SetLabelStyleSheet(feedStyleSheet);
         }
     }
 }
@@ -127,8 +114,8 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     const QPointF& widgetPos = posSizeInfo.pos;
     const QSize& widgetSize = posSizeInfo.size;
     const QRect widgetRect(widgetPos.toPoint(), widgetSize);
-    ELGO_VIEWER_LOG("Widget pos{x: %f, y: %f}, size{w: %d, h: %d}",
-                    widgetPos.x(), widgetPos.y(), widgetSize.width(), widgetSize.height());
+    ELGO_VIEWER_LOG("Widget pos{x: %d, y: %d}, size{w: %d, h: %d}",
+                    widgetRect.x(), widgetRect.y(), widgetRect.width(), widgetRect.height());
     this->setGeometry(widgetRect);
 
     // title
@@ -136,10 +123,10 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     const QSize titleSize(widgetSize.width() * 0.9, widgetSize.height() * 0.1);
     const QRect titleRect(titlePos, titleSize);
     ELGO_VIEWER_LOG("Title pos{x: %d, y: %d}, size{w: %d, h: %d}",
-                    titlePos.x(), titlePos.y(), titleSize.width(), titleSize.height());
+                    titleRect.x(), titleRect.y(), titleRect.width(), titleRect.height());
 
     QFont titleFont;
-    const int titleFontSize = titleSize.height() * 0.8;
+    const int titleFontSize = titleSize.height() * 0.75;
     titleFont.setBold(true);
     titleFont.setPointSize(titleFontSize);
     ELGO_VIEWER_LOG("Title Font Size : %d", titleFontSize);
@@ -147,13 +134,29 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
     ui->newsTitle->setGeometry(titleRect);
     ui->newsTitle->setFont(titleFont);
 
-    // news Feed
-    const QSize feedSize = QSize(widgetSize.width() * 0.9, widgetSize.height() * 0.06);
+    // Scene And View
+    const QPoint scenePos(titlePos.x(), titleSize.height() * 1.2);
+    const QSize sceneSize(widgetSize.width() * 0.85, widgetSize.height() * 0.95);
+    const QRect sceneRect(scenePos, sceneSize);
+    ELGO_VIEWER_LOG("Scene pos{x: %d, y: %d}, size{w: %d, h: %d}",
+                    sceneRect.x(), sceneRect.y(), sceneRect.width(), sceneRect.height());
 
-    int feedPosX = widgetSize.width() * 0.01;
-    int feedPosY = widgetSize.height() * 0.15;
+    m_feedScene->setSceneRect(sceneRect);
+    ui->feedView->setGeometry(sceneRect);
 
-    const int feedListSize = m_newsFeedList.size();
+    // news Feed    
+    const QSize feedSize = QSize(sceneSize.width(), sceneSize.height() * 0.06);
+
+    QFont feedFont;
+    const int feedFontSize = feedSize.height() * 0.7;
+    feedFont.setBold(true);
+    feedFont.setPointSize(feedFontSize);
+    ELGO_VIEWER_LOG("Feed Font Size : %d", feedFontSize);
+
+    int feedPosX = sceneRect.x();
+    int feedPosY = sceneRect.y();
+
+    const int feedListSize = m_feedBoxList.size();
     for(int idx = 0; idx < feedListSize; idx++)
     {
         const QPoint originFeedPos(feedPosX, feedPosY);;
@@ -167,17 +170,10 @@ void NewsFeedWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
         const QRect changedFeedRect(changedFeedPos, chagnedFeedSize);
         ELGO_VIEWER_LOG("Changed Feed pos{x: %d, y: %d}", changedFeedPos.x(), changedFeedPos.y());
 
-        QFont feedFont;
-        const int feedFontSize = feedSize.height() * 0.7;
-        feedFont.setBold(true);
-        feedFont.setPointSize(feedFontSize);
-        ELGO_VIEWER_LOG("Feed Font Size : %d", feedFontSize);
+        m_feedBoxList[idx]->SetFeedBoxGeometry(originFeedRect, changedFeedRect);
+        m_feedBoxList[idx]->SetLabelFont(feedFont);
 
-        m_newsFeedList[idx]->originLabel->setGeometry(originFeedRect);
-        m_newsFeedList[idx]->changedLabel->setGeometry(changedFeedRect);
-
-        m_newsFeedList[idx]->originLabel->setFont(feedFont);
-        m_newsFeedList[idx]->changedLabel->setFont(feedFont);
+        m_feedScene->addWidget(m_feedBoxList[idx]);
 
         feedPosY += widgetSize.height() * 0.08;
     }
@@ -193,44 +189,25 @@ void NewsFeedWidget::MakeNewsFeedWidget()
     ui->newsTitle->setText(title);
 
     // animation
-    const int newsFeedListSize = m_newsFeedList.size();
+    const int newsFeedListSize = m_feedBoxList.size();
     for(int idx = 0; idx < newsFeedListSize; idx++)
     {
         // check text overflow
-        const QFontMetricsF fontMetrics(m_newsFeedList[idx]->originLabel->font());
-        const QRectF fontRect = fontMetrics.boundingRect(m_newsFeedList[idx]->originLabel->text());
-        if(fontRect.width() > m_newsFeedList[idx]->originLabel->width())
-        {
-            m_newsFeedList[idx]->bIsTextOverflow = true;
-        }
-
-        const QPoint originPos = m_newsFeedList[idx]->originLabel->geometry().topLeft();
-        const QPoint movePos = m_newsFeedList[idx]->changedLabel->geometry().topLeft();
-        const QSize feedSize = m_newsFeedList[idx]->originLabel->size();
-
-        NewsInfo::FeedAnimation *feedAni = new NewsInfo::FeedAnimation();
-        feedAni->originLabelAni = new QPropertyAnimation(m_newsFeedList[idx]->originLabel, "geometry");
-        feedAni->originLabelAni->setDuration(LABEL_ANIMATION_DURATION);
-        feedAni->originLabelAni->setStartValue(QRect(originPos, feedSize));
-        feedAni->originLabelAni->setEndValue(QRect(originPos, QSize(feedSize.width(), 0)));
-
-        feedAni->changedLabelAni = new QPropertyAnimation(m_newsFeedList[idx]->changedLabel, "geometry");
-        feedAni->changedLabelAni->setDuration(LABEL_ANIMATION_DURATION);
-        feedAni->changedLabelAni->setStartValue(QRect(movePos, QSize(feedSize.width(), 0)));
-        feedAni->changedLabelAni->setEndValue(QRect(originPos, feedSize));
-
-        feedAni->parallAniGroup = new QParallelAnimationGroup();
-        feedAni->parallAniGroup->addAnimation(feedAni->originLabelAni);
-        feedAni->parallAniGroup->addAnimation(feedAni->changedLabelAni);
-        m_newsFeedAniList.push_back(feedAni);
+        m_feedBoxList[idx]->CheckTextOverflowStatus();
+        m_feedBoxList[idx]->MakeFeedBoxAnimation();
 
         m_seqAniGroup->setLoopCount(1000);
-        m_seqAniGroup->addAnimation(feedAni->parallAniGroup);
-
+        m_seqAniGroup->addAnimation(m_feedBoxList[idx]->GetParallelAnimationGroup());
+        if(true == m_feedBoxList[idx]->GetTextOverflowStatus())
+        {
+            m_seqAniGroup->addAnimation(m_feedBoxList[idx]->GetOverflowStartAnimation());
+            m_seqAniGroup->addAnimation(m_feedBoxList[idx]->GetOverflowEndAnimation());
+            ELGO_VIEWER_LOG("FeedBox[%d] make overflow animation", idx);
+        }
     }
 
     QPropertyAnimation *waitNextAni = new QPropertyAnimation(this);
-    waitNextAni->setDuration(30000);
+    waitNextAni->setDuration(20000);
     m_seqAniGroup->addAnimation(waitNextAni);
 }
 

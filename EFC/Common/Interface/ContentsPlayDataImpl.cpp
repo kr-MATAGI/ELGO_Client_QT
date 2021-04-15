@@ -112,6 +112,7 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src)
 
     // news
     ds << src.newsCategory;
+    ds << src.newsCount;
     ds << src.newsFeedList;
     ds << src.newsfontSize;
     ds << src.newsBoxColor;
@@ -262,6 +263,7 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest)
 
     // news
     ds >> dest.newsCategory;
+    ds >> dest.newsCount;
     ds >> dest.newsFeedList;
     ds >> dest.newsfontSize;
     ds >> dest.newsBoxColor;
@@ -420,6 +422,8 @@ bool PlayJson::operator==(const PlayJson::ContentData& lhs, const PlayJson::Cont
     if(!(lhs.dateType == rhs.dateType))
         return false;
     if(!(lhs.newsCategory == rhs.newsCategory))
+        return false;
+    if(!(lhs.newsCount == rhs.newsCount))
         return false;
     if(!(lhs.newsfontSize == rhs.newsfontSize))
         return false;   

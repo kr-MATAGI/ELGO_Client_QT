@@ -135,6 +135,7 @@ namespace PlayJson
             , PTY(NO_RAIN)
             , SKY(SUNNY)
             , LGT(false)
+            , newsCount(0)
             , newsfontSize(0)
             , bNewsBoxOpacity(false)
         {
@@ -185,6 +186,7 @@ namespace PlayJson
 
         // news
         NewsCategory newsCategory;
+        int newsCount;
         QVector<QString> newsFeedList;
         int newsfontSize;
         QString newsBoxColor;

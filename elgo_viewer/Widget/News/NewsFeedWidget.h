@@ -3,6 +3,7 @@
 
 // QT
 #include <QWidget>
+#include <QGraphicsScene>
 #include <QSequentialAnimationGroup>
 
 // Viewer
@@ -42,14 +43,15 @@ public:
 private:
     Ui::NewsFeedWidget *ui;
 
+    PlayJson::NewsCategory m_category;
+
     StyleSheet::StyleInfo m_widgetStyle;
     StyleSheet::StyleInfo m_feedStyle;
     StyleSheet::PosSizeInfo m_widgetPosSize;
 
-    PlayJson::NewsCategory m_category;
-    QList<NewsInfo::FeedData*> m_newsFeedList;
+    QGraphicsScene *m_feedScene;
+    QVector<FeedBoxWidget*> m_feedBoxList;
 
-    QList<NewsInfo::FeedAnimation*> m_newsFeedAniList;
     QSequentialAnimationGroup *m_seqAniGroup;
     bool m_bIsStartedAnimation;
 };

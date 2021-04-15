@@ -7,7 +7,7 @@
 #include "Logger/ControlLogger.h"
 
 //========================================================
-bool XmlParser::ParseRssNewsFeedResponse(const QString& src, QVector<QString>& dest)
+bool XmlParser::ParseRssNewsFeedResponse(const QString& src, const int newsCount, QVector<QString>& dest)
 //========================================================
 {
     bool retValue = true;
@@ -35,6 +35,11 @@ bool XmlParser::ParseRssNewsFeedResponse(const QString& src, QVector<QString>& d
                 QXmlStreamAttributes attributes = xmlReader.attributes();
                 QString readText = xmlReader.readElementText();
                 dest.push_back(readText);
+
+                if(newsCount == dest.size())
+                {
+                    break;
+                }
             }
         }
     }

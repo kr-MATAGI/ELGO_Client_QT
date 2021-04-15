@@ -7,11 +7,12 @@
 #include <QInternal>
 #include <QString>
 #include <QLabel>
-#include <QPropertyAnimation>
-#include <QParallelAnimationGroup>
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
+
+// Widget
+#include "Widget/News/FeedBoxWidget.h"
 
 namespace StyleSheet
 {
@@ -57,54 +58,6 @@ namespace WeatherInfo
         QString temperature;
     };
 }
-
-
-namespace NewsInfo
-{
-    /** @brief */
-    struct FeedData
-    {
-        FeedData()
-            : bIsTextOverflow(false)
-        {
-        }
-        ~FeedData()
-        {
-            delete originLabel;
-            originLabel = NULL;
-
-            delete changedLabel;
-            changedLabel = NULL;
-        }
-        QLabel *originLabel;
-        QLabel *changedLabel;
-        bool bIsTextOverflow;
-    };
-
-    /** @brief */
-    struct FeedAnimation
-    {
-        ~FeedAnimation()
-        {
-            delete originLabelAni;
-            originLabelAni = NULL;
-
-            delete changedLabelAni;
-            changedLabelAni = NULL;
-
-            delete overflowTextAni;
-            overflowTextAni = NULL;
-
-            delete parallAniGroup;
-            parallAniGroup = NULL;
-        }
-        QPropertyAnimation *originLabelAni;
-        QPropertyAnimation *changedLabelAni;
-        QPropertyAnimation *overflowTextAni;
-        QParallelAnimationGroup *parallAniGroup;
-    };
-}
-
 
 namespace VideoInfo
 {

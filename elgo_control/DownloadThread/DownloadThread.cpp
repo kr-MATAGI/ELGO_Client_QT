@@ -424,7 +424,7 @@ void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
         const bool bIsDownload = CurlDownload::DownloadNewsFeedXml(contentData.newsCategory, recvJsonStr);
         if(true == bIsDownload)
         {
-            const bool bIsParsed = XmlParser::ParseRssNewsFeedResponse(recvJsonStr, contentData.newsFeedList);
+            const bool bIsParsed = XmlParser::ParseRssNewsFeedResponse(recvJsonStr, contentData.newsCount, contentData.newsFeedList);
             if(true == bIsParsed)
             {
                 ELGO_CONTROL_LOG("Success - Parsing, category : %d", contentData.newsCategory);
