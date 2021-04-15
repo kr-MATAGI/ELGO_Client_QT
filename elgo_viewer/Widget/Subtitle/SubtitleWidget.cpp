@@ -30,11 +30,8 @@ SubtitleWidget::~SubtitleWidget()
     delete m_startyAni;
     m_startyAni = NULL;
 
-//    if(NULL != m_endAni)
-//    {
-//        delete m_endAni;
-//        m_endAni = NULL;
-//    }
+    delete m_endAni;
+    m_endAni = NULL;
 
     delete m_stateMachine;
     m_stateMachine = NULL;
@@ -127,6 +124,7 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
 {
     m_animationInfo = animationInfo;
     m_startyAni = new QPropertyAnimation(ui->subtitleLabel, "geometry");
+    m_endAni = new QPropertyAnimation(ui->subtitleLabel, "geometry");
     ELGO_VIEWER_LOG("isFixed: %d, action: %d, direction: %d, orientation: %d, speed: %d",
                     m_animationInfo.bIsFixed, m_animationInfo.action,
                     m_animationInfo.direction, m_animationInfo.orientation,
@@ -238,7 +236,6 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             QState *startState = new QState(m_stateMachine);
             QState *endState = new QState(m_stateMachine);
 
-            m_endAni = new QPropertyAnimation(ui->subtitleLabel, "geometry");
             const int aniSpeed = (m_animationInfo.speed * 1000) / 3;
             ELGO_VIEWER_LOG("Animation Speed : %d msec", aniSpeed);
 
