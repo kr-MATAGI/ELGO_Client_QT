@@ -68,8 +68,14 @@ void SinglePlayTimer::AddPlayData(const PlayJson::FixedPlayDataJson& src)
 void SinglePlayTimer::ExecPlayData(const ScheduleTimer::PlayDataInfo& playDataInfo)
 //========================================================
 {
-    if(m_customPlayDataInfo.playDataInfo != playDataInfo)
+    if( ((PlayJson::PlayDataType::CUSTOM == m_currPlayDataType) &&
+         (m_customPlayDataInfo.playDataInfo != playDataInfo)) ||
+        ((PlayJson::PlayDataType::FIXED == m_currPlayDataType) &&
+         (m_fixedPlayDataInfo.playDataInfo != playDataInfo)) ||
+        (PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE == m_currPlayDataType))
     {
+        ELGO_VIEWER_LOG("Exec - {id: %d, type: %d}", playDataInfo.id, playDataInfo.type);
+
         // Make Custom or Fixed Contents
         ScheduleTimer::PlayDataIndexInfo playDataIdxInfo;
         playDataIdxInfo.playDataInfo = playDataInfo;

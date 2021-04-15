@@ -25,14 +25,16 @@ SubtitleWidget::SubtitleWidget(QWidget *parent)
 SubtitleWidget::~SubtitleWidget()
 //========================================================
 {
+    StopAnimation();
+
     delete m_startyAni;
     m_startyAni = NULL;
 
-    if(NULL != m_endAni)
-    {
-        delete m_endAni;
-        m_endAni = NULL;
-    }
+//    if(NULL != m_endAni)
+//    {
+//        delete m_endAni;
+//        m_endAni = NULL;
+//    }
 
     delete m_stateMachine;
     m_stateMachine = NULL;
@@ -238,7 +240,7 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
 
             m_endAni = new QPropertyAnimation(ui->subtitleLabel, "geometry");
             const int aniSpeed = (m_animationInfo.speed * 1000) / 3;
-            ELGO_VIEWER_LOG("Animation Speed : %d", aniSpeed);
+            ELGO_VIEWER_LOG("Animation Speed : %d msec", aniSpeed);
 
             m_startyAni->setDuration(aniSpeed);
             m_endAni->setDuration(aniSpeed);
