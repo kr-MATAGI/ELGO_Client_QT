@@ -216,7 +216,6 @@ namespace PlayJson
         RIGHT_TO_LEFT = 2,
         TOP_TO_BOTTOM = 3,
         BOTTOM_TO_TOP = 4,
-        NULL_DIRECTION = 5,
     };
 
     /** @brief  Behavior on Server JSON */

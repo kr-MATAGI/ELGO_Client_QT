@@ -351,11 +351,7 @@ PlayJson::AniFlowDirection JsonStringConverter::SubtitleDirectionStringToEnum(co
 {
     PlayJson::AniFlowDirection retValue = PlayJson::AniFlowDirection::NONE_DIRECTION;
 
-    if(0 == strcmp("null", src.toStdString().c_str()))
-    {
-        retValue = PlayJson::AniFlowDirection::NULL_DIRECTION;
-    }
-    else if(0 == strcmp("left", src.toStdString().c_str()))
+    if(0 == strcmp("left", src.toStdString().c_str()))
     {
         retValue = PlayJson::AniFlowDirection::RIGHT_TO_LEFT;
     }
@@ -701,15 +697,11 @@ void JsonStringConverter::NewsCategoryEnumToString(const PlayJson::NewsCategory 
 void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::AniFlowDirection type, QString& dest)
 //========================================================
 {
-    if(PlayJson::AniFlowDirection::NULL_DIRECTION == type)
-    {
-        dest = "fixed";
-    }
-    else if(PlayJson::AniFlowDirection::LEFT_TO_RIGHT == type)
+    if(PlayJson::AniFlowDirection::RIGHT_TO_LEFT == type)
     {
         dest = "left";
     }
-    else if(PlayJson::AniFlowDirection::RIGHT_TO_LEFT == type)
+    else if(PlayJson::AniFlowDirection::LEFT_TO_RIGHT == type)
     {
         dest = "right";
     }
@@ -723,7 +715,7 @@ void JsonStringConverter::SubtitleDirectionEnumToString(const PlayJson::AniFlowD
     }
     else
     {
-        dest = "null";
+        dest = "none";
     }
 }
 
@@ -741,7 +733,7 @@ void JsonStringConverter::SubtitleActionEnumToString(const PlayJson::SubtitleAct
     }
     else
     {
-        dest = "null";
+        dest = "none";
     }
 }
 

@@ -18,7 +18,6 @@ SubtitleWidget::SubtitleWidget(QWidget *parent)
     this->setObjectName("Subtitle Widget");
 
     // init
-    ui->subtitleLabel->setWordWrap(true);
     m_stateMachine = new QStateMachine;
 }
 
@@ -139,10 +138,14 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
         {
             QChar ch = ui->subtitleLabel->text().at(idx);
             verticalText += ch;
-            verticalText += "\n";
+            if(idx != (ui->subtitleLabel->text().length() - 1))
+            {
+                verticalText += "\n";
+            }
         }
         ui->subtitleLabel->setText(verticalText);
         ui->subtitleLabel->setAlignment(Qt::AlignHCenter);
+        ELGO_VIEWER_LOG("Vertical Text : %s", verticalText.toStdString().c_str());
     }
 
     // subtitle flow
@@ -159,30 +162,36 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
             GetScrollAnimationMovePos(originRect, startPos, endPos);
 
             // sec -> msec
+            int aniSpeed = 0;
             if( (PlayJson::AniFlowDirection::LEFT_TO_RIGHT == m_animationInfo.direction) ||
                 (PlayJson::AniFlowDirection::RIGHT_TO_LEFT == m_animationInfo.direction) )
             {
                 if(PlayJson::Orientation::VERTICAL == m_animationInfo.orientation)
                 {
-                    m_startyAni->setDuration((m_animationInfo.speed / 3) * 1000);
+                    aniSpeed = (m_animationInfo.speed / 3) * 1000;
+                    m_startyAni->setDuration(aniSpeed);
                 }
                 else
                 {
-                    m_startyAni->setDuration(m_animationInfo.speed * 1000);
+                    aniSpeed = m_animationInfo.speed * 1000;
+                    m_startyAni->setDuration(aniSpeed);
                 }
             }
             else
             {
                 if(PlayJson::Orientation::VERTICAL == m_animationInfo.orientation)
                 {
+                    aniSpeed = m_animationInfo.speed * 1000;
                     m_startyAni->setDuration(m_animationInfo.speed * 1000);
                 }
                 else
                 {
+                    aniSpeed = (m_animationInfo.speed / 3) * 1000;
                     ui->subtitleLabel->setAlignment(Qt::AlignHCenter);
-                    m_startyAni->setDuration((m_animationInfo.speed / 3) * 1000);
+                    m_startyAni->setDuration(aniSpeed);
                 }
             }
+            ELGO_VIEWER_LOG("Animation Speed : %d msec", aniSpeed);
 
             m_startyAni->setStartValue(QRect(startPos, originRect.size()));
             m_startyAni->setEndValue(QRect(endPos, originRect.size()));
@@ -192,12 +201,24 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
         {
             // Loop Action
             const QFontMetricsF fontMetrics(ui->subtitleLabel->font());
-            QRect fontRect = fontMetrics.boundingRect(ui->subtitleLabel->text()).toRect();
 
-            const int resizePosY = (this->geometry().height() / 2) - (fontRect.size().height() / 2);
-            const QRect labelResizeRect(QPoint(0, resizePosY), fontRect.size());
+            QRect resizefontRect = fontMetrics.boundingRect(ui->subtitleLabel->text()).toRect();
+            if(PlayJson::Orientation::HORIZONTAL == m_animationInfo.orientation)
+            {
+                ui->subtitleLabel->setAlignment(Qt::AlignLeft);
+            }
+            else if(PlayJson::Orientation::VERTICAL == m_animationInfo.orientation)
+            {
+                ui->subtitleLabel->setAlignment(Qt::AlignHCenter);
+                const int vertiWidth = this->width() * 0.4;
+                const int vertiHeight = ui->subtitleLabel->text().length() * ui->subtitleLabel->font().pixelSize();
+                resizefontRect.setSize(QSize(vertiWidth, vertiHeight * 0.8));
+            }
+
+            const int resizePosY = (this->geometry().height() / 2) - (resizefontRect.size().height() / 2);
+            const QRect labelResizeRect(QPoint(0, resizePosY), resizefontRect.size());
             ui->subtitleLabel->setGeometry(labelResizeRect);
-            ELGO_VIEWER_LOG("fontRect - {w: %d, h: %d}", fontRect.width(), fontRect.height());
+            ELGO_VIEWER_LOG("fontRect - {w: %d, h: %d}", resizefontRect.width(), resizefontRect.height());
             ELGO_VIEWER_LOG("lablResizeRect - {x: %d, y: %d}, {w: %d, h: %d}",
                             labelResizeRect.x(), labelResizeRect.y(),
                             labelResizeRect.width(), labelResizeRect.height());
@@ -217,6 +238,7 @@ void SubtitleWidget::SetAnimationInfo(const SubtitleInfo::Animation& animationIn
 
             m_endAni = new QPropertyAnimation(ui->subtitleLabel, "geometry");
             const int aniSpeed = (m_animationInfo.speed * 1000) / 3;
+            ELGO_VIEWER_LOG("Animation Speed : %d", aniSpeed);
 
             m_startyAni->setDuration(aniSpeed);
             m_endAni->setDuration(aniSpeed);
@@ -255,7 +277,7 @@ void SubtitleWidget::GetScrollAnimationMovePos(const QRect& originRect, QPoint& 
 {
     if(PlayJson::AniFlowDirection::LEFT_TO_RIGHT == m_animationInfo.direction)
     {
-        startPos.setX(originRect.left() - originRect.width());
+        startPos.setX(originRect.left() - (originRect.width() / 2));
         startPos.setY(originRect.top());
 
         endPos.setX(originRect.right());
@@ -266,7 +288,7 @@ void SubtitleWidget::GetScrollAnimationMovePos(const QRect& originRect, QPoint& 
         startPos.setX(originRect.right());
         startPos.setY(originRect.top());
 
-        endPos.setX(originRect.left() - originRect.width());
+        endPos.setX(originRect.left() - (originRect.width() / 2));
         endPos.setY(originRect.top());
     }
     else if(PlayJson::AniFlowDirection::BOTTOM_TO_TOP == m_animationInfo.direction)
@@ -275,13 +297,13 @@ void SubtitleWidget::GetScrollAnimationMovePos(const QRect& originRect, QPoint& 
         startPos.setY(originRect.bottom());
 
         endPos.setX(originRect.left());
-        endPos.setY(originRect.top() - originRect.height());
+        endPos.setY(originRect.top() - (originRect.height() / 2));
     }
     else
     {
         // TOP_TO_BOTTOM
         startPos.setX(originRect.left());
-        startPos.setY(originRect.top() - originRect.height());
+        startPos.setY(originRect.top() - (originRect.height() / 2));
 
         endPos.setX(originRect.left());
         endPos.setY(originRect.bottom());
@@ -316,12 +338,12 @@ void SubtitleWidget::GetLoopAnimationMovePos(const QRect& widgetRect, const QRec
         startRect.setTopLeft(QPoint(widgetHMid, 0));
         startRect.setSize(labelRect.size());
 
-        endRect.setTopLeft(QPoint(widgetHMid, widgetVMid * 2));
+        endRect.setTopLeft(QPoint(widgetHMid, widgetRect.height() - labelRect.height()));
         endRect.setSize(labelRect.size());
     }
     else if(PlayJson::AniFlowDirection::BOTTOM_TO_TOP == m_animationInfo.direction)
     {
-        startRect.setTopLeft(QPoint(widgetHMid, widgetVMid * 2));
+        startRect.setTopLeft(QPoint(widgetHMid, widgetRect.height() - labelRect.height()));
         startRect.setSize(labelRect.size());
 
         endRect.setTopLeft(QPoint(widgetHMid, 0));
