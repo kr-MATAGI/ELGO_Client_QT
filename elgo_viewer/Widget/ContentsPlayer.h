@@ -150,8 +150,8 @@ private:
     QVector<DateWidgetInfo> m_dateWidgetList;
     QVector<NewsFeedWidgetInfo> m_newsFeedWigetList;
     QVector<WeatherWidgetInfo> m_weatherWidgetList;
-    QVector<ProxyWidgetInfo> m_proxyWidgetList;
     QVector<SubtitleWidgetInfo> m_subtitleWidgetList;
+    QVector<ProxyWidgetInfo> m_proxyWidgetList;
 };
 
 #endif // CONTENTSPLAYER_H
