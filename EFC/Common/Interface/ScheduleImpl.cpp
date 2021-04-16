@@ -1,7 +1,7 @@
 #include "ScheduleImpl.h"
 
 //========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedules& src)
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedule& src)
 //========================================================
 {
     ds << src.id;
@@ -94,7 +94,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleD
 }
 
 //========================================================
-QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlaySchedules& dest)
+QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlaySchedule& dest)
 //========================================================
 {
     ds >> dest.id;

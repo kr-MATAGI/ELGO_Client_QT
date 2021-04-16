@@ -12,7 +12,7 @@
  */
 
 /** @brief  Play Schedules Serialize */
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedules& src);
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlaySchedule& src);
 /** @brief */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& src);
 /** @brief */
@@ -37,7 +37,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleD
  *  @note   elgo_control <-> elgo_viewer, deserialize function
  */
 /** @brief  Play Schedules Desrialize */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::PlaySchedules& dest);
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::PlaySchedule& dest);
 /** @brief */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest);
 /** @brief */

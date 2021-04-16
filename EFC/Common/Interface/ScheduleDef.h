@@ -60,7 +60,7 @@ namespace ScheduleJson
     };
 
     /** @brief  Play Schedules */
-    struct PlaySchedules
+    struct PlaySchedule
     {
         QString id;
         QVector<PlayScheduleData> scheduleList;

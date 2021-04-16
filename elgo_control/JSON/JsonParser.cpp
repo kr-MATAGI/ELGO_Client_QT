@@ -357,7 +357,7 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
 }
 
 //========================================================
-bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson::PlaySchedules>& dest)
+bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson::PlaySchedule>& dest)
 //========================================================
 {
     bool retValue = true;
@@ -372,7 +372,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson
         QJsonObject::const_iterator constEnd = schedulesObj.constEnd();
         while(constIter != constEnd)
         {
-            ScheduleJson::PlaySchedules schedules;
+            ScheduleJson::PlaySchedule schedules;
             schedules.id = constIter.key();
 
             const QJsonArray& valueArray = constIter.value().toArray();

@@ -23,7 +23,7 @@ public:
 
 public:
     /** @brief */
-    void AddPlaySchedule(const ScheduleJson::PlaySchedules& src);
+    void AddPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& src);
 
 private:
     /** @brief */
@@ -45,7 +45,7 @@ private:
     ScheduleTimer::PlayDataInfo m_currPlayDataInfo;
     ScheduleTimer::PlayDataInfo m_prevSinglePlayDataInfo;
 
-    QVector<ScheduleJson::PlaySchedules> m_playScheduleList;
+    QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
     QVector<ScheduleTimer::PlayDataInfo> m_playDataInfoList;
 };
 

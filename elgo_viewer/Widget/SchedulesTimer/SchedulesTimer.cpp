@@ -22,10 +22,14 @@ SchedulesTimer::~SchedulesTimer()
 }
 
 //========================================================
-void SchedulesTimer::AddPlaySchedule(const ScheduleJson::PlaySchedules& src)
+void SchedulesTimer::AddPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& src)
 //========================================================
 {
-    m_playScheduleList.push_back(src);
+    const int scheduleListSize = src.size();
+    for(int idx = 0; idx < scheduleListSize; idx++)
+    {
+        m_playScheduleList.push_back(src[idx]);
+    }
 }
 
 //========================================================
@@ -37,7 +41,7 @@ void SchedulesTimer::SchedulerTimeout()
     // Check start, end
     const qint64 currSecEpoch = currentDateTime.toSecsSinceEpoch();
 
-    QVector<ScheduleJson::PlaySchedules>::iterator playScheduleIter = m_playScheduleList.begin();
+    QVector<ScheduleJson::PlaySchedule>::iterator playScheduleIter = m_playScheduleList.begin();
     for(; playScheduleIter != m_playScheduleList.end(); ++playScheduleIter)
     {
         QVector<ScheduleJson::PlayScheduleData>::iterator scheduleDataIter = playScheduleIter->scheduleList.begin();

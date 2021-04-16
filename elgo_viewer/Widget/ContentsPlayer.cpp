@@ -23,7 +23,7 @@ Q_DECLARE_METATYPE(PlayJson::CustomPlayDataJson);
 Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson);
 Q_DECLARE_METATYPE(PlayJson::PlayData);
 Q_DECLARE_METATYPE(PlayJson::SubtitleData);
-Q_DECLARE_METATYPE(ScheduleJson::PlaySchedules);
+Q_DECLARE_METATYPE(ScheduleJson::PlaySchedule);
 
 Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
 Q_DECLARE_METATYPE(PlayJson::ContentData);
@@ -62,7 +62,7 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     qRegisterMetaType<PlayJson::FixedPlayDataJson>("PlayJson::FixedPlayDataJson");
     qRegisterMetaType<PlayJson::PlayData>("PlayJson::PlayData");
     qRegisterMetaType<PlayJson::SubtitleData>("PlayJson::SubtitleData");
-    qRegisterMetaType<ScheduleJson::PlaySchedules>("ScheduleJson::PlaySchedules");
+    qRegisterMetaType<ScheduleJson::PlaySchedule>("ScheduleJson::PlaySchedules");
 
     qRegisterMetaType<ScheduleTimer::PlayDataIndexInfo>("ScheduleTimer::PlayDataIndexInfo");
     qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
@@ -75,11 +75,14 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     connect(this, SIGNAL(AddPlayDataSignal(PlayJson::FixedPlayDataJson)),
             this, SLOT(AddPlayDataSlot(PlayJson::FixedPlayDataJson)));
 
-    connect(this, SIGNAL(AddPlayScheduleListSignal(ScheduleJson::PlaySchedules)),
-            this, SLOT(AddPlayScheduleListSlot(ScheduleJson::PlaySchedules)));
+    connect(this, SIGNAL(AddPlayScheduleListSignal(QVector<ScheduleJson::PlaySchedules>)),
+            this, SLOT(AddPlayScheduleListSlot(QVector<ScheduleJson::PlaySchedules>)));
 
-    connect(this, SIGNAL(ExecPlayDataSingal(PlayJson::PlayData)),
+    connect(this, SIGNAL(ExecPlayDataSignal(PlayJson::PlayData)),
             this, SLOT(ExecPlayDataSlot(PlayJson::PlayData)));
+
+    connect(this, SIGNAL(ClearPlayDataSignal()),
+            this, SLOT(ClearPlayDataSlot()));
 
     connect(this, SIGNAL(MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo,
                                                 PlayJson::ContentData,
@@ -194,15 +197,6 @@ void ContentsPlayer::StartContentsPlayer()
 }
 
 //========================================================
-void ContentsPlayer::StartScheduleTimer()
-//========================================================
-{
-    ELGO_VIEWER_LOG("Start Schedule Timer !");
-
-    m_schedulerTimer->start(900);
-}
-
-//========================================================
 void ContentsPlayer::AddPlayDataSlot(PlayJson::CustomPlayDataJson src)
 //========================================================
 {
@@ -217,7 +211,7 @@ void ContentsPlayer::AddPlayDataSlot(PlayJson::FixedPlayDataJson src)
 }
 
 //========================================================
-void ContentsPlayer::AddPlayScheduleListSlot(ScheduleJson::PlaySchedules src)
+void ContentsPlayer::AddPlayScheduleListSlot(QVector<ScheduleJson::PlaySchedule> src)
 //========================================================
 {
     m_schedulerTimer->AddPlaySchedule(src);
@@ -439,6 +433,13 @@ void ContentsPlayer::ExecPlayDataSlot(PlayJson::PlayData src)
     ClearPrevSceneList(playDataInfo);
 
     m_singleTimer->start(990);
+}
+
+//========================================================
+void ContentsPlayer::ClearPlayDataSlot()
+//========================================================
+{
+    m_singleTimer->ClearPlayData();
 }
 
 //========================================================

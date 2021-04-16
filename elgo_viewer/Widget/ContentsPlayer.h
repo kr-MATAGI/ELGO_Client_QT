@@ -43,8 +43,6 @@ public:
 
     /** @brief */
     void StartContentsPlayer();
-    /** @brief */
-    void StartScheduleTimer();
 
 signals:
     /** @note   Related to Schedule Timer */
@@ -54,10 +52,13 @@ signals:
     void AddPlayDataSignal(PlayJson::FixedPlayDataJson src);
 
     /** @brief */
-    void AddPlayScheduleListSignal(ScheduleJson::PlaySchedules src);
+    void AddPlayScheduleListSignal(QVector<ScheduleJson::PlaySchedule> src);
 
     /** @brief */
-    void ExecPlayDataSingal(PlayJson::PlayData playData);
+    void ExecPlayDataSignal(PlayJson::PlayData playData);
+
+    /** @brief */
+    void ClearPlayDataSignal();
 
     /** @brief */
     void MakeFileTypeItemSignal(ScheduleTimer::PlayDataIndexInfo contentIndexInfo,
@@ -91,10 +92,13 @@ private slots:
     void AddPlayDataSlot(PlayJson::FixedPlayDataJson src);
 
     /** @brief */
-    void AddPlayScheduleListSlot(ScheduleJson::PlaySchedules src);
+    void AddPlayScheduleListSlot(QVector<ScheduleJson::PlaySchedule> src);
 
     /** @brief */
     void ExecPlayDataSlot(PlayJson::PlayData playData);
+
+    /** @brief */
+    void ClearPlayDataSlot();
 
     /** @brief */
     void MakeFileTypeItemSlot(ScheduleTimer::PlayDataIndexInfo contentIndxInfo,

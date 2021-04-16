@@ -161,8 +161,9 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
+    emit ContentsPlayer::GetInstance()->ClearPlayDataSignal();
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
-    emit ContentsPlayer::GetInstance()->ExecPlayDataSingal(customPlayData.playData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(customPlayData.playData);
 }
 
 //========================================================
@@ -185,8 +186,9 @@ void ViewerThread::ExecFixedPlayData()
                     fixedPlayData.playData.id,
                     fixedPlayData.playData.name.toStdString().c_str());
 
+    emit ContentsPlayer::GetInstance()->ClearPlayDataSignal();
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
-    emit ContentsPlayer::GetInstance()->ExecPlayDataSingal(fixedPlayData.playData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(fixedPlayData.playData);
 }
 
 //========================================================
@@ -204,7 +206,7 @@ void ViewerThread::ExecCustomPlaySchedules()
     */
 
     PlayJson::CustomPlayDataJson customPlayData;
-    QVector<ScheduleJson::PlaySchedules> scheduleList;
+    QVector<ScheduleJson::PlaySchedule> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> customPlayData;
@@ -233,7 +235,7 @@ void ViewerThread::ExecFixedPlaySchedules()
     */
 
     PlayJson::FixedPlayDataJson fixedPlayData;
-    QVector<ScheduleJson::PlaySchedules> scheduleList;
+    QVector<ScheduleJson::PlaySchedule> scheduleList;
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     recvStream >> fixedPlayData;

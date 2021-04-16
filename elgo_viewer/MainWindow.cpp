@@ -94,8 +94,6 @@ void MainWindow::DrawQRCodeByThreadSignal()
 
     // show Content Player after 10 sec
     m_closeTimer.start(CLOSE_TIMEOUT);
-
-    ContentsPlayer::GetInstance()->StartScheduleTimer();
 }
 
 //========================================================

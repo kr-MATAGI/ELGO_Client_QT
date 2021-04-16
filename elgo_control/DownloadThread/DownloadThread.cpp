@@ -213,7 +213,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
         PlayJson::PlayData playData;
         PlayJson::CustomPlayDataJson customPlayData;
         PlayJson::FixedPlayDataJson fixedPlayData;
-        QVector<ScheduleJson::PlaySchedules> playScheduleList;
+        QVector<ScheduleJson::PlaySchedule> playScheduleList;
 
         // video duration info
         QVector<QPair<QString, qint64>> videoInfoList;

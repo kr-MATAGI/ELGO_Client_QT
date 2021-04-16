@@ -108,6 +108,31 @@ void SinglePlayTimer::UpdateCustomPlayDataIndexInfo(const ScheduleTimer::PlayDat
 }
 
 //========================================================
+void SinglePlayTimer::ClearPlayData()
+//========================================================
+{
+    this->stop();
+
+    const int prevCustomPlayDataListSize = m_customPlayDataList.size();
+    const int prevFixedPlayDataListSize = m_fixedPlayDataList.size();
+    ELGO_VIEWER_LOG("Prev Play Data List Size - {custom: %d, fixed: %d}",
+                    prevCustomPlayDataListSize, prevFixedPlayDataListSize);
+
+    foreach(auto item, m_customPlayDataList)
+    {
+        ELGO_VIEWER_LOG("Ready Delete(custom) - {id: %d}", item.playData.id);
+    }
+
+    foreach(auto item, m_fixedPlayDataList)
+    {
+        ELGO_VIEWER_LOG("Ready Delete(fixed) - {id: %d}", item.playData.id);
+    }
+
+    m_customPlayDataList.clear();
+    m_fixedPlayDataList.clear();
+}
+
+//========================================================
 void SinglePlayTimer::MakeCustomPlayDataContents(ScheduleTimer::PlayDataIndexInfo& playDataIdxInfo)
 //========================================================
 {
