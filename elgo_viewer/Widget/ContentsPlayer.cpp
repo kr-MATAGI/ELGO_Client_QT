@@ -24,6 +24,7 @@ Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson);
 Q_DECLARE_METATYPE(PlayJson::PlayData);
 Q_DECLARE_METATYPE(PlayJson::SubtitleData);
 Q_DECLARE_METATYPE(ScheduleJson::PlaySchedule);
+Q_DECLARE_METATYPE(QVector<ScheduleJson::PlaySchedule>);
 
 Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
 Q_DECLARE_METATYPE(PlayJson::ContentData);
@@ -62,7 +63,8 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     qRegisterMetaType<PlayJson::FixedPlayDataJson>("PlayJson::FixedPlayDataJson");
     qRegisterMetaType<PlayJson::PlayData>("PlayJson::PlayData");
     qRegisterMetaType<PlayJson::SubtitleData>("PlayJson::SubtitleData");
-    qRegisterMetaType<ScheduleJson::PlaySchedule>("ScheduleJson::PlaySchedules");
+    qRegisterMetaType<ScheduleJson::PlaySchedule>("ScheduleJson::PlaySchedule");
+    qRegisterMetaType<QVector<ScheduleJson::PlaySchedule>>("QVector<ScheduleJson::PlaySchedule>");
 
     qRegisterMetaType<ScheduleTimer::PlayDataIndexInfo>("ScheduleTimer::PlayDataIndexInfo");
     qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
@@ -75,8 +77,8 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     connect(this, SIGNAL(AddPlayDataSignal(PlayJson::FixedPlayDataJson)),
             this, SLOT(AddPlayDataSlot(PlayJson::FixedPlayDataJson)));
 
-    connect(this, SIGNAL(AddPlayScheduleListSignal(QVector<ScheduleJson::PlaySchedules>)),
-            this, SLOT(AddPlayScheduleListSlot(QVector<ScheduleJson::PlaySchedules>)));
+    connect(this, SIGNAL(AddPlayScheduleListSignal(QVector<ScheduleJson::PlaySchedule>)),
+            this, SLOT(AddPlayScheduleListSlot(QVector<ScheduleJson::PlaySchedule>)));
 
     connect(this, SIGNAL(ExecPlayDataSignal(PlayJson::PlayData)),
             this, SLOT(ExecPlayDataSlot(PlayJson::PlayData)));
@@ -432,6 +434,7 @@ void ContentsPlayer::ExecPlayDataSlot(PlayJson::PlayData src)
     // Prev Scene Delete
     ClearPrevSceneList(playDataInfo);
 
+    ELGO_VIEWER_LOG("Start SinglePlay Timer (990 msec)");
     m_singleTimer->start(990);
 }
 
@@ -439,6 +442,7 @@ void ContentsPlayer::ExecPlayDataSlot(PlayJson::PlayData src)
 void ContentsPlayer::ClearPlayDataSlot()
 //========================================================
 {
+    m_schedulerTimer->ClearPlaySchedule();
     m_singleTimer->ClearPlayData();
 }
 

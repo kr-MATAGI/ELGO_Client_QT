@@ -8,6 +8,7 @@
 //========================================================
 SchedulesTimer::SchedulesTimer(QObject *parent)
     : QTimer(parent)
+    , m_bIsStartedTimer(false)
 //========================================================
 {
     // connect
@@ -18,7 +19,7 @@ SchedulesTimer::SchedulesTimer(QObject *parent)
 SchedulesTimer::~SchedulesTimer()
 //========================================================
 {
-
+    this->stop();
 }
 
 //========================================================
@@ -28,8 +29,37 @@ void SchedulesTimer::AddPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& 
     const int scheduleListSize = src.size();
     for(int idx = 0; idx < scheduleListSize; idx++)
     {
+        ELGO_VIEWER_LOG("ADD Schedule - id: %s", src[idx].id.toStdString().c_str());
         m_playScheduleList.push_back(src[idx]);
     }
+
+    if(false == m_bIsStartedTimer)
+    {
+        ELGO_VIEWER_LOG("Start Schedule Timer (900 msec)");
+        this->start(900);
+    }
+}
+
+//========================================================
+void SchedulesTimer::ClearPlaySchedule()
+//========================================================
+{
+    this->stop();
+
+    const int prevScheduleListSize = m_playScheduleList.size();
+    ELGO_VIEWER_LOG("Prev Schedule List Size : %d, Current Schedule id : %s, palyData{id: %d, type: %d}",
+                    prevScheduleListSize, m_currScheduleId.toStdString().c_str(),
+                    m_currPlayDataInfo.id, m_currPlayDataInfo.type);
+
+    foreach(auto item, m_playScheduleList)
+    {
+        ELGO_VIEWER_LOG("Ready Delete Schedule - id: %s", m_currScheduleId.toStdString().c_str());
+    }
+
+    m_currScheduleId.clear();
+    m_playScheduleList.clear();
+    m_currPlayDataInfo = ScheduleTimer::PlayDataInfo();
+    m_prevSinglePlayDataInfo = ScheduleTimer::PlayDataInfo();
 }
 
 //========================================================

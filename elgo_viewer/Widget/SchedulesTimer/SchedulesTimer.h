@@ -25,13 +25,15 @@ public:
     /** @brief */
     void AddPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& src);
 
+    /** @brief */
+    void ClearPlaySchedule();
+
 private:
     /** @brief */
     void ExecSchedule(const QString& scheduleId, const ScheduleTimer::PlayDataInfo& playData);
 
     /** @brief */
     bool IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron);
-
 
     /** @brief */
     QString ConvertDateTimeFormat(const QDateTime& src);
@@ -46,7 +48,7 @@ private:
     ScheduleTimer::PlayDataInfo m_prevSinglePlayDataInfo;
 
     QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
-    QVector<ScheduleTimer::PlayDataInfo> m_playDataInfoList;
+    bool m_bIsStartedTimer;
 };
 
 #endif // PLAYTIMER_H

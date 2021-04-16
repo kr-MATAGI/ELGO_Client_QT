@@ -212,12 +212,8 @@ void ViewerThread::ExecCustomPlaySchedules()
     recvStream >> customPlayData;
     recvStream >> scheduleList;
 
-    for(int idx = 0; idx < scheduleList.size(); idx++)
-    {
-//        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
-    }
-
-//    SchedulesTimer::GetInstance()->AddPlayDataList(customPlayData);
+    emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
+    emit ContentsPlayer::GetInstance()->AddPlayScheduleListSignal(scheduleList);
 }
 
 //========================================================
@@ -241,11 +237,8 @@ void ViewerThread::ExecFixedPlaySchedules()
     recvStream >> fixedPlayData;
     recvStream >> scheduleList;
 
-    for(int idx = 0; idx < scheduleList.size(); idx++)
-    {
-//        SchedulesTimer::GetInstance()->AddPlaySchedule(scheduleList[idx]);
-    }
-//    SchedulesTimer::GetInstance()->AddPlayDataList(fixedPlayData);
+    emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
+    emit ContentsPlayer::GetInstance()->AddPlayScheduleListSignal(scheduleList);
 }
 
 //========================================================
