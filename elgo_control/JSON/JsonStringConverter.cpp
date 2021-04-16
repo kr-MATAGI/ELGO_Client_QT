@@ -799,11 +799,11 @@ void JsonStringConverter::CronCommandStringToStruct(const QString& src, Schedule
     // hour()
     GetCronCommandConvertedList(hourStr, ScheduleJson::CronFormat::HOUR, dest.hourRepeat, options);
 
-    // day
-    GetCronCommandConvertedList(dayStr, ScheduleJson::CronFormat::DAY, dest.dayRepeat, options);
+    // day - not setting from server
+//    GetCronCommandConvertedList(dayStr, ScheduleJson::CronFormat::DAY, dest.dayRepeat, options);
 
-    // month
-    GetCronCommandConvertedList(monthStr, ScheduleJson::CronFormat::MONTH, dest.monthRepeat, options);
+    // month - not setting from server
+//    GetCronCommandConvertedList(monthStr, ScheduleJson::CronFormat::MONTH, dest.monthRepeat, options);
 
     // day of week
     GetCronCommandConvertedList(dayOfWeekStr, ScheduleJson::CronFormat::DOW, dest.dowRepeat, options);
@@ -963,6 +963,29 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
                              ScheduleJson::CronFormatEnumToStr[format], src.toUtf8().constData());
         }
     }
+
+    // print
+    ELGO_CONTROL_LOG("CronFotmat : %s", ScheduleJson::CronFormatEnumToStr[format]);
+
+    QString printStr = "[ ";
+    const int destListSize = dest.size();
+    for(int idx = 0; idx < destListSize; idx++)
+    {
+        printStr.append(QString::number(dest[idx]));
+        if((destListSize - 1) != idx)
+        {
+            printStr.append(", ");
+        }
+    }
+    printStr.append(" ]");
+    ELGO_CONTROL_LOG("List : %s", printStr.toStdString().c_str());
+}
+
+//========================================================
+void JsonStringConverter::GetCronDateToDayMonth(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest)
+//========================================================
+{
+    int startMonth = startDate.month();
 }
 
 //========================================================

@@ -180,15 +180,18 @@ bool SchedulesTimer::IsValidCronRuleValue(const QDateTime& currentDateTime, cons
 }
 
 //========================================================
-void SchedulesTimer::ExecSchedule(const QString& scheduleId, const ScheduleTimer::PlayDataInfo& playData)
+void SchedulesTimer::ExecSchedule(const QString& scheduleId, const ScheduleTimer::PlayDataInfo& playDataInfo)
 //========================================================
 {
-    if( m_currPlayDataInfo != playData)
+    if( m_currPlayDataInfo != playDataInfo)
     {
-//        emit ContentsPlayer::GetInstance()->ExecPlayDataSingal();
+        PlayJson::PlayData playData;
+        playData.id = playData.id;
+        playData.playDataType = playData.playDataType;
+        emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(playData);
 
         m_currScheduleId = scheduleId;
-        m_currPlayDataInfo = playData;
+        m_currPlayDataInfo = playDataInfo;
     }
 }
 

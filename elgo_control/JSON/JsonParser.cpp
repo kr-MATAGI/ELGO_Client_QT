@@ -417,6 +417,10 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson
                     const QString& rule = arrObj["rule"].toString();
                     ScheduleJson::Cron cron;
                     JsonStringConverter::CronCommandStringToStruct(rule, cron);
+                    // Bad Use
+                    JsonStringConverter::GetCronDateToDayMonth(scheduleData.startTime.date(),
+                                                               scheduleData.endTime.date(), cron);
+
                     scheduleData.cron = cron;
                 }
                 else
@@ -1169,6 +1173,12 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                     ScheduleJson::Cron cron;
                     const QString& ruleStr = scheduleDataObj["rule"].toString();
                     JsonStringConverter::CronCommandStringToStruct(ruleStr, cron);
+
+                    // Bad Use
+                    JsonStringConverter::GetCronDateToDayMonth(powerSchedule.startTime.date(),
+                                                               powerSchedule.endTime.date(),
+                                                               cron);
+
                     powerSchedule.cron = cron;
                 }
 
@@ -1216,6 +1226,12 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                     ScheduleJson::Cron cron;
                     const QString& ruleStr = scheduleDataObj["rule"].toString();
                     JsonStringConverter::CronCommandStringToStruct(ruleStr, cron);
+
+                    // Bad Use
+                    JsonStringConverter::GetCronDateToDayMonth(powerSchedule.startTime.date(),
+                                                               powerSchedule.endTime.date(),
+                                                               cron);
+
                     powerSchedule.cron = cron;
                 }
 
@@ -1268,6 +1284,12 @@ void JsonParser::ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::
                         ScheduleJson::Cron cron;
                         const QString& ruleStr = singleObj["rule"].toString();
                         JsonStringConverter::CronCommandStringToStruct(ruleStr, cron);
+
+                        // Bad Use
+                        JsonStringConverter::GetCronDateToDayMonth(singlePlayData.startTime.date(),
+                                                                   singlePlayData.endTime.date(),
+                                                                   cron);
+
                         singlePlayData.cron = cron;
                     }
 

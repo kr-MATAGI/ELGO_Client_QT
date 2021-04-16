@@ -80,6 +80,9 @@ namespace JsonStringConverter
     /** @brief */
     void GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
                                QVector<int>& dest, ScheduleJson::CronOption& options);
+    /** @brief  Bad Use */
+    void GetCronDateToDayMonth(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest);
+
     /** @brief */
     int GetCronFormatLimitValue(const ScheduleJson::CronFormat format);
     /** @brief  cron format -> QDate */
