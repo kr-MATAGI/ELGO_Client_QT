@@ -75,12 +75,14 @@ void ControlThread::ExecRecvServerInfoFromMain()
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
     QString wasHost;
-    quint16 wasHostPort;
+    quint16 wasHostPort = 0;
     QString remoteTCPHost;
+    bool bIsDisplaySleep = false;
 
     recvStream >> wasHost;
     recvStream >> wasHostPort;
     recvStream >> remoteTCPHost;
+    recvStream >> bIsDisplaySleep;
     ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteHost : %s",
                      wasHost.toUtf8().constData(), wasHostPort, remoteTCPHost.toUtf8().constData());
 
@@ -93,6 +95,9 @@ void ControlThread::ExecRecvServerInfoFromMain()
 
     // Connect Content Server
     NetworkController::GetInstance()->GetNetworkCtrl().ConnectContentWebSocketToServer();
+
+    // Set Display Sleep Status
+    NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
 }
 
 //========================================================

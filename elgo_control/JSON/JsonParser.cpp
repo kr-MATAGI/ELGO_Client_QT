@@ -204,7 +204,7 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
         if(deviceOptions.end() != deviceOptions.find("displayOnOff"))
         {
             const bool displayOnOff = deviceOptions["displayOnOff"].toBool();
-            dest.displayOnOff = displayOnOff;
+            dest.bIsDisplaySleep = displayOnOff;
         }
         else
         {

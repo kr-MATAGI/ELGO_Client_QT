@@ -5,6 +5,7 @@
 #include "Common/Deifinition.h"
 #include "ShardMem/ShmCtrl.h"
 
+// Main
 #include "Definition/DeviceDef.h"
 #include "DB/MainDBCtrl.h"
 
@@ -22,9 +23,6 @@ public:
     QString MakeProcessPath(::ELGO_SYS::Proc proc);   
 
     /** @brief */
-    bool CheckingWirelessInternet();
-
-    /** @brief */
     void LoadConfigurationInfo();
 
     /** @brief */
@@ -34,8 +32,9 @@ public:
     const DEVICE::INIT_CONFIG& GetInitConfig();
 
     /** @brief */
+    void CheckDisplaySleepStatus();
+    /** @brief */
     void SetDisplaySleepStatus(const bool newValue);
-
     /** @brief */
     bool GetDisplaySleepStatus();
 

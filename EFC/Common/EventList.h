@@ -58,6 +58,7 @@ namespace CONTROL_EVENT
          *          QString wasHost,
          *          quint16 wasHostPort,
          *          QString remoteTCPHost
+         *          bool bIsDisplaySleep
          */
         RECV_SERVER_INFO_FROM_MAIN = 513,
 

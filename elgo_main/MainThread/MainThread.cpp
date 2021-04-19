@@ -87,11 +87,13 @@ void MainThread::ExecRecvProcecssReady()
 
         const DEVICE::INIT_CONFIG &initConfig = MainController::GetInstance()->GetMainCtrl().GetInitConfig();
         const DEVICE::IPADDR &hostAddr = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().ipAddr;
+        const bool bIsDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
         sendStream << initConfig.server.wasHost;
         sendStream << initConfig.server.wasHostPort;
         sendStream << hostAddr.ip;
+        sendStream << bIsDisplaySleep;
 
         const bool bContorlEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_CONTROL,
                             CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN, sendBytes);

@@ -84,13 +84,13 @@ namespace Remote
     struct DeviceOptions
     {
         DeviceOptions()
-            : displayOnOff(true)
+            : bIsDisplaySleep(false)
             , deviceMute(false)
             , contentPause(false)
         {
 
         }
-        bool displayOnOff;
+        bool bIsDisplaySleep;
         bool deviceMute;
         bool contentPause;
     };

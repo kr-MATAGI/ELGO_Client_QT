@@ -53,6 +53,7 @@ void ControlEventState::RecvServerInfoFromMain(const QByteArray &src)
      *          QString wasHost,
      *          quint16 wasHostPort,
      *          QString remoteTCPHost
+     *          bool bIsDisplaySleep
      */
 
     ControlThread *thread = new ControlThread;

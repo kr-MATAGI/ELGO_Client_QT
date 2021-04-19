@@ -68,17 +68,6 @@ void MainCtrl::LoadCurrentDeviceInfo()
 }
 
 //========================================================
-bool MainCtrl::CheckingWirelessInternet()
-//========================================================
-{
-    bool retValue = false;
-
-    // Todo : Wireless Internet Checking code
-
-    return retValue;
-}
-
-//========================================================
 void MainCtrl::LoadConfigurationInfo()
 //========================================================
 {
@@ -99,6 +88,53 @@ const DEVICE::INIT_CONFIG& MainCtrl::GetInitConfig()
 //========================================================
 {
     return m_initConfig;
+}
+
+//========================================================
+void MainCtrl::CheckDisplaySleepStatus()
+//========================================================
+{
+#if defined(Q_OS_LINUX)
+    const QString cmdStr = "/usr/bin/xset";
+    QStringList args;
+    args << "-q";
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
+
+#elif defined(Q_OS_ANDROID)
+
+#else
+    ELGO_MAIN_LOG("Error - Not supported OS");
+#endif
+
+    QProcess *process = new QProcess;
+    process->start(cmdStr, args);
+    process->waitForFinished();
+
+    QByteArray bytes = process->readAllStandardOutput();
+    QString outputStr = QString::fromLocal8Bit(bytes);
+
+    // split
+    QStringList monitorSplit = outputStr.split("Monitor");
+    if(1 <= monitorSplit.size())
+    {
+        QString monitorStr = monitorSplit[1];
+        QStringList onOffSplit = monitorStr.split(" ");
+        if(3 <= onOffSplit.size())
+        {
+            QString onOffStr = onOffSplit.back().remove("\n");
+
+            if(0 == strcmp("On", onOffStr.toStdString().c_str()))
+            {
+                m_bDisplaySleep = false;
+            }
+            else
+            {
+                m_bDisplaySleep = true;
+            }
+        }
+    }
+
+    ELGO_MAIN_LOG("IsDisplaySleep Status : %d", m_bDisplaySleep);
 }
 
 //========================================================
