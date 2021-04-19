@@ -138,68 +138,23 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Result::Contents& resu
 void JsonWriter::WriteContentServerRenameEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
-    jsonObj["event"] = event;
-
-    // payload
-    QJsonObject payloadObj;
-    JsonWriter::WriteContentServerPayload(src, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toStdString().c_str());
+    WriteContentServerDefaultResponse(src, dest);
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
 //========================================================
 void JsonWriter::WriteContentServerAccessEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
-    jsonObj["event"] = event;
-
-    // playload
-    QJsonObject payloadObj;
-    JsonWriter::WriteContentServerPayload(src, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json string : %s", dest.toStdString().c_str());
+    WriteContentServerDefaultResponse(src, dest);
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
 //========================================================
 void JsonWriter::WriteContentServerSinglePlayEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
-    jsonObj["event"] = event;
-
-    // playload
-    QJsonObject payloadObj;
-    WriteContentServerPayload(src, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
+    WriteContentServerDefaultResponse(src, dest);
     ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
@@ -207,22 +162,7 @@ void JsonWriter::WriteContentServerSinglePlayEvent(const ContentSchema::Summary&
 void JsonWriter::WriteContentServerPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
-    jsonObj["event"] = event;
-
-    // playload
-    QJsonObject payloadObj;
-    WriteContentServerPayload(src, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
+    WriteContentServerDefaultResponse(src, dest);
     ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
@@ -230,27 +170,28 @@ void JsonWriter::WriteContentServerPlayScheduleEvent(const ContentSchema::Summar
 void JsonWriter::WriteContentServerScreenCaptureEvent(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
-    QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
-
-    // event
-    QString event;
-    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
-    jsonObj["event"] = event;
-
-    // playload
-    QJsonObject payloadObj;
-    WriteContentServerPayload(src, payloadObj);
-    jsonObj["payload"] = payloadObj;
-
-    jsonDoc.setObject(jsonObj);
-    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
-    dest = QString(compactBytes.toStdString().c_str());
+    WriteContentServerDefaultResponse(src, dest);
     ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
 //========================================================
 void JsonWriter::WriteContentServerDisplayOnOffEvent(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    WriteContentServerDefaultResponse(src, dest);
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
+}
+
+//========================================================
+void JsonWriter::WriteContentServerRebootEvent(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    WriteContentServerDefaultResponse(src, dest);
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
+}
+
+//========================================================
+void JsonWriter::WriteContentServerDefaultResponse(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -269,7 +210,6 @@ void JsonWriter::WriteContentServerDisplayOnOffEvent(const ContentSchema::Summar
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
     dest = QString(compactBytes.toStdString().c_str());
-    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
 }
 
 //========================================================

@@ -3,6 +3,7 @@
 #include "JSON/JsonParser.h"
 #include "ContentWebSocket.h"
 #include "Logger/ControlLogger.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 //========================================================
 ContentWebSocket::ContentWebSocket(QObject *parent)
@@ -135,6 +136,20 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
             {
                 m_socket->sendTextMessage(request);
                 ELGO_CONTROL_LOG("Send Request : %s", request.toUtf8().constData());
+
+                // Reboot Event
+                if(ContentSchema::Event::SYSTEM_REBOOT == response.event)
+                {
+                    // is need safe disconnect? (elgo_control, viewer)
+                    QByteArray reBootBytes;
+                    const int bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                               MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,
+                                                               reBootBytes);
+                    if(false == bSendEvent)
+                    {
+                        ELGO_CONTROL_LOG("Error - SendEvent: %d", bSendEvent);
+                    }
+                }
             }
         }
         else

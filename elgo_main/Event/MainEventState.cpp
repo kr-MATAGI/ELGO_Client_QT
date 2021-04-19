@@ -20,6 +20,8 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdateDeviceOptions);
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_DISPLAY_SLEEP,
                           &MainEventState::RecvUpdateDisplaySleep);
+    m_state.RegisterEvent(MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,
+                          &MainEventState::RecvSystemReboot);
 }
 
 //========================================================
@@ -103,12 +105,10 @@ void MainEventState::RecvUpdateDisplaySleep(const QByteArray& src)
     if(true == bDisplaySleep)
     {
         args << "off";
-        ELGO_MAIN_LOG("Args: OFF");
     }
     else
     {
         args << "on";
-        ELGO_MAIN_LOG("Args: ON");
     }
 
 #elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
@@ -119,5 +119,35 @@ void MainEventState::RecvUpdateDisplaySleep(const QByteArray& src)
 
     process->start(cmdStr, args);
     process->waitForFinished();
-    ELGO_MAIN_LOG("cmdStr: %s", cmdStr.toStdString().c_str());
+    ELGO_MAIN_LOG("cmdStr: %s, args: %s",
+                  cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+}
+
+//========================================================
+void MainEventState::RecvSystemReboot(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          System Reboot
+     *  @param
+     *          NONE
+     */
+
+    // process
+    QProcess *process = new QProcess;
+    QString cmdStr;
+    QStringList args;
+#if defined(Q_OS_LINUX)
+    cmdStr = "reboot";
+
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
+
+#else defined(Q_OS_ANDROID)
+
+#endif
+
+    ELGO_MAIN_LOG("SYSTEM REBOOT !");
+    process->start(cmdStr, args);
 }

@@ -30,6 +30,9 @@ public:
     /** @brief */
     void RecvUpdateDisplaySleep(const QByteArray& src);
 
+    /** @brief */
+    void RecvSystemReboot(const QByteArray& src);
+
 
 private:
     QThreadPool *m_threadPool;

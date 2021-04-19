@@ -45,7 +45,7 @@ public:
     void ExecScreenCaptureEvent(const ContentSchema::Summary& serverJson);
 
     /** @brief */
-    void ExecSystemRebootEvent();
+    void ExecSystemRebootEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
     void ExecClearPlaySchdules();

@@ -236,3 +236,16 @@ void ContentWebSocketHandler::ExecScreenCaptureEvent(const ContentSchema::Summar
         ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE);
     }
 }
+
+//========================================================
+void ContentWebSocketHandler::ExecSystemRebootEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+//========================================================
+{
+    // Response to Server
+    ContentSchema::Summary modifiedJson = serverJson;
+    modifiedJson.payload.src = serverJson.payload.dest;
+    modifiedJson.payload.dest = serverJson.payload.src;
+    modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+    JsonWriter::WriteContentServerRenameEvent(modifiedJson, clientJson);
+}

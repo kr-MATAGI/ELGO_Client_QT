@@ -49,6 +49,15 @@ namespace MAIN_EVENT
          */
         UPDATE_DISPLAY_SLEEP = 259,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          System Reboot
+         *  @param
+         *          NONE
+         */
+        SYSTEM_REBOOT_MAIN = 260,
+
         MAX_VIEWER_EVENT = 511
     };
 }
