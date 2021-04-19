@@ -13,26 +13,12 @@ bool EFCEvent::SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const Q
     if(socket)
     {
         socket->connectToServer(procName);
-        if(socket->isOpen())
+        if(socket->waitForConnected())
         {
             const bool bIsSend = SendMessage(socket, event, src);
             if(false == bIsSend)
             {
                 qDebug() << "Socket send() Error";
-            }
-        }
-        else
-        {
-            if(true == bForce)
-            {
-                if(socket->waitForConnected(1500))
-                {
-                    const bool bIsSend = SendMessage(socket, event, src);
-                    if(false == bIsSend)
-                    {
-                        qDebug() << "Socket FORCE send() Error";
-                    }
-                }
             }
         }
     }
