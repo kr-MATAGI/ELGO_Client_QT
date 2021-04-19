@@ -89,8 +89,8 @@ void SchedulesTimer::SchedulerTimeout()
 
                 // TODO : delete DB Control
             }
-            else if(currSecEpoch >= scheduleDataIter->startTime.toSecsSinceEpoch() &&
-                    currSecEpoch < scheduleDataIter->endTime.toSecsSinceEpoch())
+            else if( (currSecEpoch >= scheduleDataIter->startTime.toSecsSinceEpoch()) &&
+                     (currSecEpoch < scheduleDataIter->endTime.toSecsSinceEpoch()) )
             {
                 // Check Cron format value (rule)
                 const bool bIsValidCron = IsValidCronRuleValue(currentDateTime, scheduleDataIter->cron);
