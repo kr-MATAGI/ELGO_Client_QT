@@ -25,7 +25,11 @@ public:
     void RecvProcecssReady(const QByteArray& src);
 
     /** @brief */
-    void RecvChangeDeviceOptions(const QByteArray& src);
+    void RecvUpdateDeviceOptions(const QByteArray& src);
+
+    /** @brief */
+    void RecvUpdateDisplaySleep(const QByteArray& src);
+
 
 private:
     QThreadPool *m_threadPool;

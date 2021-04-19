@@ -38,7 +38,16 @@ namespace MAIN_EVENT
          *          bool deviceMute
          *          bool contentPause
          */
-        CHANGE_DEVICE_OPTIONS = 258,
+        UPDATE_DEVICE_OPTIONS = 258,
+
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Change display sleep status
+         *  @param
+         *          bool bDisplaySleep
+         */
+        UPDATE_DISPLAY_SLEEP = 259,
 
         MAX_VIEWER_EVENT = 511
     };

@@ -46,9 +46,9 @@ void MainThread::run()
     {
         ExecRecvProcecssReady();
     }
-    else if(MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS == m_event)
+    else if(MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS == m_event)
     {
-        ExecChangeDeviceOptions();
+        ExecUpdateDeviceOptions();
     }
     else
     {
@@ -113,7 +113,7 @@ void MainThread::ExecRecvProcecssReady()
 }
 
 //========================================================
-void MainThread::ExecChangeDeviceOptions()
+void MainThread::ExecUpdateDeviceOptions()
 //========================================================
 {
     /**

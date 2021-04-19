@@ -28,7 +28,7 @@ public:
     void ExecRecvProcecssReady();
 
     /** @brief */
-    void ExecChangeDeviceOptions();
+    void ExecUpdateDeviceOptions();
 
 public:
     /** @brief */

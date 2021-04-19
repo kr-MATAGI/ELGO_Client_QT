@@ -107,6 +107,8 @@ void MainCtrl::CheckDisplaySleepStatus()
 #endif
 
     QProcess *process = new QProcess;
+    QObject::connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
+
     process->start(cmdStr, args);
     process->waitForFinished();
 

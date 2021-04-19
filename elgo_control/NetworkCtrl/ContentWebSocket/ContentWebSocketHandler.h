@@ -39,7 +39,7 @@ public:
     void ExecPowerSchedulesEvent();
 
     /** @brief */
-    void ExecDisplayOnOffEvent();
+    void ExecDisplayOnOffEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
     void ExecScreenCaptureEvent(const ContentSchema::Summary& serverJson);

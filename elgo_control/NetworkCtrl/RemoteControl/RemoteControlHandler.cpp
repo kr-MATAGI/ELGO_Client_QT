@@ -193,14 +193,14 @@ Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& 
 
         NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
         const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                    MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS, bytes);
+                                                    MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS, bytes);
         if(true == bSendEvent)
         {
             retValue = Remote::Result::Status::DEVICE_OPTIONS_OK;
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS);
+            ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS);
         }
     }
     else

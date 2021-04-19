@@ -51,7 +51,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     else if(ContentSchema::Event::DISPLAY_ON == serverJson.event ||
             ContentSchema::Event::DISPLAY_OFF == serverJson.event)
     {
-
+        ExecDisplayOnOffEvent(serverJson, clientJson);
     }
     else if(ContentSchema::Event::SCREEN_CAPTURE == serverJson.event)
     {
@@ -146,6 +146,68 @@ void ContentWebSocketHandler::ExecPlaySchedulesEvent(const ContentSchema::Summar
     thread->SetContentSchema(serverJson);
 
     m_threadPool->start(thread);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecDisplayOnOffEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+//========================================================
+{
+    bool bDisplaySleep = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+    bool valueChanged = false;
+    ELGO_CONTROL_LOG("currDisplaySleep: %d, event: %d", bDisplaySleep, serverJson.event);
+
+    if(true == bDisplaySleep)
+    {
+        if(ContentSchema::DISPLAY_ON == serverJson.event)
+        {
+            bDisplaySleep = false;
+            valueChanged = true;
+        }
+    }
+    else
+    {
+        if(ContentSchema::DISPLAY_OFF == serverJson.event)
+        {
+            bDisplaySleep = true;
+            valueChanged = true;
+        }
+    }
+
+    if(true == valueChanged)
+    {
+        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bDisplaySleep);
+
+        // Send Event to Main
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Change display sleep status
+         *  @param
+         *          bool bDisplaySleep
+         */
+        QByteArray bytes;
+        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+        dataStream << bDisplaySleep;
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                    MAIN_EVENT::Event::UPDATE_DISPLAY_SLEEP, bytes);
+        if(false == bSendEvent)
+        {
+            ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::UPDATE_DISPLAY_SLEEP);
+        }
+
+        // Response to Server
+        ContentSchema::Summary modifiedJson = serverJson;
+        modifiedJson.payload.src = serverJson.payload.dest;
+        modifiedJson.payload.dest = serverJson.payload.src;
+        modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+        JsonWriter::WriteContentServerRenameEvent(modifiedJson, clientJson);
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Not Changed Display Slepp Status - {curr: %d, event:  %d}",
+                         bDisplaySleep, serverJson.event);
+    }
 }
 
 //========================================================

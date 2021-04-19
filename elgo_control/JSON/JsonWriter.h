@@ -29,6 +29,8 @@ namespace JsonWriter
     void WriteContentServerPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  capture Event */
     void WriteContentServerScreenCaptureEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  Display On/Off Event" */
+    void WriteContentServerDisplayOnOffEvent(const ContentSchema::Summary& src, QString& dest);
 
     /** @brief */
     void WriteContentServerPayload(const ContentSchema::Summary& src, QJsonObject& dest,
