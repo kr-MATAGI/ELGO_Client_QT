@@ -1,8 +1,6 @@
 #ifndef MAINCONTROLLER_H
 #define MAINCONTROLLER_H
 
-// EFC
-#include "ShardMem/ShmCtrl.h"
 
 // Main
 #include "MainCtrl.h"
@@ -10,7 +8,6 @@
 
 class MainCtrl;
 class MainDBCtrl;
-class ShmCtrl;
 
 class MainController
 {
@@ -33,13 +30,9 @@ public:
     /** @brief */
     MainDBCtrl& GetDBCtrl();
 
-    /** @brief */
-    ShmCtrl& GetShmCtrl();
-
 private:
     MainCtrl *m_mainCtrl;
     MainDBCtrl *m_dbCtrl;
-    ShmCtrl *m_shmCtrl;
 };
 
 #endif // MAINCONTROLLER_H

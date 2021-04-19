@@ -8,7 +8,6 @@ MainController::MainController()
 {
     m_mainCtrl = new MainCtrl();
     m_dbCtrl = new MainDBCtrl();
-    m_shmCtrl = new ShmCtrl();
 }
 
 //========================================================
@@ -20,9 +19,6 @@ MainController::~MainController()
 
     delete m_dbCtrl;
     m_dbCtrl = NULL;
-
-    delete m_shmCtrl;
-    m_shmCtrl = NULL;
 }
 
 //========================================================
@@ -60,11 +56,4 @@ MainDBCtrl& MainController::GetDBCtrl()
 //========================================================
 {
     return *m_dbCtrl;
-}
-
-//========================================================
-ShmCtrl& MainController::GetShmCtrl()
-//========================================================
-{
-    return *m_shmCtrl;
 }
