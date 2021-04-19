@@ -43,7 +43,7 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
     }
     else if(Remote::Action::DEVICE_OPTIONS == action)
     {
-        results.status = ChangeDeviceOptions(src);
+        results.status = UpdateDeviceOptions(src);
     }
     else
     {
@@ -161,7 +161,7 @@ Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& 
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& src)
+Remote::Result::Status RemoteControlHandler::UpdateDeviceOptions(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::DEVICE_OPTIONS_FAIL;
@@ -173,7 +173,7 @@ Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& 
         /**
          *  @brief  Change Device Options
          *  @param
-         *          bool displayOnOff
+         *          bool displaySleep
          *          bool deviceMute
          *          bool contentPause
          */

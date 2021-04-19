@@ -34,7 +34,7 @@ namespace MAIN_EVENT
          *          ELGO_CONTROL -> ELGO_MAIN
          *          Change Device Options
          *  @param
-         *          bool displayOnOff
+         *          bool displaySleep
          *          bool deviceMute
          *          bool contentPause
          */

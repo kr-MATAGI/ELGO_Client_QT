@@ -31,7 +31,7 @@ public:
     Remote::Result::Status RotateDeviceDisplay(const QString& src);
 
     /** @brief */
-    Remote::Result::Status ChangeDeviceOptions(const QString& src);
+    Remote::Result::Status UpdateDeviceOptions(const QString& src);
 };
 
 #endif // REMOTECONTROLHANDLER_H

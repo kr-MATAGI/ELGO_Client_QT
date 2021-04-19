@@ -121,43 +121,63 @@ void MainThread::ExecUpdateDeviceOptions()
      *          ELGO_CONTROL -> ELGO_MAIN
      *          Change Device Options
      *  @param
-     *          bool displayOnOff
+     *          bool displaySleep
      *          bool deviceMute
      *          bool contentPause
      */
     QByteArray recvBytes = m_bytes;
     QDataStream out(&recvBytes, QIODevice::ReadOnly);
-    bool displayOnOff = false;
+    bool displaySleep = false;
     bool deviceMute = false;
     bool contentPause = false;
+    const bool bCurrDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
 
-    out >> displayOnOff;
+    out >> displaySleep;
     out >> deviceMute;
     out >> contentPause;
+    ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d",
+                  displaySleep, bCurrDisplaySleep, deviceMute, contentPause);
 
     // Set Display Sleep to Main Ctrl
-    const bool bCurDisplaySleepStatus = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
-    if(bCurDisplaySleepStatus != displayOnOff)
+    if(bCurrDisplaySleep != displaySleep)
     {
-        /**
-         *  @note
-         *          ELGO_MAIN -> ELGO_CONTROL
-         *          Update display sleep status
-         *  @param
-         *          bool isDisplaySleep
-         */
-        QByteArray sendBytes;
-        QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
-        sendStream << displayOnOff;
+        MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displaySleep);
 
-        MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displayOnOff);
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
-                                                    CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS, sendBytes);
-        if(false == bSendEvent)
+            // process
+        QProcess *process = new QProcess;
+        QString cmdStr;
+        QStringList args;
+
+#if defined(Q_OS_LINUX)
+        cmdStr = "/usr/bin/xset";
+        args << "-display";
+        args << ":0.0";
+        args << "dpms";
+        args << "force";
+
+        if(true == displaySleep)
         {
-            ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::UPDATE_DISPLAY_SLEEP_STATUS);
+            args << "off";
         }
-    }
+        else
+        {
+            args << "on";
+        }
 
-    ELGO_MAIN_LOG("TEST RECV : %d %d %d", displayOnOff, deviceMute, contentPause);
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
+
+#else defined(Q_OS_ANDROID)
+
+#endif
+
+        process->start(cmdStr, args);
+        process->waitForFinished();
+        ELGO_MAIN_LOG("cmdStr: %s, args: %s",
+                        cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+    }
+    else
+    {
+        ELGO_MAIN_LOG("Not Changed Display Sleep Status - {recv: %d, curr: %d}",
+                      displaySleep, bCurrDisplaySleep);
+    }
 }
