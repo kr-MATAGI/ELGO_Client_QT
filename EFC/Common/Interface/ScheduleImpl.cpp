@@ -27,12 +27,13 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PlayScheduleData& s
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::Cron& src)
 //========================================================
 {
-    ds << src.secRepeat;
-    ds << src.minRepeat;
-    ds << src.hourRepeat;
-    ds << src.dayRepeat;
-    ds << src.monthRepeat;
-    ds << src.dowRepeat;
+    ds << src.secList;
+    ds << src.minList;
+    ds << src.hourList;
+    ds << src.dayList;
+    ds << src.monthList;
+    ds << src.dowList;
+    ds << src.yearList;
     ds << src.options;
 
     return ds;
@@ -120,12 +121,13 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::PlayScheduleData& dest)
 QDataStream &operator>>(QDataStream& ds, ScheduleJson::Cron& dest)
 //========================================================
 {
-    ds >> dest.secRepeat;
-    ds >> dest.minRepeat;
-    ds >> dest.hourRepeat;
-    ds >> dest.dayRepeat;
-    ds >> dest.monthRepeat;
-    ds >> dest.dowRepeat;
+    ds >> dest.secList;
+    ds >> dest.minList;
+    ds >> dest.hourList;
+    ds >> dest.dayList;
+    ds >> dest.monthList;
+    ds >> dest.dowList;
+    ds >> dest.yearList;
     ds >> dest.options;
 
     return ds;

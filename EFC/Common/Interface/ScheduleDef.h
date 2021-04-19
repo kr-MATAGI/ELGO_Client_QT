@@ -22,11 +22,12 @@ namespace ScheduleJson
         HOUR = 3,
         DAY = 4,
         MONTH = 5,
-        DOW = 6
+        DOW = 6,
+        YEAR = 7
     };
 
     static const char* CronFormatEnumToStr[] = {"none", "sec", "min", "hour",
-                                               "day", "month", "DOW"};
+                                               "day", "month", "DOW", "year"};
 
     /** @brief */
     struct CronOption
@@ -39,12 +40,16 @@ namespace ScheduleJson
     /** @brief */
     struct Cron
     {
-        QVector<int> secRepeat;
-        QVector<int> minRepeat;
-        QVector<int> hourRepeat;
-        QVector<int> dayRepeat;
-        QVector<int> monthRepeat;
-        QVector<int> dowRepeat;
+        /**
+         * @note    CronOption is not used
+         */
+        QVector<int> secList;
+        QVector<int> minList;
+        QVector<int> hourList;
+        QVector<int> dayList;
+        QVector<int> monthList;
+        QVector<int> dowList;
+        QVector<int> yearList;
 
         CronOption options;
     };

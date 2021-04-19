@@ -142,32 +142,32 @@ bool SchedulesTimer::IsValidCronRuleValue(const QDateTime& currentDateTime, cons
     const int min = currentDateTime.time().minute();
     const int sec = currentDateTime.time().second();
 
-    if(cron.monthRepeat.end() == std::find(cron.monthRepeat.begin(), cron.monthRepeat.end(), month))
+    if(cron.monthList.end() == std::find(cron.monthList.begin(), cron.monthList.end(), month))
     {
         return retValue;
     }
 
-    if(cron.dayRepeat.end() == std::find(cron.dayRepeat.begin(), cron.dayRepeat.end(), day))
+    if(cron.dayList.end() == std::find(cron.dayList.begin(), cron.dayList.end(), day))
     {
         return retValue;
     }
 
-    if(cron.dowRepeat.end() == std::find(cron.dowRepeat.begin(), cron.dowRepeat.end(), dow))
+    if(cron.dowList.end() == std::find(cron.dowList.begin(), cron.dowList.end(), dow))
     {
         return retValue;
     }
 
-    if(cron.hourRepeat.end() == std::find(cron.hourRepeat.begin(), cron.hourRepeat.end(), hour))
+    if(cron.hourList.end() == std::find(cron.hourList.begin(), cron.hourList.end(), hour))
     {
         return retValue;
     }
 
-    if(cron.minRepeat.end() == std::find(cron.minRepeat.begin(), cron.minRepeat.end(), min))
+    if(cron.minList.end() == std::find(cron.minList.begin(), cron.minList.end(), min))
     {
         return retValue;
     }
 
-    if(cron.secRepeat.end() == std::find(cron.secRepeat.begin(), cron.secRepeat.end(), sec))
+    if(cron.secList.end() == std::find(cron.secList.begin(), cron.secList.end(), sec))
     {
         return retValue;
     }

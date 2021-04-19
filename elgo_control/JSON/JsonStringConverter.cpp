@@ -775,7 +775,7 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
 }
 
 //========================================================
-void JsonStringConverter::CronCommandStringToStruct(const QString& src, ScheduleJson::Cron& dest)
+void JsonStringConverter::CronCommandStringToTimeRepeat(const QString& src, ScheduleJson::Cron& dest)
 //========================================================
 {
     ScheduleJson::CronOption options;
@@ -790,26 +790,87 @@ void JsonStringConverter::CronCommandStringToStruct(const QString& src, Schedule
     QString dayOfWeekStr = cronStrSplit[5];
 
     /// time
-    // sec
-    GetCronCommandConvertedList(secStr, ScheduleJson::CronFormat::SEC, dest.secRepeat, options);
+    // sec - not use
+//    GetCronCommandConvertedList(secStr, ScheduleJson::CronFormat::SEC, dest.secList, options);
 
     // min
-    GetCronCommandConvertedList(minStr, ScheduleJson::CronFormat::MIN, dest.minRepeat, options);
+    GetCronCommandConvertedList(minStr, ScheduleJson::CronFormat::MIN, dest.minList, options);
 
     // hour()
-    GetCronCommandConvertedList(hourStr, ScheduleJson::CronFormat::HOUR, dest.hourRepeat, options);
+    GetCronCommandConvertedList(hourStr, ScheduleJson::CronFormat::HOUR, dest.hourList, options);
 
-    // day - not setting from server
+    // day - not setting from server, plz see a CronCommandStringToDateRepeat()
 //    GetCronCommandConvertedList(dayStr, ScheduleJson::CronFormat::DAY, dest.dayRepeat, options);
 
-    // month - not setting from server
+    // month - not setting from server, plz see a CronCommandStringToDateRepeat()
 //    GetCronCommandConvertedList(monthStr, ScheduleJson::CronFormat::MONTH, dest.monthRepeat, options);
 
     // day of week
-    GetCronCommandConvertedList(dayOfWeekStr, ScheduleJson::CronFormat::DOW, dest.dowRepeat, options);
+    GetCronCommandConvertedList(dayOfWeekStr, ScheduleJson::CronFormat::DOW, dest.dowList, options);
 
     // set options
     dest.options = options;
+}
+
+//========================================================
+void JsonStringConverter::CronCommandStringToDateRepeat(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest)
+//========================================================
+{
+    const int startYear = startDate.year();
+    const int endYear = endDate.year();
+
+    const int startMonth = startDate.month();
+    const int endMonth = endDate.month();
+
+    const int startDay = startDate.day();
+    const int endDay = endDate.day();
+
+    // year
+    for(int idx = startYear; idx <= endYear; idx++)
+    {
+        dest.yearList.push_back(idx);
+    }
+
+    // month
+    if(startMonth > endMonth)
+    {
+        for(int idx = startMonth; idx <= 12; idx++)
+        {
+            dest.monthList.push_back(idx);
+        }
+        for(int idx = 1; idx <= endMonth; idx++)
+        {
+            dest.monthList.push_back(idx);
+        }
+    }
+    else
+    {
+        for(int idx = startMonth; idx <= endMonth; idx++)
+        {
+            dest.monthList.push_back(idx);
+        }
+    }
+
+    // day
+    if(startDay > endDay)
+    {
+        const int daysInMonth = startDate.daysInMonth();
+        for(int idx = startDay; idx <= daysInMonth; idx++)
+        {
+            dest.dayList.push_back(idx);
+        }
+        for(int idx = 1; idx <= endDay; idx++)
+        {
+            dest.dayList.push_back(idx);
+        }
+    }
+    else
+    {
+        for(int idx = startDay; idx <= endDay; idx++)
+        {
+            dest.dayList.push_back(idx);
+        }
+    }
 }
 
 //========================================================
@@ -824,7 +885,7 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
         if(src.end() != std::find(src.begin(), src.end(), "/"))
         {
             const int plusValue = src.split("/")[1].toInt();
-            for(int val = 0; val < limitValue; )
+            for(int val = 0; val <= limitValue; )
             {
                 if(ScheduleJson::CronFormat::DOW == format)
                 {
@@ -963,29 +1024,6 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
                              ScheduleJson::CronFormatEnumToStr[format], src.toUtf8().constData());
         }
     }
-
-    // print
-    ELGO_CONTROL_LOG("CronFotmat : %s", ScheduleJson::CronFormatEnumToStr[format]);
-
-    QString printStr = "[ ";
-    const int destListSize = dest.size();
-    for(int idx = 0; idx < destListSize; idx++)
-    {
-        printStr.append(QString::number(dest[idx]));
-        if((destListSize - 1) != idx)
-        {
-            printStr.append(", ");
-        }
-    }
-    printStr.append(" ]");
-    ELGO_CONTROL_LOG("List : %s", printStr.toStdString().c_str());
-}
-
-//========================================================
-void JsonStringConverter::GetCronDateToDayMonth(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest)
-//========================================================
-{
-    int startMonth = startDate.month();
 }
 
 //========================================================
@@ -994,8 +1032,8 @@ int JsonStringConverter::GetCronFormatLimitValue(const ScheduleJson::CronFormat 
 {
     int retValue = 0;
 
-    if(ScheduleJson::CronFormat::SEC == format ||
-        ScheduleJson::CronFormat::MIN == format)
+    if( (ScheduleJson::CronFormat::SEC == format) ||
+        (ScheduleJson::CronFormat::MIN == format) )
     {
         retValue = 60;
     }
@@ -1024,6 +1062,50 @@ int JsonStringConverter::GetCronFormatLimitValue(const ScheduleJson::CronFormat 
     }
 
     return retValue;
+}
+
+//========================================================
+void JsonStringConverter::PrintConvertedCron(const ScheduleJson::Cron& src)
+//========================================================
+{
+    // year
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::YEAR, src.yearList);
+
+    // month
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::MONTH, src.monthList);
+
+    // day
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::DAY, src.dayList);
+
+    // DOW
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::DOW, src.dowList);
+
+    // hour
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::HOUR, src.hourList);
+
+    // min
+    PrintConvertedCronDataList(ScheduleJson::CronFormat::MIN, src.minList);
+
+    // sec - not use
+}
+
+//========================================================
+void JsonStringConverter::PrintConvertedCronDataList(const ScheduleJson::CronFormat type, const QVector<int>& src)
+//========================================================
+{
+    // print
+    QString printStr = QString("%1 List - [ ").arg(ScheduleJson::CronFormatEnumToStr[type]);
+    const int listSize = src.size();
+    for(int idx = 0; idx < listSize; idx++)
+    {
+        printStr.append(QString::number(src[idx]));
+        if((listSize - 1) != idx)
+        {
+            printStr.append(", ");
+        }
+    }
+    printStr.append(" ]");
+    ELGO_CONTROL_LOG("%s", printStr.toStdString().c_str());
 }
 
 //========================================================

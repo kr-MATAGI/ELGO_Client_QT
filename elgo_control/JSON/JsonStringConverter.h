@@ -76,12 +76,16 @@ namespace JsonStringConverter
     void ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest);
 
     /** @brief */
-    void CronCommandStringToStruct(const QString& src, ScheduleJson::Cron& dest);
+    void CronCommandStringToTimeRepeat(const QString& src, ScheduleJson::Cron& dest);
+    /** @brief */
+    void CronCommandStringToDateRepeat(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest);
     /** @brief */
     void GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
                                QVector<int>& dest, ScheduleJson::CronOption& options);
-    /** @brief  Bad Use */
-    void GetCronDateToDayMonth(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest);
+    /** @brief */
+    void PrintConvertedCron(const ScheduleJson::Cron& src);
+    /** @brief */
+    void PrintConvertedCronDataList(const ScheduleJson::CronFormat type, const QVector<int>& src);
 
     /** @brief */
     int GetCronFormatLimitValue(const ScheduleJson::CronFormat format);
