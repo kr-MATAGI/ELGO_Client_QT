@@ -83,16 +83,22 @@ namespace Remote
     /** @brief  Change Device Options */
     struct DeviceOptions
     {
+        /**
+         *  @note
+         *          DisplayOnOff - ON: true, OFF: false
+         *          Mute - ON: true, OFF: false
+         *          Pause - ON: true, OFF: false
+         */
         DeviceOptions()
-            : bIsDisplaySleep(false)
-            , deviceMute(false)
-            , contentPause(false)
+            : bDisplayOnOff(true)
+            , bDeviceMute(false)
+            , bContentPause(false)
         {
 
         }
-        bool bIsDisplaySleep;
-        bool deviceMute;
-        bool contentPause;
+        bool bDisplayOnOff;
+        bool bDeviceMute;
+        bool bContentPause;
     };
 
     /** @brief  */

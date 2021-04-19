@@ -204,7 +204,7 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
         if(deviceOptions.end() != deviceOptions.find("displayOnOff"))
         {
             const bool displayOnOff = deviceOptions["displayOnOff"].toBool();
-            dest.bIsDisplaySleep = displayOnOff;
+            dest.bDisplayOnOff = displayOnOff;
         }
         else
         {
@@ -216,7 +216,7 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
         if(deviceOptions.end() != deviceOptions.find("deviceMute"))
         {
             const bool deviceMute = deviceOptions["deviceMute"].toBool();
-            dest.deviceMute = deviceMute;
+            dest.bDeviceMute = deviceMute;
         }
         else
         {
@@ -228,7 +228,7 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
         if(deviceOptions.end() != deviceOptions.find("contentPause"))
         {
             const bool contentPause = deviceOptions["contentPause"].toBool();
-            dest.contentPause = contentPause;
+            dest.bContentPause = contentPause;
         }
         else
         {

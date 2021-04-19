@@ -180,11 +180,18 @@ Remote::Result::Status RemoteControlHandler::ChangeDeviceOptions(const QString& 
 
         QByteArray bytes;
         QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-        dataStream << deviceOptions.bIsDisplaySleep;
-        dataStream << deviceOptions.deviceMute;
-        dataStream << deviceOptions.contentPause;
+        bool bIsDisplaySleep = false;
 
-        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(deviceOptions.bIsDisplaySleep);
+        dataStream << deviceOptions.bDisplayOnOff;
+        dataStream << deviceOptions.bDeviceMute;
+
+        if(false == deviceOptions.bDisplayOnOff)
+        {
+            bIsDisplaySleep = true;
+        }
+        dataStream << bIsDisplaySleep;
+
+        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
         const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                     MAIN_EVENT::Event::CHANGE_DEVICE_OPTIONS, bytes);
         if(true == bSendEvent)
