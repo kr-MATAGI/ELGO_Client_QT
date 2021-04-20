@@ -12,12 +12,14 @@ CONFIG -= app_bundle
 HEADERS += \
     DB/MainDBCtrl.h \
     Definition/Definition.h \
+    Definition/WifiDef.h \
     Event/MainEventHandler.h \
     Event/MainEventState.h \
     Logger/MainLogger.h \
     MainCtrl/MainController.h \
     MainCtrl/MainCtrl.h \
     MainThread/MainThread.h \
+    Utils/WifiManager.h \
     XML/XMLParser.h
 
 SOURCES += \
@@ -28,6 +30,7 @@ SOURCES += \
         MainCtrl/MainController.cpp \
         MainCtrl/MainCtrl.cpp \
         MainThread/MainThread.cpp \
+        Utils/WifiManager.cpp \
         XML/XMLParser.cpp \
         main.cpp
 

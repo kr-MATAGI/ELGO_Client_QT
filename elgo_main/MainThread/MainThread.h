@@ -30,6 +30,9 @@ public:
     /** @brief */
     void ExecUpdateDeviceOptions();
 
+    /** @brief */
+    void ExecSearchingWifiList();
+
 public:
     /** @brief */
     void SetMainEvent(const MAIN_EVENT::Event event);

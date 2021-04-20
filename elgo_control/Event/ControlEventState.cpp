@@ -97,16 +97,15 @@ void ControlEventState::RecvResponseScreenCapture(const QByteArray& src)
 //========================================================
 {
     /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Receive screen capture response from elgo_viewer
-    * @param
-    *       QString payload.src
-    *       QString payload.dest
-    *       QString imagePath
-    *       bool    bIsSuccessed
-    */
-
+     * @note
+     *       ELGO_VIEWER -> ELGO_CONTORL
+     *       Receive screen capture response from elgo_viewer
+     * @param
+     *       QString payload.src
+     *       QString payload.dest
+     *       QString imagePath
+     *       bool    bIsSuccessed
+     */
     ControlThread *thread = new ControlThread;
     thread->SetControlEvent(CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE);
     thread->SetRecvBytes(src);

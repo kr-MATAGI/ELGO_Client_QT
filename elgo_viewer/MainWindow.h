@@ -49,7 +49,7 @@ signals:
 
 private slots:
     /** @brief */
-    void DrawQRCodeByThreadSignal();
+    void DrawQRCodeByThread();
 
     /** @brief */
     void CloseMainWindowByTimeout();

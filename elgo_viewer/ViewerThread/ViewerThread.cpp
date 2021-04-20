@@ -275,15 +275,15 @@ void ViewerThread::ExecScreenCapture()
 
     // Send response
     /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Receive screen capture response from elgo_viewer
-    * @param
-    *       QString payload.src
-    *       QString payload.dest
-    *       QString imagePath
-    *       bool    bIsSuccessed
-    */
+     * @note
+     *       ELGO_VIEWER -> ELGO_CONTORL
+     *       Receive screen capture response from elgo_viewer
+     * @param
+     *       QString payload.src
+     *       QString payload.dest
+     *       QString imagePath
+     *       bool    bIsSuccessed
+     */
 
     QByteArray sendBytes;
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);

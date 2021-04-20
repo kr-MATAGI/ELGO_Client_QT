@@ -22,6 +22,8 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdateDisplaySleep);
     m_state.RegisterEvent(MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,
                           &MainEventState::RecvSystemReboot);
+    m_state.RegisterEvent(MAIN_EVENT::Event::SEARCHING_WIFI_LIST,
+                          &MainEventState::RecvSearchingWifiList);
 }
 
 //========================================================
@@ -150,4 +152,21 @@ void MainEventState::RecvSystemReboot(const QByteArray& src)
 
     ELGO_MAIN_LOG("SYSTEM REBOOT !");
     process->start(cmdStr, args);
+}
+
+//========================================================
+void MainEventState::RecvSearchingWifiList(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Search available wifi list
+     *  @param
+     *          NONE
+     */
+
+    MainThread *newThread = new MainThread;
+    newThread->SetMainEvent(MAIN_EVENT::Event::SEARCHING_WIFI_LIST);
+    m_threadPool->start(newThread);
 }

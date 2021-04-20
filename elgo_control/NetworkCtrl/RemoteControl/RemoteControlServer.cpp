@@ -168,7 +168,7 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, co
     }
     else if(Remote::Action::LOAD_WIFI_LIST == action)
     {
-        // TODO : Json Writer
+        // Not Here, See a ControlThread
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
@@ -203,9 +203,11 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 
         QString sendJson;
         MakeResponseJsonString(recvAction, resultContents, sendJson);
-        m_cliecnt->sendTextMessage(sendJson);
-
-        ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s", sendJson.toUtf8().constData());
+        if(0 < sendJson.length())
+        {
+            m_cliecnt->sendTextMessage(sendJson);
+            ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s", sendJson.toUtf8().constData());
+        }
     }
     else
     {

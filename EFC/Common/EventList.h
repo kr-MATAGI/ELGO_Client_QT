@@ -58,6 +58,15 @@ namespace MAIN_EVENT
          */
         SYSTEM_REBOOT_MAIN = 260,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Search available wifi list
+         *  @param
+         *          NONE
+         */
+        SEARCHING_WIFI_LIST = 261,
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -91,7 +100,7 @@ namespace CONTROL_EVENT
 
         /**
          * @note
-         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       ELGO_VIEWER -> ELGO_CONTORL
          *       Receive screen capture response from elgo_viewer
          * @param
          *       QString payload.src
@@ -100,6 +109,18 @@ namespace CONTROL_EVENT
          *       bool    bIsSuccessed
          */
         RESPONSE_SCREEN_CAPTURE = 515,
+
+        /**
+         * @note
+         *       ELGO_MAIN -> ELGO_CONTROL
+         *       Finish searching wifi, update list
+         * @param
+         *       QString    ssid
+         *       int    singalRate
+         *       int    Bandwidth
+         *       bool   bEncryption
+         */
+        UPDATE_WIFI_LIST = 516,
 
         MAX_CONTROL_EVENT = 767
     };

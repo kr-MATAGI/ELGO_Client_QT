@@ -7,8 +7,9 @@
 #include "ShardMem/ShmCtrl.h"
 
 // Main
-#include "Logger/MainLogger.h"
 #include "MainThread.h"
+#include "Logger/MainLogger.h"
+#include "Utils/WifiManager.h"
 
 //========================================================
 MainThread::MainThread()
@@ -49,6 +50,10 @@ void MainThread::run()
     else if(MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS == m_event)
     {
         ExecUpdateDeviceOptions();
+    }
+    else if(MAIN_EVENT::Event::SEARCHING_WIFI_LIST == m_event)
+    {
+        ExecSearchingWifiList();
     }
     else
     {
@@ -180,4 +185,29 @@ void MainThread::ExecUpdateDeviceOptions()
         ELGO_MAIN_LOG("Not Changed Display Sleep Status - {recv: %d, curr: %d}",
                       displaySleep, bCurrDisplaySleep);
     }
+}
+
+//========================================================
+void MainThread::ExecSearchingWifiList()
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Search available wifi list
+     *  @param
+     *          NONE
+     */
+
+    DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    ELGO_MAIN_LOG("os: %s", DEVICE::OS_enum2str[os]);
+    QString wlanName;
+
+    // wlan name
+    WifiManager::GetWlanInterfaceName(os, wlanName);
+    ELGO_MAIN_LOG("WLAN Name : %s", wlanName.toStdString().c_str());
+
+    // get wifi list
+    QVector<WifiInfo> wifiList;
+    WifiManager::GetAcessibleWifiList(os, wlanName, wifiList);
 }

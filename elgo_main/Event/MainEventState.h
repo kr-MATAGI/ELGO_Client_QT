@@ -33,6 +33,8 @@ public:
     /** @brief */
     void RecvSystemReboot(const QByteArray& src);
 
+    /** @brief */
+    void RecvSearchingWifiList(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

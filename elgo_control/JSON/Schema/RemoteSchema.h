@@ -16,10 +16,12 @@ namespace Remote
             DEVIEC_LOGIN_FAIL = 2,
             MANAGE_DEVICE_OK = 3,
             MANAGE_DEVICE_FAIL = 4,
-            ROTATE_DISPLAY_OK =5,
+            ROTATE_DISPLAY_OK = 5,
             ROTATE_DISPLAY_FAIL = 6,
             DEVICE_OPTIONS_OK = 7,
-            DEVICE_OPTIONS_FAIL = 8
+            DEVICE_OPTIONS_FAIL = 8,
+            SEARCHING_WIFI_LIST = 9,
+            SEARCHING_WIFI_FAIL = 10,
         };
 
         struct Contents

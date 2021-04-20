@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->elgoLogo->setScene(m_logoScene);
 
     // connect
-    connect(this, SIGNAL(DrawQRCode()), this, SLOT(DrawQRCodeByThreadSignal()));
+    connect(this, SIGNAL(DrawQRCode()), this, SLOT(DrawQRCodeByThread()));
     connect(&m_closeTimer, SIGNAL(timeout()), this, SLOT(CloseMainWindowByTimeout()));
 }
 
@@ -71,7 +71,7 @@ void MainWindow::DestoryInstance()
 }
 
 //========================================================
-void MainWindow::DrawQRCodeByThreadSignal()
+void MainWindow::DrawQRCodeByThread()
 //========================================================
 {
     const int width = MainWindow::GetInstance()->width() / 4;
