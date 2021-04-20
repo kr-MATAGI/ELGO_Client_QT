@@ -96,9 +96,9 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
     // print
     foreach(const WifiInfo& wifi, dest)
     {
-        ELGO_MAIN_LOG("ssid: %s, freq: %d, signal: %d",
+        ELGO_MAIN_LOG("ssid: %s, freq: %d, signal: %d, enc: %d",
                       wifi.ssid.toStdString().c_str(),
-                      wifi.freq, wifi.signal);
+                      wifi.freq, wifi.signal, wifi.enc);
     }
 
     process->deleteLater();
