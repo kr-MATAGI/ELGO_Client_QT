@@ -199,7 +199,7 @@ void MainThread::ExecSearchingWifiList()
      *          NONE
      */
 
-    DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
     ELGO_MAIN_LOG("os: %s", DEVICE::OS_enum2str[os]);
     QString wlanName;
 
