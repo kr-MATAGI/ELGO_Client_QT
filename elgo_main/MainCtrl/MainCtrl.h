@@ -23,6 +23,9 @@ public:
     QString MakeProcessPath(::ELGO_SYS::Proc proc);   
 
     /** @brief */
+    void CheckResourceFolder();
+
+    /** @brief */
     void LoadConfigurationInfo();
 
     /** @brief */

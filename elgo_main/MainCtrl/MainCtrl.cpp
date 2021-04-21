@@ -5,6 +5,9 @@
 #include <QHostInfo>
 #include <QStorageInfo>
 
+// Common
+#include "Common/CommonDef.h"
+
 // Main
 #include "MainCtrl.h"
 #include "XML/XMLParser.h"
@@ -64,6 +67,45 @@ void MainCtrl::LoadCurrentDeviceInfo()
                 break;
             }
         }
+    }
+}
+
+//========================================================
+void MainCtrl::CheckResourceFolder()
+//========================================================
+{
+    if(false == QDir().exists(RESOURCE_SAVE_PATH))
+    {
+        ELGO_MAIN_LOG("Not existed resource folder: %s",
+                      RESOURCE_SAVE_PATH);
+        QDir().mkdir(RESOURCE_SAVE_PATH);
+    }
+
+    QString iconPath = RESOURCE_SAVE_PATH;
+    iconPath.append("icon");
+    if(false == QDir().exists(iconPath))
+    {
+        ELGO_MAIN_LOG("Not existed resource folder: %s",
+                      iconPath.toStdString().c_str());
+        QDir().mkdir(iconPath);
+    }
+
+    QString videoPath = RESOURCE_SAVE_PATH;
+    videoPath.append("video");
+    if(false == QDir().exists(videoPath))
+    {
+        ELGO_MAIN_LOG("Not existed resource folder: %s",
+                      videoPath.toStdString().c_str());
+        QDir().mkdir(videoPath);
+    }
+
+    QString imagePath = RESOURCE_SAVE_PATH;
+    imagePath.append("image");
+    if(false == QDir().exists(imagePath))
+    {
+        ELGO_MAIN_LOG("Not existed resource folder: %s",
+                      imagePath.toStdString().c_str());
+        QDir().mkdir(imagePath);
     }
 }
 

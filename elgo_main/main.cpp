@@ -36,7 +36,7 @@ void Initialize()
 {
     // Get This Device Info
     // to do : save ip to shared mem, checking network connection
-    g_MainController->GetMainCtrl().LoadCurrentDeviceInfo();
+    g_MainController->GetInstance()->GetMainCtrl().LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainController->GetMainCtrl().GetDeviceInfo();
     ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
            ::DEVICE::OS_enum2str[deviceInfo.os],
@@ -44,14 +44,17 @@ void Initialize()
             deviceInfo.hostName.toUtf8().constData(), deviceInfo.ipAddr.ip.toUtf8().constData(),
             deviceInfo.ipAddr.mac.toUtf8().constData());
 
+    // Check Resource Folder
+    g_MainController->GetInstance()->GetMainCtrl().CheckResourceFolder();
+
     // Get DB info
-    g_MainController->GetDBCtrl().ConnectionDB();
+    g_MainController->GetInstance()->GetDBCtrl().ConnectionDB();
 
     // Load Configuration
-    g_MainController->GetMainCtrl().LoadConfigurationInfo();
+    g_MainController->GetInstance()->GetMainCtrl().LoadConfigurationInfo();
 
     // Check Display Sleep Status
-    g_MainController->GetMainCtrl().CheckDisplaySleepStatus();
+    g_MainController->GetInstance()->GetMainCtrl().CheckDisplaySleepStatus();
 
     // Start Process
     // TODO : except code about 'false' result and recv proc started results
