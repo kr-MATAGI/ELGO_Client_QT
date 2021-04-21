@@ -158,6 +158,6 @@ void ControlEventState::RecvUpdateWifiList(const QByteArray& src)
     Remote::Result::Contents contents;
     contents.status = Remote::Result::Status::UPDATE_WIFI_OK;
     contents.wifiList = wifiInfoList;
-    RemoteControlServer::GetInstance()->SendTextMessage(Remote::Action::UPDATE_WIFI_LIST,
+    RemoteControlServer::GetInstance()->SendRemoteResponse(Remote::Action::UPDATE_WIFI_LIST,
                                                         contents);
 }

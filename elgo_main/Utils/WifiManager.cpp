@@ -61,7 +61,7 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
     if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
     {
         cmd = "/bin/sh";
-        scanArg = QString("echo akxkrl1! | sudo -S iw %1 scan | egrep 'SSID|freq:|signal:|RSN:|\\* non-GF present:'")
+        scanArg = QString("echo akxkrl1! | sudo -S iw %1 scan | egrep 'SSID:|freq:|signal:|RSN:|\\* non-GF present:'")
                 .arg(wlanName);
         args << "-c";
         args << scanArg;

@@ -218,14 +218,18 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 }
 
 //========================================================
-void RemoteControlServer::SendTextMessage(const Remote::Action action,
+void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
                                           const Remote::Result::Contents& contents)
 //========================================================
 {
     if(NULL != m_cliecnt)
     {
         QString responseJson;
-        JsonWriter::WriteUpdateWifiListResponse(action, contents, responseJson);
+
+        if(Remote::Action::UPDATE_WIFI_LIST == action)
+        {
+            JsonWriter::WriteUpdateWifiListResponse(action, contents, responseJson);
+        }
 
         if(0 < responseJson.length())
         {

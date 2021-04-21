@@ -34,7 +34,7 @@ public:
                                 const Remote::Result::Contents& contents,
                                 QString& dest);
     /** @brief */
-    void SendTextMessage(const Remote::Action action,
+    void SendRemoteResponse(const Remote::Action action,
                          const Remote::Result::Contents& contents);
 
 private slots:
