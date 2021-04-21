@@ -26,7 +26,9 @@ void JsonWriter::WriteGetJwtRequest(const QString& udid, const QString& os, std:
 }
 
 //========================================================
-void JsonWriter::WriteDeviceLoginResponse(const Remote::Result::Contents& results, QString& dest)
+void JsonWriter::WriteDeviceLoginResponse(const Remote::Action action,
+                                          const Remote::Result::Contents& results,
+                                          QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -36,6 +38,11 @@ void JsonWriter::WriteDeviceLoginResponse(const Remote::Result::Contents& result
     QString dateTimeStr;
     JsonWriter::MakeDateTimeString(dateTimeStr);
     jsonObj["date"] = dateTimeStr;
+
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    jsonObj["action"] = actionStr;
 
     // result
     bool bResult = false;
@@ -54,7 +61,9 @@ void JsonWriter::WriteDeviceLoginResponse(const Remote::Result::Contents& result
 }
 
 //========================================================
-void JsonWriter::WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest)
+void JsonWriter::WriteManageDeviceResponse(const Remote::Action action,
+                                           const Remote::Result::Contents& results,
+                                           QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -64,6 +73,11 @@ void JsonWriter::WriteManageDeviceResponse(const Remote::Result::Contents& resul
     QString dateTimeStr;
     JsonWriter::MakeDateTimeString(dateTimeStr);
     jsonObj["date"] = dateTimeStr;
+
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    jsonObj["action"] = actionStr;
 
     // result
     bool bResult = false;
@@ -81,7 +95,9 @@ void JsonWriter::WriteManageDeviceResponse(const Remote::Result::Contents& resul
 }
 
 //========================================================
-void JsonWriter::WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest)
+void JsonWriter::WriteRotateDisplayResponse(const Remote::Action action,
+                                            const Remote::Result::Contents& results,
+                                            QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -91,6 +107,11 @@ void JsonWriter::WriteRotateDisplayResponse(const Remote::Result::Contents& resu
     QString dateTimeStr;
     JsonWriter::MakeDateTimeString(dateTimeStr);
     jsonObj["date"] = dateTimeStr;
+
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    jsonObj["action"] = actionStr;
 
     // result
     bool bResult = false;
@@ -108,7 +129,9 @@ void JsonWriter::WriteRotateDisplayResponse(const Remote::Result::Contents& resu
 }
 
 //========================================================
-void JsonWriter::WriteDeviceOptionsResponse(const Remote::Result::Contents& results, QString& dest)
+void JsonWriter::WriteDeviceOptionsResponse(const Remote::Action action,
+                                            const Remote::Result::Contents& results,
+                                            QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -119,6 +142,11 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Result::Contents& resu
     JsonWriter::MakeDateTimeString(dateTimeStr);
     jsonObj["date"] = dateTimeStr;
 
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    jsonObj["action"] = actionStr;
+
     // result
     bool bResult = false;
     if(Remote::Result::Status::DEVICE_OPTIONS_OK == results.status)
@@ -127,6 +155,57 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Result::Contents& resu
     }
     QJsonValue jsonValue(bResult);
     jsonObj["result"] = jsonValue.toBool();
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json String : %s", dest.toUtf8().constData());
+}
+
+//========================================================
+void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
+                                 const Remote::Result::Contents& results,
+                                 QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // date
+    QString dateTimeStr;
+    JsonWriter::MakeDateTimeString(dateTimeStr);
+    jsonObj["date"] = dateTimeStr;
+
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    jsonObj["action"] = actionStr;
+
+    // result
+    bool bResult = false;
+    if(Remote::Result::Status::UPDATE_WIFI_OK == results.status)
+    {
+        bResult = true;
+    }
+    QJsonValue jsonValue(bResult);
+    jsonObj["result"] = jsonValue.toBool();
+
+    // wifiList
+    QJsonArray wifiArray;
+    const int wifiCnt = results.wifiList.size();
+    for(int idx = 0; idx < wifiCnt; idx++)
+    {
+        QJsonObject wifiObj;
+        wifiObj["ssid"] = results.wifiList[idx].ssid;
+        wifiObj["freq"] = results.wifiList[idx].freq;
+        wifiObj["signal"] = results.wifiList[idx].signal;
+
+        QJsonValue encValue(results.wifiList[idx].bEnc);
+        wifiObj["enc"] = encValue.toBool();
+
+        wifiArray.push_back(wifiObj);
+    }
+    jsonObj["wifiList"] = wifiArray;
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);

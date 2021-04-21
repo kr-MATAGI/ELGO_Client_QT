@@ -37,6 +37,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ControlThread/ControlThread.h \
     DB/NetworkDBCtrl.h \
+    Definition/WifiDef.h \
     DownloadThread/CurlDownload.h \
     DownloadThread/DownloadDef.h \
     DownloadThread/DownloadThread.h \

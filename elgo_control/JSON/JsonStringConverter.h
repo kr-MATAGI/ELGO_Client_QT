@@ -6,6 +6,7 @@
 
 // Control
 #include "Schema/ContentServerSchema.h"
+#include "Schema/RemoteSchema.h"
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
@@ -14,6 +15,8 @@
 namespace JsonStringConverter
 {
     /// string to enum
+
+    // elgo_control <-> contents server
     /** @brief */
     ContentSchema::Event ContentServerEventStringToEnum(const QString& src);
     /** @brief */
@@ -41,8 +44,13 @@ namespace JsonStringConverter
     /** @brief */
     PlayJson::SubtitleAction SubtitleActionStringToEnum(const QString& src);
 
+    // elgo_control <-> elgo_remote
+    /** @brief */
+    Remote::Action RemoteActionStringToEnum(const QString& src);
 
     /// enum to string
+
+    // elgo_control <-> contents server
     /** @brief */
     void ContentServerEventEnumToString(const ContentSchema::Event event, QString& dest);
     /** @brief */
@@ -70,8 +78,14 @@ namespace JsonStringConverter
     /** @brief */
     void SubtitleActionEnumToString(const PlayJson::SubtitleAction type, QString& dest);
 
+    // elgo_control <-> elgo_remote
+    /** @brief */
+    void RemoteActionEnumToString(const Remote::Action type, QString& dest);
+
 
     /// String to DataType
+
+    // elgo_control <-> contents server
     /** @brief */
     void ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest);
 

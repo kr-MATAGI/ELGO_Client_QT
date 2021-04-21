@@ -30,7 +30,12 @@ public:
 
 public:
     /** @brief */
-    void MakeResponseJsonString(const Remote::Action action, const Remote::Result::Contents contents, QString& dest);
+    void MakeResponseJsonString(const Remote::Action action,
+                                const Remote::Result::Contents& contents,
+                                QString& dest);
+    /** @brief */
+    void SendTextMessage(const Remote::Action action,
+                         const Remote::Result::Contents& contents);
 
 private slots:
     // Server

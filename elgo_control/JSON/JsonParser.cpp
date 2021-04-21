@@ -47,7 +47,8 @@ Remote::Action JsonParser::PaseRemoteActionText(const QString &src)
 
     if(jsonObj.end() != jsonObj.find("action"))
     {
-        action = static_cast<Remote::Action>(jsonObj["action"].toInt());
+        const QString& actionStr = jsonObj["action"].toString();
+        action = JsonStringConverter::RemoteActionStringToEnum(actionStr);
     }
     else
     {

@@ -9,6 +9,7 @@
 #include "ControlEventState.h"
 #include "ControlThread/ControlThread.h"
 #include "DownloadThread/DownloadThread.h"
+#include "Definition/WifiDef.h"
 
 //========================================================
 ControlEventState::ControlEventState()
@@ -24,6 +25,8 @@ ControlEventState::ControlEventState()
                           &ControlEventState::RecvUpdateDisplaySleepStatus);
     m_state.RegisterEvent(CONTROL_EVENT::Event::RESPONSE_SCREEN_CAPTURE,
                           &ControlEventState::RecvResponseScreenCapture);
+    m_state.RegisterEvent(CONTROL_EVENT::Event::UPDATE_WIFI_LIST,
+                          &ControlEventState::RecvUpdateWifiList);
 }
 
 //========================================================
@@ -111,4 +114,50 @@ void ControlEventState::RecvResponseScreenCapture(const QByteArray& src)
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
+}
+
+//========================================================
+void ControlEventState::RecvUpdateWifiList(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_CONTROL
+     *       Finish searching wifi, update list
+     * @param
+     *       int    wifiCnt
+     *       [Loop]
+     *       QString    ssid
+     *       int    freq
+     *       int    signal
+     *       bool   bEncryption
+     *       [End Loop]
+     */
+    QByteArray copySrc = src;
+    QDataStream recvStream(&copySrc, QIODevice::ReadOnly);
+    QVector<WifiInfo> wifiInfoList;
+    int wifiCnt = 0;
+
+    recvStream >> wifiCnt;
+    ELGO_CONTROL_LOG("WifiCnt : %d", wifiCnt);
+    for(int idx = 0; idx < wifiCnt; idx++)
+    {
+        WifiInfo wifi;
+        recvStream >> wifi.ssid;
+        recvStream >> wifi.freq;
+        recvStream >> wifi.signal;
+        recvStream >> wifi.bEnc;
+        ELGO_CONTROL_LOG("wifi - {ssid: %s, freq: %d, signal: %d, enc: %d}",
+                         wifi.ssid.toStdString().c_str(), wifi.freq,
+                         wifi.signal, wifi.bEnc);
+
+        wifiInfoList.push_back(wifi);
+    }
+
+    // Send to ELGO_Remote
+    Remote::Result::Contents contents;
+    contents.status = Remote::Result::Status::UPDATE_WIFI_OK;
+    contents.wifiList = wifiInfoList;
+    RemoteControlServer::GetInstance()->SendTextMessage(Remote::Action::UPDATE_WIFI_LIST,
+                                                        contents);
 }

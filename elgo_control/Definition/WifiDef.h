@@ -1,23 +1,18 @@
 #ifndef WIFIDEF_H
 #define WIFIDEF_H
 
-// QT
-#include <QString>
-
 struct WifiInfo
 {
     WifiInfo()
         : freq(0)
         , signal(-100)
-        , enc(false)
-        , nonGF(true)
+        , bEnc(false)
     {
     }
+    QString ssid;
     int freq;
     int signal;
-    QString ssid;
-    bool enc;
-    bool nonGF;
+    bool bEnc;
 };
 
 #endif // WIFIDEF_H

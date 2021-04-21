@@ -13,6 +13,7 @@
 #include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
 class NetworkController;
+class RemoteControlServer;
 
 class ControlThread : public QRunnable
 {

@@ -210,4 +210,39 @@ void MainThread::ExecSearchingWifiList()
     // get wifi list
     QVector<WifiInfo> wifiList;
     WifiManager::GetAcessibleWifiList(os, wlanName, wifiList);
+
+    // Send Event
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_CONTROL
+     *       Finish searching wifi, update list
+     * @param
+     *       int    wifiCnt
+     *       [Loop]
+     *       QString    ssid
+     *       int    freq
+     *       int    signal
+     *       bool   bEncryption
+     *       [End Loop]
+     */
+    QByteArray bytes;
+    QDataStream sendStream(&bytes, QIODevice::WriteOnly);
+    const int wifiListCnt = wifiList.size();
+    ELGO_MAIN_LOG("Wifi Cnt: %d", wifiListCnt);
+
+    sendStream << wifiListCnt;
+    for(int idx = 0; idx < wifiListCnt; idx++)
+    {
+        sendStream << wifiList[idx].ssid;
+        sendStream << wifiList[idx].freq;
+        sendStream << wifiList[idx].signal;
+        sendStream << wifiList[idx].enc;
+    }
+
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
+                                                CONTROL_EVENT::Event::UPDATE_WIFI_LIST, bytes);
+    if(false == bSendEvent)
+    {
+        ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::UPDATE_WIFI_LIST);
+    }
 }

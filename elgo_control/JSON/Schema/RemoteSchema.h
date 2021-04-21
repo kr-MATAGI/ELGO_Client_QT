@@ -4,6 +4,9 @@
 // QT
 #include <QString>
 
+// Control
+#include "Definition/WifiDef.h"
+
 namespace Remote
 {
     /** @brief */
@@ -20,8 +23,8 @@ namespace Remote
             ROTATE_DISPLAY_FAIL = 6,
             DEVICE_OPTIONS_OK = 7,
             DEVICE_OPTIONS_FAIL = 8,
-            SEARCHING_WIFI_LIST = 9,
-            SEARCHING_WIFI_FAIL = 10,
+            UPDATE_WIFI_OK = 9,
+            UPDATE_WIFI_FAIL = 10,
         };
 
         struct Contents
@@ -32,7 +35,7 @@ namespace Remote
 
             }
             Status status;
-            QString wifiList; // temp
+            QVector<WifiInfo> wifiList;
         };
     }
 
@@ -43,7 +46,7 @@ namespace Remote
     {
         NONE_ACTION = 0,
         DEVICE_LOGIN = 1,
-        LOAD_WIFI_LIST = 2,
+        UPDATE_WIFI_LIST = 2,
         MANAGE_DEVICE = 3,
         ROTATE_DISPLAY = 4,
         DEVICE_OPTIONS = 5

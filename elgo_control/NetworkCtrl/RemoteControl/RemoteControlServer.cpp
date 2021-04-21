@@ -159,28 +159,30 @@ void RemoteControlServer::TCPServerStartSlot()
 }
 
 //========================================================
-void RemoteControlServer::MakeResponseJsonString(const Remote::Action action, const Remote::Result::Contents contents, QString& dest)
+void RemoteControlServer::MakeResponseJsonString(const Remote::Action action,
+                                                 const Remote::Result::Contents& contents,
+                                                 QString& dest)
 //========================================================
 {
     if(Remote::Action::DEVICE_LOGIN == action)
     {
-        JsonWriter::WriteDeviceLoginResponse(contents, dest);
+        JsonWriter::WriteDeviceLoginResponse(action, contents, dest);
     }
-    else if(Remote::Action::LOAD_WIFI_LIST == action)
+    else if(Remote::Action::UPDATE_WIFI_LIST == action)
     {
-        // Not Here, See a ControlThread
+        // Not Here, SendTextMessage
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
-        JsonWriter::WriteManageDeviceResponse(contents, dest);
+        JsonWriter::WriteManageDeviceResponse(action, contents, dest);
     }
     else if(Remote::Action::ROTATE_DISPLAY == action)
     {
-        JsonWriter::WriteRotateDisplayResponse(contents, dest);
+        JsonWriter::WriteRotateDisplayResponse(action, contents, dest);
     }
     else if(Remote::Action::DEVICE_OPTIONS == action)
     {
-        JsonWriter::WriteDeviceOptionsResponse(contents, dest);
+        JsonWriter::WriteDeviceOptionsResponse(action, contents, dest);
     }
     else
     {
@@ -207,6 +209,29 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
         {
             m_cliecnt->sendTextMessage(sendJson);
             ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s", sendJson.toUtf8().constData());
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
+    }
+}
+
+//========================================================
+void RemoteControlServer::SendTextMessage(const Remote::Action action,
+                                          const Remote::Result::Contents& contents)
+//========================================================
+{
+    if(NULL != m_cliecnt)
+    {
+        QString responseJson;
+        JsonWriter::WriteUpdateWifiListResponse(action, contents, responseJson);
+
+        if(0 < responseJson.length())
+        {
+            m_cliecnt->sendTextMessage(responseJson);
+            ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s",
+                             responseJson.toStdString().c_str());
         }
     }
     else

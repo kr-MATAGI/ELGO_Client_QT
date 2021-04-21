@@ -13,8 +13,10 @@
 
 // Control
 #include "NetworkCtrl/NetworkController.h"
+#include "NetworkCtrl/RemoteControl/RemoteControlServer.h"
 
 class NetworkController;
+class RemoteControlServer;
 
 class ControlEventState
 {
@@ -34,6 +36,9 @@ public:
 
     /** @brief */
     void RecvResponseScreenCapture(const QByteArray& src);
+
+    /** @brief */
+    void RecvUpdateWifiList(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

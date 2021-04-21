@@ -28,7 +28,7 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
     {
         results.status = GetDeviceLoginInfoValidation(src);
     }
-    else if(Remote::Action::LOAD_WIFI_LIST == action)
+    else if(Remote::Action::UPDATE_WIFI_LIST == action)
     {
         results.status = GetAvailableWifiList(src);
     }
@@ -98,12 +98,12 @@ Remote::Result::Status RemoteControlHandler::GetAvailableWifiList(const QString&
                                                 bytes);
     if(false == bSendEvnet)
     {
-        retValue = Remote::Result::SEARCHING_WIFI_FAIL;
+        retValue = Remote::Result::UPDATE_WIFI_FAIL;
         ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::SEARCHING_WIFI_LIST);
     }
     else
     {
-        retValue = Remote::Result::SEARCHING_WIFI_LIST;
+        retValue = Remote::Result::UPDATE_WIFI_OK;
     }
 
     return retValue;

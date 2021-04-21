@@ -398,6 +398,40 @@ PlayJson::SubtitleAction JsonStringConverter::SubtitleActionStringToEnum(const Q
 }
 
 //========================================================
+Remote::Action JsonStringConverter::RemoteActionStringToEnum(const QString& src)
+//========================================================
+{
+    Remote::Action retValue = Remote::Action::NONE_ACTION;
+
+    if(0 == strcmp("DEVICE_LOGIN", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::DEVICE_LOGIN;
+    }
+    else if(0 == strcmp("UPDATE_WIFI_LIST", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::UPDATE_WIFI_LIST;
+    }
+    else if(0 == strcmp("MANAGE_DEVICE", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::MANAGE_DEVICE;
+    }
+    else if(0 == strcmp("ROTATE_DISPLAY", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::ROTATE_DISPLAY;
+    }
+    else if(0 == strcmp("DEVICE_OPTIONS", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::DEVICE_OPTIONS;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Unkwon remote action : %s", src.toStdString().c_str());
+    }
+
+    return retValue;
+}
+
+//========================================================
 void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Event event, QString& dest)
 //========================================================
 {
@@ -734,6 +768,36 @@ void JsonStringConverter::SubtitleActionEnumToString(const PlayJson::SubtitleAct
     else
     {
         dest = "none";
+    }
+}
+
+//========================================================
+void JsonStringConverter::RemoteActionEnumToString(const Remote::Action type, QString& dest)
+//========================================================
+{
+    if(Remote::Action::DEVICE_LOGIN == type)
+    {
+        dest = "DEVICE_LOGIN";
+    }
+    else if(Remote::Action::UPDATE_WIFI_LIST == type)
+    {
+        dest = "UPDATE_WIFI_LIST";
+    }
+    else if(Remote::Action::MANAGE_DEVICE == type)
+    {
+        dest = "MANAGE_DEVICE";
+    }
+    else if(Remote::Action::ROTATE_DISPLAY == type)
+    {
+        dest = "ROTATE_DISPLAY";
+    }
+    else if(Remote::Action::DEVICE_OPTIONS == type)
+    {
+        dest = "DEVICE_OPTIONS";
+    }
+    else
+    {
+        dest = "NONE";
     }
 }
 

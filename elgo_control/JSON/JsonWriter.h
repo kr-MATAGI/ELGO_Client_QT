@@ -49,13 +49,25 @@ namespace JsonWriter
     /** @brief */
     void MakeDateTimeString(QString& dest);
     /** @brief */
-    void WriteDeviceLoginResponse(const Remote::Result::Contents& results, QString& dest);
+    void WriteDeviceLoginResponse(const Remote::Action action,
+                                  const Remote::Result::Contents& results,
+                                  QString& dest);
     /** @brief */
-    void WriteManageDeviceResponse(const Remote::Result::Contents& results, QString& dest);
+    void WriteManageDeviceResponse(const Remote::Action action,
+                                   const Remote::Result::Contents& results,
+                                   QString& dest);
     /** @brief */
-    void WriteRotateDisplayResponse(const Remote::Result::Contents& results, QString& dest);
+    void WriteRotateDisplayResponse(const Remote::Action action,
+                                    const Remote::Result::Contents& results,
+                                    QString& dest);
     /** @brief */
-    void WriteDeviceOptionsResponse(const Remote::Result::Contents& results, QString& dest);
+    void WriteDeviceOptionsResponse(const Remote::Action action,
+                                    const Remote::Result::Contents& results,
+                                    QString& dest);
+    /** @brief */
+    void WriteUpdateWifiListResponse(const Remote::Action action,
+                                     const Remote::Result::Contents& results,
+                                     QString& dest);
 
     /// ETC Utils
     /** @brief */

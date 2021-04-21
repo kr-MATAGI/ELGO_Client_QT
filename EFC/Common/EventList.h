@@ -115,10 +115,13 @@ namespace CONTROL_EVENT
          *       ELGO_MAIN -> ELGO_CONTROL
          *       Finish searching wifi, update list
          * @param
+         *       int    wifiCnt
+         *       [Loop]
          *       QString    ssid
-         *       int    singalRate
-         *       int    Bandwidth
+         *       int    freq
+         *       int    signal
          *       bool   bEncryption
+         *       [End Loop]
          */
         UPDATE_WIFI_LIST = 516,
 
