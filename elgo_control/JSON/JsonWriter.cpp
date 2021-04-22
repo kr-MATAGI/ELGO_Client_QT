@@ -201,7 +201,7 @@ void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
         wifiObj["signal"] = results.wifiList[idx].signal;
 
         QJsonValue encValue(results.wifiList[idx].bEnc);
-        wifiObj["enc"] = encValue.toBool();
+        wifiObj["encryption"] = encValue.toBool();
 
         wifiArray.push_back(wifiObj);
     }
