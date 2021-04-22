@@ -67,6 +67,17 @@ namespace MAIN_EVENT
          */
         SEARCHING_WIFI_LIST = 261,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Connect new wifi
+         *  @param
+         *          QString ssid
+         *          QString password
+         *          bool encryption
+         */
+        CONNECT_NEW_WIFI = 262,
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -124,6 +135,14 @@ namespace CONTROL_EVENT
          *       [End Loop]
          */
         UPDATE_WIFI_LIST = 516,
+
+        /**
+         * @note
+         *       ELGO_MAIN -> ELGO_CONTROL
+         *       New WIFI connection is success
+         */
+        CONNECT_WIFI_SUCCESS = 517,
+
 
         MAX_CONTROL_EVENT = 767
     };

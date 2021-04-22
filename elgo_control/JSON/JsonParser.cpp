@@ -247,6 +247,59 @@ bool JsonParser::ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOpti
 }
 
 //========================================================
+bool JsonParser::ParseConnectWifi(const QString&src, Remote::ConnectWifi& dest)
+//========================================================
+{
+    bool retValue = true;
+
+    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = jsonDoc.object();
+
+    // wifi
+    if(jsonObj.end() != jsonObj.find("wifi"))
+    {
+        const QJsonObject& wifiObj = jsonObj["wifi"].toObject();
+
+        if(wifiObj.end() != wifiObj.find("ssid"))
+        {
+            const QString& ssid = wifiObj["ssid"].toString();
+            dest.ssid = ssid;
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - wifi.ssid is not existed");
+        }
+
+        if(wifiObj.end() != wifiObj.find("password"))
+        {
+            const QString& password = wifiObj["password"].toString();
+            dest.password = password;
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - wifi.password is not existed");
+        }
+
+        if(wifiObj.end() != wifiObj.find("encryption"))
+        {
+            const bool enc = wifiObj["encryption"].toBool();
+            dest.bEnc = enc;
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - wifi.encryption is not existed");
+        }
+    }
+    else
+    {
+        retValue = false;
+        ELGO_CONTROL_LOG("Error - wifi Object is not existed");
+    }
+
+    return retValue;
+}
+
+//========================================================
 bool JsonParser::ParseContentServerJsonResponse(const QString& src, ContentSchema::Summary& dest)
 //========================================================
 {

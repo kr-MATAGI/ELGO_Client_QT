@@ -39,11 +39,17 @@ public:
     /** @brief */
     void SetDisplaySleepStatus(const bool newValue);
     /** @brief */
-    bool GetDisplaySleepStatus();
+    const bool GetDisplaySleepStatus();
+
+    /** @brief */
+    void SetDeviceWlanName(const QString& src);
+    /** @brief */
+    const QString& GetDeviceWlanName();
 
 private:
     DEVICE::Info m_deviceInfo;
     DEVICE::INIT_CONFIG m_initConfig;
+    QString m_wlanName;
 
     bool m_bDisplaySleep;
 };

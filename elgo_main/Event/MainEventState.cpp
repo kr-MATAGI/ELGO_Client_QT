@@ -24,6 +24,8 @@ MainEventState::MainEventState()
                           &MainEventState::RecvSystemReboot);
     m_state.RegisterEvent(MAIN_EVENT::Event::SEARCHING_WIFI_LIST,
                           &MainEventState::RecvSearchingWifiList);
+    m_state.RegisterEvent(MAIN_EVENT::Event::CONNECT_NEW_WIFI,
+                          &MainEventState::RecvConnectNewWifi);
 }
 
 //========================================================
@@ -168,5 +170,25 @@ void MainEventState::RecvSearchingWifiList(const QByteArray& src)
 
     MainThread *newThread = new MainThread;
     newThread->SetMainEvent(MAIN_EVENT::Event::SEARCHING_WIFI_LIST);
+    m_threadPool->start(newThread);
+}
+
+//========================================================
+void MainEventState::RecvConnectNewWifi(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Connect new wifi
+     *  @param
+     *          QString ssid
+     *          QString password
+     *          bool encryption
+     */
+
+    MainThread *newThread = new MainThread;
+    newThread->SetMainEvent(MAIN_EVENT::Event::CONNECT_NEW_WIFI);
+    newThread->SetRecvBytes(src);
     m_threadPool->start(newThread);
 }

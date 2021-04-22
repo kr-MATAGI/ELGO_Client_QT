@@ -32,6 +32,9 @@ public:
 
     /** @brief */
     Remote::Result::Status UpdateDeviceOptions(const QString& src);
+
+    /** @brief */
+    Remote::Result::Status ConnectNewWifi(const QString& src);
 };
 
 #endif // REMOTECONTROLHANDLER_H

@@ -25,6 +25,8 @@ namespace Remote
             DEVICE_OPTIONS_FAIL = 8,
             UPDATE_WIFI_OK = 9,
             UPDATE_WIFI_FAIL = 10,
+            CONNECT_WIFI_OK = 11,
+            CONNECTR_WIFI_FAIL = 12,
         };
 
         struct Contents
@@ -49,7 +51,8 @@ namespace Remote
         UPDATE_WIFI_LIST = 2,
         MANAGE_DEVICE = 3,
         ROTATE_DISPLAY = 4,
-        DEVICE_OPTIONS = 5
+        DEVICE_OPTIONS = 5,
+        CONNECT_WIFI = 6
     };
 
     /** @brief  Device Login */
@@ -106,13 +109,16 @@ namespace Remote
         bool bContentPause;
     };
 
-    /** @brief  */
-    struct Summary
+    /** @brief */
+    struct ConnectWifi
     {
-        Action action;
-        DeviceLogin deviceLogin;
-        ManageDevice mangeDevice;
-        RotateDisplay rotateDisplay;
+        ConnectWifi()
+            : bEnc(false)
+        {
+        }
+        QString ssid;
+        QString password;
+        bool bEnc;
     };
 }
 

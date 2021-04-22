@@ -10,11 +10,20 @@
 
 namespace WifiManager
 {
+    // Searching
     /** @brief */
     void GetWlanInterfaceName(const DEVICE::OS os, QString& dest);
-
     /** @brief */
     void GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanName, QVector<WifiInfo>& dest);
+
+    // Connect
+    /** @brief */
+    void ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
+                                    const QString& password, const bool enc);
+
+    // Wake up
+    /** @brief */
+    void WakeUpWirelessInterface(const DEVICE::OS os, const QString& wlanName);
 
     /** @brief */
     void ParsingLinuxString(const QString& src, QVector<WifiInfo>& dest);

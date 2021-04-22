@@ -36,6 +36,9 @@ public:
     /** @brief */
     void RecvSearchingWifiList(const QByteArray& src);
 
+    /** @brief */
+    void RecvConnectNewWifi(const QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;

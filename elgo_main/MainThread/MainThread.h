@@ -32,6 +32,8 @@ public:
 
     /** @brief */
     void ExecSearchingWifiList();
+    /** @brief */
+    void ExecConnectNewWifi();
 
 public:
     /** @brief */

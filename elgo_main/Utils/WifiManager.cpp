@@ -44,7 +44,6 @@ void WifiManager::GetWlanInterfaceName(const DEVICE::OS os, QString& dest)
     {
         dest = byteSplit[1];
     }
-    ELGO_MAIN_LOG("dest: %s", dest.toStdString().c_str());
 
     process->deleteLater();
 }
@@ -61,7 +60,8 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
     if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
     {
         cmd = "/bin/sh";
-        scanArg = QString("echo akxkrl1! | sudo -S iw %1 scan | egrep 'SSID:|freq:|signal:|RSN:|\\* non-GF present:'")
+        scanArg = QString("echo %1 | sudo -S iw %2 scan | egrep 'SSID:|freq:|signal:|RSN:|\\* non-GF present:'")
+                .arg(ROOT_PASSWORD)
                 .arg(wlanName);
         args << "-c";
         args << scanArg;
@@ -74,9 +74,7 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
     {
         //
     }
-    ELGO_MAIN_LOG("cmd: %s, scanArg: %s",
-                  cmd.toStdString().c_str(),
-                  scanArg.toStdString().c_str());
+    ELGO_MAIN_LOG("ScanArg: %s", scanArg.toStdString().c_str());
 
     // start
     process->start(cmd, args);
@@ -101,6 +99,94 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
                       wifi.freq, wifi.signal, wifi.enc);
     }
 
+    process->deleteLater();
+}
+
+//========================================================
+void WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
+                                             const QString& password, const bool enc)
+//========================================================
+{
+    QProcess *process = new QProcess;
+
+    QString cmd;
+    QStringList args;
+    QString connectArg;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmd = "/bin/sh";
+
+        if(false == enc)
+        {
+            connectArg = QString("echo %1 | sudo -S iw %2 connect %3")
+                    .arg(ROOT_PASSWORD)
+                    .arg(wlanName)
+                    .arg(ssid);
+        }
+        else
+        {
+
+        }
+
+        args << "-c";
+        args << connectArg;
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+        //
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+        //
+    }
+    ELGO_MAIN_LOG("ConnectArg : %s", connectArg.toStdString().c_str());
+
+    // start
+    process->start(cmd, args);
+    process->waitForFinished();
+
+    // output
+    QByteArray bytes = process->readAllStandardOutput();
+    QString byteStr = QString::fromLocal8Bit(bytes);
+    ELGO_MAIN_LOG("output: %s", byteStr.toStdString().c_str());
+
+    process->deleteLater();
+}
+
+//========================================================
+void WifiManager::WakeUpWirelessInterface(const DEVICE::OS os, const QString& wlanName)
+//========================================================
+{
+    QProcess *process = new QProcess;
+
+    QString cmd;
+    QStringList args;
+    QString wakeUpArg;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmd = "/bin/sh";
+        wakeUpArg = QString("echo %1 | sudo -S ip link set %2 up")
+                .arg(ROOT_PASSWORD)
+                .arg(wlanName);
+
+        args << "-c";
+        args << wakeUpArg;
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+        //
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+        //
+    }
+    ELGO_MAIN_LOG("WakeUpArg: %s", wakeUpArg.toStdString().c_str());
+
+    // start
+    process->start(cmd, args);
+    process->waitForFinished();
     process->deleteLater();
 }
 

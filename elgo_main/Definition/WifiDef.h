@@ -4,6 +4,8 @@
 // QT
 #include <QString>
 
+#define ROOT_PASSWORD   "akxkrl1!"
+
 struct WifiInfo
 {
     WifiInfo()

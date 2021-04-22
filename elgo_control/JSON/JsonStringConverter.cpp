@@ -423,6 +423,10 @@ Remote::Action JsonStringConverter::RemoteActionStringToEnum(const QString& src)
     {
         retValue = Remote::Action::DEVICE_OPTIONS;
     }
+    else if(0 == strcmp("CONNECT_WIFI", src.toStdString().c_str()))
+    {
+        retValue = Remote::Action::CONNECT_WIFI;
+    }
     else
     {
         ELGO_CONTROL_LOG("Error - Unkwon remote action : %s", src.toStdString().c_str());

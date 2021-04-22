@@ -55,6 +55,10 @@ void MainThread::run()
     {
         ExecSearchingWifiList();
     }
+    else if(MAIN_EVENT::Event::CONNECT_NEW_WIFI == m_event)
+    {
+        ExecConnectNewWifi();
+    }
     else
     {
         ELGO_MAIN_LOG("Error - Unkown Event (%d)", m_event);
@@ -205,7 +209,11 @@ void MainThread::ExecSearchingWifiList()
 
     // wlan name
     WifiManager::GetWlanInterfaceName(os, wlanName);
+    MainController::GetInstance()->GetMainCtrl().SetDeviceWlanName(wlanName);
     ELGO_MAIN_LOG("WLAN Name : %s", wlanName.toStdString().c_str());
+
+    // wake up wlan
+    WifiManager::WakeUpWirelessInterface(os, wlanName);
 
     // get wifi list
     QVector<WifiInfo> wifiList;
@@ -244,5 +252,43 @@ void MainThread::ExecSearchingWifiList()
     if(false == bSendEvent)
     {
         ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::UPDATE_WIFI_LIST);
+    }
+}
+
+//========================================================
+void MainThread::ExecConnectNewWifi()
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Connect new wifi
+     *  @param
+     *          QString ssid
+     *          QString password
+     *          bool encryption
+     */
+    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
+    QString ssid;
+    QString password;
+    bool bEnc = false;
+
+    recvStream >> ssid;
+    recvStream >> password;
+    recvStream >> bEnc;
+    ELGO_MAIN_LOG("Recv new wifi info - {ssid: %s, pw: %s, enc: %d",
+                  ssid.toStdString().c_str(), password.toStdString().c_str(), bEnc);
+
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    const QString& wlanName = MainController::GetInstance()->GetMainCtrl().GetDeviceWlanName();
+
+    WifiManager::ConnectNewWirelessInternet(os, wlanName, ssid, password, bEnc);
+
+    QByteArray bytes;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
+                                                CONTROL_EVENT::Event::CONNECT_WIFI_SUCCESS, bytes);
+    if(false == bSendEvent)
+    {
+        ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::CONNECT_WIFI_SUCCESS);
     }
 }

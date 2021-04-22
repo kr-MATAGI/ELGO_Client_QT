@@ -44,6 +44,10 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
     {
         results.status = UpdateDeviceOptions(src);
     }
+    else if(Remote::Action::CONNECT_WIFI == action)
+    {
+        results.status = ConnectNewWifi(src);
+    }
     else
     {
         ELGO_CONTROL_LOG("Unkwon Action : %d", action);
@@ -223,6 +227,53 @@ Remote::Result::Status RemoteControlHandler::UpdateDeviceOptions(const QString& 
     else
     {
         ELGO_CONTROL_LOG("Error - Change Device options json was not parsed");
+    }
+
+    return retValue;
+}
+
+//========================================================
+Remote::Result::Status RemoteControlHandler::ConnectNewWifi(const QString& src)
+//========================================================
+{
+    Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
+
+    Remote::ConnectWifi connectWifi;
+    const bool bIsParsing = JsonParser::ParseConnectWifi(src, connectWifi);
+    if(true == bIsParsing)
+    {
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Connect new wifi
+         *  @param
+         *          QString ssid
+         *          QString password
+         *          bool encryption
+         */
+
+        QByteArray bytes;
+        QDataStream newStream(&bytes, QIODevice::WriteOnly);
+        newStream << connectWifi.ssid;
+        newStream << connectWifi.password;
+        newStream << connectWifi.bEnc;
+        const bool bSendEvnet = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                    MAIN_EVENT::Event::CONNECT_NEW_WIFI,
+                                                    bytes);
+        if(false == bSendEvnet)
+        {
+            retValue = Remote::Result::CONNECTR_WIFI_FAIL;
+            ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::CONNECT_NEW_WIFI);
+        }
+        else
+        {
+            retValue = Remote::Result::CONNECT_WIFI_OK;
+        }
+    }
+    else
+    {
+        retValue = Remote::Result::CONNECTR_WIFI_FAIL;
+        ELGO_CONTROL_LOG("Error - Parsing Error : %s", src.toStdString().c_str());
     }
 
     return retValue;

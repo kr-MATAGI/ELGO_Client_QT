@@ -189,10 +189,24 @@ void MainCtrl::SetDisplaySleepStatus(const bool newValue)
 }
 
 //========================================================
-bool MainCtrl::GetDisplaySleepStatus()
+const bool MainCtrl::GetDisplaySleepStatus()
 //========================================================
 {
     return m_bDisplaySleep;
+}
+
+//========================================================
+void MainCtrl::SetDeviceWlanName(const QString& src)
+//========================================================
+{
+    m_wlanName = src;
+}
+
+//========================================================
+const QString& MainCtrl::GetDeviceWlanName()
+//========================================================
+{
+    return m_wlanName;
 }
 
 //========================================================

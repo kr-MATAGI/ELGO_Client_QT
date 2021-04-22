@@ -34,6 +34,8 @@ namespace JsonParser
     bool ParseRemoteRotateDevice(const QString &src, Remote::RotateDisplay& dest);
     /** @brief */
     bool ParseRemoteDeviceOptions(const QString& src, Remote::DeviceOptions& dest);
+    /** @brief */
+    bool ParseConnectWifi(const QString&src, Remote::ConnectWifi& dest);
 
 
     /// Content Server <-> elgo_control
