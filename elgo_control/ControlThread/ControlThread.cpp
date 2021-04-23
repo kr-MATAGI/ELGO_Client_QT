@@ -71,6 +71,7 @@ void ControlThread::ExecRecvServerInfoFromMain()
      *          QString wasHost,
      *          quint16 wasHostPort,
      *          QString remoteTCPHost
+     *          bool bIsDisplaySleep
      */
 
     QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
@@ -84,7 +85,8 @@ void ControlThread::ExecRecvServerInfoFromMain()
     recvStream >> remoteTCPHost;
     recvStream >> bIsDisplaySleep;
     ELGO_CONTROL_LOG("WAS {Host : %s, port : %u }, remoteHost : %s",
-                     wasHost.toUtf8().constData(), wasHostPort, remoteTCPHost.toUtf8().constData());
+                     wasHost.toUtf8().constData(), wasHostPort,
+                     remoteTCPHost.toUtf8().constData());
 
     // Set Info into NetCtrl
     CONNECT_INFO connectInfo(wasHost, wasHostPort, remoteTCPHost);

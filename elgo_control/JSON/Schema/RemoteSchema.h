@@ -37,6 +37,8 @@ namespace Remote
 
             }
             Status status;
+            QString os;
+            QString udid;
             QVector<WifiInfo> wifiList;
         };
     }

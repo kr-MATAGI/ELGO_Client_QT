@@ -53,9 +53,9 @@ private:
 
 private:
     ContentWebSocket *m_socket;
-
     CONNECT_INFO m_connecInfo;
     QString m_jwt;
+
     bool m_bDisplaySleep;
 };
 

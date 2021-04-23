@@ -31,6 +31,7 @@ void JsonWriter::WriteDateActionResultResponse(const Remote::Action action,
                                    QJsonObject& dest)
 //========================================================
 {
+
     // date
     QString dateTimeStr;
     JsonWriter::MakeDateTimeString(dateTimeStr);

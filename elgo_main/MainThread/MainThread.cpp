@@ -87,15 +87,19 @@ void MainThread::ExecRecvProcecssReady()
     {
         // Server [host, port] info send to elgo_control
         /**
-         *  @brief  receive WIFI information from main process
+         *  @note
+         *          ELGO_MAIN -> ELGO_CONTROL
+         *          receive WIFI information from main process
          *  @param
          *          QString wasHost,
-         *          int wasHostPort,
+         *          quint16 wasHostPort,
          *          QString remoteTCPHost
+         *          bool bIsDisplaySleep
          */
 
+        const DEVICE::Info& deviceInfo = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo();
         const DEVICE::INIT_CONFIG &initConfig = MainController::GetInstance()->GetMainCtrl().GetInitConfig();
-        const DEVICE::IPADDR &hostAddr = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().ipAddr;
+        const DEVICE::IPADDR &hostAddr = deviceInfo.ipAddr;
         const bool bIsDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);

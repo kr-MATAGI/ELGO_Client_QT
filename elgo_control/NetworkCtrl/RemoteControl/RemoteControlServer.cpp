@@ -149,6 +149,7 @@ void RemoteControlServer::TCPServerStartSlot()
 {
     CONNECT_INFO connInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();
 
+//    QHostAddress host(connInfo.REMOTE_HOST);
     QHostAddress host(connInfo.REMOTE_HOST);
     quint16 port = REMOTE_TCP_PORT;
 
