@@ -27,6 +27,8 @@ ControlEventState::ControlEventState()
                           &ControlEventState::RecvResponseScreenCapture);
     m_state.RegisterEvent(CONTROL_EVENT::Event::UPDATE_WIFI_LIST,
                           &ControlEventState::RecvUpdateWifiList);
+    m_state.RegisterEvent(CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT,
+                          &ControlEventState::RecvWifiConnectionResult);
 }
 
 //========================================================
@@ -156,8 +158,40 @@ void ControlEventState::RecvUpdateWifiList(const QByteArray& src)
 
     // Send to ELGO_Remote
     Remote::Result::Contents contents;
-    contents.status = Remote::Result::Status::UPDATE_WIFI_OK;
+    contents.status = Remote::Result::Status::UPDATE_WIFI_LIST_OK;
     contents.wifiList = wifiInfoList;
     RemoteControlServer::GetInstance()->SendRemoteResponse(Remote::Action::UPDATE_WIFI_LIST,
-                                                        contents);
+                                                           contents);
+}
+
+//========================================================
+void ControlEventState::RecvWifiConnectionResult(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *          ELGO_MAIN -> ELGO_CONTROL
+     *          New WIFI connection result
+     * @param
+     *          bool bIsConnect
+     */
+
+    QByteArray copySrc = src;
+    QDataStream dataStream(&copySrc, QIODevice::ReadOnly);
+    bool bIsConnect = false;
+    dataStream >> bIsConnect;
+
+    // Send to ELGO Remote
+    Remote::Result::Contents contents;
+    if(true == bIsConnect)
+    {
+        contents.status = Remote::Result::Status::CONNECT_WIFI_OK;
+    }
+    else
+    {
+        contents.status = Remote::Result::Status::CONNECT_WIFI_FAIL;
+    }
+
+    RemoteControlServer::GetInstance()->SendRemoteResponse(Remote::Action::CONNECT_WIFI,
+                                                           contents);
 }

@@ -276,19 +276,28 @@ void MainThread::ExecConnectNewWifi()
     recvStream >> ssid;
     recvStream >> password;
     recvStream >> bEnc;
-    ELGO_MAIN_LOG("Recv new wifi info - {ssid: %s, pw: %s, enc: %d",
+    ELGO_MAIN_LOG("Recv new wifi info - {ssid: %s, pw: %s, enc: %d}",
                   ssid.toStdString().c_str(), password.toStdString().c_str(), bEnc);
 
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
     const QString& wlanName = MainController::GetInstance()->GetMainCtrl().GetDeviceWlanName();
 
-    WifiManager::ConnectNewWirelessInternet(os, wlanName, ssid, password, bEnc);
+    const bool bIsConnect = WifiManager::ConnectNewWirelessInternet(os, wlanName, ssid, password, bEnc);
 
-    QByteArray bytes;
+    /**
+     * @note
+     *          ELGO_MAIN -> ELGO_CONTROL
+     *          New WIFI connection result
+     * @param
+     *          bool bIsConnect
+     */
+    QByteArray sendBytes;
+    QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+    sendStream << bIsConnect;
     const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
-                                                CONTROL_EVENT::Event::CONNECT_WIFI_SUCCESS, bytes);
+                                                CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT, sendBytes);
     if(false == bSendEvent)
     {
-        ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::CONNECT_WIFI_SUCCESS);
+        ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT);
     }
 }

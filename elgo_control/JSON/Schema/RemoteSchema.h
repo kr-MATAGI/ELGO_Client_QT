@@ -23,10 +23,10 @@ namespace Remote
             ROTATE_DISPLAY_FAIL = 6,
             DEVICE_OPTIONS_OK = 7,
             DEVICE_OPTIONS_FAIL = 8,
-            UPDATE_WIFI_OK = 9,
-            UPDATE_WIFI_FAIL = 10,
+            UPDATE_WIFI_LIST_OK = 9,
+            UPDATE_WIFI_LIST_FAIL = 10,
             CONNECT_WIFI_OK = 11,
-            CONNECTR_WIFI_FAIL = 12,
+            CONNECT_WIFI_FAIL = 12,
         };
 
         struct Contents

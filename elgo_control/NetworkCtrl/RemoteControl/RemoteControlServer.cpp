@@ -230,6 +230,14 @@ void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
         {
             JsonWriter::WriteUpdateWifiListResponse(action, contents, responseJson);
         }
+        else if(Remote::Action::CONNECT_WIFI == action)
+        {
+            JsonWriter::WriteConnectWifiResultResponse(action ,contents, responseJson);
+        }
+        else
+        {
+            ELGO_CONTROL_LOG("Error - Not Enrolled Action : %d", action);
+        }
 
         if(0 < responseJson.length())
         {

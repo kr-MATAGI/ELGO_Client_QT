@@ -799,6 +799,10 @@ void JsonStringConverter::RemoteActionEnumToString(const Remote::Action type, QS
     {
         dest = "DEVICE_OPTIONS";
     }
+    else if(Remote::Action::CONNECT_WIFI == type)
+    {
+        dest = "CONNECT_WIFI";
+    }
     else
     {
         dest = "NONE";

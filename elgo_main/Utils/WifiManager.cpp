@@ -105,10 +105,12 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
 }
 
 //========================================================
-void WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
+bool WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
                                              const QString& password, const bool enc)
 //========================================================
 {
+    bool retValue = false;
+
     QProcess *process = new QProcess;
 
     QString cmd;
@@ -121,14 +123,14 @@ void WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString&
 
         if(false == enc)
         {
-            connectArg = QString("echo %1 | sudo -S iw %2 connect %3")
-                    .arg(ROOT_PASSWORD)
-                    .arg(wlanName)
-                    .arg(ssid);
+            connectArg = QString("nmcli dev wifi con %1")
+                        .arg(ssid);
         }
         else
         {
-
+            connectArg = QString("nmcli dev wifi con %1 password %2")
+                        .arg(ssid)
+                        .arg(password);
         }
 
         args << "-c";
@@ -153,7 +155,26 @@ void WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString&
     QString byteStr = QString::fromLocal8Bit(bytes);
     ELGO_MAIN_LOG("output: %s", byteStr.toStdString().c_str());
 
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        if(std::string::npos != byteStr.toStdString().find("성공"))
+        {
+            retValue = true;
+        }
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+        //
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+        //
+    }
+
     process->deleteLater();
+
+    ELGO_MAIN_LOG("return value : %d", retValue);
+    return retValue;
 }
 
 //========================================================
@@ -280,7 +301,7 @@ void WifiManager::ParsingLinuxString(const QString& src, QVector<WifiInfo>& dest
 void WifiManager::ConvertUtf8ToKR(const QString&src, QString& dest)
 //========================================================
 {
-    QStringList srcSplit = src.split(QRegularExpression("\\\\"));
+    const QStringList& srcSplit = src.split(QRegularExpression("\\\\"));
 
     char hangulBuf[4] = {0,};
     int hanIdx = 0;

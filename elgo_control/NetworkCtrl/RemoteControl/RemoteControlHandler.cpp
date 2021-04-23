@@ -102,12 +102,12 @@ Remote::Result::Status RemoteControlHandler::GetAvailableWifiList(const QString&
                                                 bytes);
     if(false == bSendEvnet)
     {
-        retValue = Remote::Result::UPDATE_WIFI_FAIL;
+        retValue = Remote::Result::UPDATE_WIFI_LIST_FAIL;
         ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::SEARCHING_WIFI_LIST);
     }
     else
     {
-        retValue = Remote::Result::UPDATE_WIFI_OK;
+        retValue = Remote::Result::UPDATE_WIFI_LIST_OK;
     }
 
     return retValue;
@@ -262,7 +262,7 @@ Remote::Result::Status RemoteControlHandler::ConnectNewWifi(const QString& src)
                                                     bytes);
         if(false == bSendEvnet)
         {
-            retValue = Remote::Result::CONNECTR_WIFI_FAIL;
+            retValue = Remote::Result::CONNECT_WIFI_FAIL;
             ELGO_CONTROL_LOG("Error - SendEvent : %d", MAIN_EVENT::Event::CONNECT_NEW_WIFI);
         }
         else
@@ -272,7 +272,7 @@ Remote::Result::Status RemoteControlHandler::ConnectNewWifi(const QString& src)
     }
     else
     {
-        retValue = Remote::Result::CONNECTR_WIFI_FAIL;
+        retValue = Remote::Result::CONNECT_WIFI_FAIL;
         ELGO_CONTROL_LOG("Error - Parsing Error : %s", src.toStdString().c_str());
     }
 

@@ -138,10 +138,12 @@ namespace CONTROL_EVENT
 
         /**
          * @note
-         *       ELGO_MAIN -> ELGO_CONTROL
-         *       New WIFI connection is success
+         *          ELGO_MAIN -> ELGO_CONTROL
+         *          New WIFI connection result
+         * @param
+         *          bool bIsConnect
          */
-        CONNECT_WIFI_SUCCESS = 517,
+        WIFI_CONNECTION_RESULT = 517,
 
 
         MAX_CONTROL_EVENT = 767

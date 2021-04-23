@@ -48,6 +48,12 @@ namespace JsonWriter
     /// elgo_remote <-> elgo_control
     /** @brief */
     void MakeDateTimeString(QString& dest);
+
+    /** @brief */
+    void WriteDateActionResultResponse(const Remote::Action action,
+                                       const Remote::Result::Contents& results,
+                                       QJsonObject& dest);
+
     /** @brief */
     void WriteDeviceLoginResponse(const Remote::Action action,
                                   const Remote::Result::Contents& results,
@@ -66,6 +72,10 @@ namespace JsonWriter
                                     QString& dest);
     /** @brief */
     void WriteUpdateWifiListResponse(const Remote::Action action,
+                                     const Remote::Result::Contents& results,
+                                     QString& dest);
+
+    void WriteConnectWifiResultResponse(const Remote::Action action,
                                      const Remote::Result::Contents& results,
                                      QString& dest);
 

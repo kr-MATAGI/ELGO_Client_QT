@@ -26,6 +26,37 @@ void JsonWriter::WriteGetJwtRequest(const QString& udid, const QString& os, std:
 }
 
 //========================================================
+void JsonWriter::WriteDateActionResultResponse(const Remote::Action action,
+                                   const Remote::Result::Contents& results,
+                                   QJsonObject& dest)
+//========================================================
+{
+    // date
+    QString dateTimeStr;
+    JsonWriter::MakeDateTimeString(dateTimeStr);
+    dest["date"] = dateTimeStr;
+
+    // action
+    QString actionStr;
+    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
+    dest["action"] = actionStr;
+
+    // result
+    bool bResult = false;
+    if( (Remote::Result::Status::DEVICE_LOGIN_OK == results.status) ||
+        (Remote::Result::Status::MANAGE_DEVICE_OK == results.status) ||
+        (Remote::Result::Status::ROTATE_DISPLAY_OK == results.status) ||
+        (Remote::Result::Status::DEVICE_OPTIONS_OK == results.status) ||
+        (Remote::Result::Status::UPDATE_WIFI_LIST_OK == results.status) ||
+        (Remote::Result::Status::CONNECT_WIFI_OK == results.status) )
+    {
+        bResult = true;
+    }
+    QJsonValue jsonValue(bResult);
+    dest["result"] = jsonValue.toBool();
+}
+
+//========================================================
 void JsonWriter::WriteDeviceLoginResponse(const Remote::Action action,
                                           const Remote::Result::Contents& results,
                                           QString& dest)
@@ -34,25 +65,7 @@ void JsonWriter::WriteDeviceLoginResponse(const Remote::Action action,
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    // date
-    QString dateTimeStr;
-    JsonWriter::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // action
-    QString actionStr;
-    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
-    jsonObj["action"] = actionStr;
-
-    // result
-    bool bResult = false;
-    if( Remote::Result::Status::DEVICE_LOGIN_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
-
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -69,24 +82,7 @@ void JsonWriter::WriteManageDeviceResponse(const Remote::Action action,
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    // date
-    QString dateTimeStr;
-    JsonWriter::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // action
-    QString actionStr;
-    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
-    jsonObj["action"] = actionStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::MANAGE_DEVICE_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -103,24 +99,7 @@ void JsonWriter::WriteRotateDisplayResponse(const Remote::Action action,
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    // date
-    QString dateTimeStr;
-    JsonWriter::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // action
-    QString actionStr;
-    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
-    jsonObj["action"] = actionStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::ROTATE_DISPLAY_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -137,24 +116,7 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Action action,
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    // date
-    QString dateTimeStr;
-    JsonWriter::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // action
-    QString actionStr;
-    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
-    jsonObj["action"] = actionStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::DEVICE_OPTIONS_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -171,24 +133,7 @@ void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    // date
-    QString dateTimeStr;
-    JsonWriter::MakeDateTimeString(dateTimeStr);
-    jsonObj["date"] = dateTimeStr;
-
-    // action
-    QString actionStr;
-    JsonStringConverter::RemoteActionEnumToString(action, actionStr);
-    jsonObj["action"] = actionStr;
-
-    // result
-    bool bResult = false;
-    if(Remote::Result::Status::UPDATE_WIFI_OK == results.status)
-    {
-        bResult = true;
-    }
-    QJsonValue jsonValue(bResult);
-    jsonObj["result"] = jsonValue.toBool();
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     // wifiList
     QJsonArray wifiArray;
@@ -206,6 +151,23 @@ void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
         wifiArray.push_back(wifiObj);
     }
     jsonObj["wifiList"] = wifiArray;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json String : %s", dest.toUtf8().constData());
+}
+
+//========================================================
+void JsonWriter::WriteConnectWifiResultResponse(const Remote::Action action,
+                                 const Remote::Result::Contents& results,
+                                 QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    WriteDateActionResultResponse(action, results, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);

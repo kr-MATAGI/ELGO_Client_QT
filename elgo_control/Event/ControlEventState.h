@@ -39,6 +39,8 @@ public:
 
     /** @brief */
     void RecvUpdateWifiList(const QByteArray& src);
+    /** @brief */
+    void RecvWifiConnectionResult(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;
