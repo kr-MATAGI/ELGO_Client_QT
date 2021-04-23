@@ -1,6 +1,7 @@
 
 // QT
 #include <QProcess>
+#include <QRegularExpression>
 
 // Main
 #include "WifiManager.h"
@@ -60,7 +61,8 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
     if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
     {
         cmd = "/bin/sh";
-        scanArg = QString("echo %1 | sudo -S iw %2 scan | egrep 'SSID:|freq:|signal:|RSN:|\\* non-GF present:'")
+        // public exception - "echo %1 | sudo -S iw %2 scan | egrep 'SSID:|freq:|signal:|RSN:|\\* non-GF present:'"
+        scanArg = QString("echo %1 | sudo -S iw %2 scan | egrep 'SSID:|freq:|signal:|RSN:'")
                 .arg(ROOT_PASSWORD)
                 .arg(wlanName);
         args << "-c";
@@ -251,56 +253,72 @@ void WifiManager::ParsingLinuxString(const QString& src, QVector<WifiInfo>& dest
         QString ssidVal = ssidSplit[1];
         if(0 == strcmp("SSID", ssidKey.toStdString().c_str()))
         {
-            wifi.ssid = ssidVal;
+            ConvertUtf8ToKR(ssidVal, wifi.ssid);
             ++srcIter;
         }
 
-        // RSN or non-GFpresent
-        QString rsnOrNonGfStr = *srcIter;
-        if(0 == rsnOrNonGfStr.length())
+        // RSN
+        QString rsnStr = *srcIter;
+        if(0 == rsnStr.length())
         {
             break;
         }
 
-        QStringList rsnOrNonGfSplit = rsnOrNonGfStr.split(":");
-        QString rsnOrNonGfKey = rsnOrNonGfSplit[0];
-        QString rsnOrNonGfVal = rsnOrNonGfSplit[1];
-        if(0 == strcmp("RSN", rsnOrNonGfKey.toStdString().c_str()))
+        QStringList rsnSplit = rsnStr.split(":");
+        QString rsnKey = rsnSplit[0];
+        if(0 == strcmp("RSN", rsnKey.toStdString().c_str()))
         {
             wifi.enc = true;
             ++srcIter;
         }
-        else if(0 == strcmp("non-GFpresent", rsnOrNonGfKey.toStdString().c_str()))
-        {
-            const bool nonGf = static_cast<bool>(rsnOrNonGfVal.toInt());
-            wifi.nonGF = nonGf;
-            ++srcIter;
-        }
 
-        rsnOrNonGfStr = *srcIter;
-        if(0 == rsnOrNonGfStr.length())
-        {
-            break;
-        }
+        dest.push_back(wifi);
+    }
+}
 
-        rsnOrNonGfSplit = rsnOrNonGfStr.split(":");
-        rsnOrNonGfKey = rsnOrNonGfSplit[0];
-        rsnOrNonGfVal = rsnOrNonGfSplit[1];
-        if(0 == strcmp("RSN", rsnOrNonGfKey.toStdString().c_str()))
-        {
-            wifi.enc = true;
-            ++srcIter;
-        }
-        else if(0 == strcmp("non-GFpresent", rsnOrNonGfKey.toStdString().c_str()))
-        {
-            const bool nonGf = static_cast<bool>(rsnOrNonGfVal.toInt());
-            wifi.nonGF = nonGf;
-            ++srcIter;
-        }
+//========================================================
+void WifiManager::ConvertUtf8ToKR(const QString&src, QString& dest)
+//========================================================
+{
+    QStringList srcSplit = src.split(QRegularExpression("\\\\"));
 
-        if(true == wifi.nonGF)
+    char hangulBuf[4] = {0,};
+    int hanIdx = 0;
+    foreach (const QString& item, srcSplit)
+    {
+        if('x' == item[0])
         {
-            dest.push_back(wifi);
+            char hexBuf[8] = {0,};
+            QString hexSlice = item[1];
+            hexSlice += item[2];
+            sprintf(hexBuf, "0x%s", hexSlice.toStdString().c_str());
+
+            int utf8 = static_cast<int>(std::strtol(hexBuf, NULL, 0));
+            hangulBuf[hanIdx] = static_cast<char>(utf8);
+
+            if(2 == hanIdx)
+            {
+                dest.append(hangulBuf);
+
+                memset(hangulBuf, '\0', sizeof(hangulBuf));
+                hanIdx = 0;
+                if(3 <= item.length())
+                {
+                    std::string remainStr = item.toStdString().substr(3);
+                    dest.append(remainStr.c_str());
+                }
+            }
+            else
+            {
+                hanIdx++;
+            }
+        }
+        else
+        {
+            dest.append(item);
         }
     }
+
+    ELGO_MAIN_LOG("Converted: %s -> %s",
+                  src.toStdString().c_str(), dest.toStdString().c_str());
 }

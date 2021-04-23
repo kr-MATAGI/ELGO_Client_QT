@@ -27,6 +27,9 @@ namespace WifiManager
 
     /** @brief */
     void ParsingLinuxString(const QString& src, QVector<WifiInfo>& dest);
+
+    // Converter
+    void ConvertUtf8ToKR(const QString&src, QString& dest);
 }
 
 #endif // WIFIMANAGER_H
