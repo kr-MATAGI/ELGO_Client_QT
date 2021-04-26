@@ -30,6 +30,8 @@ public:
 
     /** @brief */
     const DEVICE::Info& GetDeviceInfo();
+    /** @brief */
+    void SetDeviceIP(const QString& src);
 
     /** @brief */
     const DEVICE::INIT_CONFIG& GetInitConfig();

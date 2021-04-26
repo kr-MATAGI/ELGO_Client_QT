@@ -12,6 +12,7 @@
 #include "MainCtrl.h"
 #include "XML/XMLParser.h"
 #include "Logger/MainLogger.h"
+#include "Utils/WifiManager.h"
 
 //========================================================
 MainCtrl::MainCtrl()
@@ -60,14 +61,20 @@ void MainCtrl::LoadCurrentDeviceInfo()
         }
     }
 
-    foreach (const QNetworkInterface& networkInterface, QNetworkInterface::allInterfaces()) {
-        foreach (const QNetworkAddressEntry& entry, networkInterface.addressEntries()) {
-            if (entry.ip().toString() == m_deviceInfo.ipAddr.ip) {
+    foreach (const QNetworkInterface& networkInterface, QNetworkInterface::allInterfaces())
+    {
+        foreach (const QNetworkAddressEntry& entry, networkInterface.addressEntries())
+        {
+            if (entry.ip().toString() == m_deviceInfo.ipAddr.ip)
+            {
                 m_deviceInfo.ipAddr.mac = networkInterface.hardwareAddress();
                 break;
             }
         }
     }
+
+    // Add elgo-remote.com to /etc/hosts
+    WifiManager::UpdateRemoteServerHost(m_deviceInfo.os, m_deviceInfo.ipAddr.ip);
 }
 
 //========================================================
@@ -123,6 +130,13 @@ const DEVICE::Info& MainCtrl::GetDeviceInfo()
 //========================================================
 {
     return m_deviceInfo;
+}
+
+//========================================================
+void MainCtrl::SetDeviceIP(const QString& src)
+//========================================================
+{
+    m_deviceInfo.ipAddr.ip = src;
 }
 
 //========================================================

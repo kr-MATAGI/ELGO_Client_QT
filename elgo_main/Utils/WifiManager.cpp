@@ -2,6 +2,10 @@
 // QT
 #include <QProcess>
 #include <QRegularExpression>
+#include <QFile>
+#include <QTextStream>
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 // Main
 #include "WifiManager.h"
@@ -342,4 +346,131 @@ void WifiManager::ConvertUtf8ToKR(const QString&src, QString& dest)
 
     ELGO_MAIN_LOG("Converted: %s -> %s",
                   src.toStdString().c_str(), dest.toStdString().c_str());
+}
+
+//========================================================
+void WifiManager::UpdateRemoteServerHost(const DEVICE::OS os, const QString& ip)
+//========================================================
+{
+    // chmod
+    ChangeChmodReadRightRight(os, "/etc");
+    ChangeChmodReadRightRight(os, "/etc/hosts");
+
+    // read hosts file
+    QFile hostsFile("/etc/hosts");
+    if(false == hostsFile.open(QFile::ReadOnly))
+    {
+        ELGO_MAIN_LOG("Error - File Open: %s", REMOTE_HOST_NAME);
+    }
+
+    QStringList fileText;
+    bool bElgoRemoteFind = false;
+    while(false == hostsFile.atEnd())
+    {
+        QString line = hostsFile.readLine();
+        QStringList lineSplit = line.split("\t");
+
+        if(2 <= lineSplit.size())
+        {
+            QString hostName = lineSplit[1];
+            hostName = hostName.remove("\n");
+
+            if(0 == strcmp(REMOTE_HOST_NAME, hostName.toStdString().c_str()))
+            {
+                bElgoRemoteFind = true;
+
+                // Change IP
+                line = ip;
+                line.append("\t");
+                line.append(hostName);
+                line.append("\n");
+            }
+        }
+
+        fileText.push_back(line);
+    }
+    hostsFile.close();
+
+    // remove old file
+    if(false == QFile::remove("/etc/hosts"))
+    {
+        ELGO_MAIN_LOG("Error - File Remove: %s", REMOTE_HOST_NAME);
+    }
+
+    // insert elgo-remote.com
+    if(false == bElgoRemoteFind)
+    {
+        QString insertLine = ip;
+        insertLine.append("\t");
+        insertLine.append(REMOTE_HOST_NAME);
+        insertLine.append("\n");
+        fileText.insert(fileText.begin(), insertLine);
+    }
+
+    // make new file
+    QFile newHostsFile("/etc/hosts");
+    if(false == newHostsFile.open(QFile::WriteOnly))
+    {
+        ELGO_MAIN_LOG("Error - File Open: %s", REMOTE_HOST_NAME);
+    }
+
+    QTextStream output(&newHostsFile);
+    foreach (const QString& line, fileText) {
+        ELGO_MAIN_LOG("%s", line.toStdString().c_str());
+        output << line;
+    }
+
+    newHostsFile.flush();
+    newHostsFile.close();
+}
+
+//========================================================
+void WifiManager::ChangeChmodReadRightRight(const DEVICE::OS os, const QString& path)
+//========================================================
+{
+    QProcess *process = new QProcess;
+
+    QString cmd;
+    QStringList args;
+    QString chmodArg;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmd = "/bin/sh";
+        chmodArg = QString("echo %1 | sudo -S chmod 777 %2")
+                .arg(ROOT_PASSWORD)
+                .arg(path);
+
+        args << "-c";
+        args << chmodArg;
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+        //
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+        //
+    }
+    ELGO_MAIN_LOG(": %s", chmodArg.toStdString().c_str());
+
+    // start
+    process->start(cmd, args);
+    process->waitForFinished();
+    process->deleteLater();
+}
+
+//========================================================
+void WifiManager::GetDeviceLocalIP(QString &dest)
+//========================================================
+{
+    QList<QHostAddress> allAddr = QNetworkInterface::allAddresses();
+    for(int idx = 0; idx < allAddr.count(); idx++)
+    {
+        if(QAbstractSocket::IPv4Protocol == allAddr[idx].protocol()
+                && false == allAddr[idx].isLoopback())
+        {
+            dest = allAddr[idx].toString();
+        }
+    }
 }

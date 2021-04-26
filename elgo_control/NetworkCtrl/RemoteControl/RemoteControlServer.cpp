@@ -147,9 +147,7 @@ void RemoteControlServer::RemoteClientDisconnectedSlot()
 void RemoteControlServer::TCPServerStartSlot()
 //========================================================
 {
-    CONNECT_INFO connInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();
-
-    QHostAddress host(connInfo.REMOTE_HOST);
+    QHostAddress host("elgo-remote.com");
     quint16 port = REMOTE_TCP_PORT;
 
     bool bIsListen = m_server->listen(host, port);
@@ -169,6 +167,10 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action,
         JsonWriter::WriteDeviceLoginResponse(action, contents, dest);
     }
     else if(Remote::Action::UPDATE_WIFI_LIST == action)
+    {
+        // Not Here, SendTextMessage
+    }
+    else if(Remote::Action::CONNECT_WIFI == action)
     {
         // Not Here, SendTextMessage
     }
@@ -245,9 +247,9 @@ void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
 
         if(0 < responseJson.length())
         {
-            m_cliecnt->sendTextMessage(responseJson);
-            ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s",
-                             responseJson.toStdString().c_str());
+            const qint64 sendBytsSize = m_cliecnt->sendTextMessage(responseJson);
+            ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %lld, { %s }",
+                             sendBytsSize, responseJson.toStdString().c_str());
         }
     }
     else

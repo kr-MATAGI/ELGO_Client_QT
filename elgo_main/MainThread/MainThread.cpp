@@ -288,6 +288,11 @@ void MainThread::ExecConnectNewWifi()
 
     const bool bIsConnect = WifiManager::ConnectNewWirelessInternet(os, wlanName, ssid, password, bEnc);
 
+    QString newIP;
+    WifiManager::GetDeviceLocalIP(newIP);
+    ELGO_MAIN_LOG("New IP : %s", newIP.toStdString().c_str());
+    WifiManager::UpdateRemoteServerHost(os, newIP);
+
     /**
      * @note
      *          ELGO_MAIN -> ELGO_CONTROL

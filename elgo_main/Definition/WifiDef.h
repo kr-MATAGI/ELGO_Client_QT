@@ -5,6 +5,7 @@
 #include <QString>
 
 #define ROOT_PASSWORD   "akxkrl1!"
+#define REMOTE_HOST_NAME    "elgo-remote.com"
 
 struct WifiInfo
 {

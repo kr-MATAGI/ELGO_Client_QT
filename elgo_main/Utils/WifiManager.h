@@ -29,7 +29,18 @@ namespace WifiManager
     void ParsingLinuxString(const QString& src, QVector<WifiInfo>& dest);
 
     // Converter
+    /** @brief */
     void ConvertUtf8ToKR(const QString&src, QString& dest);
+
+    // hosts
+    /** @brief */
+    void UpdateRemoteServerHost(const DEVICE::OS os, const QString& ip);
+    /** @brief */
+    void ChangeChmodReadRightRight(const DEVICE::OS os, const QString& path);
+
+    // IP
+    /** @brief */
+    void GetDeviceLocalIP(QString& dest);
 }
 
 #endif // WIFIMANAGER_H
