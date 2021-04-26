@@ -27,7 +27,7 @@ void JsonWriter::WriteGetJwtRequest(const QString& udid, const QString& os, std:
 
 //========================================================
 void JsonWriter::WriteDateActionResultResponse(const Remote::Action action,
-                                   const Remote::Result::Contents& results,
+                                   const Remote::Result::Contents& contents,
                                    QJsonObject& dest)
 //========================================================
 {
@@ -43,29 +43,31 @@ void JsonWriter::WriteDateActionResultResponse(const Remote::Action action,
 
     // result
     bool bResult = false;
-    if( (Remote::Result::Status::DEVICE_LOGIN_OK == results.status) ||
-        (Remote::Result::Status::MANAGE_DEVICE_OK == results.status) ||
-        (Remote::Result::Status::ROTATE_DISPLAY_OK == results.status) ||
-        (Remote::Result::Status::DEVICE_OPTIONS_OK == results.status) ||
-        (Remote::Result::Status::UPDATE_WIFI_LIST_OK == results.status) ||
-        (Remote::Result::Status::CONNECT_WIFI_OK == results.status) )
+    if( (Remote::Result::Status::DEVICE_LOGIN_OK == contents.status) ||
+        (Remote::Result::Status::MANAGE_DEVICE_OK == contents.status) ||
+        (Remote::Result::Status::ROTATE_DISPLAY_OK == contents.status) ||
+        (Remote::Result::Status::DEVICE_OPTIONS_OK == contents.status) ||
+        (Remote::Result::Status::UPDATE_WIFI_LIST_OK == contents.status) ||
+        (Remote::Result::Status::CONNECT_WIFI_OK == contents.status) ||
+        (Remote::Result::Status::USER_LOGIN_OK == contents.status) )
     {
         bResult = true;
     }
+
     QJsonValue jsonValue(bResult);
     dest["result"] = jsonValue.toBool();
 }
 
 //========================================================
 void JsonWriter::WriteDeviceLoginResponse(const Remote::Action action,
-                                          const Remote::Result::Contents& results,
+                                          const Remote::Result::Contents& contents,
                                           QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -75,14 +77,14 @@ void JsonWriter::WriteDeviceLoginResponse(const Remote::Action action,
 
 //========================================================
 void JsonWriter::WriteManageDeviceResponse(const Remote::Action action,
-                                           const Remote::Result::Contents& results,
+                                           const Remote::Result::Contents& contents,
                                            QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -92,14 +94,14 @@ void JsonWriter::WriteManageDeviceResponse(const Remote::Action action,
 
 //========================================================
 void JsonWriter::WriteRotateDisplayResponse(const Remote::Action action,
-                                            const Remote::Result::Contents& results,
+                                            const Remote::Result::Contents& contents,
                                             QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -109,14 +111,14 @@ void JsonWriter::WriteRotateDisplayResponse(const Remote::Action action,
 
 //========================================================
 void JsonWriter::WriteDeviceOptionsResponse(const Remote::Action action,
-                                            const Remote::Result::Contents& results,
+                                            const Remote::Result::Contents& contents,
                                             QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
@@ -126,26 +128,26 @@ void JsonWriter::WriteDeviceOptionsResponse(const Remote::Action action,
 
 //========================================================
 void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
-                                 const Remote::Result::Contents& results,
+                                 const Remote::Result::Contents& contents,
                                  QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
 
     // wifiList
     QJsonArray wifiArray;
-    const int wifiCnt = results.wifiList.size();
+    const int wifiCnt = contents.wifiList.size();
     for(int idx = 0; idx < wifiCnt; idx++)
     {
         QJsonObject wifiObj;
-        wifiObj["ssid"] = results.wifiList[idx].ssid;
-        wifiObj["freq"] = results.wifiList[idx].freq;
-        wifiObj["signal"] = results.wifiList[idx].signal;
+        wifiObj["ssid"] = contents.wifiList[idx].ssid;
+        wifiObj["freq"] = contents.wifiList[idx].freq;
+        wifiObj["signal"] = contents.wifiList[idx].signal;
 
-        QJsonValue encValue(results.wifiList[idx].bEnc);
+        QJsonValue encValue(contents.wifiList[idx].bEnc);
         wifiObj["encryption"] = encValue.toBool();
 
         wifiArray.push_back(wifiObj);
@@ -160,14 +162,39 @@ void JsonWriter::WriteUpdateWifiListResponse(const Remote::Action action,
 
 //========================================================
 void JsonWriter::WriteConnectWifiResultResponse(const Remote::Action action,
-                                 const Remote::Result::Contents& results,
-                                 QString& dest)
+                                                const Remote::Result::Contents& contents,
+                                                QString& dest)
 //========================================================
 {
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
 
-    WriteDateActionResultResponse(action, results, jsonObj);
+    WriteDateActionResultResponse(action, contents, jsonObj);
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+    ELGO_CONTROL_LOG("Json String : %s", dest.toUtf8().constData());
+}
+
+//========================================================
+void JsonWriter::WriteRemoteUserLoginResponse(const Remote::Action action,
+                                              const Remote::Result::Contents& contents,
+                                              QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    WriteDateActionResultResponse(action, contents, jsonObj);
+
+    // os
+    jsonObj["os"] = contents.os;
+
+    // udid
+    QString beautifyUdid;
+    JsonWriter::GetBeautifyUDID(contents.udid, beautifyUdid);
+    jsonObj["udid"] = beautifyUdid;
 
     jsonDoc.setObject(jsonObj);
     QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);

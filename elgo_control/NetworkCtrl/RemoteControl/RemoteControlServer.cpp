@@ -184,6 +184,10 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action,
     {
         JsonWriter::WriteDeviceOptionsResponse(action, contents, dest);
     }
+    else if(Remote::Action::USER_LOGIN == action)
+    {
+        JsonWriter::WriteRemoteUserLoginResponse(action, contents, dest);
+    }
     else
     {
         ELGO_CONTROL_LOG("Error - Unkwon Action : %d", action);

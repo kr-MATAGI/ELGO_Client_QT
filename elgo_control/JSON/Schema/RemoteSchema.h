@@ -27,6 +27,8 @@ namespace Remote
             UPDATE_WIFI_LIST_FAIL = 10,
             CONNECT_WIFI_OK = 11,
             CONNECT_WIFI_FAIL = 12,
+            USER_LOGIN_OK = 13,
+            USER_LOGIN_FAIL = 14
         };
 
         struct Contents
@@ -54,7 +56,8 @@ namespace Remote
         MANAGE_DEVICE = 3,
         ROTATE_DISPLAY = 4,
         DEVICE_OPTIONS = 5,
-        CONNECT_WIFI = 6
+        CONNECT_WIFI = 6,
+        USER_LOGIN = 7
     };
 
     /** @brief  Device Login */

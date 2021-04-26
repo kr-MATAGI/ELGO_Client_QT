@@ -21,32 +21,36 @@ RemoteControlHandler::~RemoteControlHandler()
 }
 
 //========================================================
-void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results)
+void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& dest)
 //========================================================
 {
     if(Remote::Action::DEVICE_LOGIN == action)
     {
-        results.status = GetDeviceLoginInfoValidation(src);
+        dest.status = RemoteDeviceLogin(src);
     }
     else if(Remote::Action::UPDATE_WIFI_LIST == action)
     {
-        results.status = GetAvailableWifiList(src);
+        dest.status = RemoteGetAvailableWifiList(src);
     }
     else if(Remote::Action::MANAGE_DEVICE == action)
     {
-        results.status = ManageDeviceInfo(src);
+        dest.status = RemoteManageDevice(src);
     }
     else if(Remote::Action::ROTATE_DISPLAY == action)
     {
-        results.status = RotateDeviceDisplay(src);
+        dest.status = RemoteRotateDeviceScreen(src);
     }
     else if(Remote::Action::DEVICE_OPTIONS == action)
     {
-        results.status = UpdateDeviceOptions(src);
+        dest.status = RemoteUpdateDeviceOptions(src);
     }
     else if(Remote::Action::CONNECT_WIFI == action)
     {
-        results.status = ConnectNewWifi(src);
+        dest.status = RemoteConnectNewWifi(src);
+    }
+    else if(Remote::Action::USER_LOGIN == action)
+    {
+        dest.status = RemoteUserLogin(src, dest);
     }
     else
     {
@@ -56,7 +60,7 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
 
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::GetDeviceLoginInfoValidation(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteDeviceLogin(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::DEVIEC_LOGIN_FAIL;
@@ -84,7 +88,7 @@ Remote::Result::Status RemoteControlHandler::GetDeviceLoginInfoValidation(const 
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::GetAvailableWifiList(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteGetAvailableWifiList(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
@@ -114,7 +118,7 @@ Remote::Result::Status RemoteControlHandler::GetAvailableWifiList(const QString&
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::ManageDeviceInfo(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteManageDevice(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::MANAGE_DEVICE_FAIL;
@@ -141,7 +145,7 @@ Remote::Result::Status RemoteControlHandler::ManageDeviceInfo(const QString& src
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
@@ -182,7 +186,7 @@ Remote::Result::Status RemoteControlHandler::RotateDeviceDisplay(const QString& 
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::UpdateDeviceOptions(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteUpdateDeviceOptions(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::DEVICE_OPTIONS_FAIL;
@@ -233,7 +237,7 @@ Remote::Result::Status RemoteControlHandler::UpdateDeviceOptions(const QString& 
 }
 
 //========================================================
-Remote::Result::Status RemoteControlHandler::ConnectNewWifi(const QString& src)
+Remote::Result::Status RemoteControlHandler::RemoteConnectNewWifi(const QString& src)
 //========================================================
 {
     Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
@@ -274,6 +278,29 @@ Remote::Result::Status RemoteControlHandler::ConnectNewWifi(const QString& src)
     {
         retValue = Remote::Result::CONNECT_WIFI_FAIL;
         ELGO_CONTROL_LOG("Error - Parsing Error : %s", src.toStdString().c_str());
+    }
+
+    return retValue;
+}
+
+//========================================================
+Remote::Result::Status RemoteControlHandler::RemoteUserLogin(const QString& src, Remote::Result::Contents& dest)
+//========================================================
+{
+    Remote::Result::Status retValue = Remote::Result::Status::NONE_RESULT;
+
+    const QString os = QSysInfo::productType();
+    const QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
+
+    if( (0 < os.length()) && (0 < udid.length()) )
+    {
+        retValue = Remote::Result::Status::USER_LOGIN_OK;
+        dest.os = os;
+        dest.udid = udid;
+    }
+    else
+    {
+        retValue = Remote::Result::Status::USER_LOGIN_FAIL;
     }
 
     return retValue;

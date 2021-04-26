@@ -16,25 +16,28 @@ public:
 
 public:
     /** @brief  RunAction() will be return inner method result */
-    void RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& results);
+    void RunAction(Remote::Action action, const QString& src, Remote::Result::Contents& dest);
 
     /** @brief */
-    Remote::Result::Status GetDeviceLoginInfoValidation(const QString& src);
+    Remote::Result::Status RemoteDeviceLogin(const QString& src);
 
     /** @brief */
-    Remote::Result::Status GetAvailableWifiList(const QString& src);
+    Remote::Result::Status RemoteGetAvailableWifiList(const QString& src);
 
     /** @brief */
-    Remote::Result::Status ManageDeviceInfo(const QString& src);
+    Remote::Result::Status RemoteManageDevice(const QString& src);
 
     /** @brief */
-    Remote::Result::Status RotateDeviceDisplay(const QString& src);
+    Remote::Result::Status RemoteRotateDeviceScreen(const QString& src);
 
     /** @brief */
-    Remote::Result::Status UpdateDeviceOptions(const QString& src);
+    Remote::Result::Status RemoteUpdateDeviceOptions(const QString& src);
 
     /** @brief */
-    Remote::Result::Status ConnectNewWifi(const QString& src);
+    Remote::Result::Status RemoteConnectNewWifi(const QString& src);
+
+    /** @brief */
+    Remote::Result::Status RemoteUserLogin(const QString& src, Remote::Result::Contents& dest);
 };
 
 #endif // REMOTECONTROLHANDLER_H

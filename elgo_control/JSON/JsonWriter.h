@@ -51,33 +51,39 @@ namespace JsonWriter
 
     /** @brief */
     void WriteDateActionResultResponse(const Remote::Action action,
-                                       const Remote::Result::Contents& results,
+                                       const Remote::Result::Contents& contents,
                                        QJsonObject& dest);
 
     /** @brief */
     void WriteDeviceLoginResponse(const Remote::Action action,
-                                  const Remote::Result::Contents& results,
+                                  const Remote::Result::Contents& contents,
                                   QString& dest);
     /** @brief */
     void WriteManageDeviceResponse(const Remote::Action action,
-                                   const Remote::Result::Contents& results,
+                                   const Remote::Result::Contents& contents,
                                    QString& dest);
     /** @brief */
     void WriteRotateDisplayResponse(const Remote::Action action,
-                                    const Remote::Result::Contents& results,
+                                    const Remote::Result::Contents& contents,
                                     QString& dest);
     /** @brief */
     void WriteDeviceOptionsResponse(const Remote::Action action,
-                                    const Remote::Result::Contents& results,
+                                    const Remote::Result::Contents& contents,
                                     QString& dest);
     /** @brief */
     void WriteUpdateWifiListResponse(const Remote::Action action,
-                                     const Remote::Result::Contents& results,
+                                     const Remote::Result::Contents& contents,
                                      QString& dest);
 
+    /** @brief */
     void WriteConnectWifiResultResponse(const Remote::Action action,
-                                     const Remote::Result::Contents& results,
-                                     QString& dest);
+                                        const Remote::Result::Contents& contents,
+                                        QString& dest);
+
+    /** @brief */
+    void WriteRemoteUserLoginResponse(const Remote::Action action,
+                                      const Remote::Result::Contents& contents,
+                                      QString& dest);
 
     /// ETC Utils
     /** @brief */
