@@ -5,7 +5,7 @@
 
 // for test
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-static const QString DEVICE_DB = "/home/jaehoon/바탕화면/ELGO/device.db";
+static const QString DEVICE_DB = "/home/jaehoon/Desktop/ELGO/device.db";
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
 static const QString DEVICE_DB = "C:/Project/Qt/device.db";
 #endif

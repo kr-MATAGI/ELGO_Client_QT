@@ -157,7 +157,7 @@ bool WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString&
 
     if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
     {
-        if(std::string::npos != byteStr.toStdString().find("성공"))
+        if(0 < byteStr.length())
         {
             retValue = true;
         }

@@ -4,7 +4,7 @@
 #pragma once
 #include <QString>
 
-#define INIT_CONFIG_FILE_PATH "/home/jaehoon/바탕화면/ELGO/config.xml"
+#define INIT_CONFIG_FILE_PATH "/home/jaehoon/Desktop/ELGO/config.xml"
 
 namespace DEVICE
 {
