@@ -42,12 +42,15 @@ void WifiManager::GetWlanInterfaceName(const DEVICE::OS os, QString& dest)
     ELGO_MAIN_LOG("output: %s", byteStr.toStdString().c_str());
 
     // parsing
-    byteStr.remove("\t");
-    byteStr.remove("\n");
-    QStringList byteSplit = byteStr.split(" ");
-    if(1 <= byteSplit.size())
+    if(0 < byteStr.length())
     {
-        dest = byteSplit[1];
+        byteStr.remove("\t");
+        byteStr.remove("\n");
+        QStringList byteSplit = byteStr.split(" ");
+        if(1 <= byteSplit.size())
+        {
+            dest = byteSplit[1];
+        }
     }
 
     process->deleteLater();
