@@ -19,17 +19,17 @@
 
 ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 
-Q_DECLARE_METATYPE(PlayJson::CustomPlayDataJson);
-Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson);
-Q_DECLARE_METATYPE(PlayJson::PlayData);
-Q_DECLARE_METATYPE(PlayJson::SubtitleData);
-Q_DECLARE_METATYPE(ScheduleJson::PlaySchedule);
-Q_DECLARE_METATYPE(QVector<ScheduleJson::PlaySchedule>);
+Q_DECLARE_METATYPE(PlayJson::CustomPlayDataJson)
+Q_DECLARE_METATYPE(PlayJson::FixedPlayDataJson)
+Q_DECLARE_METATYPE(PlayJson::PlayData)
+Q_DECLARE_METATYPE(PlayJson::SubtitleData)
+Q_DECLARE_METATYPE(ScheduleJson::PlaySchedule)
+Q_DECLARE_METATYPE(QVector<ScheduleJson::PlaySchedule>)
 
-Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo);
-Q_DECLARE_METATYPE(PlayJson::ContentData);
-Q_DECLARE_METATYPE(StyleSheet::PosSizeInfo);
-Q_DECLARE_METATYPE(StyleSheet::StyleInfo);
+Q_DECLARE_METATYPE(ScheduleTimer::PlayDataIndexInfo)
+Q_DECLARE_METATYPE(PlayJson::ContentData)
+Q_DECLARE_METATYPE(StyleSheet::PosSizeInfo)
+Q_DECLARE_METATYPE(StyleSheet::StyleInfo)
 
 //========================================================
 ContentsPlayer::ContentsPlayer(QWidget *parent)
@@ -70,6 +70,9 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     qRegisterMetaType<PlayJson::ContentData>("PlayJson::ContentData");
     qRegisterMetaType<StyleSheet::PosSizeInfo>("StyleSheet::PosSizeInfo");
     qRegisterMetaType<StyleSheet::StyleInfo>("StyleSheet::StyleInfo");
+
+    connect(this, SIGNAL(StartContentsPlayerSignal()),
+            this, SLOT(StartContentsPlayerSlot()));
 
     connect(this, SIGNAL(AddPlayDataSignal(PlayJson::CustomPlayDataJson)),
             this, SLOT(AddPlayDataSlot(PlayJson::CustomPlayDataJson)));
@@ -191,7 +194,7 @@ bool ContentsPlayer::GetCurrentWidgetCapture()
 }
 
 //========================================================
-void ContentsPlayer::StartContentsPlayer()
+void ContentsPlayer::StartContentsPlayerSlot()
 //========================================================
 {
     ELGO_VIEWER_LOG("Start Contents Player");

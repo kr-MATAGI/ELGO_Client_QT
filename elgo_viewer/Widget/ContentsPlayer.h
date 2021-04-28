@@ -41,10 +41,10 @@ public:
     /** @brief */
     bool GetCurrentWidgetCapture();
 
-    /** @brief */
-    void StartContentsPlayer();
-
 signals:
+    /** @brief */
+    void StartContentsPlayerSignal();
+
     /** @note   Related to Schedule Timer */
     /** @brief */
     void AddPlayDataSignal(PlayJson::CustomPlayDataJson src);
@@ -85,6 +85,9 @@ signals:
                                        ScheduleTimer::PlayDataIndexInfo newDataIdxInfo);
 
 private slots:
+    /** @brief */
+    void StartContentsPlayerSlot();
+
     /** @note   Related to Scheduler */
     /** @brief */
     void AddPlayDataSlot(PlayJson::CustomPlayDataJson src);

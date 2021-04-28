@@ -45,11 +45,11 @@ public:
 
 signals:
     /** @brief */
-    void DrawQRCode();
+    void DrawQRCode(QString url);
 
 private slots:
     /** @brief */
-    void DrawQRCodeByThread();
+    void DrawQRCodeByThread(QString url);
 
     /** @brief */
     void CloseMainWindowByTimeout();
@@ -61,6 +61,9 @@ private:
     QGraphicsScene *m_logoScene;
     QSvgWidget *m_logoWidget;
     QTimer m_closeTimer;
+
+    QString m_qrUrl;
+    bool m_isDrawStartQR;
 };
 
 #endif // MAINWINDOW_H

@@ -13,7 +13,6 @@
 
 //========================================================
 ViewerCtrl::ViewerCtrl()
-    : m_bIsDisplayQr(false)
 //========================================================
 {
 
@@ -46,32 +45,4 @@ void ViewerCtrl::SendViewerIsReady()
     {
         ELGO_VIEWER_LOG("SendEvent Error %s", MAIN_EVENT::Event::PROCESS_IS_READY);
     }
-}
-
-//========================================================
-void ViewerCtrl::SetQRCodeURL(const QString& url)
-//========================================================
-{
-    m_qrCodeUrl = url;
-}
-
-//========================================================
-QString& ViewerCtrl::GetQRCodeURL()
-//========================================================
-{
-    return m_qrCodeUrl;
-}
-
-//========================================================
-void ViewerCtrl::SetIsDisplayQr(const bool value)
-//========================================================
-{
-    m_bIsDisplayQr = value;
-}
-
-//========================================================
-bool ViewerCtrl::GetIsDisplayQr() const
-//========================================================
-{
-    return m_bIsDisplayQr;
 }

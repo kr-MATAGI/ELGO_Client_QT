@@ -14,9 +14,10 @@ MainWindow* MainWindow::pInstance = nullptr;
 #define CLOSE_TIMEOUT   5000
 
 //========================================================
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_isDrawStartQR(false)
 //========================================================
 {
     ui->setupUi(this);
@@ -34,8 +35,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->elgoLogo->setScene(m_logoScene);
 
     // connect
-    connect(this, SIGNAL(DrawQRCode()), this, SLOT(DrawQRCodeByThread()));
-    connect(&m_closeTimer, SIGNAL(timeout()), this, SLOT(CloseMainWindowByTimeout()));
+    connect(this, &MainWindow::DrawQRCode,
+            this, &MainWindow::DrawQRCodeByThread);
+    connect(&m_closeTimer, SIGNAL(timeout()),
+            this, SLOT(CloseMainWindowByTimeout()));
 }
 
 //========================================================
@@ -71,9 +74,11 @@ void MainWindow::DestoryInstance()
 }
 
 //========================================================
-void MainWindow::DrawQRCodeByThread()
+void MainWindow::DrawQRCodeByThread(QString url)
 //========================================================
 {
+    m_qrUrl = url;
+
     const int width = MainWindow::GetInstance()->width() / 4;
     const int height = MainWindow::GetInstance()->height() / 4;
 
@@ -81,16 +86,18 @@ void MainWindow::DrawQRCodeByThread()
     pixmap.fill(Qt::white);
     QPainter painter(&pixmap);
     QColor color = Qt::black;
-    QString url = ViewerController::GetInstance()->GetViewerCtrl().GetQRCodeURL();
+
     QSize qrSize(0, 0);
     qrSize.setWidth(width);
     qrSize.setHeight(height);
 
     QrMaker qrMaker;
-    qrMaker.DrawQrCode(painter, qrSize, url, color);
-    ELGO_VIEWER_LOG("QR code - size : %d x %d, url : %s", width, height,url.toUtf8().constData());
+    qrMaker.DrawQrCode(painter, qrSize, m_qrUrl, color);
+    ELGO_VIEWER_LOG("QR code - size : %d x %d, url : %s", width, height,
+                    m_qrUrl.toUtf8().constData());
 
     ui->qrLabel->setPixmap(pixmap);
+    this->show();
 
     // show Content Player after 10 sec
     m_closeTimer.start(CLOSE_TIMEOUT);
@@ -100,7 +107,12 @@ void MainWindow::DrawQRCodeByThread()
 void MainWindow::CloseMainWindowByTimeout()
 //========================================================
 {
-    ContentsPlayer::GetInstance()->StartContentsPlayer();
+    if(false == m_isDrawStartQR)
+    {
+        emit ContentsPlayer::GetInstance()->StartContentsPlayerSignal();
+        m_isDrawStartQR = true;
+    }
+
     m_closeTimer.stop();
     this->close();
 }
