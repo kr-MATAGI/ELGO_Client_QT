@@ -1,10 +1,10 @@
 #ifndef DEFINITION_H
 #define DEFINITION_H
 
-#pragma once
+// QT
 #include <QString>
 
-#define INIT_CONFIG_FILE_PATH "/home/jaehoon/Desktop/ELGO/config.xml"
+#define INIT_CONFIG_FILE_PATH "/home/jaehoon/바탕화면/ELGO/config.xml"
 
 namespace DEVICE
 {
