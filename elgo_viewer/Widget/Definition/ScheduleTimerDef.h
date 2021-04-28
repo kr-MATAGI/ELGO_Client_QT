@@ -16,7 +16,7 @@
 
 // Common
 #include "Common/Interface/ContentsPlayDataDef.h"
-#include "Common/Interface/ScheduleDef.h"
+#include "Common/Interface/ScheduleJsonDef.h"
 
 #define NOT_EXISTED_DATA    -1
 
@@ -30,30 +30,18 @@ namespace ScheduleTimer
     };
 
     /** @brief */
-    struct PlayDataIndexInfo
+    struct PlayingIndex
     {
-        PlayDataIndexInfo()
+        PlayingIndex()
             : pageIdx(0)
-            , layerIdx(0)
-            , contentIdx(0)
         { }
         PlayDataInfo playDataInfo;
 
         // custom
         int pageIdx;
 
-        // fixed
-        int layerIdx;
-        int contentIdx;
-    };
-
-    /** @brief */
-    struct FixedPlayIndexInfo
-    {
-        PlayDataInfo playDataInfo;
-
-        // content index per layer
-        QVector<int> layerInfo;
+        // fixed - content index per layer
+        QVector<int> layerIdxList;
     };
 
     /** @brief  for countdown */
@@ -94,15 +82,11 @@ namespace ScheduleTimer
         return true;
     }
 
-    inline bool operator==(const PlayDataIndexInfo& lhs, const PlayDataIndexInfo& rhs)
+    inline bool operator==(const PlayingIndex& lhs, const PlayingIndex& rhs)
     {
         if(!(lhs.playDataInfo == rhs.playDataInfo))
             return false;
         if(!(lhs.pageIdx == rhs.pageIdx))
-            return false;
-        if(!(lhs.layerIdx == rhs.layerIdx))
-            return false;
-        if(!(lhs.contentIdx == rhs.contentIdx))
             return false;
 
         return true;
@@ -116,7 +100,7 @@ namespace ScheduleTimer
         return !(lhs == rhs);
     }
 
-    inline bool operator!=(const PlayDataIndexInfo& lhs, const PlayDataIndexInfo& rhs)
+    inline bool operator!=(const PlayingIndex& lhs, const PlayingIndex& rhs)
     {
         return !(lhs == rhs);
     }
@@ -126,16 +110,16 @@ namespace ScheduleTimer
 /**
  *  @brief  std::pair<PlayDataId, PlayJson::PlayDataType>
  */
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, QGraphicsScene*> SceneInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, VideoItem*> VideoItemInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ImageItem*> ImageItemInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, ClockWidget*> ClockWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, DateWidget*> DateWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, NewsFeedWidget*> NewsFeedWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, WeatherWidget*> WeatherWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayDataIndexInfo, SubtitleWidget*> SubtitleWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, QGraphicsScene*> SceneInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, VideoItem*> VideoItemInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, ImageItem*> ImageItemInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, ClockWidget*> ClockWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, DateWidget*> DateWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, NewsFeedWidget*> NewsFeedWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, WeatherWidget*> WeatherWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, SubtitleWidget*> SubtitleWidgetInfo;
 
-typedef std::pair<PlayJson::MediaType, ScheduleTimer::PlayDataIndexInfo> ProxyDataInfo;
+typedef std::pair<PlayJson::MediaType, ScheduleTimer::PlayingIndex> ProxyDataInfo;
 typedef std::pair<ProxyDataInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H
