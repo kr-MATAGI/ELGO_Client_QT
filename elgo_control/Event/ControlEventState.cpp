@@ -3,6 +3,7 @@
 
 // EFC
 #include "Common/Deifinition.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 // Control
 #include "Logger/ControlLogger.h"
@@ -174,24 +175,52 @@ void ControlEventState::RecvWifiConnectionResult(const QByteArray& src)
      *          New WIFI connection result
      * @param
      *          bool bIsConnect
+     *          QString newIP
      */
 
     QByteArray copySrc = src;
     QDataStream dataStream(&copySrc, QIODevice::ReadOnly);
     bool bIsConnect = false;
+    QString newIP;
     dataStream >> bIsConnect;
+    dataStream >> newIP;
+    ELGO_CONTROL_LOG("isConnect: %d, newIP: %s", bIsConnect, newIP.toStdString().c_str());
 
     // Send to ELGO Remote
     Remote::Result::Contents contents;
     if(true == bIsConnect)
     {
         contents.status = Remote::Result::Status::CONNECT_WIFI_OK;
+
+        NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(newIP);
+        emit RemoteControlServer::GetInstance()->RemoteClientDisconnect();
+
+        // Display New QR Code
+        QByteArray sendBytes;
+        QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+        sendStream << newIP;
+
+        /**
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Viewer will make qr code image and display.
+         * @param
+         *       QString ip
+         */
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                    VIEWER_EVENT::Event::MAKE_QRCODE,
+                                                    sendBytes);
+        if(false == bSendEvent)
+        {
+            ELGO_CONTROL_LOG("Erorr - Send Event: %d", VIEWER_EVENT::Event::MAKE_QRCODE);
+        }
     }
     else
     {
         contents.status = Remote::Result::Status::CONNECT_WIFI_FAIL;
+        RemoteControlServer::GetInstance()->SendRemoteResponse(Remote::Action::CONNECT_WIFI,
+                                                               contents);
     }
 
-    RemoteControlServer::GetInstance()->SendRemoteResponse(Remote::Action::CONNECT_WIFI,
-                                                           contents);
+
 }

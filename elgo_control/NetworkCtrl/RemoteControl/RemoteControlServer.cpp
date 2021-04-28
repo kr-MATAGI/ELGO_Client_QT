@@ -6,9 +6,12 @@
 
 RemoteControlServer* RemoteControlServer::pInstance = nullptr;
 
+#define RETRY_TIMEOUT   1000 // unit: msec
+
 //========================================================
 RemoteControlServer::RemoteControlServer(QObject *parent)
     :QObject(parent)
+    , m_retryCount(0)
     , m_bIsConnected(false)
 //========================================================
 {
@@ -26,8 +29,15 @@ RemoteControlServer::RemoteControlServer(QObject *parent)
             this, SLOT(RemoteServerErrorSlot(QWebSocketProtocol::CloseCode)));
 
     // custom signals
-    connect(this, SIGNAL(RemoteControlServerStartSignal()), SLOT(TCPServerStartSlot()));
+    connect(this, SIGNAL(RemoteControlServerStartSignal()),
+            this, SLOT(TCPServerStartSlot()));
 
+    connect(this, SIGNAL(RemoteClientDisconnect()),
+            this, SLOT(RemoteClientDisconnectedSlot()));
+
+    // retry timer
+    connect(&m_retryTimer, SIGNAL(timeout()),
+            this, SLOT(RetryTimeout()));
 }
 
 //========================================================
@@ -40,8 +50,8 @@ RemoteControlServer::~RemoteControlServer()
     delete  m_handler;
     m_handler = NULL;
 
-    delete m_cliecnt;
-    m_cliecnt = NULL;
+    delete m_client;
+    m_client = NULL;
 }
 
 //========================================================
@@ -76,17 +86,17 @@ void RemoteControlServer::NewClientConnectedSlot()
         ELGO_CONTROL_LOG("New Remote Client Access !");
 
         m_bIsConnected = true;
-        m_cliecnt = m_server->nextPendingConnection();
+        m_client = m_server->nextPendingConnection();
 
         // connect
-        connect(m_cliecnt, SIGNAL(connected()), this, SLOT(RemoteClientSocketConnectedSlot()));
-        connect(m_cliecnt, SIGNAL(textMessageReceived(const QString&)),
+        connect(m_client, SIGNAL(connected()), this, SLOT(RemoteClientSocketConnectedSlot()));
+        connect(m_client, SIGNAL(textMessageReceived(const QString&)),
                 this, SLOT(TextMsgRecvSlot(const QString&)));
-        connect(m_cliecnt, SIGNAL(binaryMessageReceived(const QByteArray&)),
+        connect(m_client, SIGNAL(binaryMessageReceived(const QByteArray&)),
                 this, SLOT(BinaryMsgRecvSlot(const QByteArray&)));
-        connect(m_cliecnt, SIGNAL(error(QAbstractSocket::SocketError)),
+        connect(m_client, SIGNAL(error(QAbstractSocket::SocketError)),
                 this, SLOT(RemoteClientError(QAbstractSocket::SocketError)));
-        connect(m_cliecnt, SIGNAL(disconnected()),
+        connect(m_client, SIGNAL(disconnected()),
                 this, SLOT(RemoteClientDisconnectedSlot()));
 
         // server mush connect only one client
@@ -126,10 +136,10 @@ void RemoteControlServer::RemoteClientDisconnectedSlot()
 {
     ELGO_CONTROL_LOG("Remote Client Disconnted");
 
-    if(NULL != m_cliecnt)
+    if(NULL != m_client)
     {
-        m_cliecnt->close();
-        m_cliecnt->deleteLater();
+        m_client->close();
+        m_client->deleteLater();
         m_bIsConnected = false;
 
         if(false == m_bIsConnected)
@@ -151,9 +161,8 @@ void RemoteControlServer::TCPServerStartSlot()
     quint16 port = REMOTE_TCP_PORT;
 
     bool bIsListen = m_server->listen(host, port);
-    ELGO_CONTROL_LOG("Remote TCP Server Listen : %d, addr : %s, port : %u", bIsListen,
-                     m_server->serverAddress().toString().toUtf8().constData(), m_server->serverPort());
-
+    ELGO_CONTROL_LOG("Remote TCP Server Listen : %d, addr : elgo-remote.com, port : %u",
+                     bIsListen, m_server->serverPort());
 }
 
 //========================================================
@@ -200,7 +209,7 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action,
 void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 //========================================================
 {
-    if(NULL != m_cliecnt)
+    if(NULL != m_client)
     {
         const Remote::Action recvAction = JsonParser::PaseRemoteActionText(msg);
         ELGO_CONTROL_LOG("Recv From Client : %s, action : %d", msg.toUtf8().constData(), recvAction);
@@ -213,7 +222,7 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
         MakeResponseJsonString(recvAction, resultContents, sendJson);
         if(0 < sendJson.length())
         {
-            m_cliecnt->sendTextMessage(sendJson);
+            m_client->sendTextMessage(sendJson);
             ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %s", sendJson.toUtf8().constData());
         }
     }
@@ -225,10 +234,10 @@ void RemoteControlServer::TextMsgRecvSlot(const QString& msg)
 
 //========================================================
 void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
-                                          const Remote::Result::Contents& contents)
+                                             const Remote::Result::Contents& contents)
 //========================================================
 {
-    if(NULL != m_cliecnt)
+    if(NULL != m_client)
     {
         QString responseJson;
 
@@ -247,9 +256,17 @@ void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
 
         if(0 < responseJson.length())
         {
-            const qint64 sendBytsSize = m_cliecnt->sendTextMessage(responseJson);
+            const qint64 sendBytsSize = m_client->sendTextMessage(responseJson);
             ELGO_CONTROL_LOG("elgo_control -> elgo_remote : %lld, { %s }",
                              sendBytsSize, responseJson.toStdString().c_str());
+            if(0 == sendBytsSize)
+            {
+                // Retry
+                m_bufferdStr = responseJson;
+                ELGO_CONTROL_LOG("RetryTimer Start And BUFFERD - %s", m_bufferdStr.toStdString().c_str());
+
+                m_retryTimer.start(RETRY_TIMEOUT);
+            }
         }
     }
     else
@@ -259,10 +276,49 @@ void RemoteControlServer::SendRemoteResponse(const Remote::Action action,
 }
 
 //========================================================
+void RemoteControlServer::RetryTimeout()
+//========================================================
+{
+    m_retryCount++;
+    ELGO_CONTROL_LOG("Retry Count: %d { %s }", m_retryCount, m_bufferdStr.toStdString().c_str());
+    if(NULL != m_client)
+    {
+        if(0 < m_bufferdStr.length())
+        {
+            const quint64 sendByteSize = m_client->sendTextMessage(m_bufferdStr);
+            if(0 < sendByteSize)
+            {
+                ELGO_CONTROL_LOG("Retry Send Success - %s", m_bufferdStr.toStdString().c_str());
+                m_bufferdStr.clear();
+                m_retryTimer.stop();
+                m_retryCount = 0;
+            }
+        }
+        else
+        {
+            if(true == m_retryTimer.isActive())
+            {
+                m_retryTimer.stop();
+                m_retryCount = 0;
+            }
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("NULL == Remote Client");
+        if(true == m_retryTimer.isActive())
+        {
+            m_retryTimer.stop();
+            m_retryCount = 0;
+        }
+    }
+}
+
+//========================================================
 void RemoteControlServer::BinaryMsgRecvSlot(const QByteArray& bytes)
 //========================================================
 {
-    if(NULL != m_cliecnt)
+    if(NULL != m_client)
     {
         ELGO_CONTROL_LOG("%s", bytes.toStdString().c_str());
     }
@@ -276,7 +332,7 @@ void RemoteControlServer::BinaryMsgRecvSlot(const QByteArray& bytes)
 void RemoteControlServer::RemoteClientSocketConnectedSlot()
 //========================================================
 {
-    ELGO_CONTROL_LOG("Remote Client Connected - %s", m_cliecnt->peerAddress().toString().toUtf8().constData());
+    ELGO_CONTROL_LOG("Remote Client Connected - %s", m_client->peerAddress().toString().toUtf8().constData());
 }
 
 //========================================================

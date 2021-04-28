@@ -232,6 +232,20 @@ CONNECT_INFO NetworkCtrl::GetConnectInfo()
 }
 
 //========================================================
+void NetworkCtrl::SetRemoteHostIP(const QString& newValue)
+//========================================================
+{
+    m_connecInfo.REMOTE_HOST = newValue;
+}
+
+//========================================================
+QString& NetworkCtrl::GetRemoteHostIP()
+//========================================================
+{
+    return m_connecInfo.REMOTE_HOST;
+}
+
+//========================================================
 QString& NetworkCtrl::GetJWTString()
 //========================================================
 {

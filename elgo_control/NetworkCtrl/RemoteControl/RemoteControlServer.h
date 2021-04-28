@@ -35,7 +35,14 @@ public:
                                 QString& dest);
     /** @brief */
     void SendRemoteResponse(const Remote::Action action,
-                         const Remote::Result::Contents& contents);
+                            const Remote::Result::Contents& contents);
+
+signals:
+    /** @brief */
+    void RemoteControlServerStartSignal();
+
+    /** @brief */
+    void RemoteClientDisconnect();
 
 private slots:
     // Server
@@ -63,14 +70,19 @@ private slots:
     /** @brief */
     void RemoteClientDisconnectedSlot();
 
-signals:
+    // Retry timer
     /** @brief */
-    void RemoteControlServerStartSignal();
+    void RetryTimeout();
 
 private:
     QWebSocketServer *m_server;
-    QWebSocket *m_cliecnt;
+    QWebSocket *m_client;
     RemoteControlHandler *m_handler;
+
+    // for retry sendMessage
+    QString m_bufferdStr;
+    QTimer m_retryTimer;
+    int m_retryCount;
 
     bool m_bIsConnected;
 };

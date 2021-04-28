@@ -299,10 +299,12 @@ void MainThread::ExecConnectNewWifi()
      *          New WIFI connection result
      * @param
      *          bool bIsConnect
+     *          QString newIP
      */
     QByteArray sendBytes;
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
     sendStream << bIsConnect;
+    sendStream << newIP;
     const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_CONTROL,
                                                 CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT, sendBytes);
     if(false == bSendEvent)

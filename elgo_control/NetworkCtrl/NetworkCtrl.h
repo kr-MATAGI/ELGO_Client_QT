@@ -35,6 +35,11 @@ public:
     CONNECT_INFO GetConnectInfo();
 
     /** @brief */
+    void SetRemoteHostIP(const QString& newValue);
+    /** @brief */
+    QString& GetRemoteHostIP();
+
+    /** @brief */
     QString& GetJWTString();
     /** @brief */
     ContentWebSocket& GetContentWebSocket();

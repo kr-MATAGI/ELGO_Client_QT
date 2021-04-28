@@ -142,6 +142,7 @@ namespace CONTROL_EVENT
          *          New WIFI connection result
          * @param
          *          bool bIsConnect
+         *          QString newIP
          */
         WIFI_CONNECTION_RESULT = 517,
 
