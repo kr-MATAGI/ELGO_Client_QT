@@ -23,7 +23,7 @@ public:
     virtual ~WeatherWidget();
 
     /** @brief */
-    void MakeWeatherWidget(const WeatherInfo::DisplayValue& newValue);
+    void SetDisplayValue(const WeatherInfo::DisplayValue& newValue);
     /** @brief */
     void SetStyleSheet(const StyleSheet::StyleInfo& style);
     /** @brief */
@@ -36,6 +36,7 @@ public:
     /** @brief */
     bool IsStartedDateTimeTimer();
 
+private:
     /** @brief */
     QString MakeDateTimeStr();
     /** @brief */

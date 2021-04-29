@@ -176,6 +176,7 @@ void DateWidget::StartDateWidget()
 void DateWidget::StopDateWidget()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Stop Date Widget");
     m_updateTimer->stop();
     m_bIsTimerStarted = false;
 }

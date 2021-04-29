@@ -23,33 +23,32 @@
 namespace ScheduleTimer
 {
     /** @brief */
-    struct PlayDataInfo
-    {
-        int id;
-        PlayJson::PlayDataType type;
-    };
-
-    /** @brief */
     struct PlayingIndex
     {
         PlayingIndex()
-            : pageIdx(0)
+            : mediaType(PlayJson::MediaType::NONE_MEDIA)
+            , pageIdx(0)
+            , layerIdx(0)
+            , contentIdx(0)
         { }
-        PlayDataInfo playDataInfo;
+        PlayJson::PlayData playData;
+        PlayJson::MediaType mediaType;
 
         // custom
         int pageIdx;
 
-        // fixed - content index per layer
-        QVector<int> layerIdxList;
+        // fixed
+        int layerIdx;
+        int contentIdx;
     };
 
     /** @brief  for countdown */
-    struct FixedLayerTimeCnt
+    struct FixedLayerTimecount
     {
-        FixedLayerTimeCnt()
+        FixedLayerTimecount()
             : maxContent(0)
-        { }
+        {
+        }
         int maxContent;
         QVector<int> contentTimeout;
     };
@@ -57,7 +56,15 @@ namespace ScheduleTimer
     /** @brief */
     struct CountdownInfo
     {
-        PlayDataInfo playDataInfo;
+        CountdownInfo()
+            : id(0)
+            , type(PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE)
+            , maxPage(0)
+            , maxLayer(0)
+        {
+        }
+        int id;
+        PlayJson::PlayDataType type;
 
         // custom
         int maxPage;
@@ -65,26 +72,18 @@ namespace ScheduleTimer
 
         // fixed
         int maxLayer;
-        QVector<FixedLayerTimeCnt> layerTimecountList;
+        QVector<FixedLayerTimecount> layerTimecountList;
     };
 
 
     /**
      *  @brief  operator ==
      */
-    inline bool operator==(const PlayDataInfo& lhs, const PlayDataInfo& rhs)
-    {
-        if(!(lhs.id == rhs.id))
-            return false;
-        if(!(lhs.type == rhs.type))
-            return false;
-
-        return true;
-    }
-
     inline bool operator==(const PlayingIndex& lhs, const PlayingIndex& rhs)
     {
-        if(!(lhs.playDataInfo == rhs.playDataInfo))
+        if(!(lhs.playData == rhs.playData))
+            return false;
+        if(!(lhs.mediaType == rhs.mediaType))
             return false;
         if(!(lhs.pageIdx == rhs.pageIdx))
             return false;
@@ -95,11 +94,6 @@ namespace ScheduleTimer
     /**
      *  @brief  operator !=
      */
-    inline bool operator!=(const PlayDataInfo& lhs, const PlayDataInfo& rhs)
-    {
-        return !(lhs == rhs);
-    }
-
     inline bool operator!=(const PlayingIndex& lhs, const PlayingIndex& rhs)
     {
         return !(lhs == rhs);
@@ -119,7 +113,6 @@ typedef std::pair<ScheduleTimer::PlayingIndex, NewsFeedWidget*> NewsFeedWidgetIn
 typedef std::pair<ScheduleTimer::PlayingIndex, WeatherWidget*> WeatherWidgetInfo;
 typedef std::pair<ScheduleTimer::PlayingIndex, SubtitleWidget*> SubtitleWidgetInfo;
 
-typedef std::pair<PlayJson::MediaType, ScheduleTimer::PlayingIndex> ProxyDataInfo;
-typedef std::pair<ProxyDataInfo, QGraphicsProxyWidget*> ProxyWidgetInfo;
+typedef std::pair<ScheduleTimer::PlayingIndex, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H

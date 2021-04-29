@@ -153,8 +153,9 @@ void ViewerThread::ExecCustomPlayData()
                     customPlayData.playData.id,
                     customPlayData.playData.name.toStdString().c_str());
 
-    // Add Play Data
+    // Add Play Data and Play
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(customPlayData.playData, true);
 }
 
 //========================================================
@@ -179,6 +180,7 @@ void ViewerThread::ExecFixedPlayData()
 
     // Add Play Data
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
+    emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(fixedPlayData.playData, true);
 }
 
 //========================================================

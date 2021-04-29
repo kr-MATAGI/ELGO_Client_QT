@@ -33,7 +33,7 @@ namespace StyleSheet
     /** @brief */
     struct PosSizeInfo
     {
-        QPointF pos;
+        QPoint pos;
         QSize size;
     };
 }

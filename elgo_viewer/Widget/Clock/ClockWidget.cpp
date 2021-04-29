@@ -188,6 +188,7 @@ void ClockWidget::StartClock()
 void ClockWidget::StopClock()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Stop Clock Widget");
     m_updateTimer->stop();
     m_bIsTimerStarted = false;
 }
