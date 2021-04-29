@@ -194,7 +194,7 @@ void ContentsPlayer::ExecPlayDataSlot(const PlayJson::PlayData& playData,
                         playData.id, playData.playDataType);
     }
 
-    m_scheduleTimer.start();
+    m_scheduleTimer.start(990);
 }
 
 //========================================================
@@ -1048,7 +1048,66 @@ void ContentsPlayer::ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& p
 void ContentsPlayer::PlayerTimeout()
 //========================================================
 {
+    if(PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType)
+    {
+        if( 1 == m_playCountdown.maxPage )
+        {
+            ELGO_VIEWER_LOG("Not update Scene - Max Page Size: %d",
+                            m_playCountdown.maxPage);
+            return;
+        }
 
+        QVector<PlayJson::CustomPlayDataJson>::iterator customIter = m_customPlayDataList.begin();
+        for( ; customIter != m_customPlayDataList.end(); ++customIter)
+        {
+            if(customIter->playData.id == m_playingIndex.playData.id)
+            {
+                // Get Current Display Page
+                const int currPageIdx = m_playingIndex.pageIdx;
+                const PlayJson::PageData& currPageData = customIter->pageDataList[currPageIdx];
+
+                // Reached Timeout
+                if(m_playCountdown.pageTimecount[currPageIdx] >= currPageData.duration)
+                {
+                    // Current Page Timecount Initialize
+                    m_playCountdown.pageTimecount[currPageIdx] = 0;
+
+                    // Ready to Next Page
+                    int nextPageIdx = currPageIdx + 1;
+                    if(m_playCountdown.maxPage <= nextPageIdx)
+                    {
+                        nextPageIdx = 0;
+                    }
+
+                    ScheduleTimer::PlayingIndex nextPlayingIndex = m_playingIndex;
+                    nextPlayingIndex.pageIdx = nextPageIdx;
+                    ELGO_VIEWER_LOG("Update NextPage - { id: %d, pageIdx: %d, currPageTimeCnt{ %d : %d } }",
+                                    nextPlayingIndex.playData.id, nextPlayingIndex.pageIdx,
+                                    m_playCountdown.pageTimecount[currPageIdx], currPageData.duration);
+
+                    UpdatePlayerScene(nextPlayingIndex);
+                }
+                else
+                {
+                    // Plus Countdown
+                    m_playCountdown.pageTimecount[currPageIdx]++;
+                    ELGO_VIEWER_LOG("Custom Page[%d] Countdown: %d",
+                                    currPageIdx, m_playCountdown.pageTimecount[currPageIdx]);
+                }
+
+                break;
+            }
+        }
+    }
+    else if(PlayJson::PlayDataType::FIXED == m_playingIndex.playData.playDataType)
+    {
+
+    }
+    else
+    {
+        ELGO_VIEWER_LOG("Error - Timeout method is not need {id: %d, type: %d}",
+                        m_playingIndex.playData.id, m_playingIndex.playData.playDataType);
+    }
 }
 
 //========================================================
