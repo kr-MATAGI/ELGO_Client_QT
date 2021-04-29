@@ -681,7 +681,6 @@ void ContentsPlayer::PlayItemAndWidgetContents(const ScheduleTimer::PlayingIndex
         if(true == bIsSameIndex)
         {
             videoIter->second->PlayVideoItem();
-            videoIter->second->show();
         }
     }
 
