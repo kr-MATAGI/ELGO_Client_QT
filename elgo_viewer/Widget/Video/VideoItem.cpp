@@ -104,7 +104,48 @@ bool VideoItem::IsPlayingVideo()
 void VideoItem::CheckMediaPlayerError(QMediaPlayer::Error error)
 //========================================================
 {
-    ELGO_VIEWER_LOG("Media player ERROR - %d", error);
+    /**
+     *  NoError = 0,
+     *  ResourceError = 1,
+     *  FormatError = 2,
+     *  NetworkError = 3,
+     *  AccessDeniedError = 4,
+     *  ServiceMissingError = 5,
+     *  MediaIsPlaylist = 6
+     */
+    QString errorStr;
+    if(QMediaPlayer::Error::NoError == error)
+    {
+        errorStr = "No Error";
+    }
+    else if(QMediaPlayer::Error::ResourceError == error)
+    {
+        errorStr = "Resource Error";
+    }
+    else if(QMediaPlayer::Error::FormatError == error)
+    {
+        errorStr = "FormatError Error";
+    }
+    else if(QMediaPlayer::Error::NetworkError == error)
+    {
+        errorStr = "NetworkError Error";
+    }
+    else if(QMediaPlayer::Error::AccessDeniedError == error)
+    {
+        errorStr = "AccessDeniedError Error";
+    }
+    else if(QMediaPlayer::Error::ServiceMissingError == error)
+    {
+        errorStr = "ServiceMissingError Error";
+    }
+    else if(QMediaPlayer::Error::MediaIsPlaylist == error)
+    {
+        errorStr = "MediaIsPlaylist Error";
+    }
+
+    ELGO_VIEWER_LOG("Media player ERROR %s - %s",
+                    m_videoInfo.fileName.toStdString().c_str(),
+                    error);
 }
 
 //========================================================
@@ -123,7 +164,43 @@ void VideoItem::CheckMediaStatus(QMediaPlayer::MediaStatus status)
      *          EndOfMedia = 7
      *          InvalidMedia = 8
      */
-    ELGO_VIEWER_LOG("%s - %d", m_videoInfo.fileName.toStdString().c_str(), status)
+    QString statusStr;
+    if(QMediaPlayer::MediaStatus::UnknownMediaStatus == status)
+    {
+        statusStr = "Unknown Status";
+    }
+    else if(QMediaPlayer::MediaStatus::NoMedia == status)
+    {
+        statusStr = "No Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::LoadingMedia == status)
+    {
+        statusStr = "Loading Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::LoadedMedia == status)
+    {
+        statusStr = "Loaded Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::StalledMedia == status)
+    {
+        statusStr = "Stalled Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::BufferingMedia == status)
+    {
+        statusStr = "Buffering Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::BufferedMedia == status)
+    {
+        statusStr = "Buffered Media Status";
+    }
+    else if(QMediaPlayer::MediaStatus::InvalidMedia == status)
+    {
+        statusStr = "Invalid Media Status";
+    }
+
+    ELGO_VIEWER_LOG("%s - %s",
+                    m_videoInfo.fileName.toStdString().c_str(),
+                    statusStr.toStdString().c_str());
 }
 
 //========================================================
@@ -136,7 +213,25 @@ void VideoItem::CheckStateChanged(QMediaPlayer::State state)
       *         PlayingState = 1
       *         PausedState = 2
       */
-    ELGO_VIEWER_LOG("%s - %d", m_videoInfo.fileName.toStdString().c_str(), state);
+    QString stateStr;
+    if(QMediaPlayer::State::StoppedState == state)
+    {
+        stateStr = "Stop State";
+    }
+    else if(QMediaPlayer::State::PlayingState == state)
+    {
+        stateStr = "Playing State";
+    }
+    else if(QMediaPlayer::State::PausedState == state)
+    {
+        stateStr = "Paused State";
+    }
+    else{
+        ELGO_VIEWER_LOG("Unkwon State: %d", state);
+    }
+    ELGO_VIEWER_LOG("%s - %s",
+                    m_videoInfo.fileName.toStdString().c_str(),
+                    stateStr.toStdString().c_str());
 }
 
 //========================================================
