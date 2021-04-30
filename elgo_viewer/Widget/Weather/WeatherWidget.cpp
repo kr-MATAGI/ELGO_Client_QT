@@ -7,7 +7,7 @@
 #include "ui_WeatherWidget.h"
 #include "Logger/ViewerLogger.h"
 
-#define RESOURCE_ICON_PATH   "/home/jaehoon/바탕화면/ELGO/ELGO_ContentPlayer_Branch/resource/icon";
+#define RESOURCE_ICON_PATH   "/home/jaehoon/바탕화면/ELGO/resource/icon";
 
 //========================================================
 WeatherWidget::WeatherWidget(QWidget *parent)
