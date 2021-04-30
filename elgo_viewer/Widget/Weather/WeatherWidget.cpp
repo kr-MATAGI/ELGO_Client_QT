@@ -7,7 +7,7 @@
 #include "ui_WeatherWidget.h"
 #include "Logger/ViewerLogger.h"
 
-#define RESOURCE_ICON_PATH   "/home/jaehoon/바탕화면/ELGO/resource/icon";
+#define RESOURCE_ICON_PATH   "/home/jaehoon/바탕화면/ELGO/ELGO_ContentPlayer_Branch/resource/icon";
 
 //========================================================
 WeatherWidget::WeatherWidget(QWidget *parent)
@@ -149,7 +149,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
 }
 
 //========================================================
-void WeatherWidget::MakeWeatherWidget(const WeatherInfo::DisplayValue& newValue)
+void WeatherWidget::SetDisplayValue(const WeatherInfo::DisplayValue& newValue)
 //========================================================
 {
     m_displayValue = newValue;
@@ -195,6 +195,7 @@ void WeatherWidget::StartDateTimeTimer()
 void WeatherWidget::StopDateTimeTimer()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Stop DateTime Widget");
     m_dateTimer.stop();
     m_bIsTimerStarted = false;
 }

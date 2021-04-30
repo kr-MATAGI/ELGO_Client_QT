@@ -226,6 +226,7 @@ void NewsFeedWidget::StartAnimation()
 void NewsFeedWidget::StopAnimation()
 //========================================================
 {
+    ELGO_VIEWER_LOG("Stop News Animation");
     m_seqAniGroup->stop();
     m_bIsStartedAnimation = false;
 }

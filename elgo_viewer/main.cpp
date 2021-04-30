@@ -12,7 +12,6 @@
 #include "ViewerCtrl/ViewerCtrl.h"
 #include "ViewerCtrl/ViewerController.h"
 #include "Widget/ContentsPlayer.h"
-#include "Widget/SchedulesTimer/SchedulesTimer.h"
 
 static ViewerController *g_ViewerController = NULL;
 static ContentsPlayer *g_ContentsPlayer = NULL;

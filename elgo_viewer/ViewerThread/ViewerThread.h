@@ -11,9 +11,11 @@
 // Viewer
 #include "MainWindow.h"
 #include "ViewerCtrl/ViewerController.h"
+#include "Widget/ContentsPlayer.h"
 
 class MainWindow;
 class ViewerController;
+class ContentsPlayer;
 
 class ViewerThread : public QRunnable
 {

@@ -17,12 +17,10 @@ HEADERS += \
         Widget/ContentsPlayer.h \
         Widget/Date/DateWidget.h \
         Widget/Definition/ContentsDef.h \
+        Widget/Definition/ScheduleTimerDef.h \
         Widget/Image/ImageItem.h \
         Widget/News/FeedBoxWidget.h \
         Widget/News/NewsFeedWidget.h \
-        Widget/Definition/ScheduleTimerDef.h \
-        Widget/SchedulesTimer/SchedulesTimer.h \
-        Widget/SchedulesTimer/SinglePlayTimer.h \
         Widget/Subtitle/SubtitleWidget.h \
         Widget/Video/VideoItem.h \
         Widget/Weather/WeatherWidget.h \
@@ -43,8 +41,6 @@ SOURCES += \
         Widget/Image/ImageItem.cpp \
         Widget/News/FeedBoxWidget.cpp \
         Widget/News/NewsFeedWidget.cpp \
-        Widget/SchedulesTimer/SchedulesTimer.cpp \
-        Widget/SchedulesTimer/SinglePlayTimer.cpp \
         Widget/Subtitle/SubtitleWidget.cpp \
         Widget/Video/VideoItem.cpp \
         Widget/Weather/WeatherWidget.cpp \

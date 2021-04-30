@@ -377,10 +377,12 @@ void SubtitleWidget::StopAnimation()
     {
         if(PlayJson::SubtitleAction::SCROLL == m_animationInfo.action)
         {
+            ELGO_VIEWER_LOG("Stop Subtitle Scroll Animation");
             m_startyAni->stop();
         }
         else
         {
+            ELGO_VIEWER_LOG("Stop Subtitle State Machine");
             m_stateMachine->stop();
         }
     }

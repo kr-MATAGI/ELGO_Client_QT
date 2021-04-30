@@ -23,8 +23,8 @@ HEADERS += \
     Common/EventList.h \
     Common/Interface/ContentsPlayDataDef.h \
     Common/Interface/ContentsPlayDataImpl.h \
-    Common/Interface/ScheduleDef.h \
     Common/Interface/ScheduleImpl.h \
+    Common/Interface/ScheduleJsonDef.h \
     LocalSocketEvent/EFCEvent.h \
     LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \

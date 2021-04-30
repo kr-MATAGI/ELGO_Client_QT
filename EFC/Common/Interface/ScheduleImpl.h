@@ -5,7 +5,7 @@
 #include <QDataStream>
 
 // Common
-#include "ScheduleDef.h"
+#include "ScheduleJsonDef.h"
 
 /**
  *  @note   elgo_control <-> elgo_viewer, serialize function
