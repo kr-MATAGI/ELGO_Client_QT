@@ -360,6 +360,7 @@ void ContentsPlayer::MakePlayDataCountdownInfo(const ScheduleTimer::PlayingIndex
         countdownInfo.id = fixedPlayData.playData.id;
         countdownInfo.type = fixedPlayData.playData.playDataType;
         countdownInfo.maxLayer = fixedPlayData.layerDataList.size();
+        countdownInfo.layerContentIdxList.resize(countdownInfo.maxLayer);
         countdownInfo.layerTimecountList.resize(countdownInfo.maxLayer);
         ELGO_VIEWER_LOG("Fixed Countdown - {id: %d, type: %d, maxLayer: %d}",
                         countdownInfo.id, countdownInfo.type, countdownInfo.maxLayer);
@@ -825,6 +826,56 @@ void ContentsPlayer::PauseItemAndWidgetContents(const ScheduleTimer::PlayingInde
 }
 
 //========================================================
+void ContentsPlayer::RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex)
+//========================================================
+{
+    // Video
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for(; videoIter != m_videoItemList.end(); ++videoIter)
+    {
+        const bool bIsSameIndex = ComparePlayingIndex(playingIndex, videoIter->first);
+        if(true == bIsSameIndex)
+        {
+            m_currScene.second->removeItem(videoIter->second);
+            ELGO_VIEWER_LOG("Remove Item - {id: %d, playDataType: %d, mediaType:%d, name: %s}",
+                            videoIter->first.playData.id, videoIter->first.playData.playDataType,
+                            videoIter->first.mediaType, videoIter->second->GetVideoFileName().toStdString().c_str());
+            return;
+        }
+    }
+
+    // Image
+    QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
+    for(; imageIter != m_imageItemList.end(); ++imageIter)
+    {
+        const bool bIsSameIndex = ComparePlayingIndex(playingIndex, imageIter->first);
+        if(true == bIsSameIndex)
+        {
+            m_currScene.second->removeItem(imageIter->second);
+            ELGO_VIEWER_LOG("Remove Item - {id: %d, playDataType: %d, mediaType:%d, name: %s}",
+                            imageIter->first.playData.id, imageIter->first.playData.playDataType,
+                            imageIter->first.mediaType, imageIter->second->GetImageFileName().toStdString().c_str());
+            return;
+        }
+    }
+
+    // Proxy Widget
+    QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
+    for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
+    {
+        const bool bIsSameIndex = ComparePlayingIndex(playingIndex, proxyIter->first);
+        if(true == bIsSameIndex)
+        {
+            m_currScene.second->removeItem(proxyIter->second);
+            ELGO_VIEWER_LOG("Remove Item - {id: %d, playDataType: %d, mediaType:%d, name: %s}",
+                            proxyIter->first.playData.id, proxyIter->first.playData.playDataType,
+                            proxyIter->first.mediaType, proxyIter->second->objectName().toStdString().c_str());
+            return;
+        }
+    }
+}
+
+//========================================================
 void ContentsPlayer::ClearOtherPlayDataJsonInfo(const ScheduleTimer::PlayingIndex& playingIndex)
 //========================================================
 {
@@ -1216,9 +1267,10 @@ void ContentsPlayer::PlayerTimeout()
 {
     if(PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType)
     {
+        // Change Page
         if( 1 == m_playCountdown.maxPage )
         {
-            ELGO_VIEWER_LOG("Not update Scene - Max Page Size: %d",
+            ELGO_VIEWER_LOG("Not Update Scene - Max Page Size: %d",
                             m_playCountdown.maxPage);
             return;
         }
@@ -1267,12 +1319,89 @@ void ContentsPlayer::PlayerTimeout()
     }
     else if(PlayJson::PlayDataType::FIXED == m_playingIndex.playData.playDataType)
     {
+        // Add, Remove Item
+        const PlayJson::FixedPlayDataJson& fixdPlayData = m_fixedPlayDataList[m_playDataIndex];
 
+        const int layerListSize = fixdPlayData.layerDataList.size();
+        for(int layIdx = 0; layIdx < layerListSize; layIdx++)
+        {
+            const PlayJson::FixedLayerData& layerData = fixdPlayData.layerDataList[layIdx];
+            const int contentListSize = layerData.contentDataList.size();
+
+            // Not Need Update
+            if(1 == contentListSize)
+            {
+                ELGO_VIEWER_LOG("Not Update Layer - {layerIdx: %d, contentListSize: %d}",
+                                layIdx, contentListSize);
+                continue;
+            }
+
+            // Check Timecount
+            const int currContentIdx = m_playCountdown.layerContentIdxList[layIdx];
+            const int currContentTimecount = m_playCountdown.layerTimecountList[layIdx].contentTimeout[currContentIdx];
+
+            if(currContentTimecount >= layerData.contentDataList[currContentIdx].userDuration)
+            {
+                // Change Content in layer[layIdx]
+                m_playCountdown.layerTimecountList[layIdx].contentTimeout[currContentIdx] = 0;
+
+                // Ready to Next Content
+                int nextContentIdx = currContentIdx + 1;
+                if(m_playCountdown.layerTimecountList[layIdx].maxContent <= nextContentIdx)
+                {
+                    nextContentIdx = 0;
+                }
+                ELGO_VIEWER_LOG("Update Next Content - {layerIdx: %d, contentIdx: %d -> %d}",
+                                layIdx, currContentIdx, nextContentIdx);
+
+                ScheduleTimer::PlayingIndex prevPlayingIndex;
+                prevPlayingIndex = m_playingIndex;
+                prevPlayingIndex.layerIdx = layIdx;
+                prevPlayingIndex.contentIdx = currContentIdx;
+
+                ScheduleTimer::PlayingIndex nextPlayingIndex;
+                nextPlayingIndex = m_playingIndex;
+                nextPlayingIndex.layerIdx = layIdx;
+                nextPlayingIndex.contentIdx = nextContentIdx;
+
+                // Update
+                UpdateNextFixedLayerContent(prevPlayingIndex, nextPlayingIndex);
+                m_playCountdown.layerContentIdxList[layIdx] = nextContentIdx;
+            }
+            else
+            {
+                // Plus Countdown
+                m_playCountdown.layerTimecountList[layIdx].contentTimeout[currContentIdx]++;
+                ELGO_VIEWER_LOG("Fixd Layer[%d] Content[%d] Countdown : %d, userDuration : %d",
+                                layIdx, currContentIdx,
+                                m_playCountdown.layerTimecountList[layIdx].contentTimeout[currContentIdx],
+                                layerData.contentDataList[currContentIdx].userDuration);
+            }
+        }
     }
     else
     {
         ELGO_VIEWER_LOG("Error - Timeout method is not need {id: %d, type: %d}",
                         m_playingIndex.playData.id, m_playingIndex.playData.playDataType);
+    }
+}
+
+//========================================================
+void ContentsPlayer::UpdateNextFixedLayerContent(const ScheduleTimer::PlayingIndex& prevPlayingIndex,
+                                                 const ScheduleTimer::PlayingIndex& nextPlayingIndex)
+//========================================================
+{
+
+    if(NULL != m_currScene.second)
+    {
+        // ADD Item or Widget
+        SearchContentAndAddToScene(nextPlayingIndex, m_currScene.second);
+        PlayItemAndWidgetContents(nextPlayingIndex);
+
+        // Remove Item or Widget
+        PauseItemAndWidgetContents(prevPlayingIndex);
+        RemoveItemAndWidgetFromScene(prevPlayingIndex);
+        ClearPrevPlayingData(prevPlayingIndex);
     }
 }
 

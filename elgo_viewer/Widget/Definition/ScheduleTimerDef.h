@@ -72,6 +72,7 @@ namespace ScheduleTimer
 
         // fixed
         int maxLayer;
+        QVector<int> layerContentIdxList; // content index per layer
         QVector<FixedLayerTimecount> layerTimecountList;
     };
 

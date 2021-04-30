@@ -67,6 +67,9 @@ private slots:
     void ExecPlayDataSlot(const PlayJson::PlayData& playData,
                           const bool bDelPrevData = false);
 
+    /** @brief  Timer's timeout slot */
+    void PlayerTimeout();
+
 private:
     /** @brief  Simple Utils */
     void ConvertMediaTypeEnumToString(const PlayJson::MediaType src, QString& dest);
@@ -81,6 +84,10 @@ private:
     /** @brief  Update Display Scene */
     void UpdatePlayerScene(const ScheduleTimer::PlayingIndex& playingIndex,
                            const bool bDelPrevData = false);
+    /** @brief  Update Next Fixed Content */
+    void UpdateNextFixedLayerContent(const ScheduleTimer::PlayingIndex& prevPlayingIndex,
+                                     const ScheduleTimer::PlayingIndex& nextPlayingIndex);
+
     /** @brief  Add Content to Scene */
     void SearchContentAndAddToScene(const ScheduleTimer::PlayingIndex& playingIndex,
                                     QGraphicsScene* dest);
@@ -120,6 +127,8 @@ private:
     void PlayItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Pause Item and Widget */
     void PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex);
+    /** @brief  Remove Item and Widget from Scene */
+    void RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex);
 
     /** @brief  Clear Prev PlayData Json */
     void ClearOtherPlayDataJsonInfo(const ScheduleTimer::PlayingIndex& playingIndex);
@@ -127,9 +136,6 @@ private:
     void ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev Playing Data */
     void ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex);
-
-    /** @brief  Timer's timeout slot */
-    void PlayerTimeout();
 
 private:
     Ui::ContentsPlayer *ui;
