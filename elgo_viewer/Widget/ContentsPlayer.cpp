@@ -464,11 +464,11 @@ void ContentsPlayer::MakeFixedPlayDataContents(const ScheduleTimer::PlayingIndex
     // Make Content
     if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
     {
-        MakeFileTypeContent(playingIndex, contentData, posSize, dest);
+        MakeFileTypeContent(fixedDataKeyIndex, contentData, posSize, dest);
     }
     else if(PlayJson::ContentType::WIDGET == contentData.contentInfo.contentType)
     {
-        MakeWidgetTypeContent(playingIndex, contentData, posSize, dest);
+        MakeWidgetTypeContent(fixedDataKeyIndex, contentData, posSize, dest);
     }
     else
     {
@@ -738,7 +738,8 @@ void ContentsPlayer::PlayItemAndWidgetContents(const ScheduleTimer::PlayingIndex
 }
 
 //========================================================
-void ContentsPlayer::PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex)
+void ContentsPlayer::PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                                const bool bIsFixedTimeout)
 //========================================================
 {
     if( (0 == playingIndex.playData.id) &&
@@ -813,20 +814,24 @@ void ContentsPlayer::PauseItemAndWidgetContents(const ScheduleTimer::PlayingInde
     }
 
     // Subtitle
-    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
-    for(; subIter != m_subtitleWidgetList.end(); ++subIter)
+    if(false == bIsFixedTimeout)
     {
-        const bool bIsSameIndex = ComparePlayingIndex(playingIndex, subIter->first);
-        if( (true == bIsSameIndex) &&
-            (true == subIter->second->IsStartedAnimation()) )
+        QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+        for(; subIter != m_subtitleWidgetList.end(); ++subIter)
         {
-            subIter->second->StopAnimation();
+            const bool bIsSameIndex = ComparePlayingIndex(playingIndex, subIter->first);
+            if( (true == bIsSameIndex) &&
+                (true == subIter->second->IsStartedAnimation()) )
+            {
+                subIter->second->StopAnimation();
+            }
         }
     }
 }
 
 //========================================================
-void ContentsPlayer::RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex)
+void ContentsPlayer::RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex,
+                                                  const bool bIsFixedTimeout)
 //========================================================
 {
     // Video
@@ -866,6 +871,11 @@ void ContentsPlayer::RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIn
         const bool bIsSameIndex = ComparePlayingIndex(playingIndex, proxyIter->first);
         if(true == bIsSameIndex)
         {
+            if( (true == bIsFixedTimeout) &&
+                (PlayJson::MediaType::SUBTITLE == proxyIter->first.mediaType) )
+            {
+                continue;
+            }
             m_currScene.second->removeItem(proxyIter->second);
             ELGO_VIEWER_LOG("Remove Item - {id: %d, playDataType: %d, mediaType:%d, name: %s}",
                             proxyIter->first.playData.id, proxyIter->first.playData.playDataType,
@@ -1092,7 +1102,8 @@ void ContentsPlayer::ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& p
 }
 
 //========================================================
-void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex)
+void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex,
+                                          const bool bIsFixedTimeout)
 //========================================================
 {
     // image
@@ -1216,18 +1227,21 @@ void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& pla
     // subtitle
     const int prevSubtitleListSize = m_subtitleWidgetList.size();
 
-    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
-    for( ; subIter != m_subtitleWidgetList.end(); )
+    if(false == bIsFixedTimeout)
     {
-        const bool bIsSameItem = ComparePlayingIndex(playingIndex, subIter->first);
-        if( true == bIsSameItem )
+        QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+        for( ; subIter != m_subtitleWidgetList.end(); )
         {
-            subIter->second->deleteLater();
-            subIter = m_subtitleWidgetList.erase(subIter);
-        }
-        else
-        {
-            ++subIter;
+            const bool bIsSameItem = ComparePlayingIndex(playingIndex, subIter->first);
+            if( true == bIsSameItem )
+            {
+                subIter->second->deleteLater();
+                subIter = m_subtitleWidgetList.erase(subIter);
+            }
+            else
+            {
+                ++subIter;
+            }
         }
     }
 
@@ -1240,6 +1254,12 @@ void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& pla
         const bool bIsSameItem = ComparePlayingIndex(playingIndex, proxyIter->first);
         if( true == bIsSameItem )
         {
+            if( (true == bIsFixedTimeout) &&
+                (PlayJson::MediaType::SUBTITLE == proxyIter->first.mediaType) )
+            {
+                ++proxyIter;
+                continue;
+            }
             proxyIter->second->deleteLater();
             proxyIter = m_proxyWidgetList.erase(proxyIter);
         }
@@ -1399,9 +1419,9 @@ void ContentsPlayer::UpdateNextFixedLayerContent(const ScheduleTimer::PlayingInd
         PlayItemAndWidgetContents(nextPlayingIndex);
 
         // Remove Item or Widget
-        PauseItemAndWidgetContents(prevPlayingIndex);
-        RemoveItemAndWidgetFromScene(prevPlayingIndex);
-        ClearPrevPlayingData(prevPlayingIndex);
+        PauseItemAndWidgetContents(prevPlayingIndex, true);
+        RemoveItemAndWidgetFromScene(prevPlayingIndex, true);
+        ClearPrevPlayingData(prevPlayingIndex, true);
     }
 }
 

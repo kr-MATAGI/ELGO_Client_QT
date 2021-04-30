@@ -126,16 +126,19 @@ private:
     /** @brief  Play Item and Widget */
     void PlayItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Pause Item and Widget */
-    void PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex);
+    void PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                    const bool bIsFixedTimeout = false);
     /** @brief  Remove Item and Widget from Scene */
-    void RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex);
+    void RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex,
+                                      const bool bIsFixedTimeout = false);
 
     /** @brief  Clear Prev PlayData Json */
     void ClearOtherPlayDataJsonInfo(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev PlayData Item */
     void ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev Playing Data */
-    void ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex);
+    void ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex,
+                              const bool bIsFixedTimeout = false);
 
 private:
     Ui::ContentsPlayer *ui;
