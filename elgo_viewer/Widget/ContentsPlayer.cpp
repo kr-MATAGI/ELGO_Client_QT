@@ -16,6 +16,7 @@ ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 ContentsPlayer::ContentsPlayer(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ContentsPlayer)
+    , m_playDataIndex(NOT_EXISTED_DATA)
 //========================================================
 {
     // init
@@ -167,25 +168,21 @@ void ContentsPlayer::ExecPlayDataSlot(const PlayJson::PlayData& playData,
         ELGO_VIEWER_LOG("Read to Play - {id: %d, type: %d}",
                         playData.id, playData.playDataType);
 
-        // Make Custom or Fixed Contents
-        if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
+        // Get Play Data Index
+        GetSuitablePlayDataIndex(playData);
+        if(NOT_EXISTED_DATA == m_playDataIndex)
         {
-            MakeCustomPlayDataContents(playData);
-        }
-        else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
-        {
-            MakeFixedPlayDataContents(playData);
-        }
-        else
-        {
-            ELGO_VIEWER_LOG("Error - Unkwon PlayData {id: %d, type: %d}",
-                            playData.id,
-                            playData.playDataType);
+            ELGO_VIEWER_LOG("Error - Not Existed Play Data {id: %d, type: %d",
+                            playData.id, playData.playDataType);
+            return;
         }
 
-        // Update Display Scene
+        // Make Countdown Info
         ScheduleTimer::PlayingIndex playingIndex;
         playingIndex.playData = playData;
+        MakePlayDataCountdownInfo(playingIndex);
+
+        // Update Display Scene
         UpdatePlayerScene(playingIndex, bDelPrevData);
     }
     else
@@ -208,9 +205,6 @@ void ContentsPlayer::UpdatePlayerScene(const ScheduleTimer::PlayingIndex& playin
     if(PlayJson::PlayDataType::CUSTOM == playingIndex.playData.playDataType)
     {
         SearchContentAndAddToScene(playingIndex, newScene);
-        ELGO_VIEWER_LOG("Made New Scene { id: %d, pageIdx: %d, sceneItemSize: %d }",
-                        playingIndex.playData.id, playingIndex.pageIdx, newScene->items().size());
-
         PlayItemAndWidgetContents(playingIndex);
     }
     else if(PlayJson::PlayDataType::FIXED == playingIndex.playData.playDataType)
@@ -221,6 +215,18 @@ void ContentsPlayer::UpdatePlayerScene(const ScheduleTimer::PlayingIndex& playin
             SearchContentAndAddToScene(fixedPlayingIndex, newScene);
             PlayItemAndWidgetContents(fixedPlayingIndex);
             fixedPlayingIndex.layerIdx++;
+        }
+
+        // Make Subtitle
+        const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[m_playDataIndex];
+        const int subtitleListSize = fixedPlayData.subtitleDataList.size();
+        for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
+        {
+            ScheduleTimer::PlayingIndex subtitlePlayingIndex = playingIndex;
+            subtitlePlayingIndex.mediaType = PlayJson::MediaType::SUBTITLE;
+
+            MakeSubtitleTypeContent(subtitlePlayingIndex, fixedPlayData.subtitleDataList[subIdx], newScene);
+            PlayItemAndWidgetContents(subtitlePlayingIndex);
         }
     }
     else
@@ -233,18 +239,24 @@ void ContentsPlayer::UpdatePlayerScene(const ScheduleTimer::PlayingIndex& playin
         return;
     }
 
+    ELGO_VIEWER_LOG("Made New Scene { id: %d, pageIdx: %d, sceneItemSize: %d }",
+                    playingIndex.playData.id, playingIndex.pageIdx, newScene->items().size());
+
     ui->playerView->setScene(newScene);
 
     PauseItemAndWidgetContents(m_playingIndex);
+    ScheduleTimer::PlayingIndex prevPlayingIndex = m_playingIndex;
     m_playingIndex = playingIndex;
 
     if(NULL != m_currScene.second)
     {
         QList<QGraphicsItem *> items = m_currScene.second->items();
+
         foreach(auto item, items)
         {
             m_currScene.second->removeItem(item);
         }
+        ClearPrevPlayingData(prevPlayingIndex);
         m_currScene.second->deleteLater();
     }
 
@@ -264,43 +276,20 @@ void ContentsPlayer::SearchContentAndAddToScene(const ScheduleTimer::PlayingInde
 {
     if(NULL != dest)
     {
-        // Find Image Item
-        QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
-        for(; imageIter != m_imageItemList.end(); ++imageIter)
+        // Make Custom or Fixed Contents
+        if(PlayJson::PlayDataType::CUSTOM == playingIndex.playData.playDataType)
         {
-            const bool bIsSameIndex = ComparePlayingIndex(playingIndex, imageIter->first);
-            if(true == bIsSameIndex)
-            {
-                dest->addItem(imageIter->second);
-                ELGO_VIEWER_LOG("ADD Image item to scene - %s",
-                                imageIter->second->GetImageFileName().toStdString().c_str());
-            }
+            MakeCustomPlayDataContents(playingIndex, dest);
         }
-
-        // Find Video Item
-        QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
-        for(; videoIter != m_videoItemList.end(); ++videoIter)
+        else if(PlayJson::PlayDataType::FIXED == playingIndex.playData.playDataType)
         {
-            const bool bIsSameIndex = ComparePlayingIndex(playingIndex, videoIter->first);
-            if(true == bIsSameIndex)
-            {
-                dest->addItem(videoIter->second);
-                ELGO_VIEWER_LOG("ADD Video item to scene - %s",
-                                videoIter->second->GetVideoFileName().toStdString().c_str());
-            }
+            MakeFixedPlayDataContents(playingIndex, dest);
         }
-
-        // Find Widget Item
-        QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
-        for(; proxyIter != m_proxyWidgetList.end(); ++proxyIter)
+        else
         {
-            const bool bIsSameIndex = ComparePlayingIndex(playingIndex, proxyIter->first);
-            if(true == bIsSameIndex)
-            {
-                dest->addItem(proxyIter->second);
-                ELGO_VIEWER_LOG("ADD Widget Type Item - %s",
-                                proxyIter->second->widget()->objectName().toStdString().c_str());
-            }
+            ELGO_VIEWER_LOG("Error - Unkwon PlayData {id: %d, type: %d}",
+                            playingIndex.playData.id,
+                            playingIndex.playData.playDataType);
         }
     }
     else
@@ -310,191 +299,187 @@ void ContentsPlayer::SearchContentAndAddToScene(const ScheduleTimer::PlayingInde
 }
 
 //========================================================
-void ContentsPlayer::MakeCustomPlayDataContents(const PlayJson::PlayData& playData)
+void ContentsPlayer::GetSuitablePlayDataIndex(const PlayJson::PlayData& playData)
 //========================================================
 {
-    // Find play data in saved list
-    int dataIdx = NOT_EXISTED_DATA;
-    const int playDataListSize = m_customPlayDataList.size();
-    for(int idx = 0; idx < playDataListSize; idx++)
+    if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
     {
-        if(playData.id == m_customPlayDataList[idx].playData.id)
+        const int playDataListSize = m_customPlayDataList.size();
+        for(int idx = 0; idx < playDataListSize; idx++)
         {
-            dataIdx = idx;
-            break;
+            if(playData.id == m_customPlayDataList[idx].playData.id)
+            {
+                m_playDataIndex = idx;
+                ELGO_VIEWER_LOG("Success Finding - {id: %d, type: %d, idx: %d}",
+                                playData.id, playData.playDataType, m_playDataIndex);
+                break;
+            }
         }
     }
-
-    if(NOT_EXISTED_DATA == dataIdx)
+    else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
     {
-        ELGO_VIEWER_LOG("Not existed custom play data - id: %d", playData.id);
-        return;
+        const int playDataListSize = m_fixedPlayDataList.size();
+        for(int idx = 0; idx < playDataListSize; idx++)
+        {
+            if(playData.id == m_fixedPlayDataList[idx].playData.id)
+            {
+                m_playDataIndex = idx;
+                ELGO_VIEWER_LOG("Success Finding - {id: %d, type: %d, idx: %d}",
+                                playData.id, playData.playDataType, m_playDataIndex);
+                break;
+            }
+        }
     }
-
-    // Set play data
-    const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[dataIdx];
-
-    // Make countdown information
-    ScheduleTimer::CountdownInfo countdownInfo;
-    countdownInfo.id = customPlayData.playData.id;
-    countdownInfo.type = customPlayData.playData.playDataType;
-    countdownInfo.maxPage = customPlayData.pageDataList.size();
-    countdownInfo.pageTimecount.resize(countdownInfo.maxPage);
-
-    // Set Countdown info
-    m_playCountdown = countdownInfo;
-
-    // Make item or widget contents
-    const int pageListSize = customPlayData.pageDataList.size();
-    for(int pageIdx = 0; pageIdx < pageListSize; pageIdx++)
+    else
     {
-        const PlayJson::PageData& pageData = customPlayData.pageDataList[pageIdx];
-
-        // Set page index info
-        ScheduleTimer::PlayingIndex playingIndex;
-        playingIndex.playData = playData;
-        playingIndex.pageIdx = pageIdx;
-
-        const int layerListSize = pageData.layerDataList.size();
-        for(int layIdx = 0; layIdx < layerListSize; layIdx++)
-        {
-            const PlayJson::CustomLayerData& layerData = pageData.layerDataList[layIdx];
-
-            // Set pos and size
-            StyleSheet::PosSizeInfo posSize;
-            posSize.pos = QPoint(layerData.left, layerData.top);
-            posSize.size = QSize(layerData.width, layerData.height);
-
-            // Set media type
-            playingIndex.mediaType = layerData.layerContent.contentInfo.mediaType;
-
-            // Make Content
-            if(PlayJson::ContentType::FILE == layerData.layerContent.contentInfo.contentType)
-            {
-                MakeFileTypeContent(playingIndex, layerData.layerContent, posSize);
-            }
-            else if(PlayJson::ContentType::WIDGET == layerData.layerContent.contentInfo.contentType)
-            {
-                MakeWidgetTypeContent(playingIndex, layerData.layerContent, posSize);
-            }
-            else
-            {
-                ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", layerData.layerContent.contentInfo.contentType);
-            }
-        }
-
-        // Make Subtitle
-        const int subtitleListSize = pageData.subtitleDataList.size();
-        for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
-        {
-            ScheduleTimer::PlayingIndex subtitlePlayingIndex;
-            subtitlePlayingIndex.playData = playData;
-            subtitlePlayingIndex.pageIdx = pageIdx;
-            subtitlePlayingIndex.mediaType = PlayJson::MediaType::SUBTITLE;
-
-            MakeSubtitleTypeContent(subtitlePlayingIndex, pageData.subtitleDataList[subIdx]);
-        }
+        ELGO_VIEWER_LOG("Error - Unknown Data Type: %d", playData.playDataType);
     }
 }
 
 //========================================================
-void ContentsPlayer::MakeFixedPlayDataContents(const PlayJson::PlayData& playData)
+void ContentsPlayer::MakePlayDataCountdownInfo(const ScheduleTimer::PlayingIndex& playingIndex)
 //========================================================
 {
-    // Find play data in saved list
-    int dataIdx = NOT_EXISTED_DATA;
-    const int playDataListSize = m_fixedPlayDataList.size();
-    for(int idx = 0; idx < playDataListSize; idx++)
+    ScheduleTimer::CountdownInfo countdownInfo;
+
+    if(PlayJson::PlayDataType::CUSTOM == playingIndex.playData.playDataType)
     {
-        if(playData.id == m_fixedPlayDataList[idx].playData.id)
+        const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[m_playDataIndex];
+
+        countdownInfo.id = customPlayData.playData.id;
+        countdownInfo.type = customPlayData.playData.playDataType;
+        countdownInfo.maxPage = customPlayData.pageDataList.size();
+        countdownInfo.pageTimecount.resize(countdownInfo.maxPage);
+        ELGO_VIEWER_LOG("Custom Countdown - {id: %d, type: %d, maxPage: %d}",
+                        countdownInfo.id, countdownInfo.type, countdownInfo.maxPage);
+    }
+    else if(PlayJson::PlayDataType::FIXED == playingIndex.playData.playDataType)
+    {
+        const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[m_playDataIndex];
+
+        countdownInfo.id = fixedPlayData.playData.id;
+        countdownInfo.type = fixedPlayData.playData.playDataType;
+        countdownInfo.maxLayer = fixedPlayData.layerDataList.size();
+        countdownInfo.layerTimecountList.resize(countdownInfo.maxLayer);
+        ELGO_VIEWER_LOG("Fixed Countdown - {id: %d, type: %d, maxLayer: %d}",
+                        countdownInfo.id, countdownInfo.type, countdownInfo.maxLayer);
+
+        const int layerListSize = fixedPlayData.layerDataList.size();
+        for(int layIdx = 0; layIdx < layerListSize; layIdx++)
         {
-            dataIdx = idx;
-            break;
+            const PlayJson::FixedLayerData& layerData = fixedPlayData.layerDataList[layIdx];
+
+            // Set layer timeout info
+            const int maxContentSize = layerData.contentDataList.size();
+            countdownInfo.layerTimecountList[layIdx].maxContent = maxContentSize;
+            countdownInfo.layerTimecountList[layIdx].contentTimeout.resize(maxContentSize);
+            ELGO_VIEWER_LOG("Fixed Layer Countdown - {id: %d, type: %d, layIdx: %d, maxContent: %d}",
+                            countdownInfo.id, countdownInfo.type, layIdx, maxContentSize);
         }
     }
-
-    if(NOT_EXISTED_DATA == dataIdx)
+    else
     {
-        ELGO_VIEWER_LOG("Not existed custom play data - id: %d", playData.id);
+        ELGO_VIEWER_LOG("Unknwon PlayData Type: %d", playingIndex.playData.playDataType);
         return;
     }
 
+    m_playCountdown = countdownInfo;
+}
+
+//========================================================
+void ContentsPlayer::MakeCustomPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                                QGraphicsScene* dest)
+//========================================================
+{
     // Set play data
-    const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[dataIdx];
+    const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[m_playDataIndex];
 
-    // Make countdown information
-    ScheduleTimer::CountdownInfo countdown;
-    countdown.id = playData.id;
-    countdown.type = playData.playDataType;
-    countdown.maxLayer = fixedPlayData.layerDataList.size();
-    countdown.layerTimecountList.resize(countdown.maxLayer);
+    // Make item or widget content
+    const PlayJson::PageData& pageData = customPlayData.pageDataList[playingIndex.pageIdx];
 
-    ScheduleTimer::PlayingIndex playingIndex;
-    playingIndex.playData.id = playingIndex.playData.id;
-    playingIndex.playData.playDataType = playingIndex.playData.playDataType;
-
-    // Make item or widget contents
-    const int layerListSize = fixedPlayData.layerDataList.size();
+    const int layerListSize = pageData.layerDataList.size();
     for(int layIdx = 0; layIdx < layerListSize; layIdx++)
     {
-        const PlayJson::FixedLayerData& layerData = fixedPlayData.layerDataList[layIdx];
-
-        // Set layer timeout info
-        const int maxContentSize = layerData.contentDataList.size();
-        countdown.layerTimecountList[layIdx].maxContent = maxContentSize;
-        countdown.layerTimecountList[layIdx].contentTimeout.resize(maxContentSize);
-
-        // Content index info
-        ScheduleTimer::PlayingIndex playingIndex;
-        playingIndex.playData = playData;
-        playingIndex.layerIdx = layIdx;
+        const PlayJson::CustomLayerData& layerData = pageData.layerDataList[layIdx];
 
         // Set pos and size
         StyleSheet::PosSizeInfo posSize;
         posSize.pos = QPoint(layerData.left, layerData.top);
         posSize.size = QSize(layerData.width, layerData.height);
 
-        for(int cdIdx = 0; cdIdx < maxContentSize; cdIdx++)
+        // Set media type
+        ScheduleTimer::PlayingIndex contentKeyIndex = playingIndex;
+        contentKeyIndex.mediaType = layerData.layerContent.contentInfo.mediaType;
+
+        // Make Content
+        if(PlayJson::ContentType::FILE == layerData.layerContent.contentInfo.contentType)
         {
-            // Make Content
-            const PlayJson::ContentData& contentData = layerData.contentDataList[cdIdx];
+            MakeFileTypeContent(playingIndex, layerData.layerContent, posSize, dest);
+        }
+        else if(PlayJson::ContentType::WIDGET == layerData.layerContent.contentInfo.contentType)
+        {
+            MakeWidgetTypeContent(playingIndex, layerData.layerContent, posSize, dest);
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", layerData.layerContent.contentInfo.contentType);
+        }
 
-            playingIndex.contentIdx = cdIdx;
-            playingIndex.mediaType = contentData.contentInfo.mediaType;
+        // Make Subtitle
+        const int subtitleListSize = pageData.subtitleDataList.size();
+        for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
+        {
+            ScheduleTimer::PlayingIndex subtitleKeyIndex = playingIndex;
+            subtitleKeyIndex.mediaType = PlayJson::MediaType::SUBTITLE;
 
-            if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
-            {
-                MakeFileTypeContent(playingIndex, contentData, posSize);
-            }
-            else if(PlayJson::ContentType::WIDGET == contentData.contentInfo.contentType)
-            {
-                MakeWidgetTypeContent(playingIndex, contentData, posSize);
-            }
-            else
-            {
-                ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", contentData.contentInfo.contentType);
-            }
+            MakeSubtitleTypeContent(subtitleKeyIndex, pageData.subtitleDataList[subIdx], dest);
         }
     }
+}
 
-    // Make Subtitle
-    const int subtitleListSize = fixedPlayData.subtitleDataList.size();
-    for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
+//========================================================
+void ContentsPlayer::MakeFixedPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                               QGraphicsScene* dest)
+//========================================================
+{
+    // Set play data
+    const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[m_playDataIndex];
+
+    // Make item or widget contents
+    const PlayJson::FixedLayerData& layerData = fixedPlayData.layerDataList[playingIndex.layerIdx];
+    const PlayJson::ContentData& contentData = layerData.contentDataList[playingIndex.contentIdx];
+
+    // Content index info
+    ScheduleTimer::PlayingIndex fixedDataKeyIndex = playingIndex;
+    fixedDataKeyIndex.layerIdx = playingIndex.layerIdx;
+    fixedDataKeyIndex.contentIdx = playingIndex.contentIdx;
+    fixedDataKeyIndex.mediaType = contentData.contentInfo.mediaType;
+
+    // Set pos and size
+    StyleSheet::PosSizeInfo posSize;
+    posSize.pos = QPoint(layerData.left, layerData.top);
+    posSize.size = QSize(layerData.width, layerData.height);
+
+    // Make Content
+    if(PlayJson::ContentType::FILE == contentData.contentInfo.contentType)
     {
-        ScheduleTimer::PlayingIndex subtitlePlayingIndex;
-        subtitlePlayingIndex.playData = playData;
-
-        MakeSubtitleTypeContent(subtitlePlayingIndex, fixedPlayData.subtitleDataList[subIdx]);
+        MakeFileTypeContent(playingIndex, contentData, posSize, dest);
     }
-
-    // Set Countdown info
-    m_playCountdown = countdown;
+    else if(PlayJson::ContentType::WIDGET == contentData.contentInfo.contentType)
+    {
+        MakeWidgetTypeContent(playingIndex, contentData, posSize, dest);
+    }
+    else
+    {
+        ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", contentData.contentInfo.contentType);
+    }
 }
 
 //========================================================
 void ContentsPlayer::MakeFileTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
                                          const PlayJson::ContentData& contentData,
-                                         const StyleSheet::PosSizeInfo& posSize)
+                                         const StyleSheet::PosSizeInfo& posSize,
+                                         QGraphicsScene *dest)
 //========================================================
 {
     // Make resource path
@@ -517,6 +502,8 @@ void ContentsPlayer::MakeFileTypeContent(const ScheduleTimer::PlayingIndex& play
         const bool bIsSetItem = newImageItem->SetImageItem(fullPath, posSize);
         if(true == bIsSetItem)
         {
+            dest->addItem(newImageItem);
+
             ImageItemInfo imageItemInfo(playingIndex, newImageItem);
             m_imageItemList.push_back(imageItemInfo);
         }
@@ -539,6 +526,8 @@ void ContentsPlayer::MakeFileTypeContent(const ScheduleTimer::PlayingIndex& play
         newVideoItem->SetVideoPosAndSize(posSize);
         newVideoItem->setZValue(contentData.zIndex);
 
+        dest->addItem(newVideoItem);
+
         VideoItemInfo videoItemInfo(playingIndex, newVideoItem);
         m_videoItemList.push_back(videoItemInfo);
     }
@@ -551,7 +540,8 @@ void ContentsPlayer::MakeFileTypeContent(const ScheduleTimer::PlayingIndex& play
 //========================================================
 void ContentsPlayer::MakeWidgetTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
                                            const PlayJson::ContentData& contentData,
-                                           const StyleSheet::PosSizeInfo& posSize)
+                                           const StyleSheet::PosSizeInfo& posSize,
+                                           QGraphicsScene *dest)
 //========================================================
 {
     // Set style info
@@ -647,12 +637,16 @@ void ContentsPlayer::MakeWidgetTypeContent(const ScheduleTimer::PlayingIndex& pl
     else
     {
         ELGO_VIEWER_LOG("Error - Unkwon Media Type: %d", contentData.contentInfo.mediaType);
+        return;
     }
+
+    dest->addItem(newProxyWidget);
 }
 
 //========================================================
 void ContentsPlayer::MakeSubtitleTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
-                                             const PlayJson::SubtitleData& subtitleData)
+                                             const PlayJson::SubtitleData& subtitleData,
+                                             QGraphicsScene *dest)
 //========================================================
 {
     QGraphicsProxyWidget *newProxyWidget = new QGraphicsProxyWidget;
@@ -661,6 +655,8 @@ void ContentsPlayer::MakeSubtitleTypeContent(const ScheduleTimer::PlayingIndex& 
     newSubtitle->MakeSubTitleWidget(subtitleData);
     newProxyWidget->setWidget(newSubtitle);
     newProxyWidget->setZValue(100); // top level
+
+    dest->addItem(newProxyWidget);
 
     SubtitleWidgetInfo subtitleWidgetInfo(playingIndex, newSubtitle);
     m_subtitleWidgetList.push_back(subtitleWidgetInfo);
@@ -1045,6 +1041,176 @@ void ContentsPlayer::ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& p
 }
 
 //========================================================
+void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex)
+//========================================================
+{
+    // image
+    const int prevImageListSize = m_imageItemList.size();
+
+    QVector<ImageItemInfo>::iterator imageIter = m_imageItemList.begin();
+    for(; imageIter != m_imageItemList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, imageIter->first);
+        if( true == bIsSameItem )
+        {
+            imageIter->second->deleteLater();
+            imageIter = m_imageItemList.erase(imageIter);
+        }
+        else
+        {
+            ++imageIter;
+        }
+    }
+
+    // video
+    const int prevVideoListSize = m_videoItemList.size();
+
+    QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+    for( ; videoIter != m_videoItemList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, videoIter->first);
+        if( true == bIsSameItem )
+        {
+            videoIter->second->StopVideoItem();
+
+            videoIter->second->deleteLater();
+            videoIter = m_videoItemList.erase(videoIter);
+        }
+        else
+        {
+            ++videoIter;
+        }
+    }
+
+    // clock
+    const int prevClockListSize = m_clockWidgetList.size();
+
+    QVector<ClockWidgetInfo>::iterator clockIter = m_clockWidgetList.begin();
+    for( ; clockIter != m_clockWidgetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, clockIter->first);
+        if( true == bIsSameItem )
+        {
+            clockIter->second->StopClock();
+
+            clockIter->second->deleteLater();
+            clockIter = m_clockWidgetList.erase(clockIter);
+        }
+        else
+        {
+            ++clockIter;
+        }
+    }
+
+    // date
+    const int prevDateListSize = m_dateWidgetList.size();
+
+    QVector<DateWidgetInfo>::iterator dateIter = m_dateWidgetList.begin();
+    for( ; dateIter != m_dateWidgetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, dateIter->first);
+        if( true == bIsSameItem )
+        {
+            dateIter->second->StopDateWidget();
+
+            dateIter->second->deleteLater();
+            dateIter = m_dateWidgetList.erase(dateIter);
+        }
+        else
+        {
+            ++dateIter;
+        }
+    }
+
+    // news
+    const int prevNewsListSize = m_newsFeedWigetList.size();
+
+    QVector<NewsFeedWidgetInfo>::iterator newsIter = m_newsFeedWigetList.begin();
+    for( ; newsIter != m_newsFeedWigetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, newsIter->first);
+        if( true == bIsSameItem )
+        {
+            newsIter->second->StopAnimation();
+
+            newsIter->second->deleteLater();
+            newsIter  = m_newsFeedWigetList.erase(newsIter);
+        }
+        else
+        {
+           ++newsIter;
+        }
+    }
+
+    // weather
+    const int prevWeatherListSize = m_weatherWidgetList.size();
+
+    QVector<WeatherWidgetInfo>::iterator weatherIter = m_weatherWidgetList.begin();
+    for( ; weatherIter != m_weatherWidgetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, weatherIter->first);
+        if( true == bIsSameItem )
+        {
+            weatherIter->second->StopDateTimeTimer();
+
+            weatherIter->second->deleteLater();
+            weatherIter = m_weatherWidgetList.erase(weatherIter);
+        }
+        else
+        {
+            ++weatherIter;
+        }
+    }
+
+    // subtitle
+    const int prevSubtitleListSize = m_subtitleWidgetList.size();
+
+    QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+    for( ; subIter != m_subtitleWidgetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, subIter->first);
+        if( true == bIsSameItem )
+        {
+            subIter->second->deleteLater();
+            subIter = m_subtitleWidgetList.erase(subIter);
+        }
+        else
+        {
+            ++subIter;
+        }
+    }
+
+    // proxy
+    const int prevProxyListSize = m_proxyWidgetList.size();
+
+    QVector<ProxyWidgetInfo>::iterator proxyIter = m_proxyWidgetList.begin();
+    for( ; proxyIter != m_proxyWidgetList.end(); )
+    {
+        const bool bIsSameItem = ComparePlayingIndex(playingIndex, proxyIter->first);
+        if( true == bIsSameItem )
+        {
+            proxyIter->second->deleteLater();
+            proxyIter = m_proxyWidgetList.erase(proxyIter);
+        }
+        else
+        {
+            ++proxyIter;
+        }
+    }
+
+    ELGO_VIEWER_LOG("{image - %d : %d, video - %d : %d, clock - %d : %d, date - %d : %d}",
+                    prevImageListSize, m_imageItemList.size(),
+                    prevVideoListSize, m_videoItemList.size(),
+                    prevClockListSize, m_clockWidgetList.size(),
+                    prevDateListSize, m_dateWidgetList.size());
+    ELGO_VIEWER_LOG("{news - %d : %d, weather - %d : %d, subtitle - %d : %d, proxy - %d : %d}",
+                    prevNewsListSize, m_newsFeedWigetList.size(),
+                    prevWeatherListSize, m_weatherWidgetList.size(),
+                    prevSubtitleListSize, m_subtitleWidgetList.size(),
+                    prevProxyListSize, m_proxyWidgetList.size());
+}
+
+//========================================================
 void ContentsPlayer::PlayerTimeout()
 //========================================================
 {
@@ -1085,7 +1251,7 @@ void ContentsPlayer::PlayerTimeout()
                                     nextPlayingIndex.playData.id, nextPlayingIndex.pageIdx,
                                     m_playCountdown.pageTimecount[currPageIdx], currPageData.duration);
 
-                    UpdatePlayerScene(nextPlayingIndex);
+                    UpdatePlayerScene(nextPlayingIndex, m_playDataIndex);
                 }
                 else
                 {

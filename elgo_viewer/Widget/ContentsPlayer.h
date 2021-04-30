@@ -85,24 +85,35 @@ private:
     void SearchContentAndAddToScene(const ScheduleTimer::PlayingIndex& playingIndex,
                                     QGraphicsScene* dest);
 
+    /** @brief  Make Countdown Info */
+    void MakePlayDataCountdownInfo(const ScheduleTimer::PlayingIndex& playingIndex);
+    /** @brief  */
+    void GetSuitablePlayDataIndex(const PlayJson::PlayData& playData);
+
+
     /** @brief  Make Custom PlayData Item/Widget */
-    void MakeCustomPlayDataContents(const PlayJson::PlayData& playData);
+    void MakeCustomPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                    QGraphicsScene* dest);
     /** @brief  Make Fixed PlayData Item/Widget */
-    void MakeFixedPlayDataContents(const PlayJson::PlayData& playData);
+    void MakeFixedPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+                                   QGraphicsScene* dest);
 
     /** @brief  Make Image or Video Content */
     void MakeFileTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
                              const PlayJson::ContentData& contentData,
-                             const StyleSheet::PosSizeInfo& posSize);
+                             const StyleSheet::PosSizeInfo& posSize,
+                             QGraphicsScene *dest);
 
     /** @brief  Make Widget Content */
     void MakeWidgetTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
                                const PlayJson::ContentData& contentData,
-                               const StyleSheet::PosSizeInfo& posSize);
+                               const StyleSheet::PosSizeInfo& posSize,
+                               QGraphicsScene *dest);
 
     /** @brief  Make Subtitle Content */
     void MakeSubtitleTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
-                                 const PlayJson::SubtitleData& subtitleData);
+                                 const PlayJson::SubtitleData& subtitleData,
+                                 QGraphicsScene *dest);
 
 
     /** @brief  Play Item and Widget */
@@ -114,6 +125,8 @@ private:
     void ClearOtherPlayDataJsonInfo(const ScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev PlayData Item */
     void ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& playingIndex);
+    /** @brief  Clear Prev Playing Data */
+    void ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex);
 
     /** @brief  Timer's timeout slot */
     void PlayerTimeout();
@@ -133,6 +146,7 @@ private:
     ScheduleTimer::CountdownInfo m_playCountdown;
 
     // PlayData List
+    int m_playDataIndex;
     QVector<PlayJson::CustomPlayDataJson> m_customPlayDataList;
     QVector<PlayJson::FixedPlayDataJson> m_fixedPlayDataList;
 
