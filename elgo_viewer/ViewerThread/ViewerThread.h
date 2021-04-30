@@ -34,14 +34,14 @@ public:
     void ExecRotateDeviceDisplay();
 
     /** @brief */
-    void ExecCustomPlayData();
+    void ExecPlayCustomPlayData();
     /** @brief */
-    void ExecFixedPlayData();
+    void ExecPlayFixedPlayData();
 
     /** @brief */
-    void ExecCustomPlaySchedules();
+    void ExecAddCustomPlayData();
     /** @brief */
-    void ExecFixedPlaySchedules();
+    void ExecAddFixedPlayData();
 
     /** @brief */
     void ExecScreenCapture();

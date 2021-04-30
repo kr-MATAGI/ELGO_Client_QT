@@ -25,20 +25,20 @@ public:
     void ExecState(const quint16 event, const QByteArray &src);
 
     /** @brief */
-    void MakeQrCodeAndDisplay(const QByteArray& src);
+    void RecvMakeQrCodeAndDisplay(const QByteArray& src);
 
     /** @brief */
-    void RotateDeviceDisplay(const QByteArray& src);
+    void RecvRotateDeviceDisplay(const QByteArray& src);
 
     /** @brief */
-    void RecvCustomPlayData(const QByteArray& src);
+    void RecvPlayCustomPlayData(const QByteArray& src);
     /** @brief */
-    void RecvFixedPlayData(const QByteArray& src);
+    void RecvPlayFixedPlayData(const QByteArray& src);
 
     /** @brief */
-    void RecvCustomPlaySchedules(const QByteArray& src);
+    void RecvAddCustomPlayData(const QByteArray& src);
     /** @brief */
-    void RecvFixedPlaySchedules(const QByteArray& src);
+    void RecvAddFixedPlayData(const QByteArray& src);
 
     /** @brief */
     void RecvRequestScreenCapture(const QByteArray& src);

@@ -112,8 +112,31 @@ void ContentsPlayer::AddPlayScheduleListSlot(const QVector<ScheduleJson::PlaySch
     const int srcSize = src.size();
     for(int idx = 0; idx < srcSize; idx++)
     {
-        m_playScheduleList.push_back(src[idx]);
-        ELGO_VIEWER_LOG("ADD PlaySchedule - { id: %d }", src[idx].id.toStdString().c_str());
+        bool bIsInserted = false;
+        QVector<ScheduleJson::PlaySchedule>::iterator iter = m_playScheduleList.begin();
+        for(; iter != m_playScheduleList.end(); ++iter)
+        {
+            if(0 == strcmp(iter->id.toStdString().c_str(),
+                           src[idx].id.toStdString().c_str()))
+            {
+                bIsInserted = true;
+                break;
+            }
+        }
+
+        if(false == bIsInserted)
+        {
+            m_playScheduleList.push_back(src[idx]);
+            ELGO_VIEWER_LOG("ADD PlaySchedule - {id: %s, ListSize: %d}",
+                            src[idx].id.toStdString().c_str(),
+                            m_playScheduleList.size());
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("Already Inserted PlaySchedule - {id: %s, ListSize: %d}",
+                            src[idx].id.toStdString().c_str(),
+                            m_playScheduleList.size());
+        }
     }
 }
 
@@ -1285,6 +1308,44 @@ void ContentsPlayer::ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& pla
 void ContentsPlayer::PlayerTimeout()
 //========================================================
 {
+    // Schedule Timeout
+    if(0 < m_playScheduleList.size())
+    {
+        const QDateTime currDateTime = QDateTime::currentDateTime();
+        const qint64 currSecEpoch = currDateTime.toSecsSinceEpoch();
+
+        // Check Schedule
+        QVector<ScheduleJson::PlaySchedule>::iterator scheduleIter = m_playScheduleList.begin();
+        for(; scheduleIter != m_playScheduleList.end(); ++scheduleIter)
+        {
+            QVector<ScheduleJson::PlayScheduleData>::iterator dataIter = scheduleIter->scheduleList.begin();
+            for(; dataIter != scheduleIter->scheduleList.end(); )
+            {
+                // Check Expired
+                if(currSecEpoch >= dataIter->endTime.toSecsSinceEpoch())
+                {
+                    ELGO_VIEWER_LOG("Expired - {id: %s, start: %s, end: %s}",
+                                    scheduleIter->id.toStdString().c_str(),
+                                    ConvertDateTimeToString(dataIter->startTime).toStdString().c_str(),
+                                    ConvertDateTimeToString(dataIter->endTime).toStdString().c_str());
+
+                    dataIter = scheduleIter->scheduleList.erase(dataIter);
+                }
+                else if( (currSecEpoch >= dataIter->startTime.toSecsSinceEpoch()) &&
+                         (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
+                {
+                    // Check Cron Value (rule)
+                    const bool bIsValid = IsValidCronRuleValue(currDateTime, dataIter->cron);
+                    if( (true == bIsValid) )
+                    {
+
+                    }
+                }
+            }
+        }
+    }
+
+    // SinglePlay Data's timeout
     if(PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType)
     {
         // Change Page
@@ -1448,6 +1509,32 @@ void ContentsPlayer::ConvertMediaTypeEnumToString(const PlayJson::MediaType src,
 }
 
 //========================================================
+QString ContentsPlayer::ConvertDateTimeToString(const QDateTime& src)
+//========================================================
+{
+    // hh:mm::ss.msec
+    QString timeStr = src.time().toString();
+    timeStr.append(".");
+
+    //date
+    QDate date = src.date();
+    QString year = QString::number(date.year());
+    QString month = QString::number(date.month());
+    QString day = QString::number(date.day());
+
+    // yyyy-mm-dd
+    QString dateStr;
+    dateStr.append(year);
+    dateStr.append("-");
+    dateStr.append(month);
+    dateStr.append("-");
+    dateStr.append(day);
+
+    QString dateTimeStr = dateStr + ":" + timeStr;
+    return dateTimeStr;
+}
+
+//========================================================
 bool ContentsPlayer::ComparePlayingIndex(const ScheduleTimer::PlayingIndex& lhs,
                                          const ScheduleTimer::PlayingIndex& rhs)
 //========================================================
@@ -1478,4 +1565,55 @@ bool ContentsPlayer::ComparePlayingIndex(const ScheduleTimer::PlayingIndex& lhs,
     }
 
     return true;
+}
+
+//========================================================
+bool ContentsPlayer::IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron)
+//========================================================
+{
+    bool retValue = false;
+
+    const int month = currentDateTime.date().month();
+    const int day = currentDateTime.date().day();
+    const int dow = currentDateTime.date().dayOfWeek();
+
+    const int hour = currentDateTime.time().hour();
+    const int min = currentDateTime.time().minute();
+    const int sec = currentDateTime.time().second();
+
+    if(cron.monthList.end() == std::find(cron.monthList.begin(), cron.monthList.end(), month))
+    {
+        return retValue;
+    }
+
+    if(cron.dayList.end() == std::find(cron.dayList.begin(), cron.dayList.end(), day))
+    {
+        return retValue;
+    }
+
+    if(cron.dowList.end() == std::find(cron.dowList.begin(), cron.dowList.end(), dow))
+    {
+        return retValue;
+    }
+
+    if(cron.hourList.end() == std::find(cron.hourList.begin(), cron.hourList.end(), hour))
+    {
+        return retValue;
+    }
+
+    if(cron.minList.end() == std::find(cron.minList.begin(), cron.minList.end(), min))
+    {
+        return retValue;
+    }
+
+    if(cron.secList.end() == std::find(cron.secList.begin(), cron.secList.end(), sec))
+    {
+        return retValue;
+    }
+
+    retValue = true;
+
+    // TODO : Cron options - Maybe not using on web
+
+    return retValue;
 }

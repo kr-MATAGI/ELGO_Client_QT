@@ -58,21 +58,21 @@ void ViewerThread::run()
     {
         ExecRotateDeviceDisplay();
     }
-    else if(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA == m_event)
+    else if(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA == m_event)
     {
-        ExecCustomPlayData();
+        ExecPlayCustomPlayData();
     }
-    else if(VIEWER_EVENT::Event::FIXED_PLAY_DATA == m_event)
+    else if(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA == m_event)
     {
-        ExecFixedPlayData();
+        ExecPlayFixedPlayData();
     }
-    else if(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES == m_event)
+    else if(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA == m_event)
     {
-        ExecCustomPlaySchedules();
+        ExecAddCustomPlayData();
     }
-    else if(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES == m_event)
+    else if(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA == m_event)
     {
-        ExecFixedPlaySchedules();
+        ExecAddFixedPlayData();
     }
     else if(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE == m_event)
     {
@@ -134,7 +134,7 @@ void ViewerThread::ExecRotateDeviceDisplay()
 }
 
 //========================================================
-void ViewerThread::ExecCustomPlayData()
+void ViewerThread::ExecPlayCustomPlayData()
 //========================================================
 {
     /**
@@ -159,7 +159,7 @@ void ViewerThread::ExecCustomPlayData()
 }
 
 //========================================================
-void ViewerThread::ExecFixedPlayData()
+void ViewerThread::ExecPlayFixedPlayData()
 //========================================================
 {
     /**
@@ -184,47 +184,17 @@ void ViewerThread::ExecFixedPlayData()
 }
 
 //========================================================
-void ViewerThread::ExecCustomPlaySchedules()
+void ViewerThread::ExecAddCustomPlayData()
 //========================================================
 {
-    /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Send custom play data information
-    *       with schedules
-    * @param
-    *       CustomPlayDataJson customPlayData
-    *       QVector<PlaySchedules> schedules
-    */
 
-    PlayJson::CustomPlayDataJson customPlayData;
-    QVector<ScheduleJson::PlaySchedule> scheduleList;
-
-    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
-    recvStream >> customPlayData;
-    recvStream >> scheduleList;
 }
 
 //========================================================
-void ViewerThread::ExecFixedPlaySchedules()
+void ViewerThread::ExecAddFixedPlayData()
 //========================================================
 {
-    /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Send fixed play data information
-    *       with schedules
-    * @param
-    *       FixedPlayDataJson customPlayData
-    *       QVector<PlaySchedules> schedules
-    */
 
-    PlayJson::FixedPlayDataJson fixedPlayData;
-    QVector<ScheduleJson::PlaySchedule> scheduleList;
-
-    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
-    recvStream >> fixedPlayData;
-    recvStream >> scheduleList;
 }
 
 //========================================================

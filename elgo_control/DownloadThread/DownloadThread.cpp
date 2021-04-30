@@ -152,10 +152,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
             QDataStream stream(&bytes, QIODevice::WriteOnly);
             stream << customPlayData;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::CUSTOM_PLAY_DATA, bytes);
+                                                          VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA, bytes);
             if(false == bIsSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
             }
         }
         else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
@@ -173,10 +173,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
             QDataStream stream(&bytes, QIODevice::WriteOnly);
             stream << fixedPlayData;
             const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::FIXED_PLAY_DATA, bytes);
+                                                          VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA, bytes);
             if(false == bIsSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_DATA);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
             }
         }
         else
@@ -305,24 +305,42 @@ void DownloadThread::ExecDownloadPlaySchedules()
             }
 
             /**
-            * @note
-            *       ELGO_CONTROL -> ELGO_VIEWER
-            *       Send custom play data information
-            *       with schedules
-            * @param
-            *       CustomPlayDataJson customPlayData
-            *       QVector<PlaySchedules> schedules
-            */
+             * @note
+             *       ELGO_CONTROL -> ELGO_VIEWER
+             *       Add custom play data
+             * @param
+             *       CustomPlayDataJson customPlayData
+             */
+            QByteArray viewerBytes;
+            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+            viewerStream << customPlayData;
 
-            QByteArray bytes;
-            QDataStream stream(&bytes, QIODevice::WriteOnly);
-            stream << customPlayData;
-            stream << playScheduleList;
-            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES, bytes);
-            if(false == bIsSendEvent)
+            const bool bViewerSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA,
+                                                              viewerBytes);
+            if(false == bViewerSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA);
+            }
+
+
+            /**
+             *  @note
+             *          ELGO_CONTROL -> ELGO_MAIN
+             *          For manage custom/fixed play schedule
+             *  @param
+             *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+             */
+            QByteArray mainBytes;
+            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << playScheduleList;
+
+            const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                            MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
+                                                            mainBytes);
+            if(false == bMainSendEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
             }
         }
         else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
@@ -331,24 +349,41 @@ void DownloadThread::ExecDownloadPlaySchedules()
             VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
 
             /**
-            * @note
-            *       ELGO_CONTROL -> ELGO_VIEWER
-            *       Send fixed play data information
-            *       with schedules
-            * @param
-            *       FixedPlayDataJson customPlayData
-            *       QVector<PlaySchedules> schedules
-            */
+             * @note
+             *       ELGO_CONTROL -> ELGO_VIEWER
+             *       Add fixed play data
+             * @param
+             *       FixedPlayDataJson fixedPlayData
+             */
+            QByteArray viewerBytes;
+            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+            viewerStream << fixedPlayData;
 
-            QByteArray bytes;
-            QDataStream stream(&bytes, QIODevice::WriteOnly);
-            stream << fixedPlayData;
-            stream << playScheduleList;
-            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES, bytes);
-            if(false == bIsSendEvent)
+            const bool bViewerSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA,
+                                                              viewerBytes);
+            if(false == bViewerSendEvent)
             {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES);
+                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA);
+            }
+
+            /**
+             *  @note
+             *          ELGO_CONTROL -> ELGO_MAIN
+             *          For manage custom/fixed play schedule
+             *  @param
+             *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+             */
+            QByteArray mainBytes;
+            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << playScheduleList;
+
+            const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_MAIN,
+                                                            MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
+                                                            mainBytes);
+            if(false == bMainSendEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
             }
         }
         else

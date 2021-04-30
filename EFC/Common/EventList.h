@@ -78,6 +78,15 @@ namespace MAIN_EVENT
          */
         CONNECT_NEW_WIFI = 262,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          For manage custom/fixed play schedule
+         *  @param
+         *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+         */
+        UPDATE_PLAY_SCHEDULE_LIST = 263,
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -182,39 +191,34 @@ namespace VIEWER_EVENT
          * @param
          *       CustomPlayDataJson customPlayData
          */
-        CUSTOM_PLAY_DATA = 771,
+        PLAY_CUSTOM_PLAY_DATA = 771,
 
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
          *       Send fixed play data information
          * @param
-         *       FixedPlayDataJson customPlayData
+         *       FixedPlayDataJson fixedPlayData
          */
-        FIXED_PLAY_DATA = 772,
+        PLAY_FIXED_PLAY_DATA = 772,
 
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Send custom play data information
-         *       with schedules
+         *       Add custom play data
          * @param
          *       CustomPlayDataJson customPlayData
-         *       QList<PlaySchedules> schedules
          */
-        CUSTOM_PLAY_SCHEDULES = 773,
+        ADD_CUSTOM_PLAY_DATA = 773,
 
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Send fixed play data information
-         *       with schedules
+         *       Add fixed play data
          * @param
-         *       FixedPlayDataJson customPlayData
-         *       QList<PlaySchedules> schedules
+         *       FixedPlayDataJson fixedPlayData
          */
-        FIXED_PLAY_SCHEDULES = 774,
-
+        ADD_FIXED_PLAY_DATA = 774,
 
         /**
          * @note

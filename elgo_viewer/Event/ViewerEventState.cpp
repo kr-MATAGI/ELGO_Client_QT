@@ -12,17 +12,17 @@ ViewerEventState::ViewerEventState()
 
     // enorll Event
     m_state.RegisterEvent(VIEWER_EVENT::Event::MAKE_QRCODE,
-                          &ViewerEventState::MakeQrCodeAndDisplay);
+                          &ViewerEventState::RecvMakeQrCodeAndDisplay);
     m_state.RegisterEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY,
-                          &ViewerEventState::RotateDeviceDisplay);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA,
-                          &ViewerEventState::RecvCustomPlayData);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA,
-                          &ViewerEventState::RecvFixedPlayData);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES,
-                          &ViewerEventState::RecvCustomPlaySchedules);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES,
-                          &ViewerEventState::RecvFixedPlaySchedules);
+                          &ViewerEventState::RecvRotateDeviceDisplay);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                          &ViewerEventState::RecvPlayCustomPlayData);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                          &ViewerEventState::RecvPlayFixedPlayData);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA,
+                          &ViewerEventState::RecvAddCustomPlayData);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA,
+                          &ViewerEventState::RecvAddFixedPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
                           &ViewerEventState::RecvRequestScreenCapture);
 }
@@ -43,7 +43,7 @@ void ViewerEventState::ExecState(const quint16 event, const QByteArray &src)
 }
 
 //========================================================
-void ViewerEventState::MakeQrCodeAndDisplay(const QByteArray &src)
+void ViewerEventState::RecvMakeQrCodeAndDisplay(const QByteArray &src)
 //========================================================
 {
     /**
@@ -61,7 +61,7 @@ void ViewerEventState::MakeQrCodeAndDisplay(const QByteArray &src)
 }
 
 //========================================================
-void ViewerEventState::RotateDeviceDisplay(const QByteArray& src)
+void ViewerEventState::RecvRotateDeviceDisplay(const QByteArray& src)
 //========================================================
 {
     /**
@@ -79,7 +79,7 @@ void ViewerEventState::RotateDeviceDisplay(const QByteArray& src)
 }
 
 //========================================================
-void ViewerEventState::RecvCustomPlayData(const QByteArray& src)
+void ViewerEventState::RecvPlayCustomPlayData(const QByteArray& src)
 //========================================================
 {
     /**
@@ -90,14 +90,14 @@ void ViewerEventState::RecvCustomPlayData(const QByteArray& src)
     *       CustomPlayDataJson customPlayData
     */
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_DATA);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvFixedPlayData(const QByteArray& src)
+void ViewerEventState::RecvPlayFixedPlayData(const QByteArray& src)
 //========================================================
 {
     /**
@@ -107,50 +107,47 @@ void ViewerEventState::RecvFixedPlayData(const QByteArray& src)
     * @param
     *       FixedPlayDataJson customPlayData
     */
+
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_DATA);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvCustomPlaySchedules(const QByteArray& src)
+void ViewerEventState::RecvAddCustomPlayData(const QByteArray& src)
 //========================================================
 {
     /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Send fixed play data information
-    *       with schedules
-    * @param
-    *       FixedPlayDataJson customPlayData
-    *       int scheduleCount
-    *       PlaySchedules schedules
-    */
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Add custom play data
+     * @param
+     *       CustomPlayDataJson customPlayData
+     */
+
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::CUSTOM_PLAY_SCHEDULES);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ViewerEventState::RecvFixedPlaySchedules(const QByteArray& src)
+void ViewerEventState::RecvAddFixedPlayData(const QByteArray& src)
 //========================================================
 {
     /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Send fixed play data information
-    *       with schedules
-    * @param
-    *       FixedPlayDataJson customPlayData
-    *       int scheduleCount
-    *       PlaySchedules schedules
-    */
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Add fixed play data
+     * @param
+     *       FixedPlayDataJson fixedPlayData
+     */
+
     ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::FIXED_PLAY_SCHEDULES);
+    thread->SetViewerEvent(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);

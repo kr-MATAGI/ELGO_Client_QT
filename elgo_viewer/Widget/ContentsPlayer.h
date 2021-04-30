@@ -73,12 +73,17 @@ private slots:
 private:
     /** @brief  Simple Utils */
     void ConvertMediaTypeEnumToString(const PlayJson::MediaType src, QString& dest);
+    /** @brief  */
+    QString ConvertDateTimeToString(const QDateTime& src);
+
     /** @brief
      *          Compare Content Playing Index Info
      *          ture == same, false == diff
      */
     bool ComparePlayingIndex(const ScheduleTimer::PlayingIndex& lhs,
                              const ScheduleTimer::PlayingIndex& rhs);
+    /** @brief */
+    bool IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron);
 
 
     /** @brief  Update Display Scene */
