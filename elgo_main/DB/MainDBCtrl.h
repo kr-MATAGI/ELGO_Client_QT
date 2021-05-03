@@ -20,7 +20,7 @@ public:
 
 public:
     /** @brief */
-    void ConnectionDB();
+    void InitializeDB();
 
     /** @brief */
     void CheckingDefaultTables(const char* dbPath);

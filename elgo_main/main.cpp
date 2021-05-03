@@ -48,7 +48,7 @@ void Initialize()
     g_MainController->GetInstance()->GetMainCtrl().CheckResourceFolder();
 
     // Get DB info
-    g_MainController->GetInstance()->GetDBCtrl().ConnectionDB();
+    g_MainController->GetInstance()->GetDBCtrl().InitializeDB();
 
     // Load Configuration
     g_MainController->GetInstance()->GetMainCtrl().LoadConfigurationInfo();

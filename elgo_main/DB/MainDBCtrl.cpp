@@ -25,7 +25,7 @@ MainDBCtrl::~MainDBCtrl()
 }
 
 //========================================================
-void MainDBCtrl::ConnectionDB()
+void MainDBCtrl::InitializeDB()
 //========================================================
 {
     m_mutex->lock();
