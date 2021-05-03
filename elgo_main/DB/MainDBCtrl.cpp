@@ -162,13 +162,16 @@ void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
 void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& playScheduleList)
 //========================================================
 {
+    m_mutex->lock();
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
-        ELGO_MAIN_LOG("ERROR - DB Open :%s", SCHEDULE_DB);
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        m_mutex->unlock();
 
         return;
     }
@@ -241,6 +244,71 @@ void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>
     }
 
     db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::ClearAllPlaySchedule()
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::DELETE_ALL_PLAY_SCHEDULE);
+    const bool bIsDel = query.exec();
+    if(false == bIsDel)
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::DELETE_ALL_PLAY_SCHEDULE,
+                      query.lastError().text().toStdString().c_str());
+    }
+    db.close();
+
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::DELETE_PLAY_SCHEDULE_BY_ID);
+    query.bindValue(":id", scheduleId);
+    const bool bIsDel = query.exec();
+    if(false == bIsDel)
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::DELETE_PLAY_SCHEDULE_BY_ID,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    m_mutex->unlock();
 }
 
 //========================================================

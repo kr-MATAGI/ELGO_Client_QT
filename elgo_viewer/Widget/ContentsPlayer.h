@@ -36,10 +36,6 @@ signals:
     /** @brief  Show Contents Player (Signal) */
     void StartContentsPlayerSignal();
 
-
-    /** @brief  Add Play Schedule (Signal) */
-    void AddPlayScheduleListSignal(const QVector<ScheduleJson::PlaySchedule>& src);
-
     /** @brief  Add Custom PlayData Info (Signal) */
     void AddPlayDataSignal(const PlayJson::CustomPlayDataJson& src);
     /** @brief  Add Fxied PlayData Info (Signal) */
@@ -52,10 +48,6 @@ signals:
 private slots:
     /** @brief  Show Contents Player (Slot) */
     void StartContentsPlayerSlot();
-
-
-    /** @brief  Add Play Schedule (Slot) */
-    void AddPlayScheduleListSlot(const QVector<ScheduleJson::PlaySchedule>& src);
 
     /** @brief  Add Custom PlayData Info (Slot) */
     void AddPlayDataSlot(const PlayJson::CustomPlayDataJson& src);
@@ -73,76 +65,73 @@ private slots:
 private:
     /** @brief  Simple Utils */
     void ConvertMediaTypeEnumToString(const PlayJson::MediaType src, QString& dest);
-    /** @brief  */
-    QString ConvertDateTimeToString(const QDateTime& src);
 
-    /** @brief
+    /**
+     *  @note
      *          Compare Content Playing Index Info
      *          ture == same, false == diff
      */
-    bool ComparePlayingIndex(const ScheduleTimer::PlayingIndex& lhs,
-                             const ScheduleTimer::PlayingIndex& rhs);
-    /** @brief */
-    bool IsValidCronRuleValue(const QDateTime& currentDateTime, const ScheduleJson::Cron& cron);
+    bool ComparePlayingIndex(const PlayScheduleTimer::PlayingIndex& lhs,
+                             const PlayScheduleTimer::PlayingIndex& rhs);
 
 
     /** @brief  Update Display Scene */
-    void UpdatePlayerScene(const ScheduleTimer::PlayingIndex& playingIndex,
+    void UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& playingIndex,
                            const bool bDelPrevData = false);
     /** @brief  Update Next Fixed Content */
-    void UpdateNextFixedLayerContent(const ScheduleTimer::PlayingIndex& prevPlayingIndex,
-                                     const ScheduleTimer::PlayingIndex& nextPlayingIndex);
+    void UpdateNextFixedLayerContent(const PlayScheduleTimer::PlayingIndex& prevPlayingIndex,
+                                     const PlayScheduleTimer::PlayingIndex& nextPlayingIndex);
 
     /** @brief  Add Content to Scene */
-    void SearchContentAndAddToScene(const ScheduleTimer::PlayingIndex& playingIndex,
+    void SearchContentAndAddToScene(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                     QGraphicsScene* dest);
 
     /** @brief  Make Countdown Info */
-    void MakePlayDataCountdownInfo(const ScheduleTimer::PlayingIndex& playingIndex);
+    void MakePlayDataCountdownInfo(const PlayScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  */
     void GetSuitablePlayDataIndex(const PlayJson::PlayData& playData);
 
 
     /** @brief  Make Custom PlayData Item/Widget */
-    void MakeCustomPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+    void MakeCustomPlayDataContents(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                     QGraphicsScene* dest);
     /** @brief  Make Fixed PlayData Item/Widget */
-    void MakeFixedPlayDataContents(const ScheduleTimer::PlayingIndex& playingIndex,
+    void MakeFixedPlayDataContents(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                    QGraphicsScene* dest);
 
     /** @brief  Make Image or Video Content */
-    void MakeFileTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
+    void MakeFileTypeContent(const PlayScheduleTimer::PlayingIndex& playingIndex,
                              const PlayJson::ContentData& contentData,
                              const StyleSheet::PosSizeInfo& posSize,
                              QGraphicsScene *dest);
 
     /** @brief  Make Widget Content */
-    void MakeWidgetTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
+    void MakeWidgetTypeContent(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                const PlayJson::ContentData& contentData,
                                const StyleSheet::PosSizeInfo& posSize,
                                QGraphicsScene *dest);
 
     /** @brief  Make Subtitle Content */
-    void MakeSubtitleTypeContent(const ScheduleTimer::PlayingIndex& playingIndex,
+    void MakeSubtitleTypeContent(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                  const PlayJson::SubtitleData& subtitleData,
                                  QGraphicsScene *dest);
 
 
     /** @brief  Play Item and Widget */
-    void PlayItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex);
+    void PlayItemAndWidgetContents(const PlayScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Pause Item and Widget */
-    void PauseItemAndWidgetContents(const ScheduleTimer::PlayingIndex& playingIndex,
+    void PauseItemAndWidgetContents(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                     const bool bIsFixedTimeout = false);
     /** @brief  Remove Item and Widget from Scene */
-    void RemoveItemAndWidgetFromScene(const ScheduleTimer::PlayingIndex& playingIndex,
+    void RemoveItemAndWidgetFromScene(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                       const bool bIsFixedTimeout = false);
 
     /** @brief  Clear Prev PlayData Json */
-    void ClearOtherPlayDataJsonInfo(const ScheduleTimer::PlayingIndex& playingIndex);
+    void ClearOtherPlayDataJsonInfo(const PlayScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev PlayData Item */
-    void ClearOtherPlayDataItem(const ScheduleTimer::PlayingIndex& playingIndex);
+    void ClearOtherPlayDataItem(const PlayScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  Clear Prev Playing Data */
-    void ClearPrevPlayingData(const ScheduleTimer::PlayingIndex& playingIndex,
+    void ClearPrevPlayingData(const PlayScheduleTimer::PlayingIndex& playingIndex,
                               const bool bIsFixedTimeout = false);
 
 private:
@@ -150,14 +139,11 @@ private:
     QRect m_screenRect;
 
     // Schedule timer
-    QTimer m_scheduleTimer;
-
-    // PlaySchedule
-    QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
+    QTimer m_playerTimer;
 
     // For playing countdown
-    ScheduleTimer::PlayingIndex m_playingIndex;
-    ScheduleTimer::CountdownInfo m_playCountdown;
+    PlayScheduleTimer::PlayingIndex m_playingIndex;
+    PlayScheduleTimer::CountdownInfo m_playCountdown;
 
     // PlayData List
     int m_playDataIndex;

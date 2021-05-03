@@ -59,6 +59,24 @@ void DownloadThread::ExecDownloadSinglePlayData()
     const bool bIsResponse = CurlDownload::DownloadResourceList(resourceUrl, response);
     if(true == bIsResponse)
     {
+        // elgo_control -> elgo_main
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Clear All Play Schedule List
+         *          Cause by single play event
+         *  @param
+         *          NONE
+         */
+        QByteArray mainBytes;
+        const bool bSendMain = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                   MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
+                                                   mainBytes);
+        if(false == bSendMain)
+        {
+            ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST);
+        }
+
         PlayJson::CustomPlayDataJson customPlayData;
         PlayJson::FixedPlayDataJson fixedPlayData;
         PlayJson::PlayData playData;
@@ -182,24 +200,6 @@ void DownloadThread::ExecDownloadSinglePlayData()
         else
         {
             ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
-        }
-
-        // elgo_control -> elgo_main
-        /**
-         *  @note
-         *          ELGO_CONTROL -> ELGO_MAIN
-         *          Clear All Play Schedule List
-         *          Cause by single play event
-         *  @param
-         *          NONE
-         */
-        QByteArray mainBytes;
-        const bool bSendMain = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                   MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
-                                                   mainBytes);
-        if(false == bSendMain)
-        {
-            ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST);
         }
 
         // send response to content server

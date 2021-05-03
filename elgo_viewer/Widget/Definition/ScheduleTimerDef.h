@@ -20,7 +20,7 @@
 
 #define NOT_EXISTED_DATA    -1
 
-namespace ScheduleTimer
+namespace PlayScheduleTimer
 {
     /** @brief */
     struct PlayingIndex
@@ -105,15 +105,15 @@ namespace ScheduleTimer
 /**
  *  @brief  std::pair<PlayDataId, PlayJson::PlayDataType>
  */
-typedef std::pair<ScheduleTimer::PlayingIndex, QGraphicsScene*> SceneInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, VideoItem*> VideoItemInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, ImageItem*> ImageItemInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, ClockWidget*> ClockWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, DateWidget*> DateWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, NewsFeedWidget*> NewsFeedWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, WeatherWidget*> WeatherWidgetInfo;
-typedef std::pair<ScheduleTimer::PlayingIndex, SubtitleWidget*> SubtitleWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, QGraphicsScene*> SceneInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, VideoItem*> VideoItemInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, ImageItem*> ImageItemInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, ClockWidget*> ClockWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, DateWidget*> DateWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, NewsFeedWidget*> NewsFeedWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, WeatherWidget*> WeatherWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, SubtitleWidget*> SubtitleWidgetInfo;
 
-typedef std::pair<ScheduleTimer::PlayingIndex, QGraphicsProxyWidget*> ProxyWidgetInfo;
+typedef std::pair<PlayScheduleTimer::PlayingIndex, QGraphicsProxyWidget*> ProxyWidgetInfo;
 
 #endif // SCHEDULERDEF_H

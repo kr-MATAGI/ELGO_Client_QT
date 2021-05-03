@@ -8,7 +8,7 @@ MainController::MainController()
 {
     m_mainCtrl = new MainCtrl();
     m_dbCtrl = new MainDBCtrl();
-    m_scheduleTimer = new ScheduleTimer();
+    m_scheduleTimer = new PlayScheduleTimer();
 }
 
 //========================================================
@@ -63,7 +63,7 @@ MainDBCtrl& MainController::GetDBCtrl()
 }
 
 //========================================================
-ScheduleTimer& MainController::GetScheduleTimer()
+PlayScheduleTimer& MainController::GetScheduleTimer()
 //========================================================
 {
     return *m_scheduleTimer;

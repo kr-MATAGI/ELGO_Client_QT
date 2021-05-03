@@ -45,6 +45,8 @@ public:
 
     /** @brief */
     void RecvUpdatePlaySchedule(const QByteArray& src);
+    /** @brief */
+    void RecvClearAllPlaySchedule(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

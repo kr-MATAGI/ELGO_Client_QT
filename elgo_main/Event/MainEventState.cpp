@@ -19,18 +19,24 @@ MainEventState::MainEventState()
     // enroll event
     m_state.RegisterEvent(MAIN_EVENT::Event::PROCESS_IS_READY,
                           &MainEventState::RecvProcecssReady);
+
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS,
                           &MainEventState::RecvUpdateDeviceOptions);
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_DISPLAY_SLEEP,
                           &MainEventState::RecvUpdateDisplaySleep);
+
     m_state.RegisterEvent(MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,
                           &MainEventState::RecvSystemReboot);
+
     m_state.RegisterEvent(MAIN_EVENT::Event::SEARCHING_WIFI_LIST,
                           &MainEventState::RecvSearchingWifiList);
     m_state.RegisterEvent(MAIN_EVENT::Event::CONNECT_NEW_WIFI,
                           &MainEventState::RecvConnectNewWifi);
+
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
                           &MainEventState::RecvUpdatePlaySchedule);
+    m_state.RegisterEvent(MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
+                          &MainEventState::RecvClearAllPlaySchedule);
 }
 
 //========================================================
@@ -216,4 +222,20 @@ void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
     dataStream >> playScheduleList;
 
     MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+}
+
+//========================================================
+void MainEventState::RecvClearAllPlaySchedule(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Clear All Play Schedule List
+     *          Cause by single play event
+     *  @param
+     *          NONE
+     */
+
+    MainController::GetInstance()->GetScheduleTimer().ClearAllPlayScheduleList();
 }

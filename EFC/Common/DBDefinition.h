@@ -75,6 +75,10 @@ namespace DB_Query
     const static char* INSERT_PLAY_SCHEDULE = "INSERT INTO playSchedule(id, startDate, endDate, playDataId, playDataType, cron) "
                                                     "VALUES(:id, :startDate, :endDate, :playDataId, :playDataType, :cron);";
 
+    const static char* DELETE_ALL_PLAY_SCHEDULE = "DELETE FROM playSchedule;";
+
+    const static char* DELETE_PLAY_SCHEDULE_BY_ID = "DELETE FROM playSchedule WHERE id=:id;";
+
 };
 
 #endif // DBDEFINITION_H

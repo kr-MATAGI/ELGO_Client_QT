@@ -25,8 +25,15 @@ public:
     /** @brief */
     void CheckingDefaultTables(const char* dbPath);
 
+    // playSchedule
     /** @brief */
     void UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& playScheduleList);
+
+    /** @brief */
+    void ClearAllPlaySchedule();
+    /** @brief */
+    void DeletePlayScheduleById(const QString& scheduleId);
+
     /** @brief */
     bool CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id);
 
