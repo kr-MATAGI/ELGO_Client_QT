@@ -117,13 +117,14 @@ void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
     else if(0 == strcmp(dbPath, SCHEDULE_DB))
     {
         QSqlQuery query(db);
+
+        // playSchedule table
         query.prepare(DB_Query::CHECK_DEVICE_TABLE);
         query.bindValue(":table", "playSchedule");
 
-        const bool bIsChecked = query.exec();
-        if(true == bIsChecked)
+        const bool bIsPlayChecked = query.exec();
+        if(true == bIsPlayChecked)
         {
-            // playSchedule table
             int countIdx = 0;
             int countValue = 0;
             while(query.next())
@@ -136,13 +137,53 @@ void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
 
             if(ZERO_RESULT == countValue)
             {
+                // Play Schedule
                 query.clear();
                 query.prepare(DB_Query::CREATE_TABLE_PLAY_SCHEDULE);
-                const bool bIsCreated = query.exec();
-                if(false == bIsCreated)
+                const bool bIsPlayCreated = query.exec();
+                if(false == bIsPlayCreated)
                 {
-                    ELGO_MAIN_LOG("ERROR- Failed query.exec(): %s{%s}",
+                    ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
                                   DB_Query::CREATE_TABLE_PLAY_SCHEDULE,
+                                  query.lastError().text().toStdString().c_str());
+                }
+            }
+        }
+        else
+        {
+            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                          DB_Query::CHECK_DEVICE_TABLE,
+                          query.lastError().text().toStdString().c_str());
+        }
+
+        query.clear();
+        query.prepare(DB_Query::CHECK_DEVICE_TABLE);
+        query.bindValue(":table", "powerSchedule");
+
+        const bool bIsPowerChecked = query.exec();
+        if(true == bIsPowerChecked)
+        {
+            int countIdx = 0;
+            int countValue = 0;
+            while(query.next())
+            {
+                countIdx = query.record().indexOf("COUNT");
+                countValue = query.value(countIdx).toInt();
+                ELGO_MAIN_LOG("powerSchedule table, count - {idx: %d, value: %d}",
+                              countIdx, countValue);
+            }
+
+            if(ZERO_RESULT == countValue)
+            {
+
+                // Power Schedule
+                query.clear();
+                query.prepare(DB_Query::CREATE_TABLE_POWER_SCHEDULE);
+                const bool bIsPowerCreated = query.exec();
+                if(false == bIsPowerCreated)
+                {
+                    ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                                  DB_Query::CREATE_TABLE_POWER_SCHEDULE,
                                   query.lastError().text().toStdString().c_str());
                 }
             }
