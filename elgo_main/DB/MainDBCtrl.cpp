@@ -31,18 +31,20 @@ void MainDBCtrl::InitializeDB()
     m_mutex->lock();
 
     // Checking device.db's tables
-    CheckingDefaultTables(DEVICE_DB);
-    CheckingDefaultTables(SCHEDULE_DB);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+    MakeDefulatTable(db, DEVICE_DB, "device");
+    MakeDefulatTable(db, SCHEDULE_DB, "playSchedule");
+    MakeDefulatTable(db, SCHEDULE_DB, "powerSchedule");
 
     m_mutex->unlock();
 }
 
 //========================================================
-void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
+void MainDBCtrl::MakeDefulatTable(QSqlDatabase& db, const char* dbPath,
+                                  const QString& tableName)
 //========================================================
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-
     db.setDatabaseName(dbPath);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
@@ -53,29 +55,29 @@ void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
         return;
     }
 
-    if(0 == strcmp(dbPath, DEVICE_DB))
+    QSqlQuery query(db);
+    query.prepare(DB_Query::CHECK_DEVICE_TABLE);
+    query.bindValue(":table", tableName);
+
+    const bool bIsChecked = query.exec();
+    if(true == bIsChecked)
     {
-        QSqlQuery query(db);
-        query.prepare(DB_Query::CHECK_DEVICE_TABLE);
-        query.bindValue(":table", "device");
-
-        const bool bIsChecked = query.exec();
-        if(true == bIsChecked)
+        int countIdx = 0;
+        int countValue = 0;
+        while(query.next())
         {
-            // device table
-            int countIdx = 0;
-            int countValue = 0;
-            while(query.next())
-            {
-                countIdx = query.record().indexOf("COUNT");
-                countValue = query.value(countIdx).toInt();
-                ELGO_MAIN_LOG("device table, count - {idx: %d, value: %d}",
-                              countIdx, countValue);
-            }
+            countIdx = query.record().indexOf("COUNT");
+            countValue = query.value(countIdx).toInt();
+            ELGO_MAIN_LOG("%s table - count: {idx: %d, value: %d}",
+                          tableName.toStdString().c_str(),
+                          countIdx, countValue);
+        }
 
-            if(ZERO_RESULT == countValue)
+        if(ZERO_RESULT == countValue)
+        {
+            query.clear();
+            if(0 == strcmp("device", tableName.toStdString().c_str()))
             {
-                query.clear();
                 query.prepare(DB_Query::CREATE_TABLE_DEVICE);
                 const bool bIsCreated = query.exec();
                 if(true == bIsCreated)
@@ -106,94 +108,29 @@ void MainDBCtrl::CheckingDefaultTables(const char* dbPath)
             }
             else
             {
-                ELGO_MAIN_LOG("Already Made device table - countIdx: %d", countIdx);
+                QString prepareQuery;
+                if(0 == strcmp("playSchedule", tableName.toStdString().c_str()))
+                {
+                    prepareQuery = DB_Query::CREATE_TABLE_PLAY_SCHEDULE;
+                }
+                else if(0 == strcmp("powerSchedule", tableName.toStdString().c_str()))
+                {
+                    prepareQuery = DB_Query::CREATE_TABLE_POWER_SCHEDULE;
+                }
+                query.prepare(prepareQuery);
+                const bool bIsCreated = query.exec();
+                if(false == bIsCreated)
+                {
+                    ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                                  prepareQuery.toStdString().c_str(),
+                                  query.lastError().text().toStdString().c_str());
+                }
             }
-        }
-        else
-        {
-            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s", DB_Query::CHECK_DEVICE_TABLE);
         }
     }
-    else if(0 == strcmp(dbPath, SCHEDULE_DB))
+    else
     {
-        QSqlQuery query(db);
-
-        // playSchedule table
-        query.prepare(DB_Query::CHECK_DEVICE_TABLE);
-        query.bindValue(":table", "playSchedule");
-
-        const bool bIsPlayChecked = query.exec();
-        if(true == bIsPlayChecked)
-        {
-            int countIdx = 0;
-            int countValue = 0;
-            while(query.next())
-            {
-                countIdx = query.record().indexOf("COUNT");
-                countValue = query.value(countIdx).toInt();
-                ELGO_MAIN_LOG("playSchedule table, count - {idx: %d, value: %d}",
-                              countIdx, countValue);
-            }
-
-            if(ZERO_RESULT == countValue)
-            {
-                // Play Schedule
-                query.clear();
-                query.prepare(DB_Query::CREATE_TABLE_PLAY_SCHEDULE);
-                const bool bIsPlayCreated = query.exec();
-                if(false == bIsPlayCreated)
-                {
-                    ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                                  DB_Query::CREATE_TABLE_PLAY_SCHEDULE,
-                                  query.lastError().text().toStdString().c_str());
-                }
-            }
-        }
-        else
-        {
-            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                          DB_Query::CHECK_DEVICE_TABLE,
-                          query.lastError().text().toStdString().c_str());
-        }
-
-        query.clear();
-        query.prepare(DB_Query::CHECK_DEVICE_TABLE);
-        query.bindValue(":table", "powerSchedule");
-
-        const bool bIsPowerChecked = query.exec();
-        if(true == bIsPowerChecked)
-        {
-            int countIdx = 0;
-            int countValue = 0;
-            while(query.next())
-            {
-                countIdx = query.record().indexOf("COUNT");
-                countValue = query.value(countIdx).toInt();
-                ELGO_MAIN_LOG("powerSchedule table, count - {idx: %d, value: %d}",
-                              countIdx, countValue);
-            }
-
-            if(ZERO_RESULT == countValue)
-            {
-
-                // Power Schedule
-                query.clear();
-                query.prepare(DB_Query::CREATE_TABLE_POWER_SCHEDULE);
-                const bool bIsPowerCreated = query.exec();
-                if(false == bIsPowerCreated)
-                {
-                    ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                                  DB_Query::CREATE_TABLE_POWER_SCHEDULE,
-                                  query.lastError().text().toStdString().c_str());
-                }
-            }
-        }
-        else
-        {
-            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                          DB_Query::CHECK_DEVICE_TABLE,
-                          query.lastError().text().toStdString().c_str());
-        }
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s", DB_Query::CHECK_DEVICE_TABLE);
     }
 
     db.close();

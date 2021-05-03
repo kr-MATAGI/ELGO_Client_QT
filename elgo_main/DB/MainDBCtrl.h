@@ -23,7 +23,8 @@ public:
     void InitializeDB();
 
     /** @brief */
-    void CheckingDefaultTables(const char* dbPath);
+    void MakeDefulatTable(QSqlDatabase& db, const char* dbPath,
+                          const QString& tableName);
 
     // playSchedule
     /** @brief */
