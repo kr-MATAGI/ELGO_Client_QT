@@ -87,6 +87,16 @@ namespace MAIN_EVENT
          */
         UPDATE_PLAY_SCHEDULE_LIST = 263,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Clear All Play Schedule List
+         *          Cause by single play event
+         *  @param
+         *          NONE
+         */
+        CLEARE_ALL_PLAY_SCHEDULE_LIST = 264,
+
         MAX_VIEWER_EVENT = 511
     };
 }

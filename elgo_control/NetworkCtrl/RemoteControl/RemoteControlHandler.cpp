@@ -54,7 +54,7 @@ void RemoteControlHandler::RunAction(Remote::Action action, const QString& src, 
     }
     else
     {
-        ELGO_CONTROL_LOG("Unkwon Action : %d", action);
+        ELGO_CONTROL_LOG("ERROR - Unknwon Action : %d", action);
     }
 }
 

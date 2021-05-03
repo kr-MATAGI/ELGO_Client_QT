@@ -75,7 +75,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else
     {
-        ELGO_CONTROL_LOG("Unkwon Event : %d", serverJson.event);
+        ELGO_CONTROL_LOG("ERROR - Unknwon Event : %d", serverJson.event);
     }
 }
 

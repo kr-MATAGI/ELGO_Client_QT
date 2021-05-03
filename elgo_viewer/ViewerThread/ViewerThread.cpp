@@ -80,7 +80,7 @@ void ViewerThread::run()
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon Event : %d", m_event);
+        ELGO_VIEWER_LOG("Error - Unknwon Event : %d", m_event);
     }
 }
 

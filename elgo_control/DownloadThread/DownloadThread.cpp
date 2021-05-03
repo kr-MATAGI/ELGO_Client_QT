@@ -45,7 +45,7 @@ void DownloadThread::run()
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon action : %d", m_action);
+        ELGO_CONTROL_LOG("Error - Unknwon action : %d", m_action);
     }
 }
 
@@ -101,7 +101,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
                     }
                     else
                     {
-                        ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
+                        ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
                     }
                 }
                 else
@@ -181,7 +181,25 @@ void DownloadThread::ExecDownloadSinglePlayData()
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
+            ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
+        }
+
+        // elgo_control -> elgo_main
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Clear All Play Schedule List
+         *          Cause by single play event
+         *  @param
+         *          NONE
+         */
+        QByteArray mainBytes;
+        const bool bSendMain = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                   MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
+                                                   mainBytes);
+        if(false == bSendMain)
+        {
+            ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST);
         }
 
         // send response to content server
@@ -251,7 +269,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
                     }
                     else
                     {
-                        ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
+                        ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
                     }
                 }
                 else
@@ -388,7 +406,7 @@ void DownloadThread::ExecDownloadPlaySchedules()
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - Unkwon playDataType : %d", playData.playDataType);
+            ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
         }
 
         // send response to content server

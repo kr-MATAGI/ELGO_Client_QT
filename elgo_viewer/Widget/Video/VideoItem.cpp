@@ -226,8 +226,9 @@ void VideoItem::CheckStateChanged(QMediaPlayer::State state)
     {
         stateStr = "Paused State";
     }
-    else{
-        ELGO_VIEWER_LOG("Unkwon State: %d", state);
+    else
+    {
+        ELGO_VIEWER_LOG("Unknwon State: %d", state);
     }
     ELGO_VIEWER_LOG("%s - %s",
                     m_videoInfo.fileName.toStdString().c_str(),

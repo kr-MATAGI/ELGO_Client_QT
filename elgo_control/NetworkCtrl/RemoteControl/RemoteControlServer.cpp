@@ -201,7 +201,7 @@ void RemoteControlServer::MakeResponseJsonString(const Remote::Action action,
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon Action : %d", action);
+        ELGO_CONTROL_LOG("Error - Unknwon Action : %d", action);
     }
 }
 

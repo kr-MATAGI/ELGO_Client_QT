@@ -310,14 +310,14 @@ void ContentsPlayer::SearchContentAndAddToScene(const ScheduleTimer::PlayingInde
         }
         else
         {
-            ELGO_VIEWER_LOG("Error - Unkwon PlayData {id: %d, type: %d}",
+            ELGO_VIEWER_LOG("Error - Unknwon PlayData {id: %d, type: %d}",
                             playingIndex.playData.id,
                             playingIndex.playData.playDataType);
         }
     }
     else
     {
-        ELGO_VIEWER_LOG("Error -Scene is NULL");
+        ELGO_VIEWER_LOG("Error - Scene is NULL");
     }
 }
 
@@ -446,7 +446,7 @@ void ContentsPlayer::MakeCustomPlayDataContents(const ScheduleTimer::PlayingInde
         }
         else
         {
-            ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", layerData.layerContent.contentInfo.contentType);
+            ELGO_VIEWER_LOG("Error - Unknwon Content Type: %d", layerData.layerContent.contentInfo.contentType);
         }
 
         // Make Subtitle
@@ -495,7 +495,7 @@ void ContentsPlayer::MakeFixedPlayDataContents(const ScheduleTimer::PlayingIndex
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon Content Type: %d", contentData.contentInfo.contentType);
+        ELGO_VIEWER_LOG("Error - Unknwon Content Type: %d", contentData.contentInfo.contentType);
     }
 }
 
@@ -557,7 +557,7 @@ void ContentsPlayer::MakeFileTypeContent(const ScheduleTimer::PlayingIndex& play
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon Media Type: %d", contentData.contentInfo.mediaType);
+        ELGO_VIEWER_LOG("Error - Unknwon Media Type: %d", contentData.contentInfo.mediaType);
     }
 }
 
@@ -660,7 +660,7 @@ void ContentsPlayer::MakeWidgetTypeContent(const ScheduleTimer::PlayingIndex& pl
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon Media Type: %d", contentData.contentInfo.mediaType);
+        ELGO_VIEWER_LOG("Error - Unknwon Media Type: %d", contentData.contentInfo.mediaType);
         return;
     }
 
@@ -1504,7 +1504,7 @@ void ContentsPlayer::ConvertMediaTypeEnumToString(const PlayJson::MediaType src,
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon MediaType : %d", src);
+        ELGO_VIEWER_LOG("Error - Unknwon MediaType : %d", src);
     }
 }
 

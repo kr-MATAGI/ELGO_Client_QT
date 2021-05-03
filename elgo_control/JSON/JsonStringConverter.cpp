@@ -65,7 +65,7 @@ ContentSchema::Event JsonStringConverter::ContentServerEventStringToEnum(const Q
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon Event %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon Event %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -95,7 +95,7 @@ ContentSchema::PayloadType JsonStringConverter::ContentServerPayloadTypeStringTo
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon payload type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon payload type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -137,7 +137,7 @@ ResourceJson::ResourceType JsonStringConverter::ResourceTypeStringToEnum(const Q
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon resource type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon resource type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -159,7 +159,7 @@ PlayJson::PlayDataType JsonStringConverter::PlayDataTypeStringToEnum(const QStri
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon playdata type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon playdata type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -181,7 +181,7 @@ PlayJson::Orientation JsonStringConverter::OrientationTypeStringToEnum(const QSt
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon orientation type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon orientation type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -203,7 +203,7 @@ PlayJson::ContentType JsonStringConverter::ContentTypeStringToEnum(const QString
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon content type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon content type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -241,7 +241,7 @@ PlayJson::MediaType JsonStringConverter::MediaTypeStringToEunum(const QString& s
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon media type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon media type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -263,7 +263,7 @@ PlayJson::HourType JsonStringConverter::HourTypeStringToEnum(const QString& src)
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon hour type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon hour type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -285,7 +285,7 @@ PlayJson::DateType JsonStringConverter::DateTypeStringToEnum(const QString& src)
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon date type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon date type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -339,7 +339,7 @@ PlayJson::NewsCategory JsonStringConverter::NewsCategoryStringToEnum(const QStri
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon news category type : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon news category type : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -369,7 +369,7 @@ PlayJson::AniFlowDirection JsonStringConverter::SubtitleDirectionStringToEnum(co
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon subtitle direction : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon subtitle direction : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -391,7 +391,7 @@ PlayJson::SubtitleAction JsonStringConverter::SubtitleActionStringToEnum(const Q
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon subtitle action : %s", src.toUtf8().constData());
+        ELGO_CONTROL_LOG("Error - Unknwon subtitle action : %s", src.toUtf8().constData());
     }
 
     return retValue;
@@ -433,7 +433,7 @@ Remote::Action JsonStringConverter::RemoteActionStringToEnum(const QString& src)
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon remote action : %s", src.toStdString().c_str());
+        ELGO_CONTROL_LOG("Error - Unknwon remote action : %s", src.toStdString().c_str());
     }
 
     return retValue;
@@ -1138,7 +1138,7 @@ int JsonStringConverter::GetCronFormatLimitValue(const ScheduleJson::CronFormat 
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Unkwon Format : %d", format);
+        ELGO_CONTROL_LOG("Error - Unknwon Format : %d", format);
     }
 
     return retValue;

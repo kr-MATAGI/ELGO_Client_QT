@@ -55,7 +55,7 @@ void ControlThread::run()
     }
     else
     {
-        ELGO_CONTROL_LOG("Unkwon Event %d", m_event);
+        ELGO_CONTROL_LOG("Unknwon Event %d", m_event);
     }
 }
 

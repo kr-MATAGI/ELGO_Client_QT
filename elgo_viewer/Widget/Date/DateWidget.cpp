@@ -132,7 +132,7 @@ void DateWidget::ConvertToStringFromDayOfWeek(const int src, QString& dest)
     }
     else
     {
-        ELGO_VIEWER_LOG("Error - Unkwon day of week");
+        ELGO_VIEWER_LOG("Error - Unknwon day of week");
     }
 }
 

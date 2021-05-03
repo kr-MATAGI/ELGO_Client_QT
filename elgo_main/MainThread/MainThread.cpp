@@ -121,7 +121,7 @@ void MainThread::ExecRecvProcecssReady()
     }
     else
     {
-        ELGO_MAIN_LOG("Unkwon ELGO_PROC %d", proc);
+        ELGO_MAIN_LOG("ERROR - Unknwon ELGO_PROC %d", proc);
     }
 }
 
