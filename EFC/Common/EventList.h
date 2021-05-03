@@ -252,6 +252,7 @@ namespace VIEWER_EVENT
         REQUEST_SCREEN_CAPTURE = 775,
 
 
+
         MAX_VIEWER_EVENT = 1023
     };
 }

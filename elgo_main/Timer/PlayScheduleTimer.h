@@ -6,6 +6,7 @@
 
 // Common
 #include "Common/Interface/ScheduleJsonDef.h"
+#include "Common/Interface/ContentsPlayDataDef.h"
 
 // Main
 #include "MainCtrl/MainController.h"
@@ -55,6 +56,8 @@ private:
 private:
     bool m_bIsActive;
 
+    int m_prevPlayDataId;
+    int m_prevPlayDataType;
     QString m_currScheduleId;
     QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
 };
