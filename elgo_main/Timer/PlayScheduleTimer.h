@@ -26,6 +26,8 @@ public:
 
     /** @brief */
     void ClearAllPlayScheduleList();
+    /** @brief */
+    void ClearPlayScheduleById(const QString& id);
 
     /** @brief */
     void StartPlayTimer();

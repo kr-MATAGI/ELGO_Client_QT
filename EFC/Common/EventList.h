@@ -97,6 +97,15 @@ namespace MAIN_EVENT
          */
         CLEARE_ALL_PLAY_SCHEDULE_LIST = 264,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Clear Play Schedule ID by clearPlaySchedule Event
+         *  @param
+         *          QString scheduleId
+         */
+        CLEAR_PLAY_SCHEDULE_BY_ID = 265,
+
         MAX_VIEWER_EVENT = 511
     };
 }

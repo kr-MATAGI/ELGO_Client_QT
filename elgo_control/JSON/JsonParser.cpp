@@ -407,6 +407,13 @@ bool JsonParser::ParsePayloadResponse(const QJsonObject& payloadObj, ContentSche
         dest.message = message;
     }
 
+    // schedule_id - NOT Required
+    if(payloadObj.end() != payloadObj.find("schedule_id"))
+    {
+        const QString& scheduleId = payloadObj["schedule_id"].toString();
+        dest.scheduleId = scheduleId;
+    }
+
     return retValue;
 }
 

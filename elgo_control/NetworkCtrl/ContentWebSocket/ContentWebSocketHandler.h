@@ -48,7 +48,7 @@ public:
     void ExecSystemRebootEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
-    void ExecClearPlaySchdules();
+    void ExecClearPlaySchdules(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
     void ExecClearPowerSchedules();

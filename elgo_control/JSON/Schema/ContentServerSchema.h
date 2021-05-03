@@ -47,6 +47,7 @@ namespace ContentSchema
         QString deviceName;
         QString url;
         QString path;
+        QString scheduleId;
         PayloadType type;
         bool displayPower;
     };

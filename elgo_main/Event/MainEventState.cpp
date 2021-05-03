@@ -37,6 +37,8 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdatePlaySchedule);
     m_state.RegisterEvent(MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
                           &MainEventState::RecvClearAllPlaySchedule);
+    m_state.RegisterEvent(MAIN_EVENT::Event::CLEAR_PLAY_SCHEDULE_BY_ID,
+                          &MainEventState::RecvClearPlayScheduleById);
 }
 
 //========================================================
@@ -238,4 +240,24 @@ void MainEventState::RecvClearAllPlaySchedule(const QByteArray& src)
      */
 
     MainController::GetInstance()->GetScheduleTimer().ClearAllPlayScheduleList();
+}
+
+//========================================================
+void MainEventState::RecvClearPlayScheduleById(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Clear Play Schedule ID by clearPlaySchedule Event
+     *  @param
+     *          QString scheduleId
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
+    QString id;
+    dataStream >> id;
+
+    MainController::GetInstance()->GetScheduleTimer().ClearPlayScheduleById(id);
 }

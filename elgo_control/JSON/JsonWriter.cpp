@@ -259,6 +259,14 @@ void JsonWriter::WriteContentServerRebootEvent(const ContentSchema::Summary& src
 }
 
 //========================================================
+void JsonWriter::WriteContentServerClearPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    WriteContentServerDefaultResponse(src, dest);
+    ELGO_CONTROL_LOG("Json String : %s", dest.toStdString().c_str());
+}
+
+//========================================================
 void JsonWriter::WriteContentServerDefaultResponse(const ContentSchema::Summary& src, QString& dest)
 //========================================================
 {

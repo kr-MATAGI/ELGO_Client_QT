@@ -64,6 +64,37 @@ void PlayScheduleTimer::ClearAllPlayScheduleList()
 }
 
 //========================================================
+void PlayScheduleTimer::ClearPlayScheduleById(const QString& id)
+//========================================================
+{
+    StopPlayTimer();
+
+    MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(id);
+    QVector<ScheduleJson::PlaySchedule>::iterator iter = m_playScheduleList.begin();
+    while(iter != m_playScheduleList.end())
+    {
+        if(0 == strcmp(iter->id.toStdString().c_str(),
+                       id.toStdString().c_str()))
+        {
+            ELGO_MAIN_LOG("Delete Schedule - id: %s",
+                          iter->id.toStdString().c_str());
+            iter = m_playScheduleList.erase(iter);
+            break;
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+
+    if(0 < m_playScheduleList.size())
+    {
+        ELGO_MAIN_LOG("Re-Start PlaySchedule Timer !");
+        StartPlayTimer();
+    }
+}
+
+//========================================================
 bool PlayScheduleTimer::CheckValidPlayScheduleId(const QString& id)
 //========================================================
 {
@@ -141,7 +172,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                          (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
                 {
                     const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
-                    if(true == bIsValid)
+                    if( (true == bIsValid) &&
+                        (0 != strcmp(m_currScheduleId.toStdString().c_str(),
+                                     scheduleIter->id.toStdString().c_str())) )
                     {
 
 
