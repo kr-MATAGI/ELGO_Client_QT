@@ -1185,7 +1185,7 @@ void JsonParser::ParseSubtitleDataJson(const QJsonArray& subtitleDataArr, QVecto
 }
 
 //========================================================
-void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedules& dest)
+void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedule& dest)
 //========================================================
 {
     const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());

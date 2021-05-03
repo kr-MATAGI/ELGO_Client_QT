@@ -41,7 +41,7 @@ public:
     /** @brief */
     void SetDisplaySleepStatus(const bool newValue);
     /** @brief */
-    const bool GetDisplaySleepStatus();
+    bool GetDisplaySleepStatus();
 
     /** @brief */
     void SetDeviceWlanName(const QString& src);

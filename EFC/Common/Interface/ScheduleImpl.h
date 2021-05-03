@@ -22,7 +22,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::CronOption& src);
 
 
 /** @brief  Power Schedules Serialize */
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedules& src);
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedule& src);
 /** @brief */
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& src);
 
@@ -47,7 +47,7 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::CronOption& dest);
 
 
 /** @brief  Power Schedules Deserialize */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedules& dest);
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedule& dest);
 /** @brief */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest);
 

@@ -11,6 +11,11 @@
 #include "Common/EventList.h"
 #include "LocalSocketEvent/EventState.h"
 
+// Main
+#include "MainCtrl/MainController.h"
+
+class MainController;
+
 class MainEventState
 {
 public:
@@ -35,9 +40,11 @@ public:
 
     /** @brief */
     void RecvSearchingWifiList(const QByteArray& src);
-
     /** @brief */
     void RecvConnectNewWifi(const QByteArray& src);
+
+    /** @brief */
+    void RecvUpdatePlaySchedule(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

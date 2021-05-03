@@ -6,7 +6,9 @@
 #include <QtSql>
 #include <QMutex>
 
+// Common
 #include "Common/DBDefinition.h"
+#include "Common/Interface/ScheduleJsonDef.h"
 
 class MainDBCtrl : public QObject
 {
@@ -21,7 +23,12 @@ public:
     void ConnectionDB();
 
     /** @brief */
-    void CheckingDefaultTables();
+    void CheckingDefaultTables(const char* dbPath);
+
+    /** @brief */
+    void UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& playScheduleList);
+    /** @brief */
+    bool CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id);
 
 private:
     QMutex *m_mutex;

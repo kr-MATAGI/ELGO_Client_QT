@@ -8,6 +8,7 @@ MainController::MainController()
 {
     m_mainCtrl = new MainCtrl();
     m_dbCtrl = new MainDBCtrl();
+    m_scheduleTimer = new ScheduleTimer();
 }
 
 //========================================================
@@ -19,6 +20,9 @@ MainController::~MainController()
 
     delete m_dbCtrl;
     m_dbCtrl = NULL;
+
+    delete m_scheduleTimer;
+    m_scheduleTimer = NULL;
 }
 
 //========================================================
@@ -56,4 +60,11 @@ MainDBCtrl& MainController::GetDBCtrl()
 //========================================================
 {
     return *m_dbCtrl;
+}
+
+//========================================================
+ScheduleTimer& MainController::GetScheduleTimer()
+//========================================================
+{
+    return *m_scheduleTimer;
 }

@@ -5,10 +5,14 @@
 
 // for test
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-static const QString DEVICE_DB = "/home/jaehoon/바탕화면/ELGO/device.db";
+static const char* DEVICE_DB = "/home/jaehoon/바탕화면/ELGO/device.db";
+static const char* SCHEDULE_DB = "/home/jaehoon/바탕화면/ELGO/schedule.db";
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
-static const QString DEVICE_DB = "C:/Project/Qt/device.db";
+static const char* DEVICE_DB = "C:/Project/Qt/device.db";
+static const char* SCHEDULE_DB = "C:/Project/Qt/schedule.db";
 #endif
+
+#define ZERO_RESULT 0
 
 namespace ClientDB
 {
@@ -32,57 +36,45 @@ namespace ClientDB
 
 namespace DB_Query
 {
+    const static char* CHECK_DEVICE_TABLE = "SELECT COUNT(*) AS COUNT FROM sqlite_master "
+                                            "WHERE name=:table;";
+
+    /// device.db
     // device table
-    const static QString CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
+    const static char* CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
                                                     "id VARCHAR(30) DEFAULT 'root' NOT NULL,"
                                                     "pw INTEGER DEFAULT 'root' NOT NULL,"
                                                     "name VARCHAR(30) DEFAULT 'ELGO');";
 
-    const static QString INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
+    const static char* INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
                                                     "VALUES(:id, :pw, :name);";
 
-    const static QString SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
+    const static char* SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
 
-    const static QString SELECT_DEVICE_NAME = "SELECT name FROM device;";
+    const static char* SELECT_DEVICE_NAME = "SELECT name FROM device;";
 
-    const static QString UPDATE_PW_INFO_DEVICE = "UPDATE device SET pw=:pw;";
+    const static char* UPDATE_PW_INFO_DEVICE = "UPDATE device SET pw=:pw;";
 
-    const static QString UPDATE_DEVICE_NAME = "UPDATE device SET name=:name;";
-
-
-    // account table - NOT USING
-    /*
-    const static QString CREATE_TABLE_ACCOUNT = "CREATE TABLE account ("
-                                                    "type VARCHAR(30) NOT NULL,"
-                                                    "id VARCHAR(30) NOT NULL,"
-                                                    "pw VARCHAR(30) NOT NULL,"
-                                                    "salt VARCHAR(30) NOT NULL);";
-
-    const static QString INSERT_VALUES_ACCOUNT = "INSERT INTO account (type, id, pw, salt)"
-                                                    "VALUES(?, ?, ?, ?);";
-
-    const static QString SELECT_ALL_INFO_ACCOUNT = "SELECT * FROM account;";
-    */
+    const static char* UPDATE_DEVICE_NAME = "UPDATE device SET name=:name;";
 
 
-    // schedule table
-    const static QString CREATE_TABLE_SCHEDULE = "CREATE TABLE schedule ("
-                                                    "id VARCHAR(30) NOT NULL,"
-                                                    "expiration_date DATETIME NOT NULL,"
-                                                    "rule INTEGER NOT NULL,"
-                                                    "command VARCHAR(30) NOT NULL);";
+    /// schedule.db
+    // playSchedule table
+    const static char* CREATE_TABLE_PLAY_SCHEDULE = "CREATE TABLE playSchedule ("
+                                                        "id VARCHAR(30) NOT NULL,"
+                                                        "startDate TEXT NOT NULL,"
+                                                        "endDate TEXT NOT NULL,"
+                                                        "playDataId VARCHAR(30) NOT NULL,"
+                                                        "playDataType INTEGER NOT NULL,"
+                                                        "cron BLOB NOT NULL);";
 
-    const static QString SELECT_ALL_SCHEDULE = "SELECT * FROM schedule;";
+    const static char* SELECT_ALL_PLAY_SCHEDULE = "SELECT * FROM playSchedule;";
 
+    const static char* SELECT_ID_PLAY_SCHEDULE = "SELECT id FROM playSchedule;";
 
-    // network table
-    const static QString CREATE_NETWORK_TABLE = "CREATE TABLE network ("
-                                                    "ssid VARCHAR(30) NOT NULL,"
-                                                    "pw VARCHAR(30) NOT NULL,"
-                                                    "isEncryption BOOLEAN DEFAULT 0,"
-                                                    "priority INTEGER DEFAULT 2);";
+    const static char* INSERT_PLAY_SCHEDULE = "INSERT INTO playSchedule(id, startDate, endDate, playDataId, playDataType, cron) "
+                                                    "VALUES(:id, :startDate, :endDate, :playDataId, :playDataType, :cron);";
 
-    const static QString SELECT_ALL_NETWORK_TABLE = "SELECT * FROM network;";
 };
 
 #endif // DBDEFINITION_H

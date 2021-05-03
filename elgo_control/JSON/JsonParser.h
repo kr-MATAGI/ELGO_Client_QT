@@ -74,7 +74,7 @@ namespace JsonParser
 
 
     /** @brief  Power Schedules */
-    void ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedules& dest);
+    void ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedule& dest);
 
 
     /** @brief  Single Play Schdules */

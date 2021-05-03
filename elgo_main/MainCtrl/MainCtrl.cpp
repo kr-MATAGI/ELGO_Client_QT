@@ -203,7 +203,7 @@ void MainCtrl::SetDisplaySleepStatus(const bool newValue)
 }
 
 //========================================================
-const bool MainCtrl::GetDisplaySleepStatus()
+bool MainCtrl::GetDisplaySleepStatus()
 //========================================================
 {
     return m_bDisplaySleep;

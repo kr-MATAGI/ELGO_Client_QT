@@ -46,7 +46,7 @@ bool NetworkDBCtrl::CheckDeviceLogingInfo(Remote::DeviceLogin& deviceInfo)
         if(false == bIsOkExec)
         {
             ELGO_CONTROL_LOG("Error - query exec : %s",
-                             DB_Query::SELECT_ALL_INFO_DEVICE.toUtf8().constData());
+                             DB_Query::SELECT_ALL_INFO_DEVICE);
         }
         else
         {
@@ -108,7 +108,7 @@ bool NetworkDBCtrl::ChangeDevicePassword(Remote::ManageDevice& manageDeviceInfo)
         if(false == bIsOkExec)
         {
             ELGO_CONTROL_LOG("Error - query exec : %s",
-                             DB_Query::SELECT_ALL_INFO_DEVICE.toUtf8().constData());
+                             DB_Query::SELECT_ALL_INFO_DEVICE);
         }
         else
         {
@@ -168,7 +168,7 @@ void NetworkDBCtrl::UpdateDeviceNameFromServer(const QString& src)
         if(false == bIsOkExec)
         {
             ELGO_CONTROL_LOG("Error - query exec : %s",
-                             DB_Query::SELECT_DEVICE_NAME.toUtf8().constData());
+                             DB_Query::SELECT_DEVICE_NAME);
         }
         else
         {

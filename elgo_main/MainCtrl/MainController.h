@@ -5,9 +5,11 @@
 // Main
 #include "MainCtrl.h"
 #include "DB/MainDBCtrl.h"
+#include "Timer/ScheduleTimer.h"
 
 class MainCtrl;
 class MainDBCtrl;
+class ScheduleTimer;
 
 class MainController
 {
@@ -30,9 +32,14 @@ public:
     /** @brief */
     MainDBCtrl& GetDBCtrl();
 
+    /** @brief */
+    ScheduleTimer& GetScheduleTimer();
+
 private:
     MainCtrl *m_mainCtrl;
     MainDBCtrl *m_dbCtrl;
+
+    ScheduleTimer *m_scheduleTimer;
 };
 
 #endif // MAINCONTROLLER_H

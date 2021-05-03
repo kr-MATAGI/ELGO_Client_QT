@@ -1,6 +1,9 @@
 // QT
 #include <QDataStream>
 
+// Common
+#include "Common/Interface/ScheduleImpl.h"
+
 // Main
 #include "MainEventState.h"
 #include "MainThread/MainThread.h"
@@ -26,6 +29,8 @@ MainEventState::MainEventState()
                           &MainEventState::RecvSearchingWifiList);
     m_state.RegisterEvent(MAIN_EVENT::Event::CONNECT_NEW_WIFI,
                           &MainEventState::RecvConnectNewWifi);
+    m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
+                          &MainEventState::RecvUpdatePlaySchedule);
 }
 
 //========================================================
@@ -191,4 +196,24 @@ void MainEventState::RecvConnectNewWifi(const QByteArray& src)
     newThread->SetMainEvent(MAIN_EVENT::Event::CONNECT_NEW_WIFI);
     newThread->SetRecvBytes(src);
     m_threadPool->start(newThread);
+}
+
+//========================================================
+void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          For manage custom/fixed play schedule
+     *  @param
+     *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
+    QVector<ScheduleJson::PlaySchedule> playScheduleList;
+    dataStream >> playScheduleList;
+
+    MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
 }

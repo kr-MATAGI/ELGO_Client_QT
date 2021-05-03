@@ -81,7 +81,7 @@ namespace ScheduleJson
         Cron cron;
     };
 
-    struct PowerSchedules
+    struct PowerSchedule
     {
         QVector<PowerScheduleData> onScheduleList;
         QVector<PowerScheduleData> offScheduleList;
@@ -91,7 +91,7 @@ namespace ScheduleJson
     /**
      *  @note
      *          Not using maybe
-     *          - siglePlay not related schedules
+     *          - siglePlay not related schedule
      *  @brief
      *          Single Play Schedule */
     struct SinglePlayScheduleData

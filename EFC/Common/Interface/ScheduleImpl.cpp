@@ -51,7 +51,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::CronOption& src)
 }
 
 //========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedules& src)
+QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedule& src)
 //========================================================
 {
     ds << src.onScheduleList;
@@ -145,7 +145,7 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::CronOption& dest)
 }
 
 //========================================================
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedules& dest)
+QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedule& dest)
 //========================================================
 {
     ds >> dest.onScheduleList;
