@@ -36,63 +36,66 @@ namespace ClientDB
 
 namespace DB_Query
 {
-    const static char* CHECK_DEVICE_TABLE = "SELECT COUNT(*) AS COUNT FROM sqlite_master "
+    static const char* CHECK_DEVICE_TABLE = "SELECT COUNT(*) AS COUNT FROM sqlite_master "
                                             "WHERE name=:table;";
 
     /// device.db
     // device table
-    const static char* CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
+    static const char* CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
                                                     "id VARCHAR(30) DEFAULT 'root' NOT NULL,"
                                                     "pw INTEGER DEFAULT 'root' NOT NULL,"
                                                     "name VARCHAR(30) DEFAULT 'ELGO');";
 
-    const static char* INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
+    static const char* INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
                                                     "VALUES(:id, :pw, :name);";
 
-    const static char* SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
+    static const char* SELECT_ALL_INFO_DEVICE = "SELECT * FROM device;";
 
-    const static char* SELECT_DEVICE_NAME = "SELECT name FROM device;";
+    static const char* SELECT_DEVICE_NAME = "SELECT name FROM device;";
 
-    const static char* UPDATE_PW_INFO_DEVICE = "UPDATE device SET pw=:pw;";
+    static const char* UPDATE_PW_INFO_DEVICE = "UPDATE device SET pw=:pw;";
 
-    const static char* UPDATE_DEVICE_NAME = "UPDATE device SET name=:name;";
+    static const char* UPDATE_DEVICE_NAME = "UPDATE device SET name=:name;";
 
 
     /// schedule.db
     // playSchedule table
-    const static char* CREATE_TABLE_PLAY_SCHEDULE = "CREATE TABLE playSchedule ("
-                                                        "id VARCHAR(30) NOT NULL,"
+    static const char* CREATE_TABLE_PLAY_SCHEDULE = "CREATE TABLE playSchedule ("
+                                                        "id VARCHAR(30) PRIMARY KEY NOT NULL,"
                                                         "startDate TEXT NOT NULL,"
                                                         "endDate TEXT NOT NULL,"
                                                         "playDataId VARCHAR(30) NOT NULL,"
                                                         "playDataType INTEGER NOT NULL,"
                                                         "cron BLOB NOT NULL);";
 
-    const static char* SELECT_ALL_PLAY_SCHEDULE = "SELECT * FROM playSchedule;";
+    static const char* SELECT_ALL_PLAY_SCHEDULE = "SELECT * FROM playSchedule;";
 
-    const static char* SELECT_ID_PLAY_SCHEDULE = "SELECT id FROM playSchedule;";
+    static const char* SELECT_ID_PLAY_SCHEDULE = "SELECT id FROM playSchedule;";
 
-    const static char* INSERT_PLAY_SCHEDULE = "INSERT INTO playSchedule(id, startDate, endDate, playDataId, playDataType, cron) "
-                                                    "VALUES(:id, :startDate, :endDate, :playDataId, :playDataType, :cron);";
+    static const char* INSERT_PLAY_SCHEDULE = "INSERT OR REPLACE INTO playSchedule("
+                                                    "id, startDate, endDate, playDataId, playDataType, cron) "
+                                                    "VALUES("
+                                                    ":id, :startDate, :endDate, :playDataId, :playDataType, :cron);";
 
-    const static char* DELETE_ALL_PLAY_SCHEDULE = "DELETE FROM playSchedule;";
+    static const char* DELETE_ALL_PLAY_SCHEDULE = "DELETE FROM playSchedule;";
 
-    const static char* DELETE_PLAY_SCHEDULE_BY_ID = "DELETE FROM playSchedule WHERE id=:id;";
+    static const char* DELETE_PLAY_SCHEDULE_BY_ID = "DELETE FROM playSchedule WHERE id=:id;";
 
     // playData table
-    const static char* CREATE_TABLE_PLAY_DATA = "CREATE TABLE playData ("
+    static const char* CREATE_TABLE_PLAY_DATA = "CREATE TABLE playData ("
                                                     "id VARCHAR(30) NOT NULL,"
                                                     "type INTEGER NOT NULL,"
-                                                    "data BLOB NOT NULL);";
+                                                    "data BLOB NOT NULL,"
+                                                    "PRIMARY KEY(id, type));";
 
-    const static char* INSERT_PLAY_DATA = "INSERT INTO playData(id, type, data) "
+    static const char* INSERT_PLAY_DATA = "INSERT OR REPLACE INTO playData(id, type, data) "
                                                 "VALUES(:id, :type, :data);";
 
-    const static char* SELECT_PLAY_DATA = "SELECT data FROM playData WHERE id=:id AND type=:type;";
+    static const char* SELECT_PLAY_DATA = "SELECT data FROM playData WHERE id=:id AND type=:type;";
 
     // powerSchedule table
-    const static char* CREATE_TABLE_POWER_SCHEDULE = "CREATE TABLE powerSchedule ("
-                                                        "id VARCHAR(30) NOT NULL,"
+    static const char* CREATE_TABLE_POWER_SCHEDULE = "CREATE TABLE powerSchedule ("
+                                                        "id VARCHAR(30) PRIMARY KEY NOT NULL,"
                                                         "isOn BOOLEAN NOT NULL,"
                                                         "startTime TEXT NOT NULL,"
                                                         "endTime TEXT NOT NULL,"

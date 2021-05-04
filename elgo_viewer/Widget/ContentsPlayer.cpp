@@ -9,6 +9,7 @@
 
 // Common
 #include "Common/CommonDef.h"
+#include "Common/Interface/ContentsPlayDataImpl.h"
 
 ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 
@@ -103,9 +104,19 @@ void ContentsPlayer::StartContentsPlayerSlot()
 void ContentsPlayer::AddPlayDataSlot(const PlayJson::CustomPlayDataJson& src)
 //========================================================
 {
-    if( m_customPlayDataList.end() == std::find(m_customPlayDataList.begin(),
-                                                m_customPlayDataList.end(),
-                                                src) )
+    int pos = -1;
+    QVector<PlayJson::CustomPlayDataJson>::const_iterator iter = m_customPlayDataList.constBegin();
+    while(iter != m_customPlayDataList.constEnd())
+    {
+        if((*iter).playData.id == src.playData.id)
+        {
+            pos = iter - m_customPlayDataList.constBegin();
+            break;
+        }
+        ++iter;
+    }
+
+    if(-1 == pos)
     {
         m_customPlayDataList.push_back(src);
         ELGO_VIEWER_LOG("ADD PlayData - {id: %d, type: %d}",
@@ -113,8 +124,9 @@ void ContentsPlayer::AddPlayDataSlot(const PlayJson::CustomPlayDataJson& src)
     }
     else
     {
-        ELGO_VIEWER_LOG("Existed Data - {id: %d, type: %d}",
-                        src.playData.id, src.playData.playDataType);
+        m_customPlayDataList[pos] = src;
+        ELGO_VIEWER_LOG("[Replace] Existed Data - {pos: %d, id: %d, type: %d}",
+                        pos, src.playData.id, src.playData.playDataType);
     }
 }
 
@@ -122,9 +134,19 @@ void ContentsPlayer::AddPlayDataSlot(const PlayJson::CustomPlayDataJson& src)
 void ContentsPlayer::AddPlayDataSlot(const PlayJson::FixedPlayDataJson& src)
 //========================================================
 {
-    if( m_fixedPlayDataList.end() == std::find(m_fixedPlayDataList.begin(),
-                                               m_fixedPlayDataList.end(),
-                                               src) )
+    int pos = -1;
+    QVector<PlayJson::FixedPlayDataJson>::const_iterator iter = m_fixedPlayDataList.constBegin();
+    while(iter != m_fixedPlayDataList.constEnd())
+    {
+        if((*iter).playData.id == src.playData.id)
+        {
+            pos = iter - m_fixedPlayDataList.constBegin();
+            break;
+        }
+        ++iter;
+    }
+
+    if(-1 == pos)
     {
         m_fixedPlayDataList.push_back(src);
         ELGO_VIEWER_LOG("ADD PlayData - {id: %d, type: %d}",
@@ -132,8 +154,9 @@ void ContentsPlayer::AddPlayDataSlot(const PlayJson::FixedPlayDataJson& src)
     }
     else
     {
-        ELGO_VIEWER_LOG("Existed Data - {id: %d, type: %d}",
-                        src.playData.id, src.playData.playDataType);
+        m_fixedPlayDataList[pos] = src;
+        ELGO_VIEWER_LOG("[Replace] Existed Data - {pos: %d, id: %d, type: %d}",
+                        pos, src.playData.id, src.playData.playDataType);
     }
 }
 
@@ -144,34 +167,25 @@ void ContentsPlayer::ExecPlayDataSlot(const PlayJson::PlayData& playData,
 {
     m_playerTimer.stop();
 
-    if( (playData.id != m_playingIndex.playData.id) ||
-        (playData.playDataType != m_playingIndex.playData.playDataType) )
-    {
-        ELGO_VIEWER_LOG("Read to Play - {id: %d, type: %d}",
-                        playData.id, playData.playDataType);
+    ELGO_VIEWER_LOG("Ready to Play - {id: %d, type: %d}",
+                    playData.id, playData.playDataType);
 
         // Get Play Data Index
-        GetSuitablePlayDataIndex(playData);
-        if(NOT_EXISTED_DATA == m_playDataIndex)
-        {
-            ELGO_VIEWER_LOG("Error - Not Existed Play Data {id: %d, type: %d",
-                            playData.id, playData.playDataType);
-            return;
-        }
-
-        // Make Countdown Info
-        PlayScheduleTimer::PlayingIndex playingIndex;
-        playingIndex.playData = playData;
-        MakePlayDataCountdownInfo(playingIndex);
-
-        // Update Display Scene
-        UpdatePlayerScene(playingIndex, bDelPrevData);
-    }
-    else
+    GetSuitablePlayDataIndex(playData);
+    if(NOT_EXISTED_DATA == m_playDataIndex)
     {
-        ELGO_VIEWER_LOG("Already Playing - {id: %d, type: %d}",
+        ELGO_VIEWER_LOG("Error - Not Existed Play Data {id: %d, type: %d",
                         playData.id, playData.playDataType);
+        return;
     }
+
+    // Make Countdown Info
+    PlayScheduleTimer::PlayingIndex playingIndex;
+    playingIndex.playData = playData;
+    MakePlayDataCountdownInfo(playingIndex);
+
+    // Update Display Scene
+    UpdatePlayerScene(playingIndex, bDelPrevData);
 
     m_playerTimer.start(990);
 }
@@ -184,6 +198,32 @@ void ContentsPlayer::UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& pl
     QGraphicsScene *newScene = new QGraphicsScene(this);
     newScene->setSceneRect(m_screenRect);
 
+    // Delete
+    PauseItemAndWidgetContents(m_playingIndex);
+    if(NULL != m_currScene.second)
+    {
+        QList<QGraphicsItem *> items = m_currScene.second->items();
+
+        foreach(auto item, items)
+        {
+            m_currScene.second->removeItem(item);
+        }
+        m_currScene.second->deleteLater();
+    }
+    ClearPrevPlayingData(m_playingIndex);
+
+    if( (true == bDelPrevData) && (0 != m_playingIndex.playData.id) )
+    {
+        if( ( PlayJson::PlayDataType::FIXED == m_playingIndex.playData.playDataType &&
+              m_playingIndex.playData.id != playingIndex.playData.id ) ||
+            ( PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType &&
+              m_playingIndex.playData.id != playingIndex.playData.id) )
+        {
+            ClearOtherPlayDataJsonInfo(playingIndex);
+        }
+    }
+
+    // ADD
     if(PlayJson::PlayDataType::CUSTOM == playingIndex.playData.playDataType)
     {
         SearchContentAndAddToScene(playingIndex, newScene);
@@ -225,27 +265,7 @@ void ContentsPlayer::UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& pl
                     playingIndex.playData.id, playingIndex.pageIdx, newScene->items().size());
 
     ui->playerView->setScene(newScene);
-
-    PauseItemAndWidgetContents(m_playingIndex);
-    PlayScheduleTimer::PlayingIndex prevPlayingIndex = m_playingIndex;
     m_playingIndex = playingIndex;
-
-    if(NULL != m_currScene.second)
-    {
-        QList<QGraphicsItem *> items = m_currScene.second->items();
-
-        foreach(auto item, items)
-        {
-            m_currScene.second->removeItem(item);
-        }
-        ClearPrevPlayingData(prevPlayingIndex);
-        m_currScene.second->deleteLater();
-    }
-
-    if(true == bDelPrevData)
-    {
-        ClearOtherPlayDataJsonInfo(m_playingIndex);
-    }
 
     SceneInfo newSceneInfo(playingIndex, newScene);
     m_currScene = newSceneInfo;
@@ -374,6 +394,12 @@ void ContentsPlayer::MakeCustomPlayDataContents(const PlayScheduleTimer::Playing
                                                 QGraphicsScene* dest)
 //========================================================
 {
+    if(true == m_customPlayDataList.empty())
+    {
+        ELGO_VIEWER_LOG("Error - m_customPlayDataList is Empty()");
+        return;
+    }
+
     // Set play data
     const PlayJson::CustomPlayDataJson& customPlayData = m_customPlayDataList[m_playDataIndex];
 
@@ -425,6 +451,12 @@ void ContentsPlayer::MakeFixedPlayDataContents(const PlayScheduleTimer::PlayingI
                                                QGraphicsScene* dest)
 //========================================================
 {
+    if(true == m_fixedPlayDataList.empty())
+    {
+        ELGO_VIEWER_LOG("ERROR - m_fixedPlayDataList is Empty()");
+        return;
+    }
+
     // Set play data
     const PlayJson::FixedPlayDataJson& fixedPlayData = m_fixedPlayDataList[m_playDataIndex];
 

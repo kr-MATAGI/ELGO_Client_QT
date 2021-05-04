@@ -42,8 +42,11 @@ private slots:
     void PlayScheduleTimeout();
 
 private:
-    /** @brief */
-    bool CheckValidPlayScheduleId(const QString& id);
+    /** @brief
+     *          return pos
+     *          -1 == pos, Not Existed
+     */
+    int CheckDuplicatedScheduleId(const QString& id);
 
     /** @brief */
     bool CheckValidDateTimeCron(const QDateTime& currentDateTime,

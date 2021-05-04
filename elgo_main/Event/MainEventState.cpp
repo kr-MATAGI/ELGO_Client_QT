@@ -40,6 +40,9 @@ MainEventState::MainEventState()
                           &MainEventState::RecvClearAllPlaySchedule);
     m_state.RegisterEvent(MAIN_EVENT::Event::CLEAR_PLAY_SCHEDULE_BY_ID,
                           &MainEventState::RecvClearPlayScheduleById);
+
+    m_state.RegisterEvent(MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
+                          &MainEventState::RecvAddPlayDataToDB);
 }
 
 //========================================================
@@ -287,4 +290,48 @@ void MainEventState::RecvClearPlayScheduleById(const QByteArray& src)
     dataStream >> id;
 
     MainController::GetInstance()->GetScheduleTimer().ClearPlayScheduleById(id);
+}
+
+//========================================================
+void MainEventState::RecvAddPlayDataToDB(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Add PlayData to DB
+     *          Cause by single play event
+     *  @param
+     *          PlayJson::PlayDataType  playJson
+     *          [ CustomPlayDataJson  customPlayData ||
+     *            FixedPlayDataJson   fixedPlayData ]
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
+    PlayJson::PlayDataType playType = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+    dataStream >> playType;
+
+    if(PlayJson::PlayDataType::CUSTOM == playType)
+    {
+        PlayJson::CustomPlayDataJson customPlayData;
+        dataStream >> customPlayData;
+
+        MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(customPlayData);
+        ELGO_MAIN_LOG("Add Custom PlayData to DB - {id: %d, type: %d}",
+                      customPlayData.playData.id, customPlayData.playData.playDataType);
+    }
+    else if(PlayJson::PlayDataType::FIXED == playType)
+    {
+        PlayJson::FixedPlayDataJson fixedPlayData;
+        dataStream >> fixedPlayData;
+
+        MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(fixedPlayData);
+        ELGO_MAIN_LOG("ADD Fixed PlayData to DB - {id: %d, type: %d}",
+                      fixedPlayData.playData.id, fixedPlayData.playData.playDataType);
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Unknown PlayData Type: %d", playType);
+    }
 }

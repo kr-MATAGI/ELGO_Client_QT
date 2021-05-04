@@ -40,6 +40,9 @@ bool ImageItem::SetImageItem(const QString& filePath,  const StyleSheet::PosSize
         this->setPos(m_posSizeInfo.pos);
         this->setPixmap(scaledPximap);
         ELGO_VIEWER_LOG("Set Image  : %s", filePath.toUtf8().constData());
+        ELGO_VIEWER_LOG("Image Pos - {x: %d, y: %d, w: %d, h: %d}",
+                        m_posSizeInfo.pos.x(), m_posSizeInfo.pos.y(),
+                        m_posSizeInfo.size.width(), m_posSizeInfo.size.height());
     }
     else
     {

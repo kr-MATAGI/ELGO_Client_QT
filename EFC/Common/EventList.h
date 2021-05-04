@@ -109,6 +109,19 @@ namespace MAIN_EVENT
          */
         CLEAR_PLAY_SCHEDULE_BY_ID = 265,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Add PlayData to DB
+         *          Cause by single play event
+         *  @param
+         *          PlayJson::PlayDataType  playJson
+         *          [ CustomPlayDataJson  customPlayData ||
+         *            FixedPlayDataJson   fixedPlayData ]
+         */
+        ADD_PLAY_DATA_TO_DB = 266,
+
+
         MAX_VIEWER_EVENT = 511
     };
 }

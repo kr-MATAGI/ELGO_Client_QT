@@ -33,8 +33,8 @@ void PlayScheduleTimer::AddPlayScheduleList(const QVector<ScheduleJson::PlaySche
     const int srcListSize = src.size();
     for(int idx = 0; idx < srcListSize; idx++)
     {
-        const bool bIsValid = CheckValidPlayScheduleId(src[idx].id);
-        if(true == bIsValid)
+        const int pos = CheckDuplicatedScheduleId(src[idx].id);
+        if(-1 == pos)
         {
             m_playScheduleList.push_back(src[idx]);
             ELGO_MAIN_LOG("Add New PlaySchedule - {id: %s}",
@@ -42,8 +42,10 @@ void PlayScheduleTimer::AddPlayScheduleList(const QVector<ScheduleJson::PlaySche
         }
         else
         {
-            ELGO_MAIN_LOG("Already Inserted PlaySchedule - {id: %s}",
-                          src[idx].id.toStdString().c_str());
+            ELGO_MAIN_LOG("[Replace] Already Inserted PlaySchedule - {pos: %d, id: %s}",
+                          pos, src[idx].id.toStdString().c_str());
+            m_playScheduleList[pos] = src[idx];
+            m_currScheduleId.clear();
         }
     }
 
@@ -104,21 +106,24 @@ void PlayScheduleTimer::ClearPlayScheduleById(const QString& id)
 }
 
 //========================================================
-bool PlayScheduleTimer::CheckValidPlayScheduleId(const QString& id)
+int PlayScheduleTimer::CheckDuplicatedScheduleId(const QString& id)
 //========================================================
 {
+    int retValue = -1;
+
     QVector<ScheduleJson::PlaySchedule>::const_iterator iter = m_playScheduleList.constBegin();
     while(iter != m_playScheduleList.constEnd())
     {
         const QString& iterId = (*iter).id;
         if(0 == strcmp(iterId.toStdString().c_str(), id.toStdString().c_str()))
         {
-            return false;
+            retValue = iter - m_playScheduleList.begin();
+            break;
         }
         ++iter;
     }
 
-    return true;
+    return retValue;
 }
 
 //========================================================
@@ -181,11 +186,12 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                          (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
                 {
                     const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
-                    ELGO_MAIN_LOG("TEST LOG : bIsValid: %d", bIsValid);
                     if( (true == bIsValid) &&
                         (0 != strcmp(m_currScheduleId.toStdString().c_str(),
                                      scheduleIter->id.toStdString().c_str())) )
                     {
+                        m_currScheduleId = scheduleIter->id;
+
                         // Exec
                         if(PlayJson::PlayDataType::CUSTOM == dataIter->type)
                         {
@@ -195,7 +201,6 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                             MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
                                                                                          dataIter->type,
                                                                                          customPlayData);
-
                             // Send playData to Viewer
                             QByteArray bytes;
                             QDataStream dataStream(&bytes, QIODevice::WriteOnly);

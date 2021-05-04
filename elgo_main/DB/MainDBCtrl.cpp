@@ -160,71 +160,42 @@ void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>
         return;
     }
 
+    // Insert or Replace data to DB
     QSqlQuery query(db);
-    query.prepare(DB_Query::SELECT_ID_PLAY_SCHEDULE);
-    const bool bIdExec =  query.exec();
-    if(true == bIdExec)
+    QVector<ScheduleJson::PlaySchedule>::const_iterator scheduleIter = playScheduleList.constBegin();
+    while(scheduleIter != playScheduleList.constEnd())
     {
-        // Get Insterted ID
-        QVector<QString> idList;
-        while(query.next())
+        const QString& id = (*scheduleIter).id;
+        QVector<ScheduleJson::PlayScheduleData>::const_iterator dataIter = (*scheduleIter).scheduleList.constBegin();
+        while(dataIter != (*scheduleIter).scheduleList.constEnd())
         {
-            const int idIdx = query.record().indexOf("id");
-            const QString& id = query.value(idIdx).toString();
-            idList.push_back(id);
-        }
+            query.prepare(DB_Query::INSERT_PLAY_SCHEDULE);
+            query.bindValue(":id", id);
+            query.bindValue(":startDate", (*dataIter).startTime);
+            query.bindValue(":endDate", (*dataIter).endTime);
+            query.bindValue(":playDataId", (*dataIter).playDataId);
+            query.bindValue(":playDataType", (*dataIter).type);
 
-        // Check Duplicated
-        QVector<ScheduleJson::PlaySchedule>::const_iterator iter = playScheduleList.constBegin();
-        while(iter != playScheduleList.end())
-        {
-            const bool bValidId = CheckDuplicatedId(idList, (*iter).id);
-            if(true == bValidId)
+            QByteArray bytes;
+            QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+            dataStream << (*dataIter).cron;
+            query.bindValue(":cron", bytes);
+            ELGO_MAIN_LOG("INSERT - {id: %s, startDate: %s, endDate: %s, playData{id: %d, type: %d}",
+                          id.toStdString().c_str(), (*dataIter).startTime.toString().toStdString().c_str(),
+                          (*dataIter).endTime.toString().toStdString().c_str(),
+                          (*dataIter).playDataId, (*dataIter).type);
+
+            const bool bInserted = query.exec();
+            if(false == bInserted)
             {
-                const QString& id = (*iter).id;
-                QVector<ScheduleJson::PlayScheduleData>::const_iterator dataIter = (*iter).scheduleList.constBegin();
-                while(dataIter != (*iter).scheduleList.constEnd())
-                {
-                    query.clear();
-                    query.prepare(DB_Query::INSERT_PLAY_SCHEDULE);
-                    query.bindValue(":id", id);
-                    query.bindValue(":startDate", (*dataIter).startTime);
-                    query.bindValue(":endDate", (*dataIter).endTime);
-                    query.bindValue(":playDataId", (*dataIter).playDataId);
-                    query.bindValue(":playDataType", (*dataIter).type);
-
-                    QByteArray bytes;
-                    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-                    dataStream << (*dataIter).cron;
-                    query.bindValue(":cron", bytes);
-                    ELGO_MAIN_LOG("INSERT - {id: %s, startDate: %s, endDate: %s, playData{id: %d, type: %d}",
-                                  id.toStdString().c_str(), (*dataIter).startTime.toString().toStdString().c_str(),
-                                  (*dataIter).endTime.toString().toStdString().c_str(),
-                                  (*dataIter).playDataId, (*dataIter).type);
-
-                    const bool bInserted = query.exec();
-                    if(false == bInserted)
-                    {
-                        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                                      DB_Query::INSERT_PLAY_SCHEDULE,
-                                      query.lastError().text().toStdString().c_str());
-                    }
-                    ++dataIter;
-                }
+                ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                              DB_Query::INSERT_PLAY_SCHEDULE,
+                              query.lastError().text().toStdString().c_str());
             }
-            else
-            {
-                ELGO_MAIN_LOG("Already Inserted PlaySchedule ID: %s",
-                              (*iter).id.toStdString().c_str());
-            }
-            ++iter;
+
+            ++dataIter;
         }
-    }
-    else
-    {
-        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
-                      DB_Query::SELECT_ID_PLAY_SCHEDULE,
-                      query.lastError().text().toStdString().c_str());
+        ++scheduleIter;
     }
 
     db.close();

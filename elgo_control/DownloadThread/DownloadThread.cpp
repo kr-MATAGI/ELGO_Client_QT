@@ -166,20 +166,44 @@ void DownloadThread::ExecDownloadSinglePlayData()
              * @param
              *       CustomPlayDataJson customPlayData
              */
-            QByteArray bytes;
-            QDataStream stream(&bytes, QIODevice::WriteOnly);
-            stream << customPlayData;
-            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA, bytes);
-            if(false == bIsSendEvent)
+            QByteArray viewerBytes;
+            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+            viewerStream << customPlayData;
+            const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                          VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                                                          viewerBytes);
+            if(false == bViewerEvent)
             {
                 ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
+            }
+
+            /**
+             *  @note
+             *          ELGO_CONTROL -> ELGO_MAIN
+             *          Add PlayData to DB
+             *          Cause by single play event
+             *  @param
+             *          PlayJson::PlayDataType  playJson
+             *          [ CustomPlayDataJson  customPlayData ||
+             *            FixedPlayDataJson   fixedPlayData ]
+             */
+            QByteArray mainBytes;
+            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << customPlayData.playData.playDataType;
+            mainStream << customPlayData;
+            const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                        MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
+                                                        mainBytes);
+            if(false == bMainEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
             }
         }
         else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
         {
             // Get Video Duration
             VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
+
             /**
              * @note
              *       ELGO_CONTROL -> ELGO_VIEWER
@@ -187,14 +211,27 @@ void DownloadThread::ExecDownloadSinglePlayData()
              * @param
              *       FixedPlayDataJson customPlayData
              */
-            QByteArray bytes;
-            QDataStream stream(&bytes, QIODevice::WriteOnly);
-            stream << fixedPlayData;
-            const bool bIsSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA, bytes);
-            if(false == bIsSendEvent)
+            QByteArray viewerBytes;
+            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+            viewerStream << fixedPlayData;
+            const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                          VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                                                          viewerBytes);
+            if(false == bViewerEvent)
             {
                 ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
+            }
+
+            QByteArray mainBytes;
+            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << fixedPlayData.playData.playDataType;
+            mainStream << fixedPlayData;
+            const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                        MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
+                                                        mainBytes);
+            if(false == bMainEvent)
+            {
+                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
             }
         }
         else

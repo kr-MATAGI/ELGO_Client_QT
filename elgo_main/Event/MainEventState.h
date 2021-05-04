@@ -50,6 +50,9 @@ public:
     /** @brief */
     void RecvClearPlayScheduleById(const QByteArray& src);
 
+    /** @brief */
+    void RecvAddPlayDataToDB(const QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;

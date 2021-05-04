@@ -26,6 +26,13 @@ namespace PlayJson
     /** @brief */
     struct PlayData
     {
+        PlayData()
+            : id(0)
+            , width(0)
+            , height(0)
+            , orientation(Orientation::NONE_ORIENTATION)
+            , playDataType(PlayDataType::NONE_PLAY_DATA_TYPE)
+        {}
         int id;
         QString name;
         QString memo;
