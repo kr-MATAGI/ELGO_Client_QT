@@ -25,6 +25,12 @@ public:
     /** @brief */
     void AddPowerScheduleList(const QVector<ScheduleJson::PowerScheduleData>& src);
 
+    /** @brief */
+    void StartPowerTimer();
+    /** @brief */
+    void StopPowerTimer();
+    /** @brief */
+    bool IsActivePowerTimer();
 
 private slots:
     /** @brief */

@@ -53,10 +53,7 @@ void PlayScheduleTimer::AddPlayScheduleList(const QVector<ScheduleJson::PlaySche
     MainController::GetInstance()->GetDBCtrl().UpdateNewPlaySchedule(m_playScheduleList);
 
     // Start Timer
-    if(false == m_bIsActive)
-    {
-        StartPlayTimer();
-    }
+    StartPlayTimer();
 }
 
 //========================================================

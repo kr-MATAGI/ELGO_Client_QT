@@ -28,6 +28,40 @@ void PowerScheduleTimer::AddPowerScheduleList(const QVector<ScheduleJson::PowerS
 //========================================================
 {
 
+
+
+    StartPowerTimer();
+}
+
+//========================================================
+void PowerScheduleTimer::StartPowerTimer()
+//========================================================
+{
+    if(false == m_bIsActive)
+    {
+        ELGO_MAIN_LOG("Start Power Schedule Timer !");
+        m_bIsActive = true;
+        this->start(990);
+    }
+}
+
+//========================================================
+void PowerScheduleTimer::StopPowerTimer()
+//========================================================
+{
+    if(true == m_bIsActive)
+    {
+        ELGO_MAIN_LOG("Stop Power Schedule Timer !");
+        m_bIsActive = false;
+        this->stop();
+    }
+}
+
+//========================================================
+bool PowerScheduleTimer::IsActivePowerTimer()
+//========================================================
+{
+    return m_bIsActive;
 }
 
 //========================================================

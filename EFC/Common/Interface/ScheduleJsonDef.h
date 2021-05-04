@@ -73,6 +73,13 @@ namespace ScheduleJson
 
 
     /** @brief  Power Schedules */
+    enum PowerStatus
+    {
+        POWER_NONE = 0,
+        POWER_ON = 1,
+        POWER_OFF =2
+    };
+
     struct PowerScheduleData
     {
         QString id;
@@ -85,13 +92,6 @@ namespace ScheduleJson
     {
         QVector<PowerScheduleData> onScheduleList;
         QVector<PowerScheduleData> offScheduleList;
-    };
-
-    enum PowerStatus
-    {
-        POWER_NONE = 0,
-        POWER_ON = 1,
-        POWER_OFF =2
     };
 
 
