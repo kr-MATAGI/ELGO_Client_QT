@@ -19,10 +19,6 @@ ViewerEventState::ViewerEventState()
                           &ViewerEventState::RecvPlayCustomPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
                           &ViewerEventState::RecvPlayFixedPlayData);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA,
-                          &ViewerEventState::RecvAddCustomPlayData);
-    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA,
-                          &ViewerEventState::RecvAddFixedPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
                           &ViewerEventState::RecvRequestScreenCapture);
 }
@@ -110,44 +106,6 @@ void ViewerEventState::RecvPlayFixedPlayData(const QByteArray& src)
 
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
-    thread->SetRecvBytes(src);
-
-    m_threadPool->start(thread);
-}
-
-//========================================================
-void ViewerEventState::RecvAddCustomPlayData(const QByteArray& src)
-//========================================================
-{
-    /**
-     * @note
-     *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Add custom play data
-     * @param
-     *       CustomPlayDataJson customPlayData
-     */
-
-    ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA);
-    thread->SetRecvBytes(src);
-
-    m_threadPool->start(thread);
-}
-
-//========================================================
-void ViewerEventState::RecvAddFixedPlayData(const QByteArray& src)
-//========================================================
-{
-    /**
-     * @note
-     *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Add fixed play data
-     * @param
-     *       FixedPlayDataJson fixedPlayData
-     */
-
-    ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA);
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);

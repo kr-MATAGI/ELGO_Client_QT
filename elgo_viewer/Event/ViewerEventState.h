@@ -36,11 +36,6 @@ public:
     void RecvPlayFixedPlayData(const QByteArray& src);
 
     /** @brief */
-    void RecvAddCustomPlayData(const QByteArray& src);
-    /** @brief */
-    void RecvAddFixedPlayData(const QByteArray& src);
-
-    /** @brief */
     void RecvRequestScreenCapture(const QByteArray& src);
 
 public:

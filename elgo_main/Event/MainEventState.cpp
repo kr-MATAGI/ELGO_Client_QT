@@ -3,6 +3,7 @@
 
 // Common
 #include "Common/Interface/ScheduleImpl.h"
+#include "Common/Interface/ContentsPlayDataImpl.h"
 
 // Main
 #include "MainEventState.h"
@@ -220,10 +221,36 @@ void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
 
     QByteArray copyBytes = src;
     QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
-    QVector<ScheduleJson::PlaySchedule> playScheduleList;
-    dataStream >> playScheduleList;
 
-    MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+    PlayJson::PlayDataType type = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+    dataStream >> type;
+
+    if(PlayJson::PlayDataType::CUSTOM == type)
+    {
+        PlayJson::CustomPlayDataJson customPlayData;
+        QVector<ScheduleJson::PlaySchedule> playScheduleList;
+
+        dataStream >> customPlayData;
+        dataStream >> playScheduleList;
+
+        MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(customPlayData);
+        MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+    }
+    else if(PlayJson::PlayDataType::FIXED == type)
+    {
+        PlayJson::FixedPlayDataJson fixedPlayData;
+        QVector<ScheduleJson::PlaySchedule> playScheduleList;
+
+        dataStream >> fixedPlayData;
+        dataStream >> playScheduleList;
+
+        MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(fixedPlayData);
+        MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - None Play Data Type: %d", type);
+    }
 }
 
 //========================================================

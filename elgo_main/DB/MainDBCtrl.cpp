@@ -3,6 +3,7 @@
 
 // Common
 #include "Common/Interface/ScheduleImpl.h"
+#include "Common/Interface/ContentsPlayDataImpl.h"
 
 // Main
 #include "MainDBCtrl.h"
@@ -35,6 +36,7 @@ void MainDBCtrl::InitializeDB()
 
     MakeDefulatTable(db, DEVICE_DB, "device");
     MakeDefulatTable(db, SCHEDULE_DB, "playSchedule");
+    MakeDefulatTable(db, SCHEDULE_DB, "playData");
     MakeDefulatTable(db, SCHEDULE_DB, "powerSchedule");
 
     m_mutex->unlock();
@@ -116,6 +118,10 @@ void MainDBCtrl::MakeDefulatTable(QSqlDatabase& db, const char* dbPath,
                 else if(0 == strcmp("powerSchedule", tableName.toStdString().c_str()))
                 {
                     prepareQuery = DB_Query::CREATE_TABLE_POWER_SCHEDULE;
+                }
+                else if(0 == strcmp("playData", tableName.toStdString().c_str()))
+                {
+                    prepareQuery = DB_Query::CREATE_TABLE_PLAY_DATA;
                 }
                 query.prepare(prepareQuery);
                 const bool bIsCreated = query.exec();
@@ -305,4 +311,186 @@ bool MainDBCtrl::CheckDuplicatedId(const QVector<QString>& dbIdList, const QStri
     }
 
     return true;
+}
+
+//========================================================
+void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::CustomPlayDataJson& playData)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::INSERT_PLAY_DATA);
+    query.bindValue(":id", playData.playData.id);
+    query.bindValue(":type", playData.playData.playDataType);
+
+    QByteArray bytes;
+    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+    dataStream << playData;
+    query.bindValue(":data", bytes);
+    const bool bIsExec = query.exec();
+    if(true == bIsExec)
+    {
+        ELGO_MAIN_LOG("INSERT - PlayData {id: %d, type: %d}",
+                      playData.playData.id, playData.playData.playDataType);
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - INSERT PlayData {id: %d, type: %d}, %s",
+                      playData.playData.id, playData.playData.playDataType,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::FixedPlayDataJson& playData)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::INSERT_PLAY_DATA);
+    query.bindValue(":id", playData.playData.id);
+    query.bindValue(":type", playData.playData.playDataType);
+
+    QByteArray bytes;
+    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+    dataStream << playData;
+    query.bindValue(":data", bytes);
+    const bool bIsExec = query.exec();
+    if(true == bIsExec)
+    {
+        ELGO_MAIN_LOG("INSERT - {id: %d, type: %d}",
+                      playData.playData.id, playData.playData.playDataType);
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - INSERT PlayData {id: %d, type: %d}, %s",
+                      playData.playData.id, playData.playData.playDataType,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType type,
+                                   PlayJson::CustomPlayDataJson& dest)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_PLAY_DATA);
+    query.bindValue(":id", id);
+    query.bindValue(":type", (int)type);
+    const bool bIsExec = query.exec();
+    if(true == bIsExec)
+    {
+        while(query.next())
+        {
+            const int columIdx = query.record().indexOf("data");
+            QByteArray columBytes = query.value(columIdx).toByteArray();
+            QDataStream columStream(&columBytes, QIODevice::ReadOnly);
+            columStream >> dest;
+            ELGO_MAIN_LOG("SELECT Result - {id: %d, type: %d}",
+                          dest.playData.id, dest.playData.playDataType);
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_PLAY_DATA,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType type,
+                                   PlayJson::FixedPlayDataJson& dest)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_PLAY_DATA);
+    query.bindValue(":id", id);
+    query.bindValue(":type", (int)type);
+    const bool bIsExec = query.exec();
+    if(true == bIsExec)
+    {
+        while(query.next())
+        {
+            const int columIdx = query.record().indexOf("data");
+            QByteArray columBytes = query.value(columIdx).toByteArray();
+            QDataStream columStream(&columBytes, QIODevice::ReadOnly);
+            columStream >> dest;
+            ELGO_MAIN_LOG("SELECT Result - {id: %d, type: %d}",
+                          dest.playData.id, dest.playData.playDataType);
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_PLAY_DATA,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
 }

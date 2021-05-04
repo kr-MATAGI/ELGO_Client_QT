@@ -31,6 +31,18 @@ public:
     void UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>& playScheduleList);
 
     /** @brief */
+    void AddNewPlayDataToDB(const PlayJson::CustomPlayDataJson& playData);
+    /** @brief */
+    void AddNewPlayDataToDB(const PlayJson::FixedPlayDataJson& playData);
+
+    /** @brief */
+    void GetPlayDataFromDB(const int id, const PlayJson::PlayDataType type,
+                           PlayJson::CustomPlayDataJson& dest);
+    /** @brief */
+    void GetPlayDataFromDB(const int id, const PlayJson::PlayDataType type,
+                           PlayJson::FixedPlayDataJson& dest);
+
+    /** @brief */
     void ClearAllPlaySchedule();
     /** @brief */
     void DeletePlayScheduleById(const QString& scheduleId);

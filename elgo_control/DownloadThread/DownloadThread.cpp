@@ -323,34 +323,19 @@ void DownloadThread::ExecDownloadPlaySchedules()
             }
 
             /**
-             * @note
-             *       ELGO_CONTROL -> ELGO_VIEWER
-             *       Add custom play data
-             * @param
-             *       CustomPlayDataJson customPlayData
-             */
-            QByteArray viewerBytes;
-            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
-            viewerStream << customPlayData;
-
-            const bool bViewerSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                              VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA,
-                                                              viewerBytes);
-            if(false == bViewerSendEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA);
-            }
-
-
-            /**
              *  @note
              *          ELGO_CONTROL -> ELGO_MAIN
              *          For manage custom/fixed play schedule
              *  @param
+             *          PlayDataType    playDataType
+             *          [ CustomPlayDataJson  customPlayData ||
+             *            FixedPlayDataJson   fixedPlayData ]
              *          QVector<ScheduleJson::PlaySchedule> playScheduleList
              */
             QByteArray mainBytes;
             QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << customPlayData.playData.playDataType;
+            mainStream << customPlayData;
             mainStream << playScheduleList;
 
             const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
@@ -367,33 +352,19 @@ void DownloadThread::ExecDownloadPlaySchedules()
             VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
 
             /**
-             * @note
-             *       ELGO_CONTROL -> ELGO_VIEWER
-             *       Add fixed play data
-             * @param
-             *       FixedPlayDataJson fixedPlayData
-             */
-            QByteArray viewerBytes;
-            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
-            viewerStream << fixedPlayData;
-
-            const bool bViewerSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                              VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA,
-                                                              viewerBytes);
-            if(false == bViewerSendEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA);
-            }
-
-            /**
              *  @note
              *          ELGO_CONTROL -> ELGO_MAIN
              *          For manage custom/fixed play schedule
              *  @param
+             *          PlayDataType    playDataType
+             *          [ CustomPlayDataJson  customPlayData ||
+             *            FixedPlayDataJson   fixedPlayData ]
              *          QVector<ScheduleJson::PlaySchedule> playScheduleList
              */
             QByteArray mainBytes;
             QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+            mainStream << fixedPlayData.playData.playDataType;
+            mainStream << fixedPlayData;
             mainStream << playScheduleList;
 
             const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_MAIN,

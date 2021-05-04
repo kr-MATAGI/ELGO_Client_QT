@@ -57,7 +57,7 @@ private:
     bool m_bIsActive;
 
     int m_prevPlayDataId;
-    int m_prevPlayDataType;
+    PlayJson::PlayDataType m_prevPlayDataType;
     QString m_currScheduleId;
     QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
 };

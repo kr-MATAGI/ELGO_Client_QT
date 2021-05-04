@@ -83,6 +83,9 @@ namespace MAIN_EVENT
          *          ELGO_CONTROL -> ELGO_MAIN
          *          For manage custom/fixed play schedule
          *  @param
+         *          PlayDataType    playDataType
+         *          [ CustomPlayDataJson  customPlayData ||
+         *            FixedPlayDataJson   fixedPlayData ]
          *          QVector<ScheduleJson::PlaySchedule> playScheduleList
          */
         UPDATE_PLAY_SCHEDULE_LIST = 263,
@@ -220,24 +223,6 @@ namespace VIEWER_EVENT
          *       FixedPlayDataJson fixedPlayData
          */
         PLAY_FIXED_PLAY_DATA = 772,
-
-        /**
-         * @note
-         *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Add custom play data
-         * @param
-         *       CustomPlayDataJson customPlayData
-         */
-        ADD_CUSTOM_PLAY_DATA = 773,
-
-        /**
-         * @note
-         *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Add fixed play data
-         * @param
-         *       FixedPlayDataJson fixedPlayData
-         */
-        ADD_FIXED_PLAY_DATA = 774,
 
         /**
          * @note

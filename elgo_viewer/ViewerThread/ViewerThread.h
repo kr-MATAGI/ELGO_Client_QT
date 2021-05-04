@@ -39,11 +39,6 @@ public:
     void ExecPlayFixedPlayData();
 
     /** @brief */
-    void ExecAddCustomPlayData();
-    /** @brief */
-    void ExecAddFixedPlayData();
-
-    /** @brief */
     void ExecScreenCapture();
 
 public:

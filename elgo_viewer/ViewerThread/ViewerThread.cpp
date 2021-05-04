@@ -66,14 +66,6 @@ void ViewerThread::run()
     {
         ExecPlayFixedPlayData();
     }
-    else if(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA == m_event)
-    {
-        ExecAddCustomPlayData();
-    }
-    else if(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA == m_event)
-    {
-        ExecAddFixedPlayData();
-    }
     else if(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE == m_event)
     {
         ExecScreenCapture();
@@ -181,20 +173,6 @@ void ViewerThread::ExecPlayFixedPlayData()
     // Add Play Data
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
     emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(fixedPlayData.playData, true);
-}
-
-//========================================================
-void ViewerThread::ExecAddCustomPlayData()
-//========================================================
-{
-
-}
-
-//========================================================
-void ViewerThread::ExecAddFixedPlayData()
-//========================================================
-{
-
 }
 
 //========================================================

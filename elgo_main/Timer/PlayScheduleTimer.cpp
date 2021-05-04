@@ -51,14 +51,20 @@ void PlayScheduleTimer::AddPlayScheduleList(const QVector<ScheduleJson::PlaySche
     MainController::GetInstance()->GetDBCtrl().UpdateNewPlaySchedule(m_playScheduleList);
 
     // Start Timer
-    StartPlayTimer();
+    if(false == m_bIsActive)
+    {
+        StartPlayTimer();
+    }
 }
 
 //========================================================
 void PlayScheduleTimer::ClearAllPlayScheduleList()
 //========================================================
 {
-    StopPlayTimer();
+    if(true == m_bIsActive)
+    {
+        StopPlayTimer();
+    }
 
     MainController::GetInstance()->GetDBCtrl().ClearAllPlaySchedule();
     m_playScheduleList.clear();
@@ -175,6 +181,7 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                          (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
                 {
                     const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
+                    ELGO_MAIN_LOG("TEST LOG : bIsValid: %d", bIsValid);
                     if( (true == bIsValid) &&
                         (0 != strcmp(m_currScheduleId.toStdString().c_str(),
                                      scheduleIter->id.toStdString().c_str())) )
@@ -185,7 +192,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                             PlayJson::CustomPlayDataJson customPlayData;
 
                             // Get CustomPlayData from DB
-
+                            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
+                                                                                         dataIter->type,
+                                                                                         customPlayData);
 
                             // Send playData to Viewer
                             QByteArray bytes;
@@ -206,7 +215,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                             PlayJson::FixedPlayDataJson fixedPlayData;
 
                             // Get FixedPlayData from DB
-
+                            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
+                                                                                         dataIter->type,
+                                                                                         fixedPlayData);
                             // Send playData to Viewer
                             QByteArray bytes;
                             QDataStream dataStream(&bytes, QIODevice::WriteOnly);
@@ -229,6 +240,8 @@ void PlayScheduleTimer::PlayScheduleTimeout()
 
                         return;
                     }
+
+                    ++dataIter;
                 }
                 else
                 {
@@ -243,6 +256,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
             PlayJson::CustomPlayDataJson customPlayData;
 
             // Get info from DB
+            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
+                                                                         m_prevPlayDataType,
+                                                                         customPlayData);
 
             // Send Custom PlayData to Viwer
             QByteArray bytes;
@@ -262,7 +278,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
             PlayJson::FixedPlayDataJson fixedPlayData;
 
             // Get info from DB
-
+            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
+                                                                         m_prevPlayDataType,
+                                                                         fixedPlayData);
 
             // Send Fixed PlayData to Viwer
             QByteArray bytes;
@@ -298,7 +316,7 @@ bool PlayScheduleTimer::CheckValidDateTimeCron(const QDateTime& currentDateTime,
 
     const int hour = currentDateTime.time().hour();
     const int min = currentDateTime.time().minute();
-    const int sec = currentDateTime.time().second();
+//    const int sec = currentDateTime.time().second(); not using
 
     if(cron.monthList.end() == std::find(cron.monthList.begin(), cron.monthList.end(), month))
     {
@@ -321,11 +339,6 @@ bool PlayScheduleTimer::CheckValidDateTimeCron(const QDateTime& currentDateTime,
     }
 
     if(cron.minList.end() == std::find(cron.minList.begin(), cron.minList.end(), min))
-    {
-        return retValue;
-    }
-
-    if(cron.secList.end() == std::find(cron.secList.begin(), cron.secList.end(), sec))
     {
         return retValue;
     }
