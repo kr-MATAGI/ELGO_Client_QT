@@ -95,11 +95,17 @@ namespace DB_Query
 
     // powerSchedule table
     static const char* CREATE_TABLE_POWER_SCHEDULE = "CREATE TABLE powerSchedule ("
-                                                        "id VARCHAR(30) PRIMARY KEY NOT NULL,"
+                                                        "id VARCHAR(30) NOT NULL,"
                                                         "isOn BOOLEAN NOT NULL,"
-                                                        "startTime TEXT NOT NULL,"
-                                                        "endTime TEXT NOT NULL,"
-                                                        "cron BLOB NOT NULL);";
+                                                        "startDate TEXT NOT NULL,"
+                                                        "endDate TEXT NOT NULL,"
+                                                        "cron BLOB NOT NULL,"
+                                                        "PRIMARY KEY(id, isOn));";
+
+    static const char* INSERT_POWER_SCHEDULE = "INSERT OR REPLACE INTO powerSchedule("
+                                                    "id, isOn, startDate, endDate, cron) "
+                                                    "VALUES("
+                                                    ":id, :isOn, :startDate, :endDate, :cron);";
 
 };
 

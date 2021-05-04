@@ -357,11 +357,13 @@ void MainEventState::RecvUpdatePowerSchedule(const QByteArray& src)
     ScheduleJson::PowerSchedule powerSchedule;
     dataStream >> powerSchedule;
 
-    ELGO_MAIN_LOG("TEST LOG !!!!!!!!!!!!!!!!!!!");
-
     // on
-//    MainController::GetInstance()->GetDBCtrl();
-//    MainController::GetInstance()->GetPowerTimer();
+    MainController::GetInstance()->GetDBCtrl().UpdateNewPowerSchedule(powerSchedule.onScheduleList,
+                                                                      ScheduleJson::PowerStatus::POWER_ON);
+    MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerSchedule.onScheduleList);
 
     // off
+    MainController::GetInstance()->GetDBCtrl().UpdateNewPowerSchedule(powerSchedule.offScheduleList,
+                                                                      ScheduleJson::PowerStatus::POWER_OFF);
+    MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerSchedule.offScheduleList);
 }

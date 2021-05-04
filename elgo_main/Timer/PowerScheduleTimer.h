@@ -22,12 +22,18 @@ public:
     /** @brief */
     virtual ~PowerScheduleTimer();
 
+    /** @brief */
+    void AddPowerScheduleList(const QVector<ScheduleJson::PowerScheduleData>& src);
+
+
 private slots:
     /** @brief */
     void PowerScheduleTimeout();
 
 private:
     bool m_bIsActive;
+
+    QVector<ScheduleJson::PowerScheduleData> m_scheduleList;
 };
 
 #endif // POWERSCHEDULETIMER_H

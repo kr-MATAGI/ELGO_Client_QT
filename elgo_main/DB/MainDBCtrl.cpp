@@ -166,6 +166,7 @@ void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>
     while(scheduleIter != playScheduleList.constEnd())
     {
         const QString& id = (*scheduleIter).id;
+
         QVector<ScheduleJson::PlayScheduleData>::const_iterator dataIter = (*scheduleIter).scheduleList.constBegin();
         while(dataIter != (*scheduleIter).scheduleList.constEnd())
         {
@@ -263,6 +264,64 @@ void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
                       query.lastError().text().toStdString().c_str());
     }
 
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src,
+                                        const ScheduleJson::PowerStatus status)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    // Insert or Replace data to DB
+    QSqlQuery query(db);
+    QVector<ScheduleJson::PowerScheduleData>::const_iterator scheduleIter = src.constBegin();
+    while(scheduleIter != src.constEnd())
+    {
+        query.clear();
+        query.prepare(DB_Query::INSERT_POWER_SCHEDULE);
+        query.bindValue(":id", (*scheduleIter).id);
+
+        const bool bIsOn = (ScheduleJson::PowerStatus::POWER_ON == status) ? true : false;
+        query.bindValue(":isOn", bIsOn);
+
+        query.bindValue(":startDate", (*scheduleIter).startTime);
+        query.bindValue(":endDate", (*scheduleIter).endTime);
+
+        QByteArray cronBytes;
+        QDataStream cronStream(&cronBytes, QIODevice::WriteOnly);
+        cronStream << (*scheduleIter).cron;
+        query.bindValue(":cron", cronBytes);
+        ELGO_MAIN_LOG("INSERT - {id: %s, startDate: %s, endDate: %s",
+                      (*scheduleIter).id.toStdString().c_str(),
+                      (*scheduleIter).startTime.toString().toStdString().c_str(),
+                      (*scheduleIter).endTime.toString().toStdString().c_str());
+
+        const bool bInserted = query.exec();
+        if(false == bInserted)
+        {
+            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                          DB_Query::INSERT_POWER_SCHEDULE,
+                          query.lastError().text().toStdString().c_str());
+        }
+
+        ++scheduleIter;
+    }
+
+    db.close();
     m_mutex->unlock();
 }
 

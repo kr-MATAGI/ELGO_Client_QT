@@ -24,6 +24,13 @@ PowerScheduleTimer::~PowerScheduleTimer()
 }
 
 //========================================================
+void PowerScheduleTimer::AddPowerScheduleList(const QVector<ScheduleJson::PowerScheduleData>& src)
+//========================================================
+{
+
+}
+
+//========================================================
 void PowerScheduleTimer::PowerScheduleTimeout()
 //========================================================
 {
