@@ -14,26 +14,6 @@ static const char* SCHEDULE_DB = "C:/Project/Qt/schedule.db";
 
 #define ZERO_RESULT 0
 
-namespace ClientDB
-{
-    enum DB_Table
-    {
-        ACCOUNT = 0,
-        DEVICE = 1,
-        DEVICE_SCHEDULE = 2,
-        NETWORK = 3,
-        OPTIONS = 4,
-        MAX_DB_TABLE = 255
-    };
-
-    struct DEVICE
-    {
-        int deviceID;
-        int userID;
-        QString deviceName; // varchar(30)
-    };
-};
-
 namespace DB_Query
 {
     static const char* CHECK_DEVICE_TABLE = "SELECT COUNT(*) AS COUNT FROM sqlite_master "
