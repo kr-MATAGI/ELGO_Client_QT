@@ -20,6 +20,7 @@ HEADERS += \
     MainCtrl/MainCtrl.h \
     MainThread/MainThread.h \
     Timer/PlayScheduleTimer.h \
+    Timer/PowerScheduleTimer.h \
     Utils/WifiManager.h \
     XML/XMLParser.h
 
@@ -32,6 +33,7 @@ SOURCES += \
         MainCtrl/MainCtrl.cpp \
         MainThread/MainThread.cpp \
         Timer/PlayScheduleTimer.cpp \
+        Timer/PowerScheduleTimer.cpp \
         Utils/WifiManager.cpp \
         XML/XMLParser.cpp \
         main.cpp

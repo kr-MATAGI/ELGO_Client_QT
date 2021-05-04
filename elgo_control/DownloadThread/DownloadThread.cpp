@@ -39,9 +39,13 @@ void DownloadThread::run()
     {
         ExecDownloadSinglePlayData();
     }
-    else if(DownloadDef::Action::PLAY_SCHEDULES == m_action)
+    else if(DownloadDef::Action::PLAY_SCHEDULE == m_action)
     {
-        ExecDownloadPlaySchedules();
+        ExecDownloadPlaySchedule();
+    }
+    else if(DownloadDef::Action::POWER_SCHEDULE == m_action)
+    {
+        ExecDownloadPowerSchedule();
     }
     else
     {
@@ -256,13 +260,13 @@ void DownloadThread::ExecDownloadSinglePlayData()
 }
 
 //========================================================
-void DownloadThread::ExecDownloadPlaySchedules()
+void DownloadThread::ExecDownloadPlaySchedule()
 //========================================================
 {
-    const QString& scheduleListUrl = m_serverJson.payload.url;
+    const QString& payloadUrl = m_serverJson.payload.url;
 
     QString response;
-    const bool bIsResponse = CurlDownload::DownloadResourceList(scheduleListUrl, response);
+    const bool bIsResponse = CurlDownload::DownloadResourceList(payloadUrl, response);
     if(true == bIsResponse)
     {
         PlayJson::PlayData playData;
@@ -418,21 +422,68 @@ void DownloadThread::ExecDownloadPlaySchedules()
         }
 
         // send response to content server
-        QString responseJson;
+        QString clientJsonStr;
         ContentSchema::Summary modifiedJson = m_serverJson;
         modifiedJson.payload.src = m_serverJson.payload.dest;
         modifiedJson.payload.dest = m_serverJson.payload.src;
         modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-        JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, responseJson);
-        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
+        JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, clientJsonStr);
+        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(clientJsonStr);
     }
     else
     {
-        ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", scheduleListUrl.toStdString().c_str());
+        ELGO_CONTROL_LOG("Error - Failed Download : %s", payloadUrl.toStdString().c_str());
     }
 }
 
+//========================================================
+void DownloadThread::ExecDownloadPowerSchedule()
+//========================================================
+{
+    const QString payloadUrl = m_serverJson.payload.url;
+
+    QString response;
+    const bool bIsResponse = CurlDownload::DownloadResourceList(payloadUrl, response);
+    if(true == bIsResponse)
+    {
+        ScheduleJson::PowerSchedule powerScheduleList;
+        JsonParser::ParsePowerSchedulesJson(response, powerScheduleList);
+
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Update Power Schedule
+         *  @param
+         *          ScheduleJson::PowerSchedule powerSchedule
+         */
+        QByteArray mainBytes;
+        QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+        mainStream << powerScheduleList;
+
+        const bool bMainSend = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                   MAIN_EVENT::Event::UPDATE_POWER_SCHEDULE_LIST,
+                                                   mainBytes);
+        if(false == bMainSend)
+        {
+            ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_POWER_SCHEDULE_LIST);
+        }
+
+        // Send response to content server
+        QString clientJsonStr;
+        ContentSchema::Summary modifiedJson = m_serverJson;
+        modifiedJson.payload.src = m_serverJson.payload.dest;
+        modifiedJson.payload.dest = m_serverJson.payload.src;
+        modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+        JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, clientJsonStr);
+        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(clientJsonStr);
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Failed Download: %s", payloadUrl.toStdString().c_str());
+    }
+}
 
 //========================================================
 void DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList)

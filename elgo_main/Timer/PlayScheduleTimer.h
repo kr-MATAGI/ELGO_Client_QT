@@ -18,7 +18,7 @@ class PlayScheduleTimer : public QTimer
     Q_OBJECT
 public:
     /** @brief */
-    explicit PlayScheduleTimer(QObject *parent=nullptr);
+    explicit PlayScheduleTimer(QObject *parent = nullptr);
     /** @brief */
     virtual ~PlayScheduleTimer();
 

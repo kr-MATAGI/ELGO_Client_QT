@@ -15,7 +15,8 @@ namespace DownloadDef
     {
         NONE_KIND = 0,
         SINGLE_PLAY = 1,
-        PLAY_SCHEDULES = 2,
+        PLAY_SCHEDULE = 2,
+        POWER_SCHEDULE = 3,
     };
 
     /** @brief */

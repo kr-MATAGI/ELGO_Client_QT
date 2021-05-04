@@ -35,6 +35,8 @@ namespace JsonWriter
     void WriteContentServerRebootEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  ClearPlaySchedule Event */
     void WriteContentServerClearPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  powerSchedule Event */
+    void WriteContentServerPowerScheduleEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  Write Defulat Response */
     void WriteContentServerDefaultResponse(const ContentSchema::Summary& src, QString& dest);
 

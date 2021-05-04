@@ -16,8 +16,8 @@ namespace ContentSchema
         ACCESS = 2,
         RENAME = 3, // payload type : once, request
         SINGLE_PLAY = 4,
-        PLAY_SCHEDULES = 5,
-        POWER_SCHEDULES = 6,
+        PLAY_SCHEDULE = 5,
+        POWER_SCHEDULE = 6,
         DISPLAY_ON = 7,
         DISPLAY_OFF = 8,
         SCREEN_CAPTURE = 9,

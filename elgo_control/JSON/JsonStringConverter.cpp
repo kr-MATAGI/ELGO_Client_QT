@@ -45,11 +45,11 @@ ContentSchema::Event JsonStringConverter::ContentServerEventStringToEnum(const Q
     }
     else if(0 == strcmp("playSchedule", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::Event::PLAY_SCHEDULES;
+        retValue = ContentSchema::Event::PLAY_SCHEDULE;
     }
     else if(0 == strcmp("powerSchedule", src.toStdString().c_str()))
     {
-        retValue = ContentSchema::Event::POWER_SCHEDULES;
+        retValue = ContentSchema::Event::POWER_SCHEDULE;
     }
     else if(0 == strcmp("clearPlaySchedule", src.toStdString().c_str()))
     {
@@ -475,11 +475,11 @@ void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Ev
     {
         dest = "reboot";
     }
-    else if(ContentSchema::Event::PLAY_SCHEDULES == event)
+    else if(ContentSchema::Event::PLAY_SCHEDULE == event)
     {
         dest = "playSchedule";
     }
-    else if(ContentSchema::Event::POWER_SCHEDULES == event)
+    else if(ContentSchema::Event::POWER_SCHEDULE == event)
     {
         dest = "powerSchedule";
     }
@@ -487,7 +487,7 @@ void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Ev
     {
         dest = "clearPlaySchedule";
     }
-    else if(ContentSchema::Event::POWER_SCHEDULES == event)
+    else if(ContentSchema::Event::POWER_SCHEDULE == event)
     {
         dest = "clearPowerSchedule";
     }

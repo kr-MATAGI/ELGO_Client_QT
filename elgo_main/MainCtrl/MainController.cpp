@@ -8,7 +8,8 @@ MainController::MainController()
 {
     m_mainCtrl = new MainCtrl();
     m_dbCtrl = new MainDBCtrl();
-    m_scheduleTimer = new PlayScheduleTimer();
+    m_playTimer = new PlayScheduleTimer();
+    m_powerTimer = new PowerScheduleTimer();
 }
 
 //========================================================
@@ -21,8 +22,11 @@ MainController::~MainController()
     delete m_dbCtrl;
     m_dbCtrl = NULL;
 
-    delete m_scheduleTimer;
-    m_scheduleTimer = NULL;
+    delete m_playTimer;
+    m_playTimer = NULL;
+
+    delete m_powerTimer;
+    m_powerTimer = NULL;
 }
 
 //========================================================
@@ -63,8 +67,15 @@ MainDBCtrl& MainController::GetDBCtrl()
 }
 
 //========================================================
-PlayScheduleTimer& MainController::GetScheduleTimer()
+PlayScheduleTimer& MainController::GetPlayTimer()
 //========================================================
 {
-    return *m_scheduleTimer;
+    return *m_playTimer;
+}
+
+//========================================================
+PowerScheduleTimer& MainController::GetPowerTimer()
+//========================================================
+{
+    return *m_powerTimer;
 }

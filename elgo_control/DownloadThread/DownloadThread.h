@@ -24,7 +24,9 @@ public:
     /** @brief */
     void ExecDownloadSinglePlayData();
     /** @brief */
-    void ExecDownloadPlaySchedules();
+    void ExecDownloadPlaySchedule();
+    /** @brief */
+    void ExecDownloadPowerSchedule();
 
     /** @brief */
     void SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList);

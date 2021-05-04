@@ -53,6 +53,9 @@ public:
     /** @brief */
     void RecvAddPlayDataToDB(const QByteArray& src);
 
+    /** @brief */
+    void RecvUpdatePowerSchedule(const QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;

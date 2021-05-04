@@ -87,6 +87,13 @@ namespace ScheduleJson
         QVector<PowerScheduleData> offScheduleList;
     };
 
+    enum PowerStatus
+    {
+        POWER_NONE = 0,
+        POWER_ON = 1,
+        POWER_OFF =2
+    };
+
 
     /**
      *  @note

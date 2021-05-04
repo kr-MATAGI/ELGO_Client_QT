@@ -43,6 +43,9 @@ MainEventState::MainEventState()
 
     m_state.RegisterEvent(MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
                           &MainEventState::RecvAddPlayDataToDB);
+
+    m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_POWER_SCHEDULE_LIST,
+                          &MainEventState::RecvUpdatePowerSchedule);
 }
 
 //========================================================
@@ -237,7 +240,7 @@ void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
         dataStream >> playScheduleList;
 
         MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(customPlayData);
-        MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+        MainController::GetInstance()->GetPlayTimer().AddPlayScheduleList(playScheduleList);
     }
     else if(PlayJson::PlayDataType::FIXED == type)
     {
@@ -248,7 +251,7 @@ void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
         dataStream >> playScheduleList;
 
         MainController::GetInstance()->GetDBCtrl().AddNewPlayDataToDB(fixedPlayData);
-        MainController::GetInstance()->GetScheduleTimer().AddPlayScheduleList(playScheduleList);
+        MainController::GetInstance()->GetPlayTimer().AddPlayScheduleList(playScheduleList);
     }
     else
     {
@@ -269,7 +272,7 @@ void MainEventState::RecvClearAllPlaySchedule(const QByteArray& src)
      *          NONE
      */
 
-    MainController::GetInstance()->GetScheduleTimer().ClearAllPlayScheduleList();
+    MainController::GetInstance()->GetPlayTimer().ClearAllPlayScheduleList();
 }
 
 //========================================================
@@ -289,7 +292,7 @@ void MainEventState::RecvClearPlayScheduleById(const QByteArray& src)
     QString id;
     dataStream >> id;
 
-    MainController::GetInstance()->GetScheduleTimer().ClearPlayScheduleById(id);
+    MainController::GetInstance()->GetPlayTimer().ClearPlayScheduleById(id);
 }
 
 //========================================================
@@ -334,4 +337,31 @@ void MainEventState::RecvAddPlayDataToDB(const QByteArray& src)
     {
         ELGO_MAIN_LOG("ERROR - Unknown PlayData Type: %d", playType);
     }
+}
+
+//========================================================
+void MainEventState::RecvUpdatePowerSchedule(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Update Power Schedule
+     *  @param
+     *          ScheduleJson::PowerSchedule powerSchedule
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
+
+    ScheduleJson::PowerSchedule powerSchedule;
+    dataStream >> powerSchedule;
+
+    ELGO_MAIN_LOG("TEST LOG !!!!!!!!!!!!!!!!!!!");
+
+    // on
+//    MainController::GetInstance()->GetDBCtrl();
+//    MainController::GetInstance()->GetPowerTimer();
+
+    // off
 }

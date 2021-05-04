@@ -121,6 +121,15 @@ namespace MAIN_EVENT
          */
         ADD_PLAY_DATA_TO_DB = 266,
 
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Update Power Schedule
+         *  @param
+         *          ScheduleJson::PowerSchedule powerSchedule
+         */
+        UPDATE_POWER_SCHEDULE_LIST = 267,
+
 
         MAX_VIEWER_EVENT = 511
     };

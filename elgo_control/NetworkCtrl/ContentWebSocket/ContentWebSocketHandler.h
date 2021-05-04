@@ -36,7 +36,7 @@ public:
     void ExecPlaySchedulesEvent(const ContentSchema::Summary& serverJson);
 
     /** @brief */
-    void ExecPowerSchedulesEvent();
+    void ExecPowerSchedulesEvent(const ContentSchema::Summary& serverJson);
 
     /** @brief */
     void ExecDisplayOnOffEvent(const ContentSchema::Summary& serverJson, QString& clientJson);
@@ -51,7 +51,7 @@ public:
     void ExecClearPlaySchdules(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
-    void ExecClearPowerSchedules();
+    void ExecClearPowerSchedules(const ContentSchema::Summary& serverJson);
 
 private:
     QThreadPool *m_threadPool;

@@ -5,11 +5,15 @@
 // Main
 #include "MainCtrl.h"
 #include "DB/MainDBCtrl.h"
+
 #include "Timer/PlayScheduleTimer.h"
+#include "Timer/PowerScheduleTimer.h"
 
 class MainCtrl;
 class MainDBCtrl;
+
 class PlayScheduleTimer;
+class PowerScheduleTimer;
 
 class MainController
 {
@@ -33,13 +37,17 @@ public:
     MainDBCtrl& GetDBCtrl();
 
     /** @brief */
-    PlayScheduleTimer& GetScheduleTimer();
+    PlayScheduleTimer& GetPlayTimer();
+
+    /** @brief */
+    PowerScheduleTimer& GetPowerTimer();
 
 private:
     MainCtrl *m_mainCtrl;
     MainDBCtrl *m_dbCtrl;
 
-    PlayScheduleTimer *m_scheduleTimer;
+    PlayScheduleTimer *m_playTimer;
+    PowerScheduleTimer *m_powerTimer;
 };
 
 #endif // MAINCONTROLLER_H

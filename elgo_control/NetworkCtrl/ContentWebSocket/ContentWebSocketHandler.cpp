@@ -40,13 +40,13 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     {
         ExecSinglePlayEvent(serverJson);
     }
-    else if(ContentSchema::Event::PLAY_SCHEDULES == serverJson.event)
+    else if(ContentSchema::Event::PLAY_SCHEDULE == serverJson.event)
     {
         ExecPlaySchedulesEvent(serverJson);
     }
-    else if(ContentSchema::Event::POWER_SCHEDULES == serverJson.event)
+    else if(ContentSchema::Event::POWER_SCHEDULE == serverJson.event)
     {
-
+        ExecPowerSchedulesEvent(serverJson);
     }
     else if(ContentSchema::Event::DISPLAY_ON == serverJson.event ||
             ContentSchema::Event::DISPLAY_OFF == serverJson.event)
@@ -59,7 +59,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else if(ContentSchema::Event::SYSTEM_REBOOT == serverJson.event)
     {
-
+//        ExecSystemRebootEvent(serverJson, clientJson);
     }
     else if(ContentSchema::Event::CLEAR_PLAY_SCHEDULE == serverJson.event)
     {
@@ -67,7 +67,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else if(ContentSchema::Event::CLEAR_POWER_SCHEDULE == serverJson.event)
     {
-
+        ExecClearPowerSchedules(serverJson);
     }
     else if(ContentSchema::Event::ERROR == serverJson.event)
     {
@@ -80,7 +80,8 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecReadyEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+void ContentWebSocketHandler::ExecReadyEvent(const ContentSchema::Summary& serverJson,
+                                             QString& clientJson)
 //========================================================
 {
     ContentSchema::Summary modifiedResponse = serverJson;
@@ -94,7 +95,8 @@ void ContentWebSocketHandler::ExecReadyEvent(const ContentSchema::Summary& serve
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serverJson,
+                                              QString& clientJson)
 //========================================================
 {
     NetworkController::GetInstance()->GetDBCtrl().UpdateDeviceNameFromServer(serverJson.payload.deviceName);
@@ -142,14 +144,15 @@ void ContentWebSocketHandler::ExecPlaySchedulesEvent(const ContentSchema::Summar
 //========================================================
 {
     DownloadThread *thread = new DownloadThread;
-    thread->SetDownloadAction(DownloadDef::Action::PLAY_SCHEDULES);
+    thread->SetDownloadAction(DownloadDef::Action::PLAY_SCHEDULE);
     thread->SetContentSchema(serverJson);
 
     m_threadPool->start(thread);
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecDisplayOnOffEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+void ContentWebSocketHandler::ExecDisplayOnOffEvent(const ContentSchema::Summary& serverJson,
+                                                    QString& clientJson)
 //========================================================
 {
     bool bDisplaySleep = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
@@ -238,7 +241,8 @@ void ContentWebSocketHandler::ExecScreenCaptureEvent(const ContentSchema::Summar
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecSystemRebootEvent(const ContentSchema::Summary& serverJson, QString& clientJson)
+void ContentWebSocketHandler::ExecSystemRebootEvent(const ContentSchema::Summary& serverJson,
+                                                    QString& clientJson)
 //========================================================
 {
     // Response to Server
@@ -251,7 +255,8 @@ void ContentWebSocketHandler::ExecSystemRebootEvent(const ContentSchema::Summary
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecClearPlaySchdules(const ContentSchema::Summary& serverJson, QString& clientJson)
+void ContentWebSocketHandler::ExecClearPlaySchdules(const ContentSchema::Summary& serverJson,
+                                                    QString& clientJson)
 //========================================================
 {
     /**
@@ -280,4 +285,22 @@ void ContentWebSocketHandler::ExecClearPlaySchdules(const ContentSchema::Summary
     modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
     JsonWriter::WriteContentServerClearPlayScheduleEvent(modifiedJson, clientJson);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecPowerSchedulesEvent(const ContentSchema::Summary& serverJson)
+//========================================================
+{
+    DownloadThread *thread = new DownloadThread;
+    thread->SetDownloadAction(DownloadDef::Action::POWER_SCHEDULE);
+    thread->SetContentSchema(serverJson);
+
+    m_threadPool->start(thread);
+}
+
+//========================================================
+void ContentWebSocketHandler::ExecClearPowerSchedules(const ContentSchema::Summary& serverJson)
+//========================================================
+{
+
 }
