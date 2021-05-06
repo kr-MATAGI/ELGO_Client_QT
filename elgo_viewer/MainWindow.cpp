@@ -100,7 +100,6 @@ void MainWindow::DrawQRCodeByThread(QString url)
                     m_qrUrl.toUtf8().constData());
 
     ui->qrLabel->setPixmap(pixmap);
-    this->showFullScreen();
 
     // show Content Player after 10 sec
     m_closeTimer.start(CLOSE_TIMEOUT);
