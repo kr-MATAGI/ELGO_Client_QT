@@ -72,10 +72,12 @@ void MainEventState::RecvProcecssReady(const QByteArray &src)
 //========================================================
 {
     /**
-     *  @brief  receive status of process started
-     *  @param  ELGO_PROC::Proc proc
+     *  @note
+     *          ELGO_VIEWER, CONTROL -> ELGO_MAIN
+     *          receive status of process started
+     *  @param
+     *          ELGO_PROC::Proc proc
      */
-
     MainThread *thread = new MainThread;
     thread->SetMainEvent(MAIN_EVENT::Event::PROCESS_IS_READY);
     thread->SetRecvBytes(src);
@@ -87,12 +89,13 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
 //========================================================
 {
     /**
-     *  @brief  Change Device Options
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Change Device Options
      *  @param
-     *          bool displayOnOff
+     *          bool displaySleep
      *          bool deviceMute
      *          bool contentPause
-
      */
 
     QByteArray copyBytes = src;
