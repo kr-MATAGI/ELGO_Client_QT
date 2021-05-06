@@ -6,7 +6,7 @@
 #include "Logger/MainLogger.h"
 
 //========================================================
-void DeviceManager::UpdateSleepStatus(const DEVICE::OS os, bool isSleep)
+void DeviceManager::UpdateSleepStatus(const DEVICE::OS os, const bool isSleep)
 //========================================================
 {
     QProcess *process = new QProcess;
@@ -45,4 +45,36 @@ void DeviceManager::UpdateSleepStatus(const DEVICE::OS os, bool isSleep)
                   cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
 
     process->deleteLater();
+}
+
+//========================================================
+void DeviceManager::SystemReboot(const DEVICE::OS os)
+//========================================================
+{
+    QProcess *process = new QProcess;
+    QString cmdStr;
+    QStringList args;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmdStr = "/bin/sh";
+        args << "-c";
+        args << "reboot";
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+
+    }
+    ELGO_MAIN_LOG("cmdStr: %s, args: %s",
+                  cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+
+    process->start(cmdStr, args);
+    process->waitForFinished();
+
+    process->deleteLater();
+
 }

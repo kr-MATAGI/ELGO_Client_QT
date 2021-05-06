@@ -10,9 +10,12 @@
 namespace DeviceManager
 {
     // Display
-    void UpdateSleepStatus(const DEVICE::OS os, bool isSleep);
+    /** @brief */
+    void UpdateSleepStatus(const DEVICE::OS os, const bool isSleep);
 
-
+    // Reboot
+    /** @brief */
+    void SystemReboot(const DEVICE::OS os);
 }
 
 #endif // DEVICEMANAGER_H

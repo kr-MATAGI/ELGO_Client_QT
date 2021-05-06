@@ -156,21 +156,9 @@ void MainEventState::RecvSystemReboot(const QByteArray& src)
      *          NONE
      */
 
-    // process
-    QProcess *process = new QProcess;
-    QString cmdStr;
-    QStringList args;
-#if defined(Q_OS_LINUX)
-    cmdStr = "reboot";
-
-#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
-
-#else defined(Q_OS_ANDROID)
-
-#endif
-
-    ELGO_MAIN_LOG("SYSTEM REBOOT !");
-    process->start(cmdStr, args);
+    ELGO_MAIN_LOG("System Reboot Start !");
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    DeviceManager::SystemReboot(os);
 }
 
 //========================================================
