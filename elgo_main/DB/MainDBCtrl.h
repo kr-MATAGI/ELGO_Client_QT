@@ -41,6 +41,9 @@ public:
     /** @brief */
     void GetPlayDataFromDB(const int id, const PlayJson::PlayDataType type,
                            PlayJson::FixedPlayDataJson& dest);
+    /** @brief */
+    void GetAllPlayDataFromDB(QVector<PlayJson::CustomPlayDataJson>& customList,
+                              QVector<PlayJson::FixedPlayDataJson>& fixedList);
 
     /** @brief */
     void ClearAllPlaySchedule();
@@ -55,11 +58,11 @@ public:
 
 
     // playinginfo
+    /** @brief */
     void UpdatePlayingData(const int playDataId, const PlayJson::PlayDataType type);
 
-
     /** @brief */
-    bool CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id);
+    void GetPlayingData(int& destId, PlayJson::PlayDataType& destType);
 
 private:
     QMutex *m_mutex;

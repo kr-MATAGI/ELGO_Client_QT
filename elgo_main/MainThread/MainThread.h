@@ -32,6 +32,9 @@ public:
     /** @brief */
     void ExecConnectNewWifi();
 
+    /** @brief */
+    void ExecRequestOfflineSinglePlay();
+
 public:
     /** @brief */
     void SetMainEvent(const MAIN_EVENT::Event event);

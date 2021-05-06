@@ -73,6 +73,8 @@ namespace DB_Query
 
     static const char* SELECT_PLAY_DATA = "SELECT data FROM playData WHERE id=:id AND type=:type;";
 
+    static const char* SELECT_ALL_PLAY_DATA = "SELECT * FROM playData;";
+
     // powerSchedule table
     static const char* CREATE_TABLE_POWER_SCHEDULE = "CREATE TABLE powerSchedule ("
                                                         "id VARCHAR(30) NOT NULL,"
@@ -99,6 +101,8 @@ namespace DB_Query
                                                 "VALUES(:id, :type);";
 
     static const char* DELETE_PLAYING_DATA = "DELETE FROM playingInfo;";
+
+    static const char* SELECT_ALL_PLAYING_DATA = "SELECT * FROM playingInfo;";
 
 };
 

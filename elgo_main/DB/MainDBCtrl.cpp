@@ -416,21 +416,47 @@ void MainDBCtrl::UpdatePlayingData(const int playDataId, const PlayJson::PlayDat
 }
 
 //========================================================
-bool MainDBCtrl::CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id)
+void MainDBCtrl::GetPlayingData(int& destId, PlayJson::PlayDataType& destType)
 //========================================================
 {
-    QVector<QString>::const_iterator iter = dbIdList.constBegin();
-    while(iter != dbIdList.constEnd())
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
     {
-        if(0 == strcmp((*iter).toStdString().c_str(),
-                       id.toStdString().c_str()))
-        {
-            return false;
-        }
-        ++iter;
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
     }
 
-    return true;
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_ALL_PLAYING_DATA);
+    const bool bIsSelected = query.exec();
+    if(true == bIsSelected)
+    {
+        while(query.next())
+        {
+            const int idIdx = query.record().indexOf("id");
+            const int typeIdx = query.record().indexOf("type");
+
+            destId = query.value(idIdx).toInt();
+            destType = static_cast<PlayJson::PlayDataType>(query.value(typeIdx).toInt());
+        }
+        ELGO_MAIN_LOG("playing Data - {id: %d, type: %d}", destId, destType);
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_ALL_PLAYING_DATA,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
 }
 
 //========================================================
@@ -608,6 +634,74 @@ void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType ty
     {
         ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
                       DB_Query::SELECT_PLAY_DATA,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::GetAllPlayDataFromDB(QVector<PlayJson::CustomPlayDataJson>& customList,
+                                      QVector<PlayJson::FixedPlayDataJson>& fixedList)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_ALL_PLAY_DATA);
+    const bool bIsSelected = query.exec();
+    if(true == bIsSelected)
+    {
+        while(query.next())
+        {
+            const int typeIdx = query.record().indexOf("type");
+            const PlayJson::PlayDataType playType = static_cast<PlayJson::PlayDataType>(query.value(typeIdx).toInt());
+
+            if(PlayJson::PlayDataType::CUSTOM == playType)
+            {
+                PlayJson::CustomPlayDataJson customData;
+
+                const int dataIdx = query.record().indexOf("data");
+                QByteArray dataBytes = query.value(dataIdx).toByteArray();
+                QDataStream dataStream(&dataBytes, QIODevice::ReadOnly);
+                dataStream >> customData;
+
+                customList.push_back(customData);
+            }
+            else if(PlayJson::PlayDataType::FIXED == playType)
+            {
+                PlayJson::FixedPlayDataJson fixedData;
+
+                const int dataIdx = query.record().indexOf("data");
+                QByteArray dataBytes = query.value(dataIdx).toByteArray();
+                QDataStream dataStream(&dataBytes, QIODevice::ReadOnly);
+                dataStream >> fixedData;
+
+                fixedList.push_back(fixedData);
+            }
+            else
+            {
+                ELGO_MAIN_LOG("ERROR - Unknown Type: %d", playType);
+            }
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_ALL_PLAY_DATA,
                       query.lastError().text().toStdString().c_str());
     }
 

@@ -12,7 +12,11 @@
 #include "Common/EventList.h"
 #include "LocalSocketEvent/EventState.h"
 
+// Viewer
 #include "ViewerThread/ViewerThread.h"
+#include "Widget/ContentsPlayer.h"
+
+class ContentsPlayer;
 
 class ViewerEventState
 {
@@ -34,6 +38,11 @@ public:
     void RecvPlayCustomPlayData(const QByteArray& src);
     /** @brief */
     void RecvPlayFixedPlayData(const QByteArray& src);
+
+    /** @brief */
+    void RecvAddCustomPlayDataList(const QByteArray& src);
+    /** @brief */
+    void RecvAddFixedPlayDataList(const QByteArray& src);
 
     /** @brief */
     void RecvRequestScreenCapture(const QByteArray& src);

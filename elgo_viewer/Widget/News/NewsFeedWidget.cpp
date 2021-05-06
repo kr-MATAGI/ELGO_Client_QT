@@ -18,7 +18,7 @@ NewsFeedWidget::NewsFeedWidget(QWidget *parent)
     m_seqAniGroup = new QSequentialAnimationGroup(this);
 
     ui->feedView->setScene(m_feedScene);
-//    ui->feedView->setStyleSheet("border: 0px");
+    ui->feedView->setStyleSheet("border: 0px");
     ui->feedView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->feedView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->feedView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);

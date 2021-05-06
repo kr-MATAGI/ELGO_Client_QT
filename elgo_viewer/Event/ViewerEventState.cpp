@@ -1,7 +1,13 @@
+// QT
+#include <QDataStream>
+
+// Common
+#include "Common/Interface/ContentsPlayDataImpl.h"
+
+// Viwer
 #include "ViewerEventState.h"
 #include "ViewerThread/ViewerThread.h"
-
-#include <QDataStream>
+#include "Logger/ViewerLogger.h"
 
 //========================================================
 ViewerEventState::ViewerEventState()
@@ -13,12 +19,20 @@ ViewerEventState::ViewerEventState()
     // enorll Event
     m_state.RegisterEvent(VIEWER_EVENT::Event::MAKE_QRCODE,
                           &ViewerEventState::RecvMakeQrCodeAndDisplay);
+
     m_state.RegisterEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY,
                           &ViewerEventState::RecvRotateDeviceDisplay);
+
     m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
                           &ViewerEventState::RecvPlayCustomPlayData);
     m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
                           &ViewerEventState::RecvPlayFixedPlayData);
+
+    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA_LIST,
+                          &ViewerEventState::RecvAddCustomPlayDataList);
+    m_state.RegisterEvent(VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA_LIST,
+                          &ViewerEventState::RecvAddFixedPlayDataList);
+
     m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
                           &ViewerEventState::RecvRequestScreenCapture);
 }
@@ -109,6 +123,56 @@ void ViewerEventState::RecvPlayFixedPlayData(const QByteArray& src)
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvAddCustomPlayDataList(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_VIEWER
+     *       ADD Custom PlayData after system booting
+     * @param
+     *       QVector<PlayJson::CustomPlayDataJson>  customPlayDataList
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
+
+    QVector<PlayJson::CustomPlayDataJson> customDataList;
+    copySteam >> customDataList;
+
+    const int customDataListSize = customDataList.size();
+    for(int idx = 0; idx < customDataListSize; idx++)
+    {
+        emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customDataList[idx]);
+    }
+}
+
+//========================================================
+void ViewerEventState::RecvAddFixedPlayDataList(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_VIEWER
+     *       ADD Fixed PlayData after system booting
+     * @param
+     *       QVector<PlayJson::FixedPlayDataJson>  fixedPlayDataList
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
+
+    QVector<PlayJson::FixedPlayDataJson> fixedDataList;
+    copySteam >> fixedDataList;
+
+    const int fixedDataListSize = fixedDataList.size();
+    for(int idx = 0; idx < fixedDataListSize; idx++)
+    {
+        emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedDataList[idx]);
+    }
 }
 
 //========================================================

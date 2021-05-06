@@ -51,7 +51,7 @@ void VideoItem::SetVideoPosAndSize(const StyleSheet::PosSizeInfo& posSizeInfo)
 
     this->setPos(m_posSizeInfo.pos);
     this->setSize(m_posSizeInfo.size);
-    ELGO_VIEWER_LOG("name : %s { pos : %f,%f, size : %d x %d }",
+    ELGO_VIEWER_LOG("name : %s, posSize{ x: %d, y:%d, w: %d, h: %d }",
                     m_videoInfo.fileName.toUtf8().constData(),
                     m_posSizeInfo.pos.x(), m_posSizeInfo.pos.y(),
                     m_posSizeInfo.size.width(), m_posSizeInfo.size.height());

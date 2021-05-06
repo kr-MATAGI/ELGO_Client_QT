@@ -152,6 +152,16 @@ namespace MAIN_EVENT
         SAVE_PLAYING_DATA_TO_DB = 269,
 
 
+        /**
+         *  @note
+         *          ELGO_VIEWER -> ELGO_MAIN
+         *          Request data for offline single play
+         *  @param
+         *          NONE
+         */
+        REQUEST_OFFLINE_SINGLE_PLAY = 270,
+
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -280,6 +290,23 @@ namespace VIEWER_EVENT
         REQUEST_SCREEN_CAPTURE = 775,
 
 
+        /**
+         * @note
+         *       ELGO_MAIN -> ELGO_VIEWER
+         *       ADD Custom PlayData after system booting
+         * @param
+         *       QVector<PlayJson::CustomPlayDataJson>  customPlayDataList
+         */
+        ADD_CUSTOM_PLAY_DATA_LIST = 776,
+
+        /**
+         * @note
+         *       ELGO_MAIN -> ELGO_VIEWER
+         *       ADD Fixed PlayData after system booting
+         * @param
+         *       QVector<PlayJson::FixedPlayDataJson>  fixedPlayDataList
+         */
+        ADD_FIXED_PLAY_DATA_LIST = 777,
 
         MAX_VIEWER_EVENT = 1023
     };

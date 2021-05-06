@@ -2,9 +2,12 @@
 #include <QDebug>
 
 // EFC
-#include "Common/Deifinition.h"
 #include "LocalSocketEvent/EFCEvent.h"
 #include "ShardMem/ShmCtrl.h"
+
+// Common
+#include "Common/Deifinition.h"
+#include "Common/Interface/ContentsPlayDataImpl.h"
 
 // Main
 #include "MainThread.h"
@@ -54,6 +57,10 @@ void MainThread::run()
     else if(MAIN_EVENT::Event::CONNECT_NEW_WIFI == m_event)
     {
         ExecConnectNewWifi();
+    }
+    else if(MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY == m_event)
+    {
+        ExecRequestOfflineSinglePlay();
     }
     else
     {
@@ -113,7 +120,7 @@ void MainThread::ExecRecvProcecssReady()
     }
     else if(ELGO_SYS::Proc::ELGO_VIEWER == proc)
     {
-        // Not thing.
+
     }
     else
     {
@@ -237,4 +244,117 @@ void MainThread::ExecConnectNewWifi()
     {
         ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT);
     }
+}
+
+//========================================================
+void MainThread::ExecRequestOfflineSinglePlay()
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_VIEWER -> ELGO_MAIN
+     *          Request data for offline single play
+     *  @param
+     *          NONE
+     */
+
+    // Get PlayData List
+    QVector<PlayJson::CustomPlayDataJson> customDataList;
+    QVector<PlayJson::FixedPlayDataJson> fixedDataList;
+    MainController::GetInstance()->GetDBCtrl().GetAllPlayDataFromDB(customDataList, fixedDataList);
+
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_VIEWER
+     *       ADD Custom PlayData after system booting
+     * @param
+     *       QVector<PlayJson::CustomPlayDataJson>  customPlayDataList
+     */
+    QByteArray customDataBytes;
+    QDataStream customDataStream(&customDataBytes, QIODevice::WriteOnly);
+    customDataStream << customDataList;
+
+    const bool bSendCustom = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                 VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA_LIST,
+                                                 customDataBytes);
+    if(false == bSendCustom)
+    {
+        ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::ADD_CUSTOM_PLAY_DATA_LIST);
+    }
+
+    QByteArray fixedDataBytes;
+    QDataStream fixedDataStream(&fixedDataBytes, QIODevice::WriteOnly);
+    fixedDataStream << fixedDataList;
+
+    const bool bSendFixed = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA_LIST,
+                                                fixedDataBytes);
+    if(false == bSendFixed)
+    {
+        ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA_LIST);
+    }
+
+    // Get prev playing Data and
+    int playingId = 0;
+    PlayJson::PlayDataType playingType = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+    MainController::GetInstance()->GetDBCtrl().GetPlayingData(playingId, playingType);
+    ELGO_MAIN_LOG("Prev Playing Data - {id: %d, type: %d}",
+                  playingId, playingType);
+
+    if(PlayJson::PlayDataType::CUSTOM == playingType)
+    {
+        QVector<PlayJson::CustomPlayDataJson>::const_iterator iter = customDataList.constBegin();
+        while(iter != customDataList.constEnd())
+        {
+            if(iter->playData.id == playingId)
+            {
+                QByteArray playingBytes;
+                QDataStream playingStream(&playingBytes, QIODevice::WriteOnly);
+                playingStream << *iter;
+
+                const bool bSendPlaying = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                                                              playingBytes);
+                if(false == bSendPlaying)
+                {
+                    ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
+                }
+
+                break;
+            }
+
+            ++iter;
+        }
+    }
+    else if(PlayJson::PlayDataType::FIXED == playingType)
+    {
+        QVector<PlayJson::FixedPlayDataJson>::const_iterator iter = fixedDataList.constBegin();
+        while(iter != fixedDataList.constEnd())
+        {
+            if(iter->playData.id == playingId)
+            {
+                QByteArray playingBytes;
+                QDataStream playingStream(&playingBytes, QIODevice::WriteOnly);
+                playingStream << *iter;
+
+                const bool bSendPlaying = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                                                              playingBytes);
+                if(false == bSendPlaying)
+                {
+                    ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
+                }
+
+                break;
+            }
+
+            ++iter;
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("Not Existed Data - type: %d", playingType);
+    }
+
+    // Get play and power Schedule
 }

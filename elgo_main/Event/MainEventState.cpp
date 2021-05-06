@@ -51,6 +51,9 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdatePowerSchedule);
     m_state.RegisterEvent(MAIN_EVENT::Event::DELETE_POWER_SCHEDULE_BY_ID,
                           &MainEventState::RecvDeletePowerScheduleById);
+
+    m_state.RegisterEvent(MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY,
+                          &MainEventState::RecvRequestOfflineSinglePlay);
 }
 
 //========================================================
@@ -403,4 +406,22 @@ void MainEventState::RecvDeletePowerScheduleById(const QByteArray& src)
 
     MainController::GetInstance()->GetDBCtrl().DeletePowerScheduleById(scheduleId);
     MainController::GetInstance()->GetPowerTimer().DeletePowerScheduleById(scheduleId);
+}
+
+//========================================================
+void MainEventState::RecvRequestOfflineSinglePlay(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_VIEWER -> ELGO_MAIN
+     *          Request data for offline single play
+     *  @param
+     *          NONE
+     */
+
+    MainThread *thread = new MainThread;
+    thread->SetMainEvent(MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY);
+
+    m_threadPool->start(thread);
 }

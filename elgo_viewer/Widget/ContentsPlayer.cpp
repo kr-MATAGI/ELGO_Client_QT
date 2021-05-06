@@ -198,30 +198,7 @@ void ContentsPlayer::UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& pl
     QGraphicsScene *newScene = new QGraphicsScene(this);
     newScene->setSceneRect(m_screenRect);
 
-    // Delete
-    PauseItemAndWidgetContents(m_playingIndex);
-    if(NULL != m_currScene.second)
-    {
-        QList<QGraphicsItem *> items = m_currScene.second->items();
-
-        foreach(auto item, items)
-        {
-            m_currScene.second->removeItem(item);
-        }
-        m_currScene.second->deleteLater();
-    }
-    ClearPrevPlayingData(m_playingIndex);
-
-    if( (true == bDelPrevData) && (0 != m_playingIndex.playData.id) )
-    {
-        if( ( PlayJson::PlayDataType::FIXED == m_playingIndex.playData.playDataType &&
-              m_playingIndex.playData.id != playingIndex.playData.id ) ||
-            ( PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType &&
-              m_playingIndex.playData.id != playingIndex.playData.id) )
-        {
-            ClearOtherPlayDataJsonInfo(playingIndex);
-        }
-    }
+    PlayScheduleTimer::PlayingIndex prePlayingIndex = m_playingIndex;
 
     // ADD
     if(PlayJson::PlayDataType::CUSTOM == playingIndex.playData.playDataType)
@@ -263,9 +240,44 @@ void ContentsPlayer::UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& pl
 
     ELGO_VIEWER_LOG("Made New Scene { id: %d, pageIdx: %d, sceneItemSize: %d }",
                     playingIndex.playData.id, playingIndex.pageIdx, newScene->items().size());
+    ELGO_VIEWER_LOG("Item / Wiget {image: %d, video: %d, clock: %d, date: %d}",
+                    m_imageItemList.size(), m_videoItemList.size(),
+                    m_clockWidgetList.size(), m_dateWidgetList.size());
+    ELGO_VIEWER_LOG("Item / Wiget {news: %d, weather: %d, subtitle: %d, proxy: %d}",
+                    m_newsFeedWigetList.size(), m_weatherWidgetList.size(),
+                    m_subtitleWidgetList.size(), m_proxyWidgetList.size());
 
     ui->playerView->setScene(newScene);
     m_playingIndex = playingIndex;
+
+    // Delete
+    if(0 != prePlayingIndex.playData.id)
+    {
+        PauseItemAndWidgetContents(prePlayingIndex);
+        if(NULL != m_currScene.second)
+        {
+            QList<QGraphicsItem *> items = m_currScene.second->items();
+
+            foreach(auto item, items)
+            {
+                m_currScene.second->removeItem(item);
+            }
+            m_currScene.second->deleteLater();
+        }
+        ClearPrevPlayingData(prePlayingIndex);
+    }
+
+    if( (true == bDelPrevData) && (0 != prePlayingIndex.playData.id) )
+    {
+        if( ( PlayJson::PlayDataType::FIXED == prePlayingIndex.playData.playDataType &&
+              m_playingIndex.playData.id != playingIndex.playData.id ) ||
+            ( PlayJson::PlayDataType::CUSTOM == prePlayingIndex.playData.playDataType &&
+              m_playingIndex.playData.id != playingIndex.playData.id) )
+        {
+            ClearOtherPlayDataJsonInfo(playingIndex);
+            ClearOtherPlayDataItem(playingIndex);
+        }
+    }
 
     SceneInfo newSceneInfo(playingIndex, newScene);
     m_currScene = newSceneInfo;
@@ -433,16 +445,16 @@ void ContentsPlayer::MakeCustomPlayDataContents(const PlayScheduleTimer::Playing
         {
             ELGO_VIEWER_LOG("Error - Unknwon Content Type: %d", layerData.layerContent.contentInfo.contentType);
         }
+    }
 
-        // Make Subtitle
-        const int subtitleListSize = pageData.subtitleDataList.size();
-        for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
-        {
-            PlayScheduleTimer::PlayingIndex subtitleKeyIndex = playingIndex;
-            subtitleKeyIndex.mediaType = PlayJson::MediaType::SUBTITLE;
+    // Make Subtitle
+    const int subtitleListSize = pageData.subtitleDataList.size();
+    for(int subIdx = 0; subIdx < subtitleListSize; subIdx++)
+    {
+        PlayScheduleTimer::PlayingIndex subtitleKeyIndex = playingIndex;
+        subtitleKeyIndex.mediaType = PlayJson::MediaType::SUBTITLE;
 
-            MakeSubtitleTypeContent(subtitleKeyIndex, pageData.subtitleDataList[subIdx], dest);
-        }
+        MakeSubtitleTypeContent(subtitleKeyIndex, pageData.subtitleDataList[subIdx], dest);
     }
 }
 
@@ -940,9 +952,6 @@ void ContentsPlayer::ClearOtherPlayDataJsonInfo(const PlayScheduleTimer::Playing
                     prevCustomPlayDataListSize, m_customPlayDataList.size());
     ELGO_VIEWER_LOG("Fixed PlayData List Size { %d -> %d }",
                     prevFixedPlayDataListSize, m_fixedPlayDataList.size());
-
-    // Delete Prev Item
-    ClearOtherPlayDataItem(playingIndex);
 }
 
 //========================================================

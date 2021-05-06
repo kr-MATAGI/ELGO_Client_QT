@@ -37,7 +37,7 @@ void ELogger::ELGO_LOG_CONSOLE(const char *procName, const char* fileName, const
     dateStr.append("-");
     dateStr.append(day);
 
-    QString dateTimeStr = dateStr + ":" + timeStr;
+    QString dateTimeStr = dateStr + "_" + timeStr;
     QString customFileName = QString(fileName).split("/", Qt::SkipEmptyParts).back();
     QString formatLog = QString::vasprintf(format, ap);
     QString printLog = QString("[%1][%2][%3:%4:%5] %6")

@@ -1,6 +1,9 @@
 // QT
 #include <QLayout>
 
+// Common
+#include "LocalSocketEvent/EFCEvent.h"
+
 // MainWindow
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -111,6 +114,22 @@ void MainWindow::CloseMainWindowByTimeout()
     {
         emit ContentsPlayer::GetInstance()->StartContentsPlayerSignal();
         m_isDrawStartQR = true;
+
+        /**
+         *  @note
+         *          ELGO_VIEWER -> ELGO_MAIN
+         *          Request data for offline single play
+         *  @param
+         *          NONE
+         */
+        QByteArray bytes;
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                    MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY,
+                                                    bytes);
+        if(false == bSendEvent)
+        {
+            ELGO_VIEWER_LOG("ERROR - Send Event: %d", MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY)
+        }
     }
 
     m_closeTimer.stop();
