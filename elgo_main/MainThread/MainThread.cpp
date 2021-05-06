@@ -112,7 +112,8 @@ void MainThread::ExecRecvProcecssReady()
         sendStream << bIsDisplaySleep;
 
         const bool bContorlEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_CONTROL,
-                            CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN, sendBytes);
+                                                       CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN,
+                                                       sendBytes);
         if(false == bContorlEvent)
         {
             ELGO_MAIN_LOG("SendEvent Error - %d", CONTROL_EVENT::Event::RECV_SERVER_INFO_FROM_MAIN);
@@ -252,7 +253,7 @@ void MainThread::ExecRequestOfflineSinglePlay()
 {
     /**
      *  @note
-     *          ELGO_VIEWER -> ELGO_MAIN
+     *          ELGO_CONTROL -> ELGO_MAIN
      *          Request data for offline single play
      *  @param
      *          NONE

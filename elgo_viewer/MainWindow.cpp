@@ -100,7 +100,7 @@ void MainWindow::DrawQRCodeByThread(QString url)
                     m_qrUrl.toUtf8().constData());
 
     ui->qrLabel->setPixmap(pixmap);
-    this->show();
+    this->showFullScreen();
 
     // show Content Player after 10 sec
     m_closeTimer.start(CLOSE_TIMEOUT);
@@ -112,24 +112,8 @@ void MainWindow::CloseMainWindowByTimeout()
 {
     if(false == m_isDrawStartQR)
     {
-        emit ContentsPlayer::GetInstance()->StartContentsPlayerSignal();
+//        emit ContentsPlayer::GetInstance()->StartContentsPlayerSignal();
         m_isDrawStartQR = true;
-
-        /**
-         *  @note
-         *          ELGO_VIEWER -> ELGO_MAIN
-         *          Request data for offline single play
-         *  @param
-         *          NONE
-         */
-        QByteArray bytes;
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                    MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY,
-                                                    bytes);
-        if(false == bSendEvent)
-        {
-            ELGO_VIEWER_LOG("ERROR - Send Event: %d", MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY)
-        }
     }
 
     m_closeTimer.stop();

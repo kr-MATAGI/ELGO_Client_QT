@@ -12,7 +12,7 @@ class EFCEvent
 {
 public:
     /** @brief */
-    static bool SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src, const bool bForce = false);
+    static bool SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src);
 
 private:
     static bool SendMessage(QLocalSocket* socket, const quint16 event, const QByteArray &src);

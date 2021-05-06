@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QDataStream>
 
-bool EFCEvent::SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src, const bool bForce)
+bool EFCEvent::SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src)
 {
     bool retValue = true; // TODO : change to eunm of error (for details)
 

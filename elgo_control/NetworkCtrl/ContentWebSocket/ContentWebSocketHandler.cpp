@@ -113,7 +113,7 @@ void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serv
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
     sendStream << ip;
     const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                  VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes, true);
+                                                  VIEWER_EVENT::Event::MAKE_QRCODE, sendBytes);
     if(false == bViewerEvent)
     {
         ELGO_CONTROL_LOG("SendEvent Error - %d", VIEWER_EVENT::Event::MAKE_QRCODE);

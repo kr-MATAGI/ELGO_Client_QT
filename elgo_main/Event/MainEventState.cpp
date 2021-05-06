@@ -414,7 +414,7 @@ void MainEventState::RecvRequestOfflineSinglePlay(const QByteArray& src)
 {
     /**
      *  @note
-     *          ELGO_VIEWER -> ELGO_MAIN
+     *          ELGO_CONTROL -> ELGO_MAIN
      *          Request data for offline single play
      *  @param
      *          NONE
