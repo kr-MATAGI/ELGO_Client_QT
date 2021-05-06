@@ -47,10 +47,6 @@ void MainThread::run()
     {
         ExecRecvProcecssReady();
     }
-    else if(MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS == m_event)
-    {
-        ExecUpdateDeviceOptions();
-    }
     else if(MAIN_EVENT::Event::SEARCHING_WIFI_LIST == m_event)
     {
         ExecSearchingWifiList();
@@ -122,76 +118,6 @@ void MainThread::ExecRecvProcecssReady()
     else
     {
         ELGO_MAIN_LOG("ERROR - Unknwon ELGO_PROC %d", proc);
-    }
-}
-
-//========================================================
-void MainThread::ExecUpdateDeviceOptions()
-//========================================================
-{
-    /**
-     *  @note
-     *          ELGO_CONTROL -> ELGO_MAIN
-     *          Change Device Options
-     *  @param
-     *          bool displaySleep
-     *          bool deviceMute
-     *          bool contentPause
-     */
-    QByteArray recvBytes = m_bytes;
-    QDataStream out(&recvBytes, QIODevice::ReadOnly);
-    bool displaySleep = false;
-    bool deviceMute = false;
-    bool contentPause = false;
-    const bool bCurrDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
-
-    out >> displaySleep;
-    out >> deviceMute;
-    out >> contentPause;
-    ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d",
-                  displaySleep, bCurrDisplaySleep, deviceMute, contentPause);
-
-    // Set Display Sleep to Main Ctrl
-    if(bCurrDisplaySleep != displaySleep)
-    {
-        MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displaySleep);
-
-            // process
-        QProcess *process = new QProcess;
-        QString cmdStr;
-        QStringList args;
-
-#if defined(Q_OS_LINUX)
-        cmdStr = "/usr/bin/xset";
-        args << "-display";
-        args << ":0.0";
-        args << "dpms";
-        args << "force";
-
-        if(true == displaySleep)
-        {
-            args << "off";
-        }
-        else
-        {
-            args << "on";
-        }
-
-#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
-
-#else defined(Q_OS_ANDROID)
-
-#endif
-
-        process->start(cmdStr, args);
-        process->waitForFinished();
-        ELGO_MAIN_LOG("cmdStr: %s, args: %s",
-                        cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
-    }
-    else
-    {
-        ELGO_MAIN_LOG("Not Changed Display Sleep Status - {recv: %d, curr: %d}",
-                      displaySleep, bCurrDisplaySleep);
     }
 }
 

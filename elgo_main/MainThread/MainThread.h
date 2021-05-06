@@ -28,9 +28,6 @@ public:
     void ExecRecvProcecssReady();
 
     /** @brief */
-    void ExecUpdateDeviceOptions();
-
-    /** @brief */
     void ExecSearchingWifiList();
     /** @brief */
     void ExecConnectNewWifi();

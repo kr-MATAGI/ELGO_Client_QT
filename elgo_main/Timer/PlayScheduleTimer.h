@@ -49,7 +49,7 @@ private:
     int CheckDuplicatedScheduleId(const QString& id);
 
     /** @brief */
-    bool CheckValidDateTimeCron(const QDateTime& currentDateTime,
+    bool CheckValidPlaySchedule(const QDateTime& currentDateTime,
                                 const ScheduleJson::Cron& cron);
 
 

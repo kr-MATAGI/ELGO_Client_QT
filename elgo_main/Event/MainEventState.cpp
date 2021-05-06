@@ -9,6 +9,7 @@
 #include "MainEventState.h"
 #include "MainThread/MainThread.h"
 #include "Logger/MainLogger.h"
+#include "Utils/DeviceManager.h"
 
 //========================================================
 MainEventState::MainEventState()
@@ -91,10 +92,32 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
      *          bool contentPause
      */
 
-    MainThread *thread = new MainThread;
-    thread->SetMainEvent(MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS);
-    thread->SetRecvBytes(src);
-    m_threadPool->start(thread);
+    QByteArray copyBytes = src;
+    QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
+    bool displaySleep = false;
+    bool deviceMute = false;
+    bool contentPause = false;
+
+    copySteam >> displaySleep;
+    copySteam >> deviceMute;
+    copySteam >> contentPause;
+
+    // Sleep Status
+    const bool bCurrDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
+    ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d",
+                  displaySleep, bCurrDisplaySleep, deviceMute, contentPause);
+
+    if(bCurrDisplaySleep != displaySleep)
+    {
+        const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+        DeviceManager::UpdateSleepStatus(os, displaySleep);
+        MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displaySleep);
+    }
+
+    // Mute
+
+
+    // Puase
 }
 
 //========================================================
@@ -117,36 +140,8 @@ void MainEventState::RecvUpdateDisplaySleep(const QByteArray& src)
     MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(bDisplaySleep);
     ELGO_MAIN_LOG("Display Sleep: %d", bDisplaySleep);
 
-    // process
-    QProcess *process = new QProcess;
-    QString cmdStr;
-    QStringList args;
-#if defined(Q_OS_LINUX)
-    cmdStr = "/usr/bin/xset";
-    args << "-display";
-    args << ":0.0";
-    args << "dpms";
-    args << "force";
-
-    if(true == bDisplaySleep)
-    {
-        args << "off";
-    }
-    else
-    {
-        args << "on";
-    }
-
-#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
-
-#else defined(Q_OS_ANDROID)
-
-#endif
-
-    process->start(cmdStr, args);
-    process->waitForFinished();
-    ELGO_MAIN_LOG("cmdStr: %s, args: %s",
-                  cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    DeviceManager::UpdateSleepStatus(os, bDisplaySleep);
 }
 
 //========================================================

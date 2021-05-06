@@ -10,6 +10,9 @@
 // Main
 #include "MainCtrl/MainController.h"
 
+// <id, PowerStatus>
+typedef std::pair<QString, ScheduleJson::PowerStatus> POWER_INFO;
+
 class MainController;
 
 class PowerScheduleTimer : public QTimer
@@ -40,9 +43,18 @@ private slots:
     void PowerScheduleTimeout();
 
 private:
+    /** @brief */
+    QString ConvertDateTimeToString(const QDateTime& src);
+
+    /** @brief */
+    bool CheckValidPowerSchedule(const QDateTime& currDateTime,
+                                 const ScheduleJson::Cron& cron);
+
+private:
     bool m_bIsActive;
 
     QVector<ScheduleJson::PowerScheduleData> m_scheduleList;
+    POWER_INFO m_powerInfo;
 };
 
 #endif // POWERSCHEDULETIMER_H

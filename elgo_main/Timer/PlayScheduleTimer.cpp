@@ -151,10 +151,10 @@ bool PlayScheduleTimer::IsActivePlayTimer()
 void PlayScheduleTimer::PlayScheduleTimeout()
 //========================================================
 {
-    if(0 < m_playScheduleList.size())
+    if(true == m_playScheduleList.empty())
     {
         ELGO_MAIN_LOG("Schedule List is Empty() - Stop Timer");
-        this->stop();
+        StopPlayTimer();
 
         return;
     }
@@ -179,11 +179,13 @@ void PlayScheduleTimer::PlayScheduleTimeout()
 
                 MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(scheduleIter->id);
                 dataIter = scheduleIter->scheduleList.erase(dataIter);
+
+                continue;
             }
             else if( (currSecEpoch >= dataIter->startTime.toSecsSinceEpoch()) &&
                      (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
             {
-                const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
+                const bool bIsValid = CheckValidPlaySchedule(currDateTime, dataIter->cron);
                 if( (true == bIsValid) &&
                     (0 != strcmp(m_currScheduleId.toStdString().c_str(),
                                  scheduleIter->id.toStdString().c_str())) )
@@ -242,13 +244,9 @@ void PlayScheduleTimer::PlayScheduleTimeout()
 
                     return;
                 }
+            }
 
-                ++dataIter;
-            }
-            else
-            {
-                ++dataIter;
-            }
+            ++dataIter;
         }
     }
 
@@ -305,7 +303,7 @@ void PlayScheduleTimer::PlayScheduleTimeout()
 }
 
 //========================================================
-bool PlayScheduleTimer::CheckValidDateTimeCron(const QDateTime& currentDateTime,
+bool PlayScheduleTimer::CheckValidPlaySchedule(const QDateTime& currentDateTime,
                                                const ScheduleJson::Cron& cron)
 //========================================================
 {
@@ -317,7 +315,6 @@ bool PlayScheduleTimer::CheckValidDateTimeCron(const QDateTime& currentDateTime,
 
     const int hour = currentDateTime.time().hour();
     const int min = currentDateTime.time().minute();
-//    const int sec = currentDateTime.time().second(); not using
 
     if(cron.monthList.end() == std::find(cron.monthList.begin(), cron.monthList.end(), month))
     {
@@ -345,9 +342,6 @@ bool PlayScheduleTimer::CheckValidDateTimeCron(const QDateTime& currentDateTime,
     }
 
     retValue = true;
-
-    // TODO : Cron options - Maybe not using on web
-
     return retValue;
 }
 
