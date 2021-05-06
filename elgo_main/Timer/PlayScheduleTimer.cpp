@@ -153,150 +153,154 @@ void PlayScheduleTimer::PlayScheduleTimeout()
 {
     if(0 < m_playScheduleList.size())
     {
-        const QDateTime currDateTime = QDateTime::currentDateTime();
-        const qint64 currSecEpoch = currDateTime.toSecsSinceEpoch();
+        ELGO_MAIN_LOG("Schedule List is Empty() - Stop Timer");
+        this->stop();
 
-        // Check Schedule
-        QVector<ScheduleJson::PlaySchedule>::iterator scheduleIter = m_playScheduleList.begin();
-        for(; scheduleIter != m_playScheduleList.end(); ++scheduleIter)
+        return;
+    }
+
+    const QDateTime currDateTime = QDateTime::currentDateTime();
+    const qint64 currSecEpoch = currDateTime.toSecsSinceEpoch();
+
+    // Check Schedule
+    QVector<ScheduleJson::PlaySchedule>::iterator scheduleIter = m_playScheduleList.begin();
+    for(; scheduleIter != m_playScheduleList.end(); ++scheduleIter)
+    {
+        QVector<ScheduleJson::PlayScheduleData>::iterator dataIter = scheduleIter->scheduleList.begin();
+        for(; dataIter != scheduleIter->scheduleList.end(); )
         {
-            QVector<ScheduleJson::PlayScheduleData>::iterator dataIter = scheduleIter->scheduleList.begin();
-            for(; dataIter != scheduleIter->scheduleList.end(); )
+            // Check Expired
+            if(currSecEpoch >= dataIter->endTime.toSecsSinceEpoch())
             {
-                // Check Expired
-                if(currSecEpoch >= dataIter->endTime.toSecsSinceEpoch())
-                {
-                    ELGO_MAIN_LOG("Expired - {id: %s, start: %s, end: %s}",
-                                  scheduleIter->id.toStdString().c_str(),
-                                  ConvertDateTimeToString(dataIter->startTime).toStdString().c_str(),
-                                  ConvertDateTimeToString(dataIter->endTime).toStdString().c_str());
+                ELGO_MAIN_LOG("Expired - {id: %s, start: %s, end: %s}",
+                              scheduleIter->id.toStdString().c_str(),
+                              ConvertDateTimeToString(dataIter->startTime).toStdString().c_str(),
+                              ConvertDateTimeToString(dataIter->endTime).toStdString().c_str());
 
-                    MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(scheduleIter->id);
-                    dataIter = scheduleIter->scheduleList.erase(dataIter);
-                }
-                else if( (currSecEpoch >= dataIter->startTime.toSecsSinceEpoch()) &&
-                         (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
+                MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(scheduleIter->id);
+                dataIter = scheduleIter->scheduleList.erase(dataIter);
+            }
+            else if( (currSecEpoch >= dataIter->startTime.toSecsSinceEpoch()) &&
+                     (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
+            {
+                const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
+                if( (true == bIsValid) &&
+                    (0 != strcmp(m_currScheduleId.toStdString().c_str(),
+                                 scheduleIter->id.toStdString().c_str())) )
                 {
-                    const bool bIsValid = CheckValidDateTimeCron(currDateTime, dataIter->cron);
-                    if( (true == bIsValid) &&
-                        (0 != strcmp(m_currScheduleId.toStdString().c_str(),
-                                     scheduleIter->id.toStdString().c_str())) )
+                    m_currScheduleId = scheduleIter->id;
+
+                    // Exec
+                    if(PlayJson::PlayDataType::CUSTOM == dataIter->type)
                     {
-                        m_currScheduleId = scheduleIter->id;
+                        PlayJson::CustomPlayDataJson customPlayData;
 
-                        // Exec
-                        if(PlayJson::PlayDataType::CUSTOM == dataIter->type)
+                        // Get CustomPlayData from DB
+                        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
+                                                                                     dataIter->type,
+                                                                                     customPlayData);
+
+                        // Send playData to Viewer
+                        QByteArray bytes;
+                        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+                        dataStream << customPlayData;
+
+                        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                                    VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                                                                    bytes);
+                        if(false == bSendEvent)
                         {
-                            PlayJson::CustomPlayDataJson customPlayData;
-
-                            // Get CustomPlayData from DB
-                            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
-                                                                                         dataIter->type,
-                                                                                         customPlayData);
-                            // Send playData to Viewer
-                            QByteArray bytes;
-                            QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-                            dataStream << customPlayData;
-
-                            const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                                        VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
-                                                                        bytes);
-                            if(false == bSendEvent)
-                            {
-                                ELGO_MAIN_LOG("ERROR - SendEvent: %d",
-                                              VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
-                            }
+                            ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
                         }
-                        else if(PlayJson::PlayDataType::FIXED == dataIter->type)
+                    }
+                    else if(PlayJson::PlayDataType::FIXED == dataIter->type)
+                    {
+                        PlayJson::FixedPlayDataJson fixedPlayData;
+
+                        // Get FixedPlayData from DB
+                        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
+                                                                                     dataIter->type,
+                                                                                     fixedPlayData);
+                        // Send playData to Viewer
+                        QByteArray bytes;
+                        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+                        dataStream << fixedPlayData;
+
+                        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                                    VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                                                                    bytes);
+                        if(false == bSendEvent)
                         {
-                            PlayJson::FixedPlayDataJson fixedPlayData;
-
-                            // Get FixedPlayData from DB
-                            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(dataIter->playDataId,
-                                                                                         dataIter->type,
-                                                                                         fixedPlayData);
-                            // Send playData to Viewer
-                            QByteArray bytes;
-                            QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-                            dataStream << fixedPlayData;
-
-                            const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                                        VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
-                                                                        bytes);
-                            if(false == bSendEvent)
-                            {
-                                ELGO_MAIN_LOG("ERROR - SendEvent: %d",
-                                              VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
-                            }
+                            ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
                         }
-                        else
-                        {
-                            ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type: %d}",
-                                          dataIter->playDataId, dataIter->type);
-                        }
-
-                        return;
+                    }
+                    else
+                    {
+                        ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type: %d}",
+                                      dataIter->playDataId, dataIter->type);
                     }
 
-                    ++dataIter;
+                    return;
                 }
-                else
-                {
-                    ++dataIter;
-                }
+
+                ++dataIter;
             }
-        }
-
-        // Not Matched Play Schedule - Exec prev PlayData
-        if(PlayJson::PlayDataType::CUSTOM == m_prevPlayDataType)
-        {
-            PlayJson::CustomPlayDataJson customPlayData;
-
-            // Get info from DB
-            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
-                                                                         m_prevPlayDataType,
-                                                                         customPlayData);
-
-            // Send Custom PlayData to Viwer
-            QByteArray bytes;
-            QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-            dataStream << customPlayData;
-
-            const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                        VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
-                                                        bytes);
-            if(false == bSendEvent)
+            else
             {
-                ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
+                ++dataIter;
             }
         }
-        else if(PlayJson::PlayDataType::FIXED == m_prevPlayDataType)
+    }
+
+    // Not Matched Play Schedule - Exec prev PlayData
+    if(PlayJson::PlayDataType::CUSTOM == m_prevPlayDataType)
+    {
+        PlayJson::CustomPlayDataJson customPlayData;
+
+        // Get info from DB
+        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
+                                                                     m_prevPlayDataType,
+                                                                     customPlayData);
+
+        // Send Custom PlayData to Viwer
+        QByteArray bytes;
+        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+        dataStream << customPlayData;
+
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                    VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                                                    bytes);
+        if(false == bSendEvent)
         {
-            PlayJson::FixedPlayDataJson fixedPlayData;
-
-            // Get info from DB
-            MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
-                                                                         m_prevPlayDataType,
-                                                                         fixedPlayData);
-
-            // Send Fixed PlayData to Viwer
-            QByteArray bytes;
-            QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-            dataStream << fixedPlayData;
-
-            const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                        VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
-                                                        bytes);
-            if(false == bSendEvent)
-            {
-                ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
-            }
+            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
         }
-        else
+    }
+    else if(PlayJson::PlayDataType::FIXED == m_prevPlayDataType)
+    {
+        PlayJson::FixedPlayDataJson fixedPlayData;
+
+        // Get info from DB
+        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
+                                                                     m_prevPlayDataType,
+                                                                     fixedPlayData);
+
+        // Send Fixed PlayData to Viwer
+        QByteArray bytes;
+        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+        dataStream << fixedPlayData;
+
+        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                    VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                                                    bytes);
+        if(false == bSendEvent)
         {
-            ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type %d}",
-                          m_prevPlayDataId, m_prevPlayDataType);
+            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
         }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type %d}",
+                      m_prevPlayDataId, m_prevPlayDataType);
     }
 }
 
