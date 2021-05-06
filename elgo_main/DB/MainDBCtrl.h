@@ -53,6 +53,11 @@ public:
     /** @brief */
     void DeletePowerScheduleById(const QString& scheduleId);
 
+
+    // playinginfo
+    void UpdatePlayingData(const int playDataId, const PlayJson::PlayDataType type);
+
+
     /** @brief */
     bool CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id);
 

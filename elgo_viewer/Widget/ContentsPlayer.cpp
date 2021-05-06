@@ -170,7 +170,7 @@ void ContentsPlayer::ExecPlayDataSlot(const PlayJson::PlayData& playData,
     ELGO_VIEWER_LOG("Ready to Play - {id: %d, type: %d}",
                     playData.id, playData.playDataType);
 
-        // Get Play Data Index
+    // Get Play Data Index
     GetSuitablePlayDataIndex(playData);
     if(NOT_EXISTED_DATA == m_playDataIndex)
     {

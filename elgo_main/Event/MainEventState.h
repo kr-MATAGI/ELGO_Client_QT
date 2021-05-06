@@ -52,6 +52,8 @@ public:
 
     /** @brief */
     void RecvAddPlayDataToDB(const QByteArray& src);
+    /** @brief */
+    void RecvSavePlayingDataToDB(const QByteArray& src);
 
     /** @brief */
     void RecvUpdatePowerSchedule(const QByteArray& src);

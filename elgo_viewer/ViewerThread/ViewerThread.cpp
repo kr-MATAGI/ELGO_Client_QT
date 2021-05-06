@@ -148,6 +148,19 @@ void ViewerThread::ExecPlayCustomPlayData()
     // Add Play Data and Play
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
     emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(customPlayData.playData, true);
+
+    // Save playing data to DB
+    QByteArray sendBytes;
+    QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+    sendStream << customPlayData.playData.id;
+    sendStream << customPlayData.playData.playDataType;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                MAIN_EVENT::Event::SAVE_PLAYING_DATA_TO_DB,
+                                                sendBytes);
+    if(false == bSendEvent)
+    {
+        ELGO_VIEWER_LOG("ERROR - SendEvent: %d", MAIN_EVENT::Event::SAVE_PLAYING_DATA_TO_DB);
+    }
 }
 
 //========================================================
@@ -173,6 +186,19 @@ void ViewerThread::ExecPlayFixedPlayData()
     // Add Play Data
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
     emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(fixedPlayData.playData, true);
+
+    // Save playing data to DB
+    QByteArray sendBytes;
+    QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
+    sendStream << fixedPlayData.playData.id;
+    sendStream << fixedPlayData.playData.playDataType;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                MAIN_EVENT::Event::SAVE_PLAYING_DATA_TO_DB,
+                                                sendBytes);
+    if(false == bSendEvent)
+    {
+        ELGO_VIEWER_LOG("ERROR - SendEvent: %d", MAIN_EVENT::Event::SAVE_PLAYING_DATA_TO_DB);
+    }
 }
 
 //========================================================

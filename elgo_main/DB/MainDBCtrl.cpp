@@ -38,6 +38,7 @@ void MainDBCtrl::InitializeDB()
     MakeDefulatTable(db, SCHEDULE_DB, "playSchedule");
     MakeDefulatTable(db, SCHEDULE_DB, "playData");
     MakeDefulatTable(db, SCHEDULE_DB, "powerSchedule");
+    MakeDefulatTable(db, SCHEDULE_DB, "playingInfo");
 
     m_mutex->unlock();
 }
@@ -122,6 +123,10 @@ void MainDBCtrl::MakeDefulatTable(QSqlDatabase& db, const char* dbPath,
                 else if(0 == strcmp("playData", tableName.toStdString().c_str()))
                 {
                     prepareQuery = DB_Query::CREATE_TABLE_PLAY_DATA;
+                }
+                else if(0 == strcmp("playingInfo", tableName.toStdString().c_str()))
+                {
+                    prepareQuery = DB_Query::CREATE_TABLE_PLAYING_INFO;
                 }
                 query.prepare(prepareQuery);
                 const bool bIsCreated = query.exec();
@@ -351,6 +356,58 @@ void MainDBCtrl::DeletePowerScheduleById(const QString& scheduleId)
     {
         ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
                       DB_Query::DELETE_POWER_SCHEDULE_BY_ID,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::UpdatePlayingData(const int playDataId, const PlayJson::PlayDataType type)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::DELETE_PLAYING_DATA);
+    const bool bIsDel = query.exec();
+    if(true == bIsDel)
+    {
+        query.clear();
+        query.prepare(DB_Query::INSERT_PLAYING_DATA);
+        query.bindValue(":id", playDataId);
+        query.bindValue(":type", type);
+
+        const bool bIsInserted = query.exec();
+        if(true == bIsInserted)
+        {
+            ELGO_MAIN_LOG("Inserted - {id: %d, type: %d}",
+                          playDataId, type);
+        }
+        else
+        {
+            ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                          DB_Query::INSERT_PLAYING_DATA,
+                          query.lastError().text().toStdString().c_str());
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::DELETE_PLAYING_DATA,
                       query.lastError().text().toStdString().c_str());
     }
 

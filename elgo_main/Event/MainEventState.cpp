@@ -44,6 +44,8 @@ MainEventState::MainEventState()
 
     m_state.RegisterEvent(MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
                           &MainEventState::RecvAddPlayDataToDB);
+    m_state.RegisterEvent(MAIN_EVENT::Event::SAVE_PLAYING_DATA_TO_DB,
+                          &MainEventState::RecvSavePlayingDataToDB);
 
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_POWER_SCHEDULE_LIST,
                           &MainEventState::RecvUpdatePowerSchedule);
@@ -90,6 +92,7 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
      *          bool displayOnOff
      *          bool deviceMute
      *          bool contentPause
+
      */
 
     QByteArray copyBytes = src;
@@ -325,6 +328,33 @@ void MainEventState::RecvAddPlayDataToDB(const QByteArray& src)
     {
         ELGO_MAIN_LOG("ERROR - Unknown PlayData Type: %d", playType);
     }
+}
+
+//========================================================
+void MainEventState::RecvSavePlayingDataToDB(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_VIEWER -> ELGO_MAIN
+     *          Save Current Playing PlayData to DB
+     *  @param
+     *          int playDataId
+     *          PlayJson::PlayDataType type
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream copyStream(&copyBytes, QIODevice::ReadOnly);
+
+    int playDataId = 0;
+    PlayJson::PlayDataType playDataType = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+
+    copyStream >> playDataId;
+    copyStream >> playDataType;
+    ELGO_MAIN_LOG("Save to DB - playData{id: %d, type: %d}", playDataId, playDataType);
+
+    // Save to DB
+    MainController::GetInstance()->GetDBCtrl().UpdatePlayingData(playDataId, playDataType);
 }
 
 //========================================================

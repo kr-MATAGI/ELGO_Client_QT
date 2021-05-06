@@ -89,6 +89,17 @@ namespace DB_Query
 
     static const char* DELETE_POWER_SCHEDULE_BY_ID = "DELETE FROM powerSchedule WHERE id=:id;";
 
+    // playingInfo
+    static const char* CREATE_TABLE_PLAYING_INFO = "CREATE TABLE playingInfo ("
+                                                        "id VARCHAR(30) NOT NULL,"
+                                                        "type INTEGER NOT NULL,"
+                                                        "PRIMARY KEY(id, type));";
+
+    static const char* INSERT_PLAYING_DATA = "INSERT INTO playingInfo (id, type) "
+                                                "VALUES(:id, :type);";
+
+    static const char* DELETE_PLAYING_DATA = "DELETE FROM playingInfo;";
+
 };
 
 #endif // DBDEFINITION_H

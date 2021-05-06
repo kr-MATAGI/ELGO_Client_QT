@@ -141,6 +141,17 @@ namespace MAIN_EVENT
         DELETE_POWER_SCHEDULE_BY_ID = 268,
 
 
+        /**
+         *  @note
+         *          ELGO_VIEWER -> ELGO_MAIN
+         *          Save Current Playing PlayData to DB
+         *  @param
+         *          int playDataId
+         *          PlayJson::PlayDataType type
+         */
+        SAVE_PLAYING_DATA_TO_DB = 269,
+
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -240,7 +251,7 @@ namespace VIEWER_EVENT
 
         /**
          * @note
-         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       ELGO_CONTROL, ELGO_MAIN -> ELGO_VIEWER
          *       Send custom play data information
          * @param
          *       CustomPlayDataJson customPlayData
@@ -249,7 +260,7 @@ namespace VIEWER_EVENT
 
         /**
          * @note
-         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       ELGO_CONTROL, ELGO_MAIN -> ELGO_VIEWER
          *       Send fixed play data information
          * @param
          *       FixedPlayDataJson fixedPlayData

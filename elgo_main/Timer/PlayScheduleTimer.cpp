@@ -203,6 +203,14 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                                                                                      customPlayData);
 
                         // Send playData to Viewer
+                        /**
+                         * @note
+                         *       ELGO_CONTROL, ELGO_MAIN -> ELGO_VIEWER
+                         *       Send custom play data information
+                         * @param
+                         *       CustomPlayDataJson customPlayData
+                         */
+
                         QByteArray bytes;
                         QDataStream dataStream(&bytes, QIODevice::WriteOnly);
                         dataStream << customPlayData;
@@ -224,6 +232,14 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                                                                                      dataIter->type,
                                                                                      fixedPlayData);
                         // Send playData to Viewer
+                        /**
+                         * @note
+                         *       ELGO_CONTROL, ELGO_MAIN -> ELGO_VIEWER
+                         *       Send fixed play data information
+                         * @param
+                         *       FixedPlayDataJson fixedPlayData
+                         */
+
                         QByteArray bytes;
                         QDataStream dataStream(&bytes, QIODevice::WriteOnly);
                         dataStream << fixedPlayData;
