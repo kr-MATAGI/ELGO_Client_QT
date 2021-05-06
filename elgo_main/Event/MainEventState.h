@@ -60,9 +60,6 @@ public:
     /** @brief */
     void RecvDeletePowerScheduleById(const QByteArray& src);
 
-    /** @brief */
-    void RecvRequestOfflineSinglePlay(const QByteArray& src);
-
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;

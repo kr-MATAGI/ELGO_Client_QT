@@ -71,7 +71,7 @@ void ContentWebSocket::ConnectContentSocketSlot()
     QUrl url(CONTENT_SERVER_URL);
     QByteArray jwtBytes;
     QString jwt = NetworkController::GetInstance()->GetNetworkCtrl().GetJWTString();
-//    jwtBytes.append(jwt.toUtf8());
+    jwtBytes.append(jwt.toUtf8());
 
     netRequest.setUrl(url);
     netRequest.setRawHeader("Authorization", jwtBytes);
@@ -100,22 +100,6 @@ void ContentWebSocket::DisconnectedSocketSlot()
 //========================================================
 {
     ELGO_CONTROL_LOG("Content Server WebSocket - Disconnected");
-
-    /**
-     *  @note
-     *          ELGO_CONTROL -> ELGO_MAIN
-     *          Request data for offline single play
-     *  @param
-     *          NONE
-     */
-    QByteArray bytes;
-    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                MAIN_EVENT::Event::REQUEST_OFFLINE_SINGLE_PLAY,
-                                                bytes);
-    if(false == bSendEvent)
-    {
-        ELGO_CONTROL_LOG("ERROR - Send Event: %d", bSendEvent);
-    }
 }
 
 //========================================================

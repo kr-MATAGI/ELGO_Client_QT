@@ -151,17 +151,6 @@ namespace MAIN_EVENT
          */
         SAVE_PLAYING_DATA_TO_DB = 269,
 
-
-        /**
-         *  @note
-         *          ELGO_CONTROL -> ELGO_MAIN
-         *          Request data for offline single play
-         *  @param
-         *          NONE
-         */
-        REQUEST_OFFLINE_SINGLE_PLAY = 270,
-
-
         MAX_VIEWER_EVENT = 511
     };
 }
