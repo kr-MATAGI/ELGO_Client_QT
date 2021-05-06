@@ -27,12 +27,6 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedule& src)
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& src);
 
 
-/** @brief  Single Play Schdeuls Serialize */
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlaySchedules& src);
-/** @brief */
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleData& src);
-
-
 /**
  *  @note   elgo_control <-> elgo_viewer, deserialize function
  */
@@ -50,11 +44,5 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::CronOption& dest);
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedule& dest);
 /** @brief */
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest);
-
-
-/** @brief  Single Play Schdeuls Deserialize */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules& dest);
-/** @brief */
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData& dest);
 
 #endif // PLAYSCHEDULEIMPL_H

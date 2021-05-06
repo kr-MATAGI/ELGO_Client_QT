@@ -28,7 +28,7 @@ public:
     /** @brief */
     void ClearAllPlayScheduleList();
     /** @brief */
-    void ClearPlayScheduleById(const QString& id);
+    void DeletePlayScheduleById(const QString& id);
 
     /** @brief */
     void StartPlayTimer();

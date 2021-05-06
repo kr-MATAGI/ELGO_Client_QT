@@ -19,15 +19,15 @@ namespace JsonWriter
     /** @brief */
     void WriteGetJwtRequest(const QString& udid, const QString& os, std::string& dest);
 
-    /** @brief  access Event */
+    /** @brief  Access Event */
     void WriteContentServerAccessEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  rename Event */
+    /** @brief  Rename Event */
     void WriteContentServerRenameEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  singlePlay Event */
+    /** @brief  SinglePlay Event */
     void WriteContentServerSinglePlayEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  playSchedule Event */
+    /** @brief  PlaySchedule Event */
     void WriteContentServerPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  capture Event */
+    /** @brief  Capture Event */
     void WriteContentServerScreenCaptureEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  Display On/Off Event */
     void WriteContentServerDisplayOnOffEvent(const ContentSchema::Summary& src, QString& dest);
@@ -35,8 +35,10 @@ namespace JsonWriter
     void WriteContentServerRebootEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  ClearPlaySchedule Event */
     void WriteContentServerClearPlayScheduleEvent(const ContentSchema::Summary& src, QString& dest);
-    /** @brief  powerSchedule Event */
+    /** @brief  PowerSchedule Event */
     void WriteContentServerPowerScheduleEvent(const ContentSchema::Summary& src, QString& dest);
+    /** @brief  CleaerPowerSchedule Event */
+    void WriteContentServerClearPowerScheduleEvent(const ContentSchema::Summary& src, QString& dest);
     /** @brief  Write Defulat Response */
     void WriteContentServerDefaultResponse(const ContentSchema::Summary& src, QString& dest);
 

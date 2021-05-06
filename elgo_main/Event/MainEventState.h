@@ -48,13 +48,15 @@ public:
     /** @brief */
     void RecvClearAllPlaySchedule(const QByteArray& src);
     /** @brief */
-    void RecvClearPlayScheduleById(const QByteArray& src);
+    void RecvDeletePlayScheduleById(const QByteArray& src);
 
     /** @brief */
     void RecvAddPlayDataToDB(const QByteArray& src);
 
     /** @brief */
     void RecvUpdatePowerSchedule(const QByteArray& src);
+    /** @brief */
+    void RecvDeletePowerScheduleById(const QByteArray& src);
 
 private:
     QThreadPool *m_threadPool;

@@ -487,7 +487,7 @@ void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Ev
     {
         dest = "clearPlaySchedule";
     }
-    else if(ContentSchema::Event::POWER_SCHEDULE == event)
+    else if(ContentSchema::Event::CLEAR_POWER_SCHEDULE == event)
     {
         dest = "clearPowerSchedule";
     }

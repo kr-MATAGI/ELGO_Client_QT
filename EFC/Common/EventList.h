@@ -107,7 +107,7 @@ namespace MAIN_EVENT
          *  @param
          *          QString scheduleId
          */
-        CLEAR_PLAY_SCHEDULE_BY_ID = 265,
+        DELETE_PLAY_SCHEDULE_BY_ID = 265,
 
         /**
          *  @note
@@ -129,6 +129,16 @@ namespace MAIN_EVENT
          *          ScheduleJson::PowerSchedule powerSchedule
          */
         UPDATE_POWER_SCHEDULE_LIST = 267,
+
+
+        /**
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Delete Power Schedule by ID
+         *  @param
+         *          QString scheduleId
+         */
+        DELETE_POWER_SCHEDULE_BY_ID = 268,
 
 
         MAX_VIEWER_EVENT = 511

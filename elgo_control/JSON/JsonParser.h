@@ -76,11 +76,6 @@ namespace JsonParser
     /** @brief  Power Schedules */
     void ParsePowerSchedulesJson(const QString& src, ScheduleJson::PowerSchedule& dest);
 
-
-    /** @brief  Single Play Schdules */
-    void ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::SinglePlaySchedules& dest);
-
-
     /// Weather Info Parser
     /** @brief */
     bool ParseWeatherInfoJsonResponse(const QString& src, PlayJson::ContentData& dest);

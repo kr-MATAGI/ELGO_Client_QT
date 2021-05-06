@@ -264,12 +264,12 @@ void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
                       query.lastError().text().toStdString().c_str());
     }
 
+    db.close();
     m_mutex->unlock();
 }
 
 //========================================================
-void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src,
-                                        const ScheduleJson::PowerStatus status)
+void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src)
 //========================================================
 {
     m_mutex->lock();
@@ -295,7 +295,7 @@ void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerSchedul
         query.prepare(DB_Query::INSERT_POWER_SCHEDULE);
         query.bindValue(":id", (*scheduleIter).id);
 
-        const bool bIsOn = (ScheduleJson::PowerStatus::POWER_ON == status) ? true : false;
+        const bool bIsOn = (ScheduleJson::PowerStatus::POWER_ON == (*scheduleIter).status) ? true : false;
         query.bindValue(":isOn", bIsOn);
 
         query.bindValue(":startDate", (*scheduleIter).startTime);
@@ -319,6 +319,39 @@ void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerSchedul
         }
 
         ++scheduleIter;
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::DeletePowerScheduleById(const QString& scheduleId)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::DELETE_POWER_SCHEDULE_BY_ID);
+    query.bindValue(":id", scheduleId);
+    const bool bIsDel = query.exec();
+    if(false == bIsDel)
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::DELETE_POWER_SCHEDULE_BY_ID,
+                      query.lastError().text().toStdString().c_str());
     }
 
     db.close();

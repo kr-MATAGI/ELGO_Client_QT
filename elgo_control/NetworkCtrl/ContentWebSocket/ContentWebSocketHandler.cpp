@@ -67,7 +67,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else if(ContentSchema::Event::CLEAR_POWER_SCHEDULE == serverJson.event)
     {
-        ExecClearPowerSchedules(serverJson);
+        ExecClearPowerSchedules(serverJson, clientJson);
     }
     else if(ContentSchema::Event::ERROR == serverJson.event)
     {
@@ -271,11 +271,11 @@ void ContentWebSocketHandler::ExecClearPlaySchdules(const ContentSchema::Summary
     dataStream << serverJson.payload.scheduleId;
 
     const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                MAIN_EVENT::Event::CLEAR_PLAY_SCHEDULE_BY_ID,
+                                                MAIN_EVENT::Event::DELETE_PLAY_SCHEDULE_BY_ID,
                                                 bytes);
     if(false == bSendEvent)
     {
-        ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::CLEAR_PLAY_SCHEDULE_BY_ID);
+        ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::DELETE_PLAY_SCHEDULE_BY_ID);
     }
 
     // Response to Server
@@ -299,8 +299,34 @@ void ContentWebSocketHandler::ExecPowerSchedulesEvent(const ContentSchema::Summa
 }
 
 //========================================================
-void ContentWebSocketHandler::ExecClearPowerSchedules(const ContentSchema::Summary& serverJson)
+void ContentWebSocketHandler::ExecClearPowerSchedules(const ContentSchema::Summary& serverJson,
+                                                      QString& clientJson)
 //========================================================
 {
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Delete Power Schedule by ID
+     *  @param
+     *          QString scheduleId
+     */
 
+    QByteArray bytes;
+    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+    dataStream << serverJson.payload.scheduleId;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                           MAIN_EVENT::Event::DELETE_POWER_SCHEDULE_BY_ID,
+                                           bytes);
+    if(false == bSendEvent)
+    {
+        ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::DELETE_POWER_SCHEDULE_BY_ID);
+    }
+
+    // Response to Server
+    ContentSchema::Summary modifiedJson = serverJson;
+    modifiedJson.payload.src = serverJson.payload.dest;
+    modifiedJson.payload.dest = serverJson.payload.src;
+    modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+    JsonWriter::WriteContentServerClearPlayScheduleEvent(modifiedJson, clientJson);
 }

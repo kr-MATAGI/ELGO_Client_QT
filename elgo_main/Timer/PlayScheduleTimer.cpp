@@ -60,24 +60,19 @@ void PlayScheduleTimer::AddPlayScheduleList(const QVector<ScheduleJson::PlaySche
 void PlayScheduleTimer::ClearAllPlayScheduleList()
 //========================================================
 {
-    if(true == m_bIsActive)
-    {
-        StopPlayTimer();
-    }
+    StopPlayTimer();
 
-    MainController::GetInstance()->GetDBCtrl().ClearAllPlaySchedule();
     m_playScheduleList.clear();
 
     ELGO_MAIN_LOG("Clear All PlaySchedule List !");
 }
 
 //========================================================
-void PlayScheduleTimer::ClearPlayScheduleById(const QString& id)
+void PlayScheduleTimer::DeletePlayScheduleById(const QString& id)
 //========================================================
 {
     StopPlayTimer();
 
-    MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(id);
     QVector<ScheduleJson::PlaySchedule>::iterator iter = m_playScheduleList.begin();
     while(iter != m_playScheduleList.end())
     {

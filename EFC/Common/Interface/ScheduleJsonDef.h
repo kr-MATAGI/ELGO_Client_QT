@@ -83,6 +83,7 @@ namespace ScheduleJson
     struct PowerScheduleData
     {
         QString id;
+        PowerStatus status;
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
@@ -90,29 +91,7 @@ namespace ScheduleJson
 
     struct PowerSchedule
     {
-        QVector<PowerScheduleData> onScheduleList;
-        QVector<PowerScheduleData> offScheduleList;
-    };
-
-
-    /**
-     *  @note
-     *          Not using maybe
-     *          - siglePlay not related schedule
-     *  @brief
-     *          Single Play Schedule */
-    struct SinglePlayScheduleData
-    {
-        QDateTime startTime;
-        QDateTime endTime;
-        Cron cron;
-        int playDataId;
-        PlayJson::PlayDataType type;
-    };
-
-    struct SinglePlaySchedules
-    {
-        QVector<SinglePlayScheduleData> schduleList;
+        QVector<PowerScheduleData> scheduleList;
     };
 }
 

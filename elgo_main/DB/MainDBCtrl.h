@@ -49,8 +49,9 @@ public:
 
     // powerSchedule
     /** @brief */
-    void UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src,
-                                const ScheduleJson::PowerStatus status);
+    void UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src);
+    /** @brief */
+    void DeletePowerScheduleById(const QString& scheduleId);
 
     /** @brief */
     bool CheckDuplicatedId(const QVector<QString>& dbIdList, const QString& id);

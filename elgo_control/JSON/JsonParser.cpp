@@ -1207,6 +1207,8 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
         if(0 < onSchedulesObjSize)
         {
             ScheduleJson::PowerScheduleData powerSchedule;
+            powerSchedule.status = ScheduleJson::PowerStatus::POWER_ON;
+
             QJsonObject::const_iterator constIter = onSchdulesObj.constBegin();
             QJsonObject::const_iterator constEnd = onSchdulesObj.constEnd();
             while(constIter != constEnd)
@@ -1243,7 +1245,7 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                     powerSchedule.cron = cron;
                 }
 
-                dest.onScheduleList.push_back(powerSchedule);
+                dest.scheduleList.push_back(powerSchedule);
                 ++constIter;
             }
         }
@@ -1258,6 +1260,8 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
         if(0 < offSchedulesObjSize)
         {
             ScheduleJson::PowerScheduleData powerSchedule;
+            powerSchedule.status = ScheduleJson::POWER_OFF;
+
             QJsonObject::const_iterator constIter = offScheduleObj.constBegin();
             QJsonObject::const_iterator constEnd = offScheduleObj.constEnd();
 
@@ -1295,86 +1299,10 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                     powerSchedule.cron = cron;
                 }
 
-                dest.offScheduleList.push_back(powerSchedule);
+                dest.scheduleList.push_back(powerSchedule);
                 ++constIter;
             }
         }
-    }
-}
-
-//========================================================
-void JsonParser::ParseSinglePlaySchedulesJson(const QString& src, ScheduleJson::SinglePlaySchedules& dest)
-//========================================================
-{
-    const QJsonDocument& jsonDoc = QJsonDocument::fromJson(src.toUtf8());
-    const QJsonObject& jsonObj = jsonDoc.object();
-
-    if(jsonObj.end() != jsonObj.find("schedules"))
-    {
-        const QJsonObject& schedulesObj = jsonObj["schedules"].toObject();
-        if(schedulesObj.end() != schedulesObj.find("single"))
-        {
-            const QJsonArray& singleArray = schedulesObj["single"].toArray();
-            const int singleArraySize = singleArray.size();
-            if(0 < singleArraySize)
-            {
-                for(int idx = 0; idx < singleArraySize; idx++)
-                {
-                    ScheduleJson::SinglePlayScheduleData singlePlayData;
-                    const QJsonObject& singleObj = singleArray[idx].toObject();
-
-                    if(singleObj.end() != singleObj.find("start"))
-                    {
-                        QDateTime startTime;
-                        const QString& startTimeStr = singleObj["start"].toString();
-                        JsonStringConverter::ScheduleDateTimeStringToQDateTime(startTimeStr, startTime);
-                        singlePlayData.startTime = startTime;
-                    }
-
-                    if(singleObj.end() != singleObj.find("end"))
-                    {
-                        QDateTime endTime;
-                        const QString& endTimeStr = singleObj["end"].toString();
-                        JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime);
-                        singlePlayData.endTime = endTime;
-                    }
-
-                    if(singleObj.end() != singleObj.find("rule"))
-                    {
-                        ScheduleJson::Cron cron;
-                        const QString& ruleStr = singleObj["rule"].toString();
-                        JsonStringConverter::CronCommandStringToTimeRepeat(ruleStr, cron);
-                        JsonStringConverter::CronCommandStringToDateRepeat(singlePlayData.startTime.date(),
-                                                                           singlePlayData.endTime.date(),
-                                                                           cron);
-                        JsonStringConverter::PrintConvertedCron(cron);
-
-                        singlePlayData.cron = cron;
-                    }
-
-                    if(singleObj.end() != singleObj.find("name"))
-                    {
-                        QString nameToIdStr;
-                        QString nameToTypeStr;
-
-                        const QString& name = singleObj["name"].toString();
-                        JsonStringConverter::GetSchedulePlayDataIdInName(name, nameToIdStr, nameToTypeStr);
-                        singlePlayData.playDataId = nameToIdStr.toInt();
-                        singlePlayData.type = JsonStringConverter::PlayDataTypeStringToEnum(nameToTypeStr);
-                    }
-
-                    dest.schduleList.push_back(singlePlayData);
-                }
-            }
-        }
-        else
-        {
-            ELGO_CONTROL_LOG("Error - Not Existed single array");
-        }
-    }
-    else
-    {
-        ELGO_CONTROL_LOG("Error - Not Existed schedules object");
     }
 }
 

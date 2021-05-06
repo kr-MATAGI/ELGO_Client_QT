@@ -54,8 +54,7 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::CronOption& src)
 QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerSchedule& src)
 //========================================================
 {
-    ds << src.onScheduleList;
-    ds << src.offScheduleList;
+    ds << src.scheduleList;
 
     return ds;
 }
@@ -65,31 +64,10 @@ QDataStream& operator<<(QDataStream& ds, const ScheduleJson::PowerScheduleData& 
 //========================================================
 {
     ds << src.id;
+    ds << src.status;
     ds << src.startTime;
     ds << src.endTime;
     ds << src.cron;
-
-    return ds;
-}
-
-//========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlaySchedules& src)
-//========================================================
-{
-    ds << src.schduleList;
-
-    return ds;
-}
-
-//========================================================
-QDataStream& operator<<(QDataStream& ds, const ScheduleJson::SinglePlayScheduleData& src)
-//========================================================
-{
-    ds << src.startTime;
-    ds << src.endTime;
-    ds << src.cron;
-    ds << src.playDataId;
-    ds << src.type;
 
     return ds;
 }
@@ -148,8 +126,7 @@ QDataStream &operator>>(QDataStream& ds, ScheduleJson::CronOption& dest)
 QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerSchedule& dest)
 //========================================================
 {
-    ds >> dest.onScheduleList;
-    ds >> dest.offScheduleList;
+    ds >> dest.scheduleList;
 
     return ds;
 }
@@ -159,31 +136,10 @@ QDataStream& operator>>(QDataStream& ds, ScheduleJson::PowerScheduleData& dest)
 //========================================================
 {
     ds >> dest.id;
+    ds >> dest.status;
     ds >> dest.startTime;
     ds >> dest.endTime;
     ds >> dest.cron;
-
-    return ds;
-}
-
-//========================================================
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlaySchedules& dest)
-//========================================================
-{
-    ds >> dest.schduleList;
-
-    return ds;
-}
-
-//========================================================
-QDataStream& operator>>(QDataStream& ds, ScheduleJson::SinglePlayScheduleData& dest)
-//========================================================
-{
-    ds >> dest.startTime;
-    ds >> dest.endTime;
-    ds >> dest.cron;
-    ds >> dest.playDataId;
-    ds >> dest.type;
 
     return ds;
 }

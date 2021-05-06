@@ -26,6 +26,9 @@ public:
     void AddPowerScheduleList(const QVector<ScheduleJson::PowerScheduleData>& src);
 
     /** @brief */
+    void DeletePowerScheduleById(const QString& id);
+
+    /** @brief */
     void StartPowerTimer();
     /** @brief */
     void StopPowerTimer();

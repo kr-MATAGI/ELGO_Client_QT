@@ -51,7 +51,7 @@ public:
     void ExecClearPlaySchdules(const ContentSchema::Summary& serverJson, QString& clientJson);
 
     /** @brief */
-    void ExecClearPowerSchedules(const ContentSchema::Summary& serverJson);
+    void ExecClearPowerSchedules(const ContentSchema::Summary& serverJson, QString& clientJson);
 
 private:
     QThreadPool *m_threadPool;

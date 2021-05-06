@@ -87,6 +87,8 @@ namespace DB_Query
                                                     "VALUES("
                                                     ":id, :isOn, :startDate, :endDate, :cron);";
 
+    static const char* DELETE_POWER_SCHEDULE_BY_ID = "DELETE FROM powerSchedule WHERE id=:id;";
+
 };
 
 #endif // DBDEFINITION_H

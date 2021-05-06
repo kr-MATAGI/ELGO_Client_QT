@@ -38,14 +38,16 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdatePlaySchedule);
     m_state.RegisterEvent(MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
                           &MainEventState::RecvClearAllPlaySchedule);
-    m_state.RegisterEvent(MAIN_EVENT::Event::CLEAR_PLAY_SCHEDULE_BY_ID,
-                          &MainEventState::RecvClearPlayScheduleById);
+    m_state.RegisterEvent(MAIN_EVENT::Event::DELETE_PLAY_SCHEDULE_BY_ID,
+                          &MainEventState::RecvDeletePlayScheduleById);
 
     m_state.RegisterEvent(MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
                           &MainEventState::RecvAddPlayDataToDB);
 
     m_state.RegisterEvent(MAIN_EVENT::Event::UPDATE_POWER_SCHEDULE_LIST,
                           &MainEventState::RecvUpdatePowerSchedule);
+    m_state.RegisterEvent(MAIN_EVENT::Event::DELETE_POWER_SCHEDULE_BY_ID,
+                          &MainEventState::RecvDeletePowerScheduleById);
 }
 
 //========================================================
@@ -272,11 +274,12 @@ void MainEventState::RecvClearAllPlaySchedule(const QByteArray& src)
      *          NONE
      */
 
+    MainController::GetInstance()->GetDBCtrl().ClearAllPlaySchedule();
     MainController::GetInstance()->GetPlayTimer().ClearAllPlayScheduleList();
 }
 
 //========================================================
-void MainEventState::RecvClearPlayScheduleById(const QByteArray& src)
+void MainEventState::RecvDeletePlayScheduleById(const QByteArray& src)
 //========================================================
 {
     /**
@@ -291,8 +294,10 @@ void MainEventState::RecvClearPlayScheduleById(const QByteArray& src)
     QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
     QString id;
     dataStream >> id;
+    ELGO_MAIN_LOG("Ready to Delete - {id: %s}", id.toStdString().c_str());
 
-    MainController::GetInstance()->GetPlayTimer().ClearPlayScheduleById(id);
+    MainController::GetInstance()->GetDBCtrl().DeletePlayScheduleById(id);
+    MainController::GetInstance()->GetPlayTimer().DeletePlayScheduleById(id);
 }
 
 //========================================================
@@ -357,13 +362,29 @@ void MainEventState::RecvUpdatePowerSchedule(const QByteArray& src)
     ScheduleJson::PowerSchedule powerSchedule;
     dataStream >> powerSchedule;
 
-    // on
-    MainController::GetInstance()->GetDBCtrl().UpdateNewPowerSchedule(powerSchedule.onScheduleList,
-                                                                      ScheduleJson::PowerStatus::POWER_ON);
-    MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerSchedule.onScheduleList);
+    MainController::GetInstance()->GetDBCtrl().UpdateNewPowerSchedule(powerSchedule.scheduleList);
+    MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerSchedule.scheduleList);
+}
 
-    // off
-    MainController::GetInstance()->GetDBCtrl().UpdateNewPowerSchedule(powerSchedule.offScheduleList,
-                                                                      ScheduleJson::PowerStatus::POWER_OFF);
-    MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerSchedule.offScheduleList);
+//========================================================
+void MainEventState::RecvDeletePowerScheduleById(const QByteArray& src)
+//========================================================
+{
+    /**
+     *  @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Delete Power Schedule by ID
+     *  @param
+     *          QString scheduleId
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream dataStream(&copyBytes, QIODevice::ReadOnly);
+
+    QString scheduleId;
+    dataStream >> scheduleId;
+    ELGO_MAIN_LOG("Ready to Delete - {id: %s}", scheduleId.toStdString().c_str());
+
+    MainController::GetInstance()->GetDBCtrl().DeletePowerScheduleById(scheduleId);
+    MainController::GetInstance()->GetPowerTimer().DeletePowerScheduleById(scheduleId);
 }
