@@ -274,6 +274,98 @@ void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
 }
 
 //========================================================
+void MainDBCtrl::GetAllPlayScheduleList(QVector<ScheduleJson::PlaySchedule>& dest)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_ALL_PLAY_SCHEDULE);
+    const bool bIsSelected = query.exec();
+    if(true == bIsSelected)
+    {
+        while(query.next())
+        {
+            ScheduleJson::PlayScheduleData scheduleData;
+
+            const int idIdx = query.record().indexOf("id");
+            const QString idValue = query.value(idIdx).toString();
+
+            const int startDateIdx = query.record().indexOf("startDate");
+            scheduleData.startTime = query.value(startDateIdx).toDateTime();
+
+            const int endDateIdx = query.record().indexOf("endDate");
+            scheduleData.endTime = query.value(endDateIdx).toDateTime();
+
+            const int playDataIdIdx = query.record().indexOf("playDataId");
+            scheduleData.playDataId = query.value(playDataIdIdx).toInt();
+
+            const int playDataTypeIdx = query.record().indexOf("playDataType");
+            scheduleData.type = static_cast<PlayJson::PlayDataType>(query.value(playDataTypeIdx).toInt());
+
+            const int cronIdx = query.record().indexOf("cron");
+            QByteArray cronBytes = query.value(cronIdx).toByteArray();
+            QDataStream cronStream(&cronBytes, QIODevice::ReadOnly);
+            cronStream >> scheduleData.cron;
+
+            QVector<ScheduleJson::PlaySchedule>::iterator iter = dest.begin();
+            bool bIsExisted = false;
+            while(iter != dest.end())
+            {
+                if(0 == strcmp(iter->id.toStdString().c_str(), idValue.toStdString().c_str()))
+                {
+                    bIsExisted = true;
+
+                    iter->scheduleList.push_back(scheduleData);
+                    ELGO_MAIN_LOG("PUSH - { id: %s, playData{id: %d, type: %d}, start: %s, end: %s }",
+                                  idValue.toStdString().c_str(), scheduleData.playDataId, scheduleData.type,
+                                  scheduleData.startTime.toString().toStdString().c_str(),
+                                  scheduleData.endTime.toString().toStdString().c_str());
+
+                    break;
+                }
+
+                ++iter;
+            }
+
+            if(false == bIsExisted)
+            {
+                ScheduleJson::PlaySchedule playSchedule;
+                playSchedule.id = idValue;
+                playSchedule.scheduleList.push_back(scheduleData);
+                ELGO_MAIN_LOG("ADD - { id: %s, playData{id: %d, type: %d}, start: %s, end: %s }",
+                              idValue.toStdString().c_str(), scheduleData.playDataId, scheduleData.type,
+                              scheduleData.startTime.toString().toStdString().c_str(),
+                              scheduleData.endTime.toString().toStdString().c_str());
+
+                dest.push_back(playSchedule);
+            }
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_ALL_PLAY_SCHEDULE,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
 void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src)
 //========================================================
 {
@@ -703,6 +795,44 @@ void MainDBCtrl::GetAllPlayDataFromDB(QVector<PlayJson::CustomPlayDataJson>& cus
         ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
                       DB_Query::SELECT_ALL_PLAY_DATA,
                       query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
+void MainDBCtrl::DeletePlayData(const int id, const PlayJson::PlayDataType type)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::DELETE_PLAY_DATA);
+    query.bindValue(":id", id);
+    query.bindValue(":type", (int)type);
+    const bool bIsDel = query.exec();
+    if(false == bIsDel)
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::DELETE_PLAY_DATA,
+                      query.lastError().text().toStdString().c_str());
+    }
+    else
+    {
+        ELGO_MAIN_LOG("Delete - id: %d, type: %d", id, type);
     }
 
     db.close();

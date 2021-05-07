@@ -75,6 +75,8 @@ namespace DB_Query
 
     static const char* SELECT_ALL_PLAY_DATA = "SELECT * FROM playData;";
 
+    static const char* DELETE_PLAY_DATA = "DELETE FROM playData WHERE id=:id AND type=:type;";
+
     // powerSchedule table
     static const char* CREATE_TABLE_POWER_SCHEDULE = "CREATE TABLE powerSchedule ("
                                                         "id VARCHAR(30) NOT NULL,"

@@ -130,6 +130,92 @@ void MainThread::ExecRecvProcecssReady()
         QVector<PlayJson::FixedPlayDataJson> fixedDataList;
         MainController::GetInstance()->GetDBCtrl().GetAllPlayDataFromDB(customDataList, fixedDataList);
 
+        // Get prev playing Data and
+        int playingId = 0;
+        PlayJson::PlayDataType playingType = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
+        MainController::GetInstance()->GetDBCtrl().GetPlayingData(playingId, playingType);
+        ELGO_MAIN_LOG("Prev Playing Data - {id: %d, type: %d}", playingId, playingType);
+
+        // Get Play Schedule List
+        QVector<ScheduleJson::PlaySchedule> playScheduleList;
+        MainController::GetInstance()->GetDBCtrl().GetAllPlayScheduleList(playScheduleList);
+
+        // Delete - Not need play Data
+        QVector<std::pair<int, PlayJson::PlayDataType>> needPlayDataList;
+        needPlayDataList.push_back(std::make_pair(playingId, playingType));
+
+        QVector<ScheduleJson::PlaySchedule>::const_iterator playScheduleIter = playScheduleList.constBegin();
+        while(playScheduleIter != playScheduleList.constEnd())
+        {
+            if(false == playScheduleIter->scheduleList.empty())
+            {
+                const int playDataId = playScheduleIter->scheduleList[0].playDataId;
+                const PlayJson::PlayDataType playDataType = playScheduleIter->scheduleList[0].type;
+
+                needPlayDataList.push_back(std::make_pair(playDataId, playDataType));
+            }
+
+            ++playScheduleIter;
+        }
+
+        QVector<PlayJson::CustomPlayDataJson>::iterator customIter = customDataList.begin();
+        while(customIter != customDataList.end())
+        {
+            bool bIsNeed = false;
+            QVector<std::pair<int, PlayJson::PlayDataType>>::const_iterator needIter = needPlayDataList.constBegin();
+            while(needIter != needPlayDataList.constEnd())
+            {
+                if( (customIter->playData.id == needIter->first) &&
+                    (customIter->playData.playDataType == needIter->second) )
+                {
+                    bIsNeed = true;
+                    break;
+                }
+
+                ++needIter;
+            }
+
+            if(false == bIsNeed)
+            {
+                MainController::GetInstance()->GetDBCtrl().DeletePlayData(customIter->playData.id,
+                                                                          customIter->playData.playDataType);
+                customIter = customDataList.erase(customIter);
+            }
+            else
+            {
+                ++customIter;
+            }
+        }
+
+        QVector<PlayJson::FixedPlayDataJson>::iterator fixedIter = fixedDataList.begin();
+        while(fixedIter != fixedDataList.end())
+        {
+            bool bIsNeed = false;
+            QVector<std::pair<int, PlayJson::PlayDataType>>::const_iterator needIter = needPlayDataList.constBegin();
+            while(needIter != needPlayDataList.constEnd())
+            {
+                if( (fixedIter->playData.id == needIter->first) &&
+                    (fixedIter->playData.playDataType == needIter->second) )
+                {
+                    bIsNeed = true;
+                    break;
+                }
+
+                ++needIter;
+            }
+            if(false == bIsNeed)
+            {
+                MainController::GetInstance()->GetDBCtrl().DeletePlayData(fixedIter->playData.id,
+                                                                          fixedIter->playData.playDataType);
+                fixedIter = fixedDataList.erase(fixedIter);
+            }
+            else
+            {
+                ++fixedIter;
+            }
+        }
+
+        // Send Play Data to Viewer
         /**
          * @note
          *       ELGO_MAIN -> ELGO_VIEWER
@@ -161,13 +247,8 @@ void MainThread::ExecRecvProcecssReady()
             ELGO_MAIN_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::ADD_FIXED_PLAY_DATA_LIST);
         }
 
-        // Get prev playing Data and
-        int playingId = 0;
-        PlayJson::PlayDataType playingType = PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE;
-        MainController::GetInstance()->GetDBCtrl().GetPlayingData(playingId, playingType);
-        ELGO_MAIN_LOG("Prev Playing Data - {id: %d, type: %d}",
-                      playingId, playingType);
 
+        // Send prev PlayingData Info to Viewer
         if(PlayJson::PlayDataType::CUSTOM == playingType)
         {
             QVector<PlayJson::CustomPlayDataJson>::const_iterator iter = customDataList.constBegin();
@@ -223,7 +304,10 @@ void MainThread::ExecRecvProcecssReady()
             ELGO_MAIN_LOG("Not Existed Data - type: %d", playingType);
         }
 
-        // Get play and power Schedule
+        // Set playSchedule
+
+
+        // Get power schedule
     }
     else
     {
