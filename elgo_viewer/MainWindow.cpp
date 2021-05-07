@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // connect
     connect(this, &MainWindow::DrawQRCode,
-            this, &MainWindow::DrawQRCodeByThread);
+            this, &MainWindow::DrawQRCodeSlot);
     connect(&m_closeTimer, SIGNAL(timeout()),
             this, SLOT(CloseMainWindowByTimeout()));
 }
@@ -77,7 +77,7 @@ void MainWindow::DestoryInstance()
 }
 
 //========================================================
-void MainWindow::DrawQRCodeByThread(QString url)
+void MainWindow::DrawQRCodeSlot(QString url)
 //========================================================
 {
     m_qrUrl = url;
@@ -101,6 +101,11 @@ void MainWindow::DrawQRCodeByThread(QString url)
 
     ui->qrLabel->setPixmap(pixmap);
 
+    if(true == m_isDrawStartQR)
+    {
+        this->showFullScreen();
+    }
+
     // show Content Player after 10 sec
     m_closeTimer.start(CLOSE_TIMEOUT);
 }
@@ -111,7 +116,6 @@ void MainWindow::CloseMainWindowByTimeout()
 {
     if(false == m_isDrawStartQR)
     {
-//        emit ContentsPlayer::GetInstance()->StartContentsPlayerSignal();
         m_isDrawStartQR = true;
     }
 

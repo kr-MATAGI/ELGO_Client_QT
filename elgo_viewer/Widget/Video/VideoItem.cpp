@@ -1,3 +1,6 @@
+// QT
+#include <QFile>
+
 // Viewer
 #include "VideoItem.h"
 #include "Logger/ViewerLogger.h"
@@ -32,6 +35,11 @@ VideoItem::~VideoItem()
 {
     delete m_player;
     m_player = NULL;
+
+    m_mediaBuffer->deleteLater();
+
+    delete m_mediaBytes;
+    m_mediaBytes = NULL;
 }
 
 //========================================================
@@ -39,7 +47,19 @@ void VideoItem::SetVideoFile(const QString& path, const VideoInfo::MetaData& met
 //========================================================
 {
     m_videoInfo = metaData;
-    m_player->setMedia(QUrl::fromLocalFile(path));
+
+    QFile mediafile(path);
+    mediafile.open(QIODevice::ReadOnly);
+
+    m_mediaBytes = new QByteArray;
+    m_mediaBytes->append(mediafile.readAll());
+
+    m_mediaBuffer = new QBuffer(m_mediaBytes);
+    m_mediaBuffer->open(QIODevice::ReadOnly);
+    m_mediaBuffer->reset();
+
+    m_player->setMedia(QMediaContent(), m_mediaBuffer);
+
     ELGO_VIEWER_LOG("Set Video File : %s", path.toUtf8().constData());
 }
 

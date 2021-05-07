@@ -47,7 +47,7 @@ signals:
 
 private slots:
     /** @brief */
-    void DrawQRCodeByThread(QString url);
+    void DrawQRCodeSlot(QString url);
 
     /** @brief */
     void CloseMainWindowByTimeout();

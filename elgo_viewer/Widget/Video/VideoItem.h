@@ -54,6 +54,9 @@ private:
     QMediaPlayer *m_player;
     bool m_bIsPlaying;
 
+    QByteArray *m_mediaBytes;
+    QBuffer *m_mediaBuffer;
+
     VideoInfo::MetaData m_videoInfo;
     StyleSheet::PosSizeInfo m_posSizeInfo;
 };
