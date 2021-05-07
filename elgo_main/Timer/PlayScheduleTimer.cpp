@@ -124,6 +124,7 @@ void PlayScheduleTimer::StartPlayTimer()
 {
     if(false == m_bIsActive)
     {
+        m_bIsActive = true;
         ELGO_MAIN_LOG("Stat Play Schedule Timer !");
         this->start(990);
     }
@@ -135,6 +136,7 @@ void PlayScheduleTimer::StopPlayTimer()
 {
     if(true == m_bIsActive)
     {
+        m_bIsActive = false;
         ELGO_MAIN_LOG("Stop Play Schedule Timer !");
         this->stop();
     }

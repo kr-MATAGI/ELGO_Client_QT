@@ -305,9 +305,12 @@ void MainThread::ExecRecvProcecssReady()
         }
 
         // Set playSchedule
-
+        MainController::GetInstance()->GetPlayTimer().AddPlayScheduleList(playScheduleList);
 
         // Get power schedule
+        ScheduleJson::PowerSchedule powerScheduleList;
+        MainController::GetInstance()->GetDBCtrl().GetAllPowerScheduleList(powerScheduleList);
+        MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerScheduleList.scheduleList);
     }
     else
     {

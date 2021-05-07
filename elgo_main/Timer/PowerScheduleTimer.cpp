@@ -48,13 +48,13 @@ void PowerScheduleTimer::AddPowerScheduleList(const QVector<ScheduleJson::PowerS
         if(-1 == pos)
         {
             m_scheduleList.push_back(src[idx]);
-            ELGO_MAIN_LOG("Add Power Schedule - {id: %d, status: %d}",
+            ELGO_MAIN_LOG("Add Power Schedule - {id: %s, status: %d}",
                           src[idx].id.toStdString().c_str(), src[idx].status);
         }
         else
         {
             m_scheduleList[pos] = src[idx];
-            ELGO_MAIN_LOG("Replace Power Schedule - {pos: %d, id: %d, status: %d}",
+            ELGO_MAIN_LOG("Replace Power Schedule - {pos: %d, id: %s, status: %d}",
                           pos, src[idx].id.toStdString().c_str(), src[idx].status);
         }
     }

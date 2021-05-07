@@ -93,7 +93,10 @@ namespace DB_Query
 
     static const char* DELETE_POWER_SCHEDULE_BY_ID = "DELETE FROM powerSchedule WHERE id=:id;";
 
-    // playingInfo
+    static const char* SELECT_ALL_POWER_SCHEDULE = "SELECT * FROM powerSchedule;";
+
+
+    // playingInfo table
     static const char* CREATE_TABLE_PLAYING_INFO = "CREATE TABLE playingInfo ("
                                                         "id VARCHAR(30) NOT NULL,"
                                                         "type INTEGER NOT NULL,"

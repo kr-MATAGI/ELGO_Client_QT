@@ -61,8 +61,12 @@ public:
     // powerSchedule
     /** @brief */
     void UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerScheduleData>& src);
+
     /** @brief */
     void DeletePowerScheduleById(const QString& scheduleId);
+
+    /** @brief */
+    void GetAllPowerScheduleList(ScheduleJson::PowerSchedule& dest);
 
 
     // playinginfo

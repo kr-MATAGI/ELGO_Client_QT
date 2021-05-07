@@ -456,6 +456,66 @@ void MainDBCtrl::DeletePowerScheduleById(const QString& scheduleId)
 }
 
 //========================================================
+void MainDBCtrl::GetAllPowerScheduleList(ScheduleJson::PowerSchedule& dest)
+//========================================================
+{
+    m_mutex->lock();
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(SCHEDULE_DB);
+    const bool bIsOpened = db.open();
+    if(false == bIsOpened)
+    {
+        ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
+        db.close();
+        m_mutex->unlock();
+
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(DB_Query::SELECT_ALL_POWER_SCHEDULE);
+    const bool bIsSelected = query.exec();
+    if(true == bIsSelected)
+    {
+        while(query.next())
+        {
+            ScheduleJson::PowerScheduleData scheduleData;
+
+            const int idIdx = query.record().indexOf("id");
+            scheduleData.id = query.value(idIdx).toString();
+
+            const int isOnIdx = query.record().indexOf("isOn");
+            const bool bIsOn = query.value(isOnIdx).toBool();
+            scheduleData.status = (true == bIsOn) ? ScheduleJson::PowerStatus::POWER_ON
+                                                  : ScheduleJson::PowerStatus::POWER_OFF;
+
+            const int startDateIdx = query.record().indexOf("startDate");
+            scheduleData.startTime = query.value(startDateIdx).toDateTime();
+
+            const int endDateIdx = query.record().indexOf("endDate");
+            scheduleData.endTime = query.value(endDateIdx).toDateTime();
+
+            const int cronIdx = query.record().indexOf("cron");
+            QByteArray cronBytes = query.value(cronIdx).toByteArray();
+            QDataStream cronStream(&cronBytes, QIODevice::ReadOnly);
+            cronStream >> scheduleData.cron;
+
+            dest.scheduleList.push_back(scheduleData);
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERROR - Failed query.exec(): %s{%s}",
+                      DB_Query::SELECT_ALL_POWER_SCHEDULE,
+                      query.lastError().text().toStdString().c_str());
+    }
+
+    db.close();
+    m_mutex->unlock();
+}
+
+//========================================================
 void MainDBCtrl::UpdatePlayingData(const int playDataId, const PlayJson::PlayDataType type)
 //========================================================
 {
