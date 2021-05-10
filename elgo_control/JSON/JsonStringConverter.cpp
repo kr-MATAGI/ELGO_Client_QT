@@ -440,6 +440,36 @@ Remote::Action JsonStringConverter::RemoteActionStringToEnum(const QString& src)
 }
 
 //========================================================
+Remote::Heading JsonStringConverter::RemoteHeadingStringToEnum(const QString& src)
+//========================================================
+{
+    Remote::Heading retValue = Remote::Heading::NONE_HEADING;
+
+    if(0 == strcmp("HEAD_TOP", src.toStdString().c_str()))
+    {
+        retValue = Remote::Heading::HEAD_TOP;
+    }
+    else if(0 == strcmp("HEAD_RIGHT", src.toStdString().c_str()))
+    {
+        retValue = Remote::Heading::HEAD_RIGHT;
+    }
+    else if(0 == strcmp("HEAD_BOTTOM", src.toStdString().c_str()))
+    {
+        retValue = Remote::Heading::HEAD_BOTTOM;
+    }
+    else if(0 == strcmp("HEAD_LEFT", src.toStdString().c_str()))
+    {
+        retValue = Remote::Heading::HEAD_LEFT;
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("ERROR - Unknown Type: %s", src.toStdString().c_str());
+    }
+
+    return retValue;
+}
+
+//========================================================
 void JsonStringConverter::ContentServerEventEnumToString(const ContentSchema::Event event, QString& dest)
 //========================================================
 {
@@ -861,12 +891,12 @@ void JsonStringConverter::CronCommandStringToTimeRepeat(const QString& src, Sche
     ScheduleJson::CronOption options;
 
     QStringList cronStrSplit = src.split(" ");
-    QString secStr = cronStrSplit[0];
+//    QString secStr = cronStrSplit[0];
     QString minStr = cronStrSplit[1];
     QString hourStr = cronStrSplit[2];
 
-    QString dayStr = cronStrSplit[3];
-    QString monthStr = cronStrSplit[4];
+//    QString dayStr = cronStrSplit[3];
+//    QString monthStr = cronStrSplit[4];
     QString dayOfWeekStr = cronStrSplit[5];
 
     /// time
@@ -893,7 +923,9 @@ void JsonStringConverter::CronCommandStringToTimeRepeat(const QString& src, Sche
 }
 
 //========================================================
-void JsonStringConverter::CronCommandStringToDateRepeat(const QDate& startDate, const QDate& endDate, ScheduleJson::Cron& dest)
+void JsonStringConverter::CronCommandStringToDateRepeat(const QDate& startDate,
+                                                        const QDate& endDate,
+                                                        ScheduleJson::Cron& dest)
 //========================================================
 {
     const int startYear = startDate.year();
@@ -955,7 +987,7 @@ void JsonStringConverter::CronCommandStringToDateRepeat(const QDate& startDate, 
 
 //========================================================
 void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const ScheduleJson::CronFormat format,
-                                                QVector<int>& dest, ScheduleJson::CronOption& options)
+                                                      QVector<int>& dest, ScheduleJson::CronOption& options)
 //========================================================
 {
     const int limitValue = GetCronFormatLimitValue(format);

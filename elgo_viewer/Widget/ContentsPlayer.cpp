@@ -175,33 +175,182 @@ void ContentsPlayer::RotateScreenSlot(const VIEWER_DEF::HEADING heading)
 
     if(m_heading != heading)
     {
-        if(VIEWER_DEF::HEADING::TOP == heading)
-        {
+        m_playerTimer.stop();
 
+        if( (VIEWER_DEF::HEADING::TOP == heading) ||
+            (VIEWER_DEF::HEADING::BOTTOM == heading) )
+        {
+            if( (VIEWER_DEF::HEADING::RIGHT == m_heading) ||
+                (VIEWER_DEF::HEADING::LEFT == m_heading) )
+            {
+                QRect rotatedRect = m_screenRect;
+                rotatedRect.setWidth(m_screenRect.height());
+                rotatedRect.setHeight(m_screenRect.width());
+
+                ui->playerView->setGeometry(rotatedRect);
+                ui->playerView->scene()->setSceneRect(rotatedRect);
+
+                m_screenRect = rotatedRect;
+
+                if(PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType)
+                {
+                    UpdateCustomDataRotation();
+                }
+                else
+                {
+                    UpdateFixedDataRotation();
+                }
+            }
         }
-        else if(VIEWER_DEF::HEADING::RIGHT == heading)
+        else if( (VIEWER_DEF::HEADING::RIGHT == heading) ||
+                 (VIEWER_DEF::HEADING::LEFT == heading) )
         {
+            if( (VIEWER_DEF::HEADING::TOP == m_heading) ||
+                (VIEWER_DEF::HEADING::BOTTOM == m_heading) )
+            {
+                QRect rotatedRect = m_screenRect;
+                rotatedRect.setWidth(m_screenRect.height());
+                rotatedRect.setHeight(m_screenRect.width());
 
-        }
-        else if(VIEWER_DEF::HEADING::BOTTOM == heading)
-        {
+                ui->playerView->setGeometry(rotatedRect);
+                ui->playerView->scene()->setSceneRect(rotatedRect);
 
-        }
-        else if(VIEWER_DEF::HEADING::LEFT == heading)
-        {
+                m_screenRect = rotatedRect;
 
+                if(PlayJson::PlayDataType::CUSTOM == m_playingIndex.playData.playDataType)
+                {
+                    UpdateCustomDataRotation();
+                }
+                else
+                {
+                    UpdateFixedDataRotation();
+                }
+            }
         }
         else
         {
             ELGO_VIEWER_LOG("Error - Unknown Heading: %d", heading);
         }
 
+        UpdatePlayerScene(m_playingIndex);
         m_heading = heading;
+        m_playerTimer.start(990);
     }
     else
     {
         ELGO_VIEWER_LOG("Not Rotation Screen: {curr: %d, heading: %d}",
                         m_heading, heading);
+    }
+}
+
+//========================================================
+void ContentsPlayer::UpdateCustomDataRotation()
+//========================================================
+{
+    QVector<PlayJson::PageData>& pageDataList = m_customPlayDataList[m_playDataIndex].pageDataList;
+    QVector<PlayJson::PageData>::iterator pageIter = pageDataList.begin();
+    while(pageIter != pageDataList.end())
+    {
+        QVector<PlayJson::CustomLayerData>::iterator layerIter = pageIter->layerDataList.begin();
+        while(layerIter != pageIter->layerDataList.end())
+        {
+            const int width = layerIter->width;
+            const int height = layerIter->height;
+
+            layerIter->width = height;
+            layerIter->height = width;
+
+            const int left = layerIter->left;
+            const int top = layerIter->top;
+
+            layerIter->left = top;
+            layerIter->top = left;
+
+            if(m_screenRect.width() < (layerIter->width + layerIter->left))
+            {
+                layerIter->width = m_screenRect.width();
+            }
+
+            ++layerIter;
+        }
+
+        QVector<PlayJson::SubtitleData>::iterator subIter = pageIter->subtitleDataList.begin();
+        while(subIter != pageIter->subtitleDataList.end())
+        {
+            const int width = subIter->width;
+            const int height = subIter->height;
+
+            subIter->width = height;
+            subIter->height = width;
+
+            const int left = subIter->left;
+            const int top = subIter->top;
+
+            subIter->left = top;
+            subIter->top = left;
+
+            if(m_screenRect.width() < (subIter->width + subIter->left))
+            {
+                subIter->width = m_screenRect.width();
+            }
+
+            ++subIter;
+        }
+
+        ++pageIter;
+    }
+}
+
+//========================================================
+void ContentsPlayer::UpdateFixedDataRotation()
+//========================================================
+{
+    QVector<PlayJson::FixedLayerData>& layerData = m_fixedPlayDataList[m_playDataIndex].layerDataList;
+    QVector<PlayJson::FixedLayerData>::iterator layerIter = layerData.begin();
+    while(layerIter != layerData.end())
+    {
+        const int width = layerIter->width;
+        const int height = layerIter->height;
+
+        layerIter->width = height;
+        layerIter->height = width;
+
+        const int left = layerIter->left;
+        const int top = layerIter->top;
+
+        layerIter->left = top;
+        layerIter->top = left;
+
+        if(m_screenRect.width() < (layerIter->width + layerIter->left))
+        {
+            layerIter->width = m_screenRect.width();
+        }
+
+        ++layerIter;
+    }
+
+    QVector<PlayJson::SubtitleData>& subtitleData = m_fixedPlayDataList[m_playDataIndex].subtitleDataList;
+    QVector<PlayJson::SubtitleData>::iterator subIter = subtitleData.begin();
+    while(subIter != subtitleData.end())
+    {
+        const int width = subIter->width;
+        const int height = subIter->height;
+
+        subIter->width = height;
+        subIter->height = width;
+
+        const int left = subIter->left;
+        const int top = subIter->top;
+
+        subIter->left = top;
+        subIter->top = left;
+
+        if(m_screenRect.width() < (subIter->width + subIter->left))
+        {
+            subIter->width = m_screenRect.width();
+        }
+
+        ++subIter;
     }
 }
 

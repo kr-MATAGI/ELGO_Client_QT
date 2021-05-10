@@ -48,6 +48,9 @@ namespace JsonStringConverter
     /** @brief */
     Remote::Action RemoteActionStringToEnum(const QString& src);
 
+    /** @brief */
+    Remote::Heading RemoteHeadingStringToEnum(const QString& src);
+
     /// enum to string
 
     // elgo_control <-> contents server

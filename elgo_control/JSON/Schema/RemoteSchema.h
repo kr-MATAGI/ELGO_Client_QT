@@ -77,6 +77,7 @@ namespace Remote
     /** @brief  Rotate Device Display */
     enum Heading
     {
+        NONE_HEADING = 0,
         HEAD_TOP = 1,
         HEAD_RIGHT = 2,
         HEAD_BOTTOM = 3,

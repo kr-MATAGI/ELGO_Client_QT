@@ -147,6 +147,11 @@ private:
     void ClearPrevPlayingData(const PlayScheduleTimer::PlayingIndex& playingIndex,
                               const bool bIsFixedTimeout = false);
 
+    /** @brief */
+    void UpdateCustomDataRotation();
+    /** @brief */
+    void UpdateFixedDataRotation();
+
 private:
     Ui::ContentsPlayer *ui;
     QRect m_screenRect;

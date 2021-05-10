@@ -169,7 +169,8 @@ bool JsonParser::ParseRemoteRotateDevice(const QString &src, Remote::RotateDispl
         // newHeading
         if(rotateDisplay.end() != rotateDisplay.find("newHeading"))
         {
-            Remote::Heading heading = static_cast<Remote::Heading>(rotateDisplay["newHeading"].toInt());
+            Remote::Heading heading =
+                    JsonStringConverter::RemoteHeadingStringToEnum(rotateDisplay["newHeading"].toString());
             dest.heading = heading;
         }
         else

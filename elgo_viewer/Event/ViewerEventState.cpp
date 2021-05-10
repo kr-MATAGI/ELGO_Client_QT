@@ -93,6 +93,7 @@ void ViewerEventState::RecvRotateDeviceDisplay(const QByteArray& src)
     quint8 headingValue = 0;
     copySteam >> headingValue;
     heading = static_cast<VIEWER_DEF::HEADING>(headingValue);
+    ELGO_VIEWER_LOG("Rotation Heading: %d", heading);
 
     // emit signal to ContentsPlayer
     emit ContentsPlayer::GetInstance()->RotateScreenSignal(heading);

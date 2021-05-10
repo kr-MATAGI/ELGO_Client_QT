@@ -436,6 +436,7 @@ void MainEventState::RecvRotateScreen(const QByteArray& src)
     QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
     quint8 heading = 0;
     copySteam >> heading;
+    ELGO_MAIN_LOG("New Heading: %u", heading);
 
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
     DeviceManager::RotateScreen(os, heading);

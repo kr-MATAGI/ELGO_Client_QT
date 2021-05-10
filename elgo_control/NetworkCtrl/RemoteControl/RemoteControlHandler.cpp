@@ -154,13 +154,8 @@ Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QStr
     const bool bIsParsing = JsonParser::ParseRemoteRotateDevice(src, rotateDisplay);
     if(true == bIsParsing)
     {
-        /**
-        * @note
-        *       ELGO_CONTROL -> ELGO_VIEWER
-        *       Rotate Display accroding to heading enum value.
-        * @param
-        *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
-        */
+        ELGO_CONTROL_LOG("New Heading: %d", rotateDisplay.heading);
+
         QByteArray bytes;
         QDataStream dataStream(&bytes, QIODevice::WriteOnly);
         quint8 heading = static_cast<quint8>(rotateDisplay.heading);
