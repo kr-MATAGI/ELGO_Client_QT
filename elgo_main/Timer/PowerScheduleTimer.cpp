@@ -14,7 +14,13 @@ PowerScheduleTimer::PowerScheduleTimer(QObject *parent)
 {
     m_powerInfo.second = ScheduleJson::PowerStatus::POWER_NONE;
 
+    // Register meta type
+    qRegisterMetaType<QVector<ScheduleJson::PowerScheduleData>>("QVector<ScheduleJson::PowerScheduleData>");
+
     // connect
+    connect(this, &PowerScheduleTimer::AddPowerScheduleListSignal,
+            this, &PowerScheduleTimer::AddPowerScheduleListSlot);
+
     connect(this, &QTimer::timeout,
             this, &PowerScheduleTimer::PowerScheduleTimeout);
 }
@@ -24,6 +30,13 @@ PowerScheduleTimer::~PowerScheduleTimer()
 //========================================================
 {
 
+}
+
+//========================================================
+void PowerScheduleTimer::AddPowerScheduleListSlot(const QVector<ScheduleJson::PowerScheduleData>& src)
+//========================================================
+{
+    AddPowerScheduleList(src);
 }
 
 //========================================================

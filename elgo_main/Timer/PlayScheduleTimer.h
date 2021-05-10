@@ -37,7 +37,14 @@ public:
     /** @brief */
     bool IsActivePlayTimer();
 
+signals:
+    /** @brief */
+    void AddPlayScheduleListSignal(const QVector<ScheduleJson::PlaySchedule>& src);
+
 private slots:
+    /** @brief */
+    void AddPlayScheduleListSlot(const QVector<ScheduleJson::PlaySchedule>& src);
+
     /** @brief */
     void PlayScheduleTimeout();
 

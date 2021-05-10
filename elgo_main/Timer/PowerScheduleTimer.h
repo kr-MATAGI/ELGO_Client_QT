@@ -38,7 +38,14 @@ public:
     /** @brief */
     bool IsActivePowerTimer();
 
+signals:
+    /** @brief */
+    void AddPowerScheduleListSignal(const QVector<ScheduleJson::PowerScheduleData>& src);
+
 private slots:
+    /** @brief */
+    void AddPowerScheduleListSlot(const QVector<ScheduleJson::PowerScheduleData>& src);
+
     /** @brief */
     void PowerScheduleTimeout();
 

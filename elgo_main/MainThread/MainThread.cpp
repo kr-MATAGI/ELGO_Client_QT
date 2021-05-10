@@ -312,12 +312,18 @@ void MainThread::ExecRecvProcecssReady()
         }
 
         // Set playSchedule
-        MainController::GetInstance()->GetPlayTimer().AddPlayScheduleList(playScheduleList);
+        if(0 < playScheduleList.size())
+        {
+            emit MainController::GetInstance()->GetPlayTimer().AddPlayScheduleListSignal(playScheduleList);
+        }
 
         // Get power schedule
         ScheduleJson::PowerSchedule powerScheduleList;
         MainController::GetInstance()->GetDBCtrl().GetAllPowerScheduleList(powerScheduleList);
-        MainController::GetInstance()->GetPowerTimer().AddPowerScheduleList(powerScheduleList.scheduleList);
+        if(0 < powerScheduleList.scheduleList.size())
+        {
+            emit MainController::GetInstance()->GetPowerTimer().AddPowerScheduleListSignal(powerScheduleList.scheduleList);
+        }
     }
     else
     {
@@ -515,6 +521,12 @@ void MainThread::CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJs
     const QStringList& imageFileList = imageDir.entryList();
     foreach(auto file, imageFileList)
     {
+        if( (0 == strcmp(".", file.toStdString().c_str())) ||
+            (0 == strcmp("..", file.toStdString().c_str())) )
+        {
+            continue;
+        }
+
         if(0 == reSrcList.count(file.toStdString()))
         {
             QString filePath = imagePath;
@@ -533,6 +545,12 @@ void MainThread::CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJs
     const QStringList& videoFileList = videoDir.entryList();
     foreach(auto file, videoFileList)
     {
+        if( (0 == strcmp(".", file.toStdString().c_str())) ||
+            (0 == strcmp("..", file.toStdString().c_str())) )
+        {
+            continue;
+        }
+
         if(0 == reSrcList.count(file.toStdString()))
         {
             QString filePath = videoPath;

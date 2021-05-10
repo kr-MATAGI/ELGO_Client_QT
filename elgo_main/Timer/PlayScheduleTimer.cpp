@@ -14,7 +14,13 @@ PlayScheduleTimer::PlayScheduleTimer(QObject *parent)
     , m_prevPlayDataType(PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE)
 //========================================================
 {
+    // Register meta type
+    qRegisterMetaType<QVector<ScheduleJson::PlaySchedule>>("QVector<ScheduleJson::PlaySchedule>");
+
     // connect
+    connect(this, &PlayScheduleTimer::AddPlayScheduleListSignal,
+            this, &PlayScheduleTimer::AddPlayScheduleListSlot);
+
     connect(this, &QTimer::timeout,
             this, &PlayScheduleTimer::PlayScheduleTimeout);
 }
@@ -24,6 +30,13 @@ PlayScheduleTimer::~PlayScheduleTimer()
 //========================================================
 {
 
+}
+
+//========================================================
+void PlayScheduleTimer::AddPlayScheduleListSlot(const QVector<ScheduleJson::PlaySchedule>& src)
+//========================================================
+{
+    AddPlayScheduleList(src);
 }
 
 //========================================================
@@ -125,7 +138,7 @@ void PlayScheduleTimer::StartPlayTimer()
     if(false == m_bIsActive)
     {
         m_bIsActive = true;
-        ELGO_MAIN_LOG("Stat Play Schedule Timer !");
+        ELGO_MAIN_LOG("Start Play Schedule Timer !");
         this->start(990);
     }
 }
