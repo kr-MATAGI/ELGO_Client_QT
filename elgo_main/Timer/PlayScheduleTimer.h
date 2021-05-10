@@ -80,6 +80,7 @@ private:
     bool m_bIsActive;
 
     std::pair<int, PlayJson::PlayDataType> m_playingData;
+    std::pair<int, PlayJson::PlayDataType> m_prevSinglePlay;
 
     QString m_currScheduleId;
     QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
