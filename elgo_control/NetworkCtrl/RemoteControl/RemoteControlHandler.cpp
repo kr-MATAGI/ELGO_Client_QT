@@ -218,7 +218,8 @@ Remote::Result::Status RemoteControlHandler::RemoteUpdateDeviceOptions(const QSt
 
         NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
         const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                    MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS, bytes);
+                                                    MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS,
+                                                    bytes);
         if(true == bSendEvent)
         {
             retValue = Remote::Result::Status::DEVICE_OPTIONS_OK;

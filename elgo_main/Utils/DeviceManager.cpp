@@ -77,3 +77,41 @@ void DeviceManager::SystemReboot(const DEVICE::OS os)
 
     process->deleteLater();
 }
+
+//========================================================
+void DeviceManager::DeviceMute(const DEVICE::OS os, const bool bIsMute)
+//========================================================
+{
+    QProcess *process = new QProcess;
+    QString cmdStr;
+    QStringList args;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmdStr = "/bin/sh";
+        args << "-c";
+        if(true == bIsMute)
+        {
+            args << "amixer -q -D pulse sset Master off";
+        }
+        else
+        {
+            args << "amixer -q -D pulse sset Master on";
+        }
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+
+    }
+    ELGO_MAIN_LOG("cmdStr: %s, args: %s",
+                  cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+
+    process->start(cmdStr, args);
+    process->waitForFinished();
+
+    process->deleteLater();
+}

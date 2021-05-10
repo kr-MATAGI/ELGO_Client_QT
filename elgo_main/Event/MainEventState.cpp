@@ -113,15 +113,16 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
     ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d",
                   displaySleep, bCurrDisplaySleep, deviceMute, contentPause);
 
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
     if(bCurrDisplaySleep != displaySleep)
     {
-        const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+
         DeviceManager::UpdateSleepStatus(os, displaySleep);
         MainController::GetInstance()->GetMainCtrl().SetDisplaySleepStatus(displaySleep);
     }
 
     // Mute
-
+    DeviceManager::DeviceMute(os, deviceMute);
 
     // Puase
 }

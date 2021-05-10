@@ -16,6 +16,10 @@ namespace DeviceManager
     // Reboot
     /** @brief */
     void SystemReboot(const DEVICE::OS os);
+
+    // Mute
+    /** @brief */
+    void DeviceMute(const DEVICE::OS os, const bool bIsMute);
 }
 
 #endif // DEVICEMANAGER_H
