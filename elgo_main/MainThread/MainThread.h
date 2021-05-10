@@ -40,6 +40,11 @@ public:
     void SetRecvBytes(const QByteArray &src);
 
 private:
+    /** @brief */
+    void CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJson>& customSrc,
+                                const QVector<PlayJson::FixedPlayDataJson>& fixedSrc);
+
+private:
     MAIN_EVENT::Event m_event;
     QByteArray m_bytes;
 };

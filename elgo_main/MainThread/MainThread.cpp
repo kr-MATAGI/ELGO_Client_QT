@@ -1,11 +1,15 @@
 // QT
 #include <QDebug>
 
+// STL
+#include <unordered_map>
+
 // EFC
 #include "LocalSocketEvent/EFCEvent.h"
 #include "ShardMem/ShmCtrl.h"
 
 // Common
+#include "Common/CommonDef.h"
 #include "Common/Deifinition.h"
 #include "Common/Interface/ContentsPlayDataImpl.h"
 
@@ -214,6 +218,9 @@ void MainThread::ExecRecvProcecssReady()
                 ++fixedIter;
             }
         }
+
+        // Check Resource Data
+        CheckValidResourceFile(customDataList, fixedDataList);
 
         // Send Play Data to Viewer
         /**
@@ -433,5 +440,107 @@ void MainThread::ExecConnectNewWifi()
     if(false == bSendEvent)
     {
         ELGO_MAIN_LOG("Error - SendEvent : %d", CONTROL_EVENT::Event::WIFI_CONNECTION_RESULT);
+    }
+}
+
+//========================================================
+void MainThread::CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJson>& customSrc,
+                                        const QVector<PlayJson::FixedPlayDataJson>& fixedSrc)
+//========================================================
+{
+    // QVector<std::pair<PlayJson::MediaType, fileName>>
+    std::unordered_map<std::string, PlayJson::MediaType> reSrcList;
+
+    // custom play data
+    QVector<PlayJson::CustomPlayDataJson>::const_iterator customIter = customSrc.constBegin();
+    while(customIter != customSrc.constEnd())
+    {
+        const QVector<PlayJson::PageData>& pageDataList = customIter->pageDataList;
+
+        QVector<PlayJson::PageData>::const_iterator pageIter = pageDataList.constBegin();
+        while(pageIter != pageDataList.constEnd())
+        {
+            const QVector<PlayJson::CustomLayerData>& layerDataList = pageIter->layerDataList;
+
+            QVector<PlayJson::CustomLayerData>::const_iterator layerIter = layerDataList.constBegin();
+            while(layerIter != layerDataList.constEnd())
+            {
+                const PlayJson::MediaType mediaType = layerIter->layerContent.contentInfo.mediaType;
+                const std::string& fileName = layerIter->layerContent.name.toStdString();
+
+                reSrcList.insert(std::make_pair(fileName, mediaType));
+
+                ++layerIter;
+            }
+
+            ++pageIter;
+        }
+
+        ++customIter;
+    }
+
+    // fixed play data
+    QVector<PlayJson::FixedPlayDataJson>::const_iterator fixedIter = fixedSrc.constBegin();
+    while(fixedIter != fixedSrc.constEnd())
+    {
+        const QVector<PlayJson::FixedLayerData>& layerDataList = fixedIter->layerDataList;
+
+        QVector<PlayJson::FixedLayerData>::const_iterator layerIter = layerDataList.constBegin();
+        while(layerIter != layerDataList.constEnd())
+        {
+            const QVector<PlayJson::ContentData>& contentDataList = layerIter->contentDataList;
+
+            QVector<PlayJson::ContentData>::const_iterator contentIter = contentDataList.constBegin();
+            while(contentIter != contentDataList.constEnd())
+            {
+                const PlayJson::MediaType mediaType = contentIter->contentInfo.mediaType;
+                const std::string& fileName = contentIter->name.toStdString();
+
+                reSrcList.insert(std::make_pair(fileName, mediaType));
+
+                ++contentIter;
+            }
+
+            ++layerIter;
+        }
+
+        ++fixedIter;
+    }
+
+    // Local Resource Folder
+    // image
+    QString imagePath = RESOURCE_SAVE_PATH;
+    imagePath += "image/";
+    QDir imageDir(imagePath);
+    const QStringList& imageFileList = imageDir.entryList();
+    foreach(auto file, imageFileList)
+    {
+        if(0 == reSrcList.count(file.toStdString()))
+        {
+            QString filePath = imagePath;
+            filePath += file;
+
+            QFile::remove(filePath);
+            ELGO_MAIN_LOG("Delete Resrouce File - path: %s",
+                          filePath.toStdString().c_str());
+        }
+    }
+
+    // video
+    QString videoPath = RESOURCE_SAVE_PATH;
+    videoPath += "video/";
+    QDir videoDir(videoPath);
+    const QStringList& videoFileList = videoDir.entryList();
+    foreach(auto file, videoFileList)
+    {
+        if(0 == reSrcList.count(file.toStdString()))
+        {
+            QString filePath = videoPath;
+            filePath += file;
+
+            QFile::remove(filePath);
+            ELGO_MAIN_LOG("Delete Resrouce File - path: %s",
+                          filePath.toStdString().c_str());
+        }
     }
 }
