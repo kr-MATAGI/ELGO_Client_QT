@@ -31,6 +31,9 @@ public:
     void DeletePlayScheduleById(const QString& id);
 
     /** @brief */
+    void UpdatePlayingData(const int id, const PlayJson::PlayDataType type);
+
+    /** @brief */
     void StartPlayTimer();
     /** @brief */
     void StopPlayTimer();
@@ -76,8 +79,8 @@ private:
 private:
     bool m_bIsActive;
 
-    int m_prevPlayDataId;
-    PlayJson::PlayDataType m_prevPlayDataType;
+    std::pair<int, PlayJson::PlayDataType> m_playingData;
+
     QString m_currScheduleId;
     QVector<ScheduleJson::PlaySchedule> m_playScheduleList;
 };

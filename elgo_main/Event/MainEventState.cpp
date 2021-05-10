@@ -373,6 +373,7 @@ void MainEventState::RecvSavePlayingDataToDB(const QByteArray& src)
 
     // Save to DB
     MainController::GetInstance()->GetDBCtrl().UpdatePlayingData(playDataId, playDataType);
+    MainController::GetInstance()->GetPlayTimer().UpdatePlayingData(playDataId, playDataType);
 }
 
 //========================================================

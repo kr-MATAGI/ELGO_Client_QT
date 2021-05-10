@@ -120,6 +120,14 @@ void ViewerThread::ExecPlayCustomPlayData()
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(customPlayData);
     emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(customPlayData.playData, true);
 
+    /**
+     *  @note
+     *          ELGO_VIEWER -> ELGO_MAIN
+     *          Save Current Playing PlayData to DB
+     *  @param
+     *          int playDataId
+     *          PlayJson::PlayDataType type
+     */
     // Save playing data to DB
     QByteArray sendBytes;
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
@@ -158,6 +166,14 @@ void ViewerThread::ExecPlayFixedPlayData()
     emit ContentsPlayer::GetInstance()->AddPlayDataSignal(fixedPlayData);
     emit ContentsPlayer::GetInstance()->ExecPlayDataSignal(fixedPlayData.playData, true);
 
+    /**
+     *  @note
+     *          ELGO_VIEWER -> ELGO_MAIN
+     *          Save Current Playing PlayData to DB
+     *  @param
+     *          int playDataId
+     *          PlayJson::PlayDataType type
+     */
     // Save playing data to DB
     QByteArray sendBytes;
     QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);

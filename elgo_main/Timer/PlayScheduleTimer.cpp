@@ -10,8 +10,6 @@
 PlayScheduleTimer::PlayScheduleTimer(QObject *parent)
     : QTimer(parent)
     , m_bIsActive(false)
-    , m_prevPlayDataId(0)
-    , m_prevPlayDataType(PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE)
 //========================================================
 {
     // Register meta type
@@ -113,6 +111,15 @@ void PlayScheduleTimer::DeletePlayScheduleById(const QString& id)
         ELGO_MAIN_LOG("Re-Start PlaySchedule Timer !");
         StartPlayTimer();
     }
+}
+
+//========================================================
+void PlayScheduleTimer::UpdatePlayingData(const int id, const PlayJson::PlayDataType type)
+//========================================================
+{
+    m_playingData.first = id;
+    m_playingData.second = type;
+    ELGO_MAIN_LOG("Update Playing Data - {id: %d, type: %d}", id, type);
 }
 
 //========================================================
@@ -220,7 +227,7 @@ void PlayScheduleTimer::PlayScheduleTimeout()
                      (currSecEpoch < dataIter->endTime.toSecsSinceEpoch()) )
             {
                 const bool bIsValid = CheckValidPlaySchedule(currDateTime, dataIter->cron);
-                if( (true == bIsValid) &&
+                if( (true == bIsValid) && (m_playingData.first != dataIter->playDataId || m_playingData.second != dataIter->type) &&
                     (0 != strcmp(m_currScheduleId.toStdString().c_str(),
                                  scheduleIter->id.toStdString().c_str())) )
                 {
@@ -301,55 +308,55 @@ void PlayScheduleTimer::PlayScheduleTimeout()
     }
 
     // Not Matched Play Schedule - Exec prev PlayData
-    if(PlayJson::PlayDataType::CUSTOM == m_prevPlayDataType)
-    {
-        PlayJson::CustomPlayDataJson customPlayData;
+//    if(PlayJson::PlayDataType::CUSTOM == m_playingData.second)
+//    {
+//        PlayJson::CustomPlayDataJson customPlayData;
 
-        // Get info from DB
-        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
-                                                                     m_prevPlayDataType,
-                                                                     customPlayData);
+//        // Get info from DB
+//        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_playingData.first,
+//                                                                     m_playingData.second,
+//                                                                     customPlayData);
 
-        // Send Custom PlayData to Viwer
-        QByteArray bytes;
-        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-        dataStream << customPlayData;
+//        // Send Custom PlayData to Viwer
+//        QByteArray bytes;
+//        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+//        dataStream << customPlayData;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                    VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
-                                                    bytes);
-        if(false == bSendEvent)
-        {
-            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
-        }
-    }
-    else if(PlayJson::PlayDataType::FIXED == m_prevPlayDataType)
-    {
-        PlayJson::FixedPlayDataJson fixedPlayData;
+//        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+//                                                    VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+//                                                    bytes);
+//        if(false == bSendEvent)
+//        {
+//            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
+//        }
+//    }
+//    else if(PlayJson::PlayDataType::FIXED == m_playingData.second)
+//    {
+//        PlayJson::FixedPlayDataJson fixedPlayData;
 
-        // Get info from DB
-        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_prevPlayDataId,
-                                                                     m_prevPlayDataType,
-                                                                     fixedPlayData);
+//        // Get info from DB
+//        MainController::GetInstance()->GetDBCtrl().GetPlayDataFromDB(m_playingData.first,
+//                                                                     m_playingData.second,
+//                                                                     fixedPlayData);
 
-        // Send Fixed PlayData to Viwer
-        QByteArray bytes;
-        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-        dataStream << fixedPlayData;
+//        // Send Fixed PlayData to Viwer
+//        QByteArray bytes;
+//        QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+//        dataStream << fixedPlayData;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                    VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
-                                                    bytes);
-        if(false == bSendEvent)
-        {
-            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
-        }
-    }
-    else
-    {
-        ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type %d}",
-                      m_prevPlayDataId, m_prevPlayDataType);
-    }
+//        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+//                                                    VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+//                                                    bytes);
+//        if(false == bSendEvent)
+//        {
+//            ELGO_MAIN_LOG("ERROR - SendEvent: %d", bSendEvent);
+//        }
+//    }
+//    else
+//    {
+//        ELGO_MAIN_LOG("ERROR - Unknown playDataType: {id: %d, type %d}",
+//                      m_playingData.first, m_playingData.second);
+//    }
 }
 
 //========================================================

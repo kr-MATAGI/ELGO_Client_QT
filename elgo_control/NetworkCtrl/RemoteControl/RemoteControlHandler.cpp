@@ -166,7 +166,6 @@ Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QStr
         quint8 heading = static_cast<quint8>(rotateDisplay.heading);
         dataStream << heading;
 
-
         /**
          * @note
          *          ELGO_CONTROL -> ELGO_MAIN
