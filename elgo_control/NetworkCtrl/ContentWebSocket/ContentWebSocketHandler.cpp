@@ -59,7 +59,7 @@ void ContentWebSocketHandler::RunEvent(const ContentSchema::Summary& serverJson,
     }
     else if(ContentSchema::Event::SYSTEM_REBOOT == serverJson.event)
     {
-//        ExecSystemRebootEvent(serverJson, clientJson);
+        ExecSystemRebootEvent(serverJson, clientJson);
     }
     else if(ContentSchema::Event::CLEAR_PLAY_SCHEDULE == serverJson.event)
     {
@@ -252,6 +252,16 @@ void ContentWebSocketHandler::ExecSystemRebootEvent(const ContentSchema::Summary
     modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
     JsonWriter::WriteContentServerRenameEvent(modifiedJson, clientJson);
+
+    // Send to Main
+    QByteArray bytes;
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,
+                                                bytes);
+    if(false == bSendEvent)
+    {
+        ELGO_CONTROL_LOG("ERROR - Send Event: %d", MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN);
+    }
 }
 
 //========================================================

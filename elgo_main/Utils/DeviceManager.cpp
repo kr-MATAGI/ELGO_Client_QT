@@ -59,7 +59,7 @@ void DeviceManager::SystemReboot(const DEVICE::OS os)
     {
         cmdStr = "/bin/sh";
         args << "-c";
-        args << "reboot";
+        args << "sleep 5 && reboot";
     }
     else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
     {
@@ -76,5 +76,4 @@ void DeviceManager::SystemReboot(const DEVICE::OS os)
     process->waitForFinished();
 
     process->deleteLater();
-
 }

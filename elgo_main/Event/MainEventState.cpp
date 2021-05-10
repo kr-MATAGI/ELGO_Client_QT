@@ -162,7 +162,7 @@ void MainEventState::RecvSystemReboot(const QByteArray& src)
      *          NONE
      */
 
-    ELGO_MAIN_LOG("System Reboot Start !");
+    ELGO_MAIN_LOG("System Reboot Start (After 5 sec)!");
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
     DeviceManager::SystemReboot(os);
 }
