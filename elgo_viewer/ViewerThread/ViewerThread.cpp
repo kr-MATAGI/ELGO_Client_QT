@@ -54,10 +54,6 @@ void ViewerThread::run()
     {
         ExecMakeQrCodeThread();
     }
-    else if(VIEWER_EVENT::Event::ROTATE_DISPLAY == m_event)
-    {
-        ExecRotateDeviceDisplay();
-    }
     else if(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA == m_event)
     {
         ExecPlayCustomPlayData();
@@ -97,31 +93,6 @@ void ViewerThread::ExecMakeQrCodeThread()
 
     emit MainWindow::GetInstance()->DrawQRCode(url);
     ELGO_VIEWER_LOG("Emit SIGNAL to GUI - DRAW QRCODE, url : %s", url.toUtf8().constData());
-
-}
-
-//========================================================
-void ViewerThread::ExecRotateDeviceDisplay()
-//========================================================
-{
-    /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Rotate Display accroding to heading enum value.
-    * @param
-    *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
-    */
-
-    QDataStream recvStream(&m_bytes, QIODevice::ReadOnly);
-    VIEWER_DEF::HEADING heading;
-    quint8 data;
-    recvStream >> data;
-    heading = static_cast<VIEWER_DEF::HEADING>(data);
-    ELGO_VIEWER_LOG("Rotate device display : %d", heading);
-
-    // TODO : rotate content display window accroding to heading degree.
-
-
 
 }
 

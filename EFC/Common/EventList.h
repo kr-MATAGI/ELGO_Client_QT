@@ -151,6 +151,15 @@ namespace MAIN_EVENT
          */
         SAVE_PLAYING_DATA_TO_DB = 269,
 
+        /**
+         * @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Exec Screen Rotation Command line
+         * @param
+         *          quint8  heading
+         */
+        MAIN_ROTATE_SCREEN = 270,
+
         MAX_VIEWER_EVENT = 511
     };
 }
@@ -246,7 +255,7 @@ namespace VIEWER_EVENT
          * @param
          *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
          */
-        ROTATE_DISPLAY = 770,
+        VIEWER_ROTATE_SCREEN = 770,
 
         /**
          * @note

@@ -115,3 +115,53 @@ void DeviceManager::DeviceMute(const DEVICE::OS os, const bool bIsMute)
 
     process->deleteLater();
 }
+
+//========================================================
+void DeviceManager::RotateScreen(const DEVICE::OS os, quint8 heading)
+//========================================================
+{
+    QProcess *process = new QProcess;
+    QString cmdStr;
+    QStringList args;
+
+    if( (DEVICE::OS::LINUX == os) || (DEVICE::OS::UBUNTU == os) )
+    {
+        cmdStr = "/bin/sh";
+        args << "-c";
+        if(1 == heading)
+        {
+            args << "xrandr -o normal";
+        }
+        else if(2 == heading)
+        {
+            args << "xrandr -o right";
+        }
+        else if(3 == heading)
+        {
+            args << "xrandr -o inverted";
+        }
+        else if(4 == heading)
+        {
+            args << "xrandr -o left";
+        }
+        else
+        {
+            ELGO_MAIN_LOG("ERROR - Unknown Heading: %u", heading);
+        }
+    }
+    else if( (DEVICE::OS::WINDOWS == os) || (DEVICE::OS::WINRT == os) )
+    {
+
+    }
+    else if(DEVICE::OS::ANDROID == os)
+    {
+
+    }
+    ELGO_MAIN_LOG("cmdStr: %s, args: %s",
+                  cmdStr.toStdString().c_str(), args.back().toStdString().c_str());
+
+    process->start(cmdStr, args);
+    process->waitForFinished();
+
+    process->deleteLater();
+}

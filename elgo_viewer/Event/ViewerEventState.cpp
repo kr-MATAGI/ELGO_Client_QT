@@ -8,6 +8,7 @@
 #include "ViewerEventState.h"
 #include "ViewerThread/ViewerThread.h"
 #include "Logger/ViewerLogger.h"
+#include "Definition/ViewerDefinition.h"
 
 //========================================================
 ViewerEventState::ViewerEventState()
@@ -20,7 +21,7 @@ ViewerEventState::ViewerEventState()
     m_state.RegisterEvent(VIEWER_EVENT::Event::MAKE_QRCODE,
                           &ViewerEventState::RecvMakeQrCodeAndDisplay);
 
-    m_state.RegisterEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY,
+    m_state.RegisterEvent(VIEWER_EVENT::Event::VIEWER_ROTATE_SCREEN,
                           &ViewerEventState::RecvRotateDeviceDisplay);
 
     m_state.RegisterEvent(VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
@@ -81,11 +82,16 @@ void ViewerEventState::RecvRotateDeviceDisplay(const QByteArray& src)
     * @param
     *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
     */
-    ViewerThread *thread = new ViewerThread;
-    thread->SetViewerEvent(VIEWER_EVENT::Event::ROTATE_DISPLAY);
-    thread->SetRecvBytes(src);
 
-    m_threadPool->start(thread);
+    QByteArray copyBytes = src;
+    QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
+    VIEWER_DEF::HEADING heading = VIEWER_DEF::HEADING::NONE_HEADING;
+    quint8 headingValue = 0;
+    copySteam >> headingValue;
+    heading = static_cast<VIEWER_DEF::HEADING>(headingValue);
+
+    // emit signal to ContentsPlayer
+    emit ContentsPlayer::GetInstance()->RotateScreenSignal(heading);
 }
 
 //========================================================

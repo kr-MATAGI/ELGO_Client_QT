@@ -148,7 +148,7 @@ Remote::Result::Status RemoteControlHandler::RemoteManageDevice(const QString& s
 Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QString& src)
 //========================================================
 {
-    Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
+    Remote::Result::Status retValue = Remote::Result::Status::ROTATE_DISPLAY_OK;
 
     Remote::RotateDisplay rotateDisplay;
     const bool bIsParsing = JsonParser::ParseRemoteRotateDevice(src, rotateDisplay);
@@ -166,15 +166,40 @@ Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QStr
         quint8 heading = static_cast<quint8>(rotateDisplay.heading);
         dataStream << heading;
 
-        const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                    VIEWER_EVENT::Event::ROTATE_DISPLAY, bytes);
-        if(true == bSendEvent)
+
+        /**
+         * @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Exec Screen Rotation Command line
+         * @param
+         *          quint8  heading
+         */
+        const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                    MAIN_EVENT::Event::MAIN_ROTATE_SCREEN,
+                                                    bytes);
+        if(false == bMainEvent)
         {
-            retValue = Remote::Result::Status::ROTATE_DISPLAY_OK;
+            retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
+            ELGO_CONTROL_LOG("Error SendEvent: %d", MAIN_EVENT::Event::MAIN_ROTATE_SCREEN);
+
+            return retValue;
         }
-        else
+
+        /**
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Rotate Display accroding to heading enum value.
+         * @param
+         *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
+         */
+        const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                      VIEWER_EVENT::Event::VIEWER_ROTATE_SCREEN,
+                                                      bytes);
+        if(false == bViewerEvent)
         {
-            ELGO_CONTROL_LOG("Error - SendEvent : %d", VIEWER_EVENT::Event::ROTATE_DISPLAY);
+            retValue = Remote::Result::Status::ROTATE_DISPLAY_FAIL;
+            ELGO_CONTROL_LOG("Error - SendEvent: %d",
+                             VIEWER_EVENT::Event::VIEWER_ROTATE_SCREEN);
         }
     }
     else

@@ -31,9 +31,6 @@ public:
     void ExecMakeQrCodeThread();
 
     /** @brief */
-    void ExecRotateDeviceDisplay();
-
-    /** @brief */
     void ExecPlayCustomPlayData();
     /** @brief */
     void ExecPlayFixedPlayData();

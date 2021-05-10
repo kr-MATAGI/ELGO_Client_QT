@@ -7,6 +7,7 @@
 
 // Viewer
 #include "Definition/ContentsDef.h"
+#include "Definition/ViewerDefinition.h"
 #include "Common/Interface/ScheduleJsonDef.h"
 #include "Widget/Definition/ScheduleTimerDef.h"
 
@@ -45,6 +46,9 @@ signals:
     void ExecPlayDataSignal(const PlayJson::PlayData& playData,
                             const bool bDelPrevData = false);
 
+    /** @brief */
+    void RotateScreenSignal(const VIEWER_DEF::HEADING heading);
+
 private slots:
     /** @brief  Show Contents Player (Slot) */
     void StartContentsPlayerSlot();
@@ -58,6 +62,9 @@ private slots:
     /** @brief  Exec PlayData (Slot) */
     void ExecPlayDataSlot(const PlayJson::PlayData& playData,
                           const bool bDelPrevData = false);
+
+    /** @brief */
+    void RotateScreenSlot(const VIEWER_DEF::HEADING heading);
 
     /** @brief  Timer's timeout slot */
     void PlayerTimeout();
@@ -137,6 +144,7 @@ private:
 private:
     Ui::ContentsPlayer *ui;
     QRect m_screenRect;
+    VIEWER_DEF::HEADING m_heading;
 
     // Schedule timer
     QTimer m_playerTimer;

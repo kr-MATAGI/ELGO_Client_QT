@@ -17,6 +17,7 @@ ContentsPlayer* ContentsPlayer::pInstance = nullptr;
 ContentsPlayer::ContentsPlayer(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ContentsPlayer)
+    , m_heading(VIEWER_DEF::HEADING::TOP)
     , m_playDataIndex(NOT_EXISTED_DATA)
 //========================================================
 {
@@ -57,6 +58,9 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
 
     connect(this, &ContentsPlayer::ExecPlayDataSignal,
             this, &ContentsPlayer::ExecPlayDataSlot);
+
+    connect(this, &ContentsPlayer::RotateScreenSignal,
+            this, &ContentsPlayer::RotateScreenSlot);
 
     // timer
     connect(&m_playerTimer, &QTimer::timeout,
@@ -157,6 +161,44 @@ void ContentsPlayer::AddPlayDataSlot(const PlayJson::FixedPlayDataJson& src)
         m_fixedPlayDataList[pos] = src;
         ELGO_VIEWER_LOG("[Replace] Existed Data - {pos: %d, id: %d, type: %d}",
                         pos, src.playData.id, src.playData.playDataType);
+    }
+}
+
+//========================================================
+void ContentsPlayer::RotateScreenSlot(const VIEWER_DEF::HEADING heading)
+//========================================================
+{
+    ELGO_VIEWER_LOG("Heading: %d", heading);
+
+    if(m_heading != heading)
+    {
+        if(VIEWER_DEF::HEADING::TOP == heading)
+        {
+
+        }
+        else if(VIEWER_DEF::HEADING::RIGHT == heading)
+        {
+
+        }
+        else if(VIEWER_DEF::HEADING::BOTTOM == heading)
+        {
+
+        }
+        else if(VIEWER_DEF::HEADING::LEFT == heading)
+        {
+
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("Error - Unknown Heading: %d", heading);
+        }
+
+        m_heading = heading;
+    }
+    else
+    {
+        ELGO_VIEWER_LOG("Not Rotation Screen: {curr: %d, heading: %d}",
+                        m_heading, heading);
     }
 }
 

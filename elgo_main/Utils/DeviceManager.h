@@ -20,6 +20,10 @@ namespace DeviceManager
     // Mute
     /** @brief */
     void DeviceMute(const DEVICE::OS os, const bool bIsMute);
+
+    // Rotation
+    /** @brief */
+    void RotateScreen(const DEVICE::OS os, quint8 heading);
 }
 
 #endif // DEVICEMANAGER_H

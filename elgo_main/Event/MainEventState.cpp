@@ -51,6 +51,9 @@ MainEventState::MainEventState()
                           &MainEventState::RecvUpdatePowerSchedule);
     m_state.RegisterEvent(MAIN_EVENT::Event::DELETE_POWER_SCHEDULE_BY_ID,
                           &MainEventState::RecvDeletePowerScheduleById);
+
+    m_state.RegisterEvent(MAIN_EVENT::Event::MAIN_ROTATE_SCREEN,
+                          &MainEventState::RecvRotateScreen);
 }
 
 //========================================================
@@ -124,7 +127,7 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
     // Mute
     DeviceManager::DeviceMute(os, deviceMute);
 
-    // Puase
+    // Pause
 }
 
 //========================================================
@@ -404,4 +407,24 @@ void MainEventState::RecvDeletePowerScheduleById(const QByteArray& src)
 
     MainController::GetInstance()->GetDBCtrl().DeletePowerScheduleById(scheduleId);
     MainController::GetInstance()->GetPowerTimer().DeletePowerScheduleById(scheduleId);
+}
+
+//========================================================
+void MainEventState::RecvRotateScreen(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *          ELGO_CONTROL -> ELGO_MAIN
+     *          Exec Screen Rotation Command line
+     * @param
+     *          quint8  heading
+     */
+    QByteArray copyBytes = src;
+    QDataStream copySteam(&copyBytes, QIODevice::ReadOnly);
+    quint8 heading = 0;
+    copySteam >> heading;
+
+    const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
+    DeviceManager::RotateScreen(os, heading);
 }

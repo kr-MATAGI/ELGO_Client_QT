@@ -60,6 +60,9 @@ public:
     /** @brief */
     void RecvDeletePowerScheduleById(const QByteArray& src);
 
+    /** @brief */
+    void RecvRotateScreen(const QByteArray& src);
+
 private:
     QThreadPool *m_threadPool;
     EventState<MainEventState> m_state;
