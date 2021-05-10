@@ -27,6 +27,8 @@ public:
     void PlayVideoItem();
     /** @brief */
     void StopVideoItem();
+    /** @brief */
+    void PauseVideoItem();
 
     /** @brief */
     QString GetVideoFileName();

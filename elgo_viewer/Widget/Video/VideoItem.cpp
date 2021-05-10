@@ -100,6 +100,17 @@ void VideoItem::StopVideoItem()
 }
 
 //========================================================
+void VideoItem::PauseVideoItem()
+//========================================================
+{
+    ELGO_VIEWER_LOG("Pause Video : %s, duration {file : %lld, user : %lld }",
+                    m_videoInfo.fileName.toUtf8().constData(),
+                    m_videoInfo.duration.file, m_videoInfo.duration.user);
+    m_player->pause();
+    m_bIsPlaying = false;
+}
+
+//========================================================
 QString VideoItem::GetVideoFileName()
 //========================================================
 {

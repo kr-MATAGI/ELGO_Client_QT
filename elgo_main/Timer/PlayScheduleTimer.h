@@ -41,9 +41,19 @@ signals:
     /** @brief */
     void AddPlayScheduleListSignal(const QVector<ScheduleJson::PlaySchedule>& src);
 
+    /** @brief */
+    void PlayScheduleTimerStartSignal();
+    /** @brief */
+    void PlayScheduleTimerStopSignal();
+
 private slots:
     /** @brief */
     void AddPlayScheduleListSlot(const QVector<ScheduleJson::PlaySchedule>& src);
+
+    /** @brief */
+    void PlayScheduleTimerStartSlot();
+    /** @brief */
+    void PlayScheduleTimerStopSlot();
 
     /** @brief */
     void PlayScheduleTimeout();

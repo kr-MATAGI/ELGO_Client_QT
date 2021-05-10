@@ -47,6 +47,9 @@ public:
     /** @brief */
     void RecvRequestScreenCapture(const QByteArray& src);
 
+    /** @brief */
+    void RecvUpdateContentsPlayerPause(const QByteArray& src);
+
 public:
     QThreadPool *m_threadPool;
     EventState<ViewerEventState> m_state;

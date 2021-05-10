@@ -49,6 +49,9 @@ signals:
     /** @brief */
     void RotateScreenSignal(const VIEWER_DEF::HEADING heading);
 
+    /** @brief */
+    void UpdatePlayerPauseSignal(const bool bIsPause);
+
 private slots:
     /** @brief  Show Contents Player (Slot) */
     void StartContentsPlayerSlot();
@@ -65,6 +68,9 @@ private slots:
 
     /** @brief */
     void RotateScreenSlot(const VIEWER_DEF::HEADING heading);
+
+    /** @brief */
+    void UpdatePlayerPauseSlot(const bool bIsPause);
 
     /** @brief  Timer's timeout slot */
     void PlayerTimeout();

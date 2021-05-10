@@ -230,18 +230,12 @@ Remote::Result::Status RemoteControlHandler::RemoteUpdateDeviceOptions(const QSt
 
         QByteArray bytes;
         QDataStream dataStream(&bytes, QIODevice::WriteOnly);
-        bool bIsDisplaySleep = false;
 
-        dataStream << deviceOptions.bDisplayOnOff;
+        dataStream << deviceOptions.bDisplaySleep;
         dataStream << deviceOptions.bDeviceMute;
+        dataStream << deviceOptions.bContentPause;
 
-        if(false == deviceOptions.bDisplayOnOff)
-        {
-            bIsDisplaySleep = true;
-        }
-        dataStream << bIsDisplaySleep;
-
-        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(bIsDisplaySleep);
+        NetworkController::GetInstance()->GetNetworkCtrl().SetDisplaySleepStatus(deviceOptions.bDisplaySleep);
         const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                     MAIN_EVENT::Event::UPDATE_DEVICE_OPTIONS,
                                                     bytes);

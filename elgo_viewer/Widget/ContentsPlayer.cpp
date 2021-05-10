@@ -62,6 +62,9 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     connect(this, &ContentsPlayer::RotateScreenSignal,
             this, &ContentsPlayer::RotateScreenSlot);
 
+    connect(this, &ContentsPlayer::UpdatePlayerPauseSignal,
+            this, &ContentsPlayer::UpdatePlayerPauseSlot);
+
     // timer
     connect(&m_playerTimer, &QTimer::timeout,
             this, &ContentsPlayer::PlayerTimeout);
@@ -199,6 +202,71 @@ void ContentsPlayer::RotateScreenSlot(const VIEWER_DEF::HEADING heading)
     {
         ELGO_VIEWER_LOG("Not Rotation Screen: {curr: %d, heading: %d}",
                         m_heading, heading);
+    }
+}
+
+//========================================================
+void ContentsPlayer::UpdatePlayerPauseSlot(const bool bIsPause)
+//========================================================
+{
+    const int playDataId = m_playingIndex.playData.id;
+    const PlayJson::PlayDataType playType = m_playingIndex.playData.playDataType;
+
+    if(true == bIsPause)
+    {
+        QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+        while(videoIter != m_videoItemList.end())
+        {
+            if( (playDataId == videoIter->first.playData.id) &&
+                (playType == videoIter->first.playData.playDataType) )
+            {
+                videoIter->second->PauseVideoItem();
+            }
+
+            ++videoIter;
+        }
+
+        QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+        while(subIter != m_subtitleWidgetList.end())
+        {
+            if( (playDataId == subIter->first.playData.id) &&
+                (playType == subIter->first.playData.playDataType) )
+            {
+                subIter->second->StopAnimation();
+            }
+
+            ++subIter;
+        }
+
+        m_playerTimer.stop();
+    }
+    else
+    {
+        QVector<VideoItemInfo>::iterator videoIter = m_videoItemList.begin();
+        while(videoIter != m_videoItemList.end())
+        {
+            if( (playDataId == videoIter->first.playData.id) &&
+                (playType == videoIter->first.playData.playDataType) )
+            {
+                videoIter->second->PlayVideoItem();
+            }
+
+            ++videoIter;
+        }
+
+        QVector<SubtitleWidgetInfo>::iterator subIter = m_subtitleWidgetList.begin();
+        while(subIter != m_subtitleWidgetList.end())
+        {
+            if( (playDataId == subIter->first.playData.id) &&
+                (playType == subIter->first.playData.playDataType) )
+            {
+                subIter->second->StartAnimation();
+            }
+
+            ++subIter;
+        }
+
+        m_playerTimer.start(990);
     }
 }
 

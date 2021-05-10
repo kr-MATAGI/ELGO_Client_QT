@@ -3,6 +3,7 @@
 
 // Common
 #include "Common/Interface/ContentsPlayDataImpl.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 // Viwer
 #include "ViewerEventState.h"
@@ -36,6 +37,9 @@ ViewerEventState::ViewerEventState()
 
     m_state.RegisterEvent(VIEWER_EVENT::Event::REQUEST_SCREEN_CAPTURE,
                           &ViewerEventState::RecvRequestScreenCapture);
+
+    m_state.RegisterEvent(VIEWER_EVENT::Event::UPDATE_PLAYER_PAUSE_STATUS,
+                          &ViewerEventState::RecvUpdateContentsPlayerPause);
 }
 
 //========================================================
@@ -199,4 +203,24 @@ void ViewerEventState::RecvRequestScreenCapture(const QByteArray& src)
     thread->SetRecvBytes(src);
 
     m_threadPool->start(thread);
+}
+
+//========================================================
+void ViewerEventState::RecvUpdateContentsPlayerPause(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_MAIN -> ELGO_VIEWER
+     *       Contents Player item pause or play
+     * @param
+     *       bool isPause
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream copyStream(&copyBytes, QIODevice::ReadOnly);
+    bool bIsPause = false;
+    copyStream >> bIsPause;
+
+    emit ContentsPlayer::GetInstance()->UpdatePlayerPauseSignal(bIsPause);
 }

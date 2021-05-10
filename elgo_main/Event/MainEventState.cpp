@@ -4,6 +4,7 @@
 // Common
 #include "Common/Interface/ScheduleImpl.h"
 #include "Common/Interface/ContentsPlayDataImpl.h"
+#include "LocalSocketEvent/EFCEvent.h"
 
 // Main
 #include "MainEventState.h"
@@ -113,7 +114,7 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
 
     // Sleep Status
     const bool bCurrDisplaySleep = MainController::GetInstance()->GetMainCtrl().GetDisplaySleepStatus();
-    ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d",
+    ELGO_MAIN_LOG("Recv Value - {displaySleep: %d, currDisplaySleep: %d, deviceMute: %d, contentPause: %d}",
                   displaySleep, bCurrDisplaySleep, deviceMute, contentPause);
 
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
@@ -128,6 +129,16 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
     DeviceManager::DeviceMute(os, deviceMute);
 
     // Pause
+    QByteArray viewerBytes;
+    QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+    viewerStream << contentPause;
+    const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                  VIEWER_EVENT::Event::UPDATE_PLAYER_PAUSE_STATUS,
+                                                  viewerBytes);
+    if(false == bViewerEvent)
+    {
+        ELGO_MAIN_LOG("ERROR - Send Event: %d", VIEWER_EVENT::Event::UPDATE_PLAYER_PAUSE_STATUS);
+    }
 }
 
 //========================================================

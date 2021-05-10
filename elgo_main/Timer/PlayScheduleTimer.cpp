@@ -21,6 +21,11 @@ PlayScheduleTimer::PlayScheduleTimer(QObject *parent)
     connect(this, &PlayScheduleTimer::AddPlayScheduleListSignal,
             this, &PlayScheduleTimer::AddPlayScheduleListSlot);
 
+    connect(this, &PlayScheduleTimer::PlayScheduleTimerStartSignal,
+            this, &PlayScheduleTimer::PlayScheduleTimerStartSlot);
+    connect(this, &PlayScheduleTimer::PlayScheduleTimerStopSignal,
+            this, &PlayScheduleTimer::PlayScheduleTimerStopSlot);
+
     connect(this, &QTimer::timeout,
             this, &PlayScheduleTimer::PlayScheduleTimeout);
 }
@@ -153,6 +158,20 @@ void PlayScheduleTimer::StopPlayTimer()
         ELGO_MAIN_LOG("Stop Play Schedule Timer !");
         this->stop();
     }
+}
+
+//========================================================
+void PlayScheduleTimer::PlayScheduleTimerStartSlot()
+//========================================================
+{
+    StartPlayTimer();
+}
+
+//========================================================
+void PlayScheduleTimer::PlayScheduleTimerStopSlot()
+//========================================================
+{
+    StopPlayTimer();
 }
 
 //========================================================

@@ -103,13 +103,13 @@ namespace Remote
          *          Pause - ON: true, OFF: false
          */
         DeviceOptions()
-            : bDisplayOnOff(true)
+            : bDisplaySleep(false)
             , bDeviceMute(false)
             , bContentPause(false)
         {
 
         }
-        bool bDisplayOnOff;
+        bool bDisplaySleep;
         bool bDeviceMute;
         bool bContentPause;
     };

@@ -154,7 +154,7 @@ namespace MAIN_EVENT
         /**
          * @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Exec Screen Rotation Command line
+         *          Screen Rotation Command line
          * @param
          *          quint8  heading
          */
@@ -305,6 +305,16 @@ namespace VIEWER_EVENT
          *       QVector<PlayJson::FixedPlayDataJson>  fixedPlayDataList
          */
         ADD_FIXED_PLAY_DATA_LIST = 777,
+
+
+        /**
+         * @note
+         *       ELGO_MAIN -> ELGO_VIEWER
+         *       Contents Player item pause or play
+         * @param
+         *       bool isPause
+         */
+        UPDATE_PLAYER_PAUSE_STATUS = 778,
 
         MAX_VIEWER_EVENT = 1023
     };
