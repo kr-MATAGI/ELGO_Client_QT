@@ -306,6 +306,8 @@ void ContentsPlayer::UpdateFixedDataRotation()
 //========================================================
 {
     QVector<PlayJson::FixedLayerData>& layerData = m_fixedPlayDataList[m_playDataIndex].layerDataList;
+    QVector<PlayJson::SubtitleData>& subtitleData = m_fixedPlayDataList[m_playDataIndex].subtitleDataList;
+
     QVector<PlayJson::FixedLayerData>::iterator layerIter = layerData.begin();
     while(layerIter != layerData.end())
     {
@@ -329,7 +331,6 @@ void ContentsPlayer::UpdateFixedDataRotation()
         ++layerIter;
     }
 
-    QVector<PlayJson::SubtitleData>& subtitleData = m_fixedPlayDataList[m_playDataIndex].subtitleDataList;
     QVector<PlayJson::SubtitleData>::iterator subIter = subtitleData.begin();
     while(subIter != subtitleData.end())
     {
