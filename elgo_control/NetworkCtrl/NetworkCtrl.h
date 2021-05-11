@@ -52,6 +52,11 @@ public:
     /** @brief */
     bool GetDisplaySleepStatus();
 
+    /** @brief */
+    void SetDeviceName(const QString& value);
+    /** @brief */
+    QString& GetDeviceName();
+
 private:
     /** @brief */
     static size_t WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data);
@@ -61,6 +66,7 @@ private:
     CONNECT_INFO m_connecInfo;
 
     QString m_jwt;
+    QString m_deviceName;
 
     bool m_bDisplaySleep;
 };

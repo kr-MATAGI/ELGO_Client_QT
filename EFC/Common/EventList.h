@@ -244,7 +244,8 @@ namespace VIEWER_EVENT
          *       ELGO_CONTROL -> ELGO_VIEWER
          *       Viewer will make qr code image and display.
          * @param
-         *       QString ip
+         *       QString    ip
+         *       QString    deviceName
          */
         MAKE_QRCODE = 769,
 
@@ -315,6 +316,16 @@ namespace VIEWER_EVENT
          *       bool isPause
          */
         UPDATE_PLAYER_PAUSE_STATUS = 778,
+
+
+        /**
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Start Close Main Window Timer
+         * @param
+         *       NONE
+         */
+        CLOSE_MAIN_WINDOW_BY_ERROR = 779,
 
         MAX_VIEWER_EVENT = 1023
     };

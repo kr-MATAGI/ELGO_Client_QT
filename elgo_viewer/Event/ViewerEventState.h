@@ -15,8 +15,10 @@
 // Viewer
 #include "ViewerThread/ViewerThread.h"
 #include "Widget/ContentsPlayer.h"
+#include "MainWindow.h"
 
 class ContentsPlayer;
+class MainWindow;
 
 class ViewerEventState
 {
@@ -49,6 +51,9 @@ public:
 
     /** @brief */
     void RecvUpdateContentsPlayerPause(const QByteArray& src);
+
+    /** @brief */
+    void RecvCloseMainWindowByError(const QByteArray& src);
 
 public:
     QThreadPool *m_threadPool;

@@ -267,6 +267,20 @@ bool NetworkCtrl::GetDisplaySleepStatus()
 }
 
 //========================================================
+void NetworkCtrl::SetDeviceName(const QString& value)
+//========================================================
+{
+    m_deviceName = value;
+}
+
+//========================================================
+QString& NetworkCtrl::GetDeviceName()
+//========================================================
+{
+    return m_deviceName;
+}
+
+//========================================================
 size_t NetworkCtrl::WriteFunction(void *ptr, size_t size, size_t nmemb, std::string* data)
 //========================================================
 {

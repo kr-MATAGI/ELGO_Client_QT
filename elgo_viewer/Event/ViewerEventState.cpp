@@ -40,6 +40,9 @@ ViewerEventState::ViewerEventState()
 
     m_state.RegisterEvent(VIEWER_EVENT::Event::UPDATE_PLAYER_PAUSE_STATUS,
                           &ViewerEventState::RecvUpdateContentsPlayerPause);
+
+    m_state.RegisterEvent(VIEWER_EVENT::Event::CLOSE_MAIN_WINDOW_BY_ERROR,
+                          &ViewerEventState::RecvCloseMainWindowByError);
 }
 
 //========================================================
@@ -62,12 +65,13 @@ void ViewerEventState::RecvMakeQrCodeAndDisplay(const QByteArray &src)
 //========================================================
 {
     /**
-    * @note
-    *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Viewer will make qr code image and display.
-    * @param
-    *       QString ip
-    */
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Viewer will make qr code image and display.
+     * @param
+     *       QString    ip
+     *       QString    deviceName
+     */
     ViewerThread *thread = new ViewerThread;
     thread->SetViewerEvent(VIEWER_EVENT::Event::MAKE_QRCODE);
     thread->SetRecvBytes(src);
@@ -224,4 +228,19 @@ void ViewerEventState::RecvUpdateContentsPlayerPause(const QByteArray& src)
     copyStream >> bIsPause;
 
     emit ContentsPlayer::GetInstance()->UpdatePlayerPauseSignal(bIsPause);
+}
+
+//========================================================
+void ViewerEventState::RecvCloseMainWindowByError(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Start Close Main Window Timer
+     * @param
+     *       NONE
+     */
+
+    emit MainWindow::GetInstance()->CloseMainWindowByError();
 }

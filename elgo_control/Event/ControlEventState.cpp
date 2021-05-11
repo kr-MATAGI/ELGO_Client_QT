@@ -193,19 +193,22 @@ void ControlEventState::RecvWifiConnectionResult(const QByteArray& src)
         contents.status = Remote::Result::Status::CONNECT_WIFI_OK;
 
         NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(newIP);
+        const QString& deviceName = NetworkController::GetInstance()->GetNetworkCtrl().GetDeviceName();
         emit RemoteControlServer::GetInstance()->RemoteClientDisconnect();
 
         // Display New QR Code
         QByteArray sendBytes;
         QDataStream sendStream(&sendBytes, QIODevice::WriteOnly);
         sendStream << newIP;
+        sendStream << deviceName;
 
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
          *       Viewer will make qr code image and display.
          * @param
-         *       QString ip
+         *       QString    ip
+         *       QString    deviceName
          */
         const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
                                                     VIEWER_EVENT::Event::MAKE_QRCODE,

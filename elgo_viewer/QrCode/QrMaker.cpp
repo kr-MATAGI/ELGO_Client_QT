@@ -23,7 +23,7 @@ QrMaker::~QrMaker()
 void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, QColor color)
 //========================================================
 {
-    ELGO_VIEWER_LOG("url {%s} Size {width : %d, height : %d}", url.toUtf8().constData(), sz.width(), sz.height());
+    ELGO_VIEWER_LOG("url - {%s}, Size - {width : %d, height : %d}", url.toUtf8().constData(), sz.width(), sz.height());
 
     // NOTE: At this point you will use the API to get the encoding and format you want, instead of my hardcoded stuff:
     char *str = url.toUtf8().data();
@@ -33,7 +33,7 @@ void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, 
     const double height = sz.height();
     const double aspect = width / height;
     const double size = ((aspect>1.0) ? height : width);
-    const double scale = size/(qrSize + 1);
+    const double scale = size/(qrSize);
 
     // NOTE: For performance reasons my implementation only draws the foreground parts in supplied color.
     // It expects background to be prepared already (in white or whatever is preferred).
@@ -45,8 +45,8 @@ void QrMaker::DrawQrCode(QPainter &painter, const QSize sz, const QString &url, 
             const int color = qrCode.getModule(x, y);  // 0 for white, 1 for black
             if(0x0!=color)
             {
-                const double rx1 = (x+1)*scale;
-                const double ry1 = (y+1)*scale;
+                const double rx1 = x*scale;
+                const double ry1 = y*scale;
 
                 QRectF rect(rx1, ry1, scale, scale);
                 painter.drawRects(&rect,1);

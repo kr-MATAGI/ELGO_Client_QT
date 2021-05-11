@@ -43,18 +43,24 @@ public:
 
 signals:
     /** @brief */
-    void DrawQRCode(QString url);
+    void DrawQRCode(const QString& url, const QString& deviceName);
+
+    /** @brief */
+    void CloseMainWindowByError();
 
 private slots:
     /** @brief */
-    void DrawQRCodeSlot(QString url);
+    void DrawQRCodeSlot(const QString& url, const QString& deviceName);
 
     /** @brief */
     void CloseMainWindowByTimeout();
 
+    /** @brief */
+    void CloseMainWindowTimeout();
 
 private:
     Ui::MainWindow *ui;
+    QRect m_screenRect;
 
     QGraphicsScene *m_logoScene;
     QSvgWidget *m_logoWidget;
