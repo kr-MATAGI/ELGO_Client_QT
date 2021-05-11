@@ -7,5 +7,5 @@
 * ELGO_Update
 
 
-## Start Process Flow
-![Start_Flow](/document/UML/Start Process Flow.jpg)
+## Start Process의 단순화
+![Start_Flow](/document/UML/Start_Process_Flow.jpg)
