@@ -2,8 +2,10 @@
 #include <QSysInfo>
 #include <QHostAddress>
 #include <QNetworkInterface>
+#include <QNetworkAccessManager>
 #include <QHostInfo>
 #include <QStorageInfo>
+#include <QNetworkReply>
 
 // Common
 #include "Common/CommonDef.h"
@@ -15,8 +17,9 @@
 #include "Utils/WifiManager.h"
 
 //========================================================
-MainCtrl::MainCtrl()
-    : m_bDisplaySleep(false)
+MainCtrl::MainCtrl(QObject *parent)
+    : QObject(parent)
+      ,m_bDisplaySleep(false)
 //========================================================
 {
 
@@ -123,6 +126,31 @@ void MainCtrl::LoadConfigurationInfo()
     // Load Init Configuration XML File
     const bool bIsLoadXML = XMLParser::LoadInitConfigurationXML(m_initConfig);
     ELGO_MAIN_LOG("Result - Load InitConfig XML : %d", bIsLoadXML);
+}
+
+//========================================================
+void MainCtrl::CheckInternetConnection()
+//========================================================
+{
+    QNetworkAccessManager nam;
+    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkReply* reply = nam.get(req);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    bool bIsConn = reply->bytesAvailable();
+    if(false == bIsConn)
+    {
+        QString wlanName;
+        WifiManager::GetWlanInterfaceName(m_deviceInfo.os, wlanName);
+        WifiManager::WakeUpWirelessInterface(m_deviceInfo.os, wlanName);
+        WifiManager::ConnectNewWirelessInternet(m_deviceInfo.os, wlanName,
+                                                m_initConfig.internet.ssid,
+                                                m_initConfig.internet.pw,
+                                                true);
+    }
+    ELGO_MAIN_LOG("Internet Connection - %d", bIsConn);
 }
 
 //========================================================

@@ -1,18 +1,21 @@
 #ifndef MAINCTRL_H
 #define MAINCTRL_H
 
+// QT
+#include <QObject>
+
 //EFC
 #include "Common/Deifinition.h"
-#include "ShardMem/ShmCtrl.h"
 
 // Main
 #include "Definition/DeviceDef.h"
 #include "DB/MainDBCtrl.h"
 
-class MainCtrl
+class MainCtrl : public QObject
 {
+    Q_OBJECT
 public:
-    explicit MainCtrl();
+    explicit MainCtrl(QObject *parent = nullptr);
     virtual ~MainCtrl();
 
 public:
@@ -27,6 +30,9 @@ public:
 
     /** @brief */
     void LoadConfigurationInfo();
+
+    /** @brief */
+    void CheckInternetConnection();
 
     /** @brief */
     const DEVICE::Info& GetDeviceInfo();

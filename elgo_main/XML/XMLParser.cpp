@@ -43,8 +43,8 @@ bool XMLParser::LoadInitConfigurationXML(DEVICE::INIT_CONFIG &dest)
             }
             else
             {
-                ELGO_MAIN_LOG("ReadBinaryPath : %d, ReadNetworkInfo : %d, ReadServerInfo : %d",
-                              bReadBinaryPath, bReadNetworkInfo, bReadServerInfo);
+                ELGO_MAIN_LOG("ReadVersion: %d ReadBinaryPath : %d, ReadNetworkInfo : %d, ReadServerInfo : %d",
+                              bReadVersion, bReadBinaryPath, bReadNetworkInfo, bReadServerInfo);
             }
         }
         else

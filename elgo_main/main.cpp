@@ -1,7 +1,10 @@
+// QT
 #include <QCoreApplication>
 #include <QByteArray>
 #include <QObject>
 #include <QProcess>
+
+#include <QNetworkAccessManager>
 
 // Main
 #include "MainCtrl/MainController.h"
@@ -52,6 +55,9 @@ void Initialize()
 
     // Load Configuration
     g_MainController->GetInstance()->GetMainCtrl().LoadConfigurationInfo();
+
+    // Check Internet Connection;
+    g_MainController->GetInstance()->GetMainCtrl().CheckInternetConnection();
 
     // Check Display Sleep Status
     g_MainController->GetInstance()->GetMainCtrl().CheckDisplaySleepStatus();
