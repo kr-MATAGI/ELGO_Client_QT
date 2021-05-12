@@ -12,4 +12,7 @@
 
 
 ## ELGO_Main의 Initialize
-![Main_Init](/document/UML/Main_Initialize.jpg)
+<img src="/document/UML/Main_Initialize.jpg" width="300px" height="600px" alt="Main_Init"></img></br>
+
+## Start Flow Chart
+<img src="/document/UML/Start_Client.jpg" width="1000px" height="1000px" alt="Start Client"></img></br>
