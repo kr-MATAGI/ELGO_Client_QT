@@ -142,6 +142,9 @@ void MainCtrl::CheckInternetConnection()
     bool bIsConn = reply->bytesAvailable();
     if(false == bIsConn)
     {
+        ELGO_MAIN_LOG("Ready to Connect - {ssid: %s, pw: %s}",
+                      m_initConfig.internet.ssid.toStdString().c_str(),
+                      m_initConfig.internet.pw.toStdString().c_str());
         QString wlanName;
         WifiManager::GetWlanInterfaceName(m_deviceInfo.os, wlanName);
         WifiManager::WakeUpWirelessInterface(m_deviceInfo.os, wlanName);
