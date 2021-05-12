@@ -1,4 +1,4 @@
-# ELGO_Client_QT
+# ELGO_Client_QT의 Sequence Diagram
 
 ## 포함된 프로세스
 * ELGO_Main
@@ -7,18 +7,18 @@
 * ELGO_Update
 * ELGO_Remote
 
-## Start Process의 단순화
+## System booting
 ![Start_Flow](/document/UML/Start_Process_Flow.jpg)
 
 
-## ELGO_Main의 Initialize
+## ELGO_Main의 Initialize()
 <img src="/document/UML/Main_Initialize.jpg" width="300px" height="800px" alt="Main_Init"></img></br>
 
-## Start Flow Chart
+## Start process
 <img src="/document/UML/Start_Client.jpg" width="1200px" height="1000px" alt="Start Flow"></img></br>
 
 
-## Connect with content server
+## Connect with contents server
 <img src="/document/UML/ContentServer_Connection.jpg" width="1200px" height="1000px" alt="connect2Server"></img></br>
 
 
