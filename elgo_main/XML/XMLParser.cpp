@@ -72,6 +72,7 @@ bool XMLParser::GetBinaryVersionFromXML(QDomElement &element, DEVICE::INIT_CONFI
     {
         if(false == versionElement.isNull())
         {
+            retValue = true;
             dest.version = versionElement.firstChild().toText().data();
         }
         else

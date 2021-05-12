@@ -1,31 +1,60 @@
-#ifndef UPDATEWINDOW_H
-#define UPDATEWINDOW_H
+#ifndef UPDATEMANAGER_H
+#define UPDATEMANAGER_H
 
 // QT
 #include <QMainWindow>
 #include <QNetworkAccessManager>
+#include <QQueue>
+#include <QFile>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class UpdateWindow; }
 QT_END_NAMESPACE
 
-class UpdateWindow : public QMainWindow
+class UpdateManager : public QMainWindow
 {
     Q_OBJECT
 
 public:
     /** @brief */
-    UpdateWindow(QWidget *parent = nullptr);
+    UpdateManager(QWidget *parent = nullptr);
     /** @brief */
-    ~UpdateWindow();
+    ~UpdateManager();
 
     /** @brief */
     void CheckVersion();
 
 private:
-    Ui::UpdateWindow *ui;
+    /** @brief */
+    void StartNextDownload();
 
+    /** @brief */
+    bool GetCurrentVersion(QString& currVersion);
+
+private slots:
+    /** @brief */
+    void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    /** @brief */
+    void DonwloadReadyToRead();
+    /** @brief */
+    void DownloadFinished();
+
+    /** @brief */
+    void StartElgoMain();
+
+private:
+    Ui::UpdateWindow *ui;
     QRect m_screenRect;
-    QNetworkAccessManager *m_manager;
+
+    QNetworkAccessManager m_netManager;
+    QQueue<QUrl> m_downloadQueue;
+    QFile m_outFile;
+    QNetworkReply *m_netReply;
+
+    int m_successCnt;
+    QVector<QString> m_failedList;
+
+    QTimer m_startTimer;
 };
-#endif // UPDATEWINDOW_H
+#endif // UPDATEMANAGER_H
