@@ -13,13 +13,16 @@ namespace XMLParser
     bool LoadInitConfigurationXML(DEVICE::INIT_CONFIG &dest);
 
     /** @brief */
-    bool GetBinaryPathfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest);
+    bool GetBinaryVersionFromXML(QDomElement &element, DEVICE::INIT_CONFIG& dest);
 
     /** @brief */
-    bool GetNetworkfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest);
+    bool GetBinaryPathFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest);
 
     /** @brief */
-    bool GetServerfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest);
+    bool GetNetworkFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest);
+
+    /** @brief */
+    bool GetServerFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest);
 }
 
 #endif // XMLPARSER_H

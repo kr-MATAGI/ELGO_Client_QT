@@ -44,9 +44,14 @@ private slots:
     /** @brief */
     void BinaryMessageReceivedSlot(const QByteArray &message);
 
+    /** @brief */
+    void ErrorTimeout();
+
 private:
     QWebSocket *m_socket;
     ContentWebSocketHandler *m_handler;
+
+    QTimer m_errorTimer;
 };
 
 #endif // CONTENTWEBSOCKET_H

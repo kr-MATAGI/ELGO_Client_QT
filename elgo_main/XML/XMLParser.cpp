@@ -28,13 +28,16 @@ bool XMLParser::LoadInitConfigurationXML(DEVICE::INIT_CONFIG &dest)
         if(false == root.isNull())
         {
             root = root.firstChildElement();
-            const bool bReadBinaryPath = GetBinaryPathfromInitConfig(root, dest);
+            const bool bReadVersion = GetBinaryVersionFromXML(root, dest);
             root = root.nextSiblingElement();
-            const bool bReadNetworkInfo = GetNetworkfromInitConfig(root, dest);
+            const bool bReadBinaryPath = GetBinaryPathFromXML(root, dest);
             root = root.nextSiblingElement();
-            const bool bReadServerInfo = GetServerfromInitConfig(root, dest);
+            const bool bReadNetworkInfo = GetNetworkFromXML(root, dest);
+            root = root.nextSiblingElement();
+            const bool bReadServerInfo = GetServerFromXML(root, dest);
 
-            if(true == bReadBinaryPath && true == bReadNetworkInfo && true == bReadServerInfo)
+            if( (true == bReadVersion && true == bReadBinaryPath) &&
+                (true == bReadNetworkInfo && true == bReadServerInfo) )
             {
                 retValue = true;
             }
@@ -59,7 +62,34 @@ bool XMLParser::LoadInitConfigurationXML(DEVICE::INIT_CONFIG &dest)
 }
 
 //========================================================
-bool XMLParser::GetBinaryPathfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest)
+bool XMLParser::GetBinaryVersionFromXML(QDomElement &element, DEVICE::INIT_CONFIG& dest)
+//========================================================
+{
+    bool retValue = false;
+
+    QDomElement versionElement = element;
+    if("version" == versionElement.tagName())
+    {
+        if(false == versionElement.isNull())
+        {
+            dest.version = versionElement.firstChild().toText().data();
+        }
+        else
+        {
+            ELGO_MAIN_LOG("ERROR - version is NULL");
+        }
+    }
+    else
+    {
+        ELGO_MAIN_LOG("ERORR - version tagName : %s",
+                      versionElement.tagName().toUtf8().constData());
+    }
+
+    return retValue;
+}
+
+//========================================================
+bool XMLParser::GetBinaryPathFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest)
 //========================================================
 {
     bool retValue = false;
@@ -101,7 +131,7 @@ bool XMLParser::GetBinaryPathfromInitConfig(QDomElement &element, DEVICE::INIT_C
 }
 
 //========================================================
-bool XMLParser::GetNetworkfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest)
+bool XMLParser::GetNetworkFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest)
 //========================================================
 {
     bool retValue = false;
@@ -147,7 +177,7 @@ bool XMLParser::GetNetworkfromInitConfig(QDomElement &element, DEVICE::INIT_CONF
 }
 
 //========================================================
-bool XMLParser::GetServerfromInitConfig(QDomElement &element, DEVICE::INIT_CONFIG &dest)
+bool XMLParser::GetServerFromXML(QDomElement &element, DEVICE::INIT_CONFIG &dest)
 //========================================================
 {
     bool retValue = false;

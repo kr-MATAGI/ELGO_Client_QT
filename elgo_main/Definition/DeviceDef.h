@@ -92,6 +92,7 @@ namespace DEVICE
 
     struct INIT_CONFIG
     {
+        QString version;
         QString binaryPath;
         InternetConfig internet;
         ServerConfig server;

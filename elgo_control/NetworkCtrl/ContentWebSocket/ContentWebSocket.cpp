@@ -28,6 +28,9 @@ ContentWebSocket::ContentWebSocket(QObject *parent)
             this, SLOT(TextMessageReceivedSlot(const QString&)));
     connect(m_socket, SIGNAL(binaryMessageReceived(const QByteArray&)),
             this, SLOT(BinaryMessageReceivedSlot(const QByteArray&)));
+
+    connect(&m_errorTimer, &QTimer::timeout,
+            this, &ContentWebSocket::ErrorTimeout);
 }
 
 //========================================================
@@ -107,6 +110,8 @@ void ContentWebSocket::ErrorOccurredSocketSlot(QAbstractSocket::SocketError sock
 //========================================================
 {
     ELGO_CONTROL_LOG("Error - socketError : %d", socketError);
+
+    m_errorTimer.start(100);
 }
 
 //========================================================
@@ -169,4 +174,33 @@ void ContentWebSocket::BinaryMessageReceivedSlot(const QByteArray &message)
 {
     // TODO
     ELGO_CONTROL_LOG("");
+}
+
+//========================================================
+void ContentWebSocket::ErrorTimeout()
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Viewer will make qr code image and display.
+     * @param
+     *       QString    ip
+     *       QString    deviceName
+     */
+    QByteArray bytes;
+    QDataStream dataStream(&bytes, QIODevice::WriteOnly);
+    const QString& ip = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().REMOTE_HOST;
+    dataStream << ip;
+    dataStream << QString("서버 연결 실패");
+
+    const bool bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                VIEWER_EVENT::Event::MAKE_QRCODE,
+                                                bytes);
+    if(false == bSendEvent)
+    {
+        ELGO_CONTROL_LOG("ERROR - SendEvent: %d", VIEWER_EVENT::Event::MAKE_QRCODE);
+    }
+
+    m_errorTimer.stop();
 }

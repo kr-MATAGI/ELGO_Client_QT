@@ -155,8 +155,8 @@ void MainWindow::DrawQRCodeSlot(const QString& url, const QString& deviceName)
 
     QrMaker qrMaker;
     qrMaker.DrawQrCode(painter, qrSize, m_qrUrl, color);
-    ELGO_VIEWER_LOG("QR code - {w: %d, h: %d}, url : %s", width, height,
-                    m_qrUrl.toUtf8().constData());
+    ELGO_VIEWER_LOG("QR code - {w: %d, h: %d}, url : %s, deviceName: %s", width, height,
+                    m_qrUrl.toUtf8().constData(), deviceName.toStdString().c_str());
 
     ui->qrLabel->setPixmap(pixmap);
     if(0 < deviceName.length())

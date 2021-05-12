@@ -46,13 +46,15 @@ void NetworkCtrl::ConnectContentWebSocketToServer()
     if(true == bIsGetJwt)
     {
         JsonParser::ParseGetJwtResponse(recvStr, m_jwt);
-        emit m_socket->ConnectContentServerSignal();
+
         ELGO_CONTROL_LOG("EMIT Signal - ConnectContentServer()");
     }
     else
     {
         ELGO_CONTROL_LOG("Error - Fail to get JWT from server");
     }
+
+    emit m_socket->ConnectContentServerSignal();
 }
 
 //========================================================
@@ -89,8 +91,8 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
     std::string sendJson;
 
     // for test - "d335fd2a4-88b4-9dba-bbdf-2dc416a3018";
-//    QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
-    QString udid = "d335fd2a488b49dbabbdf2dc416a3018";
+    QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
+//    QString udid = "d335fd2a488b49dbabbdf2dc416a3018";
 
     QString os = QSysInfo::productType();
     JsonWriter::WriteGetJwtRequest(udid, os, sendJson);
