@@ -12,11 +12,15 @@
 
 
 ## ELGO_Main의 Initialize
-<img src="/document/UML/Main_Initialize.jpg" width="300px" height="600px" alt="Main_Init"></img></br>
+<img src="/document/UML/Main_Initialize.jpg" width="300px" height="800px" alt="Main_Init"></img></br>
 
 ## Start Flow Chart
-<img src="/document/UML/Start_Client.jpg" width="1000px" height="1000px" alt="Start Client"></img></br>
+<img src="/document/UML/Start_Client.jpg" width="1200px" height="1000px" alt="Start Client"></img></br>
 
 
 ## Connect with content server
-<img src="/document/UML/ContentServer_Connection.jpg" width="1000px" height="1000px" alt="Start Client"></img></br>
+<img src="/document/UML/ContentServer_Connection.jpg" width="1200px" height="1000px" alt="Start Client"></img></br>
+
+
+## Single Play Event
+<img src="/document/UML/SignlePlay_Event.jpg" width="1200px" height="1000px" alt="Start Client"></img></br>
