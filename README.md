@@ -24,3 +24,6 @@
 
 ## Single Play Event
 <img src="/document/UML/SignlePlay_Event.jpg" width="1200px" height="1000px" alt="Start Client"></img></br>
+
+## Play Schedule Event
+<img src="/document/UML/PlaySchedule_Event.jpg" width="1200px" height="1000px" alt="Start Client"></img></br>
