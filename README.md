@@ -16,3 +16,7 @@
 
 ## Start Flow Chart
 <img src="/document/UML/Start_Client.jpg" width="1000px" height="1000px" alt="Start Client"></img></br>
+
+
+## Connect with content server
+<img src="/document/UML/ContentServer_Connection.jpg" width="1000px" height="1000px" alt="Start Client"></img></br>
