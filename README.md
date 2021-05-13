@@ -1,5 +1,5 @@
 # ELGO_Client_QT의 Sequence Diagram
-* 아래에서는 핵심이 되는 기능들의 Sequence Diagram 
+* 아래에서는 핵심이 되는 기능들의 Sequence Diagram 이다.
 ## 포함된 프로세스
 * ELGO_Main
 * ELGO_Control
