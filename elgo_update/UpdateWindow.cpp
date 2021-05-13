@@ -127,7 +127,7 @@ void UpdateManager::StartNextDownload()
                                 .arg(QString::number(m_successCnt));
 
             // Update XML
-
+            UpdateXmlVersion();
         }
         else
         {
