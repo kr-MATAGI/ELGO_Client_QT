@@ -8,7 +8,7 @@
   * http://seorenn.blogspot.com/2011/03/ubuntulinux.html
   1. sudo apt-get install unclutter
   2. unclutter -display :0.0 -idle 5 <br>
-    > 5초이상 움직이지 않으면 마우스 커서를 숨김
+   > 5초이상 움직이지 않으면 마우스 커서를 숨김
 
 ## 최상단 표시줄 지우기
   * https://m.blog.naver.com/jamg123123/221768857065 <br>
