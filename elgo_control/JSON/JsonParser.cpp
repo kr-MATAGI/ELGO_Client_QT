@@ -7,19 +7,6 @@
 #include "Logger/ControlLogger.h"
 
 //========================================================
-QString JsonParser::LatestVersionParse(const QString &src)
-//========================================================
-{
-    const QJsonDocument& doc = QJsonDocument::fromJson(src.toUtf8());
-    const QJsonObject& jsonObj = doc.object();
-
-    const QString& version = jsonObj["version"].toString();
-    ELGO_CONTROL_LOG("Remote Version : %s", version.toUtf8().constData());
-
-    return version;
-}
-
-//========================================================
 void JsonParser::ParseGetJwtResponse(const QString& src, QString& dest)
 //========================================================
 {

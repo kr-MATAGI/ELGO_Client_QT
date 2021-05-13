@@ -19,10 +19,6 @@
 
 namespace JsonParser
 {
-    /** @brief */
-    QString LatestVersionParse(const QString &src);
-
-
     /// elgo_remote <-> elgo_control
     /** @brief */
     Remote::Action PaseRemoteActionText(const QString &src);
