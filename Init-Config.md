@@ -31,3 +31,7 @@
 
 ## 시작 프로그램 설정
   * 우분투 기능 개선을 이용
+
+## 자동 업데이트 끄기
+ * https://hiseon.me/linux/ubuntu/ubuntu-disable-automatic-upgrades/ <br>
+ * 우분투 Software & updates - Updates - Automatically check for updates 부분을 Never로 설정.
