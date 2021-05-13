@@ -1,0 +1,49 @@
+--------Request--------
+Request :
+{
+	"action" : String,
+	"deviceLogin" : {
+		"id" : String,
+		"pw" : String
+	},
+	"manageDevice" : {
+		"oldPassword": String,
+		"newPassword" : String,
+	},
+	"rotateDisplay": {
+		"newHeading" : String
+	},
+	"deviceOptions" : {
+		"displayOnOff" : boolean,
+		"deviceMute" : boolean,
+		"contentPause" : boolean
+	}
+	"wifi" : {
+		"ssid" : String,
+		"password" : String,
+		"encryption" : boolean
+}
+
+Action :
+{
+	"action" : [
+		"NONE_ACTION",
+		"DEVICE_LOGIN",
+		"UPDATE_WIFI_LIST",
+		"CONNECT_WIFI",
+		"MANAGE_DEVICE",
+		"ROTATE_DISPLAY",
+		"DEVICE_OPTIONS",
+		"USER_LOGIN"
+	]
+}
+
+NewHeading :
+{
+	"DIRECTION" : [
+		"HEAD_TOP",
+		"HEAD_RIGHT",
+		"HEAD_BOTTOM",
+		"HEAD_LEFT"
+	]
+}	

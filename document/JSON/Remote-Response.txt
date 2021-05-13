@@ -1,0 +1,74 @@
+--------Response--------
+
+date :  "yyyy-mm-dd_hh:mm_ss.msc"
+
+action.DeviceLogin : 
+{
+	"date" :  DateTime,
+	"action" : String,
+	"result" : boolean
+}
+
+action.ManageDevice :
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean
+}
+
+action.RotateDisplay
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean
+}
+
+action.DeviceOptions
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean
+}
+
+action.UpdateWiifiList
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean,
+	"wifiList" : [{
+		"ssid" : String,
+		"freq" : int,
+		"signal" : int,
+		"encryption" : boolean
+	}]
+}
+
+action.CONNECT_WIFI
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean,
+}
+
+action.UserLogin
+{
+	"date" : DateTime,
+	"action" : String,
+	"result" : boolean,
+	"os" : String,
+	"udid" : String
+}
+
+Action :
+{
+	"action" : [
+		"NONE_ACTION",
+		"DEVICE_LOGIN",
+		"UPDATE_WIFI_LIST",
+		"CONNECT_WIFI",
+		"MANAGE_DEVICE",
+		"ROTATE_DISPLAY",
+		"DEVICE_OPTIONS",
+		"USER_LOGIN"
+	]
+}
