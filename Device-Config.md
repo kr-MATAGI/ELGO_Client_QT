@@ -32,7 +32,7 @@
   * 우분투 설정 - 키보드 바로가기
 
 ## 시작 프로그램 설정
-  * 우분투 기능 개선을 이용
+  * 쉘 스크립트 이용 필요
 
 ## 자동 업데이트 끄기
  * https://hiseon.me/linux/ubuntu/ubuntu-disable-automatic-upgrades/ <br>
