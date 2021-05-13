@@ -8,8 +8,9 @@
 #include "ui_UpdateWindow.h"
 
 #define ELGO_UPDATE_URL "http://cloud.elgo.co.kr/update/ubuntu"
-#define CONFI_XML   "/home/jaehoon/바탕화면/ELGO/config.xml"
+#define CONFIG_XML   "/home/jaehoon/바탕화면/ELGO/config.xml"
 #define ELGO_MAIN_PATH  "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/elgo_main/elgo_main"
+#define ELGO_REMOTE_PATH    "/home/jaehoon/바탕화면/ELGO/ELGO_Remote/elgo_remote/build"
 #define START_TIMEOUT   3000
 
 //========================================================
@@ -43,7 +44,7 @@ UpdateManager::UpdateManager(QWidget *parent)
 
     // connect
     connect(&m_startTimer, &QTimer::timeout,
-            this, &UpdateManager::StartElgoMain);
+            this, &UpdateManager::StartElgoClient);
 }
 
 //========================================================
@@ -72,6 +73,7 @@ void UpdateManager::CheckVersion()
         const double serverVersionNum = std::stod(serverVersion.toStdString());
         if(currVersionNum < serverVersionNum)
         {
+            m_serverVersion = serverVersion;
             QString startMsg = QString("현재: %1, 최신: %2 - 업데이트를 시작합니다.")
                                     .arg(currVersion)
                                     .arg(serverVersion);
@@ -105,6 +107,8 @@ void UpdateManager::CheckVersion()
     {
         ui->label->setText("모든 프로그램이 최신 버전입니다.");
         ui->progressBar->hide();
+
+
         m_startTimer.setSingleShot(true);
         m_startTimer.start(START_TIMEOUT);
     }
@@ -121,6 +125,9 @@ void UpdateManager::StartNextDownload()
         {
             endLog = QString("업데이트를 완료하였습니다. (%1)/3")
                                 .arg(QString::number(m_successCnt));
+
+            // Update XML
+
         }
         else
         {
@@ -170,7 +177,7 @@ bool UpdateManager::GetCurrentVersion(QString& currVersion)
     bool retValue = false;
 
     QDomDocument xmlDoc;
-    QFile xmlFile(CONFI_XML);
+    QFile xmlFile(CONFIG_XML);
     if(false == xmlFile.open(QIODevice::ReadOnly))
     {
         return retValue;
@@ -198,17 +205,72 @@ bool UpdateManager::GetCurrentVersion(QString& currVersion)
         }
     }
 
+    xmlFile.close();
+
     return retValue;
 }
 
 //========================================================
-void UpdateManager::StartElgoMain()
+void UpdateManager::UpdateXmlVersion()
 //========================================================
 {
-    QProcess process;
-    QStringList args;
-    process.startDetached(ELGO_MAIN_PATH, args);
-    process.waitForFinished();
+    QDomDocument xmlDoc;
+    QFile xmlFile(CONFIG_XML);
+    if(false == xmlFile.open(QIODevice::ReadWrite))
+    {
+        return;
+    }
+
+    if(false == xmlDoc.setContent(&xmlFile))
+    {
+        return;
+    }
+
+    QDomElement root = xmlDoc.documentElement();
+    if("configuration" == root.tagName())
+    {
+        if(false == root.isNull())
+        {
+            root = root.firstChildElement();
+            if("version" == root.tagName())
+            {
+                if(false == root.isNull())
+                {
+                    root.firstChild().setNodeValue(m_serverVersion);
+                    xmlFile.resize(0);
+                    xmlFile.write(xmlDoc.toByteArray());
+                }
+            }
+        }
+    }
+
+    xmlFile.close();
+}
+
+//========================================================
+void UpdateManager::StartElgoClient()
+//========================================================
+{
+    // ELGO_Main
+    QProcess mainProcess;
+    QStringList mainArgs;
+    mainProcess.startDetached(ELGO_MAIN_PATH, mainArgs);
+    mainProcess.waitForFinished();
+
+    // ELGO_Remote
+    QProcess remoteProcess;
+    QStringList remoteArgs;
+    QString remoteCmd = "/bin/sh";
+    QString remoteExec = QString("cd %1 && npm start")
+            .arg(ELGO_REMOTE_PATH);
+    remoteArgs << "-c";
+    remoteArgs << remoteExec;
+
+    remoteProcess.start(remoteCmd, remoteArgs);
+    remoteProcess.waitForFinished();
+
+    mainProcess.deleteLater();
+    remoteProcess.deleteLater();
 
     exit(0);
 }

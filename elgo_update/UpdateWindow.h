@@ -32,6 +32,9 @@ private:
     /** @brief */
     bool GetCurrentVersion(QString& currVersion);
 
+    /** @brief */
+    void UpdateXmlVersion();
+
 private slots:
     /** @brief */
     void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -41,7 +44,7 @@ private slots:
     void DownloadFinished();
 
     /** @brief */
-    void StartElgoMain();
+    void StartElgoClient();
 
 private:
     Ui::UpdateWindow *ui;
@@ -54,6 +57,7 @@ private:
 
     int m_successCnt;
     QVector<QString> m_failedList;
+    QString m_serverVersion;
 
     QTimer m_startTimer;
 };
