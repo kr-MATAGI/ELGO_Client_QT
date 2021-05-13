@@ -6,11 +6,16 @@
 // Update
 #include "UpdateWindow.h"
 #include "ui_UpdateWindow.h"
+#include "Logger/UpdateLogger.h"
 
+// Define
 #define ELGO_UPDATE_URL "http://cloud.elgo.co.kr/update/ubuntu"
+#define VERSION_CHECK_URL   ""
+
 #define CONFIG_XML   "/home/jaehoon/바탕화면/ELGO/config.xml"
 #define ELGO_MAIN_PATH  "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/elgo_main/elgo_main"
 #define ELGO_REMOTE_PATH    "/home/jaehoon/바탕화면/ELGO/ELGO_Remote/elgo_remote/build"
+
 #define START_TIMEOUT   3000
 
 //========================================================
@@ -36,7 +41,8 @@ UpdateManager::UpdateManager(QWidget *parent)
 
     const QRect& windowRect = this->frameGeometry();
     const QPoint& center = m_screenRect.center();
-    this->move(center.x() - windowRect.width() / 2, center.y() - windowRect.height() / 2);
+    this->move( (center.x() - windowRect.width() / 2),
+                (center.y() - windowRect.height() / 2) );
 
     QFont labelFont;
     labelFont.setPointSize(15);
@@ -52,6 +58,21 @@ UpdateManager::~UpdateManager()
 //========================================================
 {
     delete ui;
+}
+
+//========================================================
+void UpdateManager::GetLatestVersion()
+//========================================================
+{
+    QUrl url;
+    QNetworkRequest request(url);
+    m_getVersionReply = m_netManager.get(request);
+
+    // connect
+    connect(m_getVersionReply, &QNetworkReply::readyRead,
+            this, &UpdateManager::ReadyVersionRead);
+    connect(m_getVersionReply, &QNetworkReply::finished,
+            this, &UpdateManager::ReadVersionFinish);
 }
 
 //========================================================
@@ -73,7 +94,6 @@ void UpdateManager::CheckVersion()
         const double serverVersionNum = std::stod(serverVersion.toStdString());
         if(currVersionNum < serverVersionNum)
         {
-            m_serverVersion = serverVersion;
             QString startMsg = QString("현재: %1, 최신: %2 - 업데이트를 시작합니다.")
                                     .arg(currVersion)
                                     .arg(serverVersion);
@@ -107,7 +127,6 @@ void UpdateManager::CheckVersion()
     {
         ui->label->setText("모든 프로그램이 최신 버전입니다.");
         ui->progressBar->hide();
-
 
         m_startTimer.setSingleShot(true);
         m_startTimer.start(START_TIMEOUT);
@@ -157,16 +176,16 @@ void UpdateManager::StartNextDownload()
     }
 
     QNetworkRequest request(url);
-    m_netReply = m_netManager.get(request);
+    m_downloadReply = m_netManager.get(request);
     QString downloadMsg = QString("%1 을 업데이트하고 있습니다.").arg(fileName);
     ui->label->setText(downloadMsg);
 
     //connect
-    connect(m_netReply, &QNetworkReply::downloadProgress,
+    connect(m_downloadReply, &QNetworkReply::downloadProgress,
             this, &UpdateManager::DownloadProgress);
-    connect(m_netReply, &QNetworkReply::finished,
+    connect(m_downloadReply, &QNetworkReply::finished,
             this, &UpdateManager::DownloadFinished);
-    connect(m_netReply, &QNetworkReply::readyRead,
+    connect(m_downloadReply, &QNetworkReply::readyRead,
             this, &UpdateManager::DonwloadReadyToRead);
 }
 
@@ -276,6 +295,23 @@ void UpdateManager::StartElgoClient()
 }
 
 //========================================================
+void UpdateManager::ReadyVersionRead()
+//========================================================
+{
+    QString recvJson = m_getVersionReply->readAll();
+
+    // Parsing
+    ParseLatestVersion(recvJson, m_serverVersion);
+}
+
+//========================================================
+void UpdateManager::ReadVersionFinish()
+//========================================================
+{
+    m_getVersionReply->deleteLater();
+}
+
+//========================================================
 void UpdateManager::DownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 //========================================================
 {
@@ -287,7 +323,7 @@ void UpdateManager::DownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 void UpdateManager::DonwloadReadyToRead()
 //========================================================
 {
-    m_outFile.write(m_netReply->readAll());
+    m_outFile.write(m_downloadReply->readAll());
 }
 
 //========================================================
@@ -296,9 +332,9 @@ void UpdateManager::DownloadFinished()
 {
     m_outFile.close();
 
-    if(m_netReply->error())
+    if(m_downloadReply->error())
     {
-        ui->label->setText(m_netReply->errorString());
+        ui->label->setText(m_downloadReply->errorString());
         m_outFile.remove();
     }
     else
@@ -307,6 +343,24 @@ void UpdateManager::DownloadFinished()
         ui->label->setText(successMsg);
     }
 
-    m_netReply->deleteLater();
+    m_downloadReply->deleteLater();
     StartNextDownload();
+}
+
+//========================================================
+bool UpdateManager::ParseLatestVersion(const QString& src, QString& dest)
+//========================================================
+{
+    bool retValue = false;
+
+    const QJsonDocument& doc = QJsonDocument::fromJson(src.toUtf8());
+    const QJsonObject& jsonObj = doc.object();
+
+    if(jsonObj.end() != jsonObj.find("version"))
+    {
+        retValue = true;
+        dest = jsonObj["version"].toString();
+    }
+
+    return retValue;
 }

@@ -23,6 +23,9 @@ public:
     ~UpdateManager();
 
     /** @brief */
+    void GetLatestVersion();
+
+    /** @brief */
     void CheckVersion();
 
 private:
@@ -35,7 +38,15 @@ private:
     /** @brief */
     void UpdateXmlVersion();
 
+    /** @brief */
+    bool ParseLatestVersion(const QString& src, QString& dest);
+
 private slots:
+    /** @brief */
+    void ReadyVersionRead();
+    /** @brief */
+    void ReadVersionFinish();
+
     /** @brief */
     void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     /** @brief */
@@ -53,7 +64,8 @@ private:
     QNetworkAccessManager m_netManager;
     QQueue<QUrl> m_downloadQueue;
     QFile m_outFile;
-    QNetworkReply *m_netReply;
+    QNetworkReply *m_getVersionReply;
+    QNetworkReply *m_downloadReply;
 
     int m_successCnt;
     QVector<QString> m_failedList;

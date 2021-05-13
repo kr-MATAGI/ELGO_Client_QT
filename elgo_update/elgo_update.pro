@@ -13,6 +13,7 @@ SOURCES += \
     UpdateWindow.cpp
 
 HEADERS += \
+    Logger/UpdateLogger.h \
     UpdateWindow.h
 
 FORMS += \

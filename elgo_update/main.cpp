@@ -5,11 +5,12 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    UpdateManager w;
+    UpdateManager updateManager;
 
-    w.show();
+    updateManager.show();
 
-    w.CheckVersion();
+    updateManager.GetLatestVersion();
+    updateManager.CheckVersion();
 
     return a.exec();
 }
