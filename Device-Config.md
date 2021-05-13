@@ -23,6 +23,7 @@
 ## 부팅로고 변경 (Splash 변경)
   * http://work6.mrds.kr/bbs/board.php?bo_table=MyTips&wr_id=91&page=2
   * http://no1linux.org/hottips/27817 <br>
+  * https://askubuntu.com/questions/2007/how-do-i-change-the-plymouth-bootscreen <br>
    > 우분투에는 plymouth가 기본으로 설치되어 있는 듯 한데, Progress Bar가 있는 테마를 <br>
    다운받아 .png 이미지만 교체하면 될 것으로 보인다.
    
