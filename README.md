@@ -30,3 +30,6 @@
 
 ## Power Schedule Event
 <img src="/document/UML/PowerSchedule_Event.jpg" width="1200px" height="1000px" alt="powerSchedule"></img></br>
+
+## Screen Capture Event
+<img src="/document/UML/Screen-Capture-Event.jpg" width="1200px" height="1000px" alt="screenCapture"></img></br>
