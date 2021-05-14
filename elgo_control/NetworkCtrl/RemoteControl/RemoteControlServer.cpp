@@ -128,6 +128,7 @@ void RemoteControlServer::RemoteServerErrorSlot(QWebSocketProtocol::CloseCode cl
 //========================================================
 {
     ELGO_CONTROL_LOG("Error - RemoteServerError : %d", closeCode);
+    RemoteClientDisconnectedSlot();
 }
 
 //========================================================
