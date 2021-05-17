@@ -37,3 +37,9 @@
 ## 자동 업데이트 끄기
  * https://hiseon.me/linux/ubuntu/ubuntu-disable-automatic-upgrades/ <br>
  * 우분투 Software & updates - Updates - Automatically check for updates 부분을 Never로 설정.
+
+## 우분투 오류보고창 끄기
+ * https://lute3r.tistory.com/63
+ * sudo gedit /etc/default/apport
+   <br>enabled=1 > enabled=0 변경
+ * sudo service apport stop
