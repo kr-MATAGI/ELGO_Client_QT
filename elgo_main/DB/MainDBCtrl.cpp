@@ -9,6 +9,8 @@
 #include "MainDBCtrl.h"
 #include "Logger/MainLogger.h"
 
+#define DB_CONN_NAME    "LocalDB"
+
 //========================================================
 MainDBCtrl::MainDBCtrl(QObject *parent)
     : QObject(parent)
@@ -32,7 +34,7 @@ void MainDBCtrl::InitializeDB()
     m_mutex->lock();
 
     // Checking device.db's tables
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
 
     MakeDefulatTable(db, DEVICE_DB, "device");
     MakeDefulatTable(db, SCHEDULE_DB, "playSchedule");
@@ -40,6 +42,7 @@ void MainDBCtrl::InitializeDB()
     MakeDefulatTable(db, SCHEDULE_DB, "powerSchedule");
     MakeDefulatTable(db, SCHEDULE_DB, "playingInfo");
 
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -153,13 +156,14 @@ void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -205,6 +209,7 @@ void MainDBCtrl::UpdateNewPlaySchedule(const QVector<ScheduleJson::PlaySchedule>
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -214,13 +219,14 @@ void MainDBCtrl::ClearAllPlaySchedule()
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -235,8 +241,9 @@ void MainDBCtrl::ClearAllPlaySchedule()
                       DB_Query::DELETE_ALL_PLAY_SCHEDULE,
                       query.lastError().text().toStdString().c_str());
     }
-    db.close();
 
+    db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -246,13 +253,14 @@ void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -270,6 +278,7 @@ void MainDBCtrl::DeletePlayScheduleById(const QString& scheduleId)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -279,13 +288,14 @@ void MainDBCtrl::GetAllPlayScheduleList(QVector<ScheduleJson::PlaySchedule>& des
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -362,6 +372,7 @@ void MainDBCtrl::GetAllPlayScheduleList(QVector<ScheduleJson::PlaySchedule>& des
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -371,13 +382,14 @@ void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerSchedul
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -419,6 +431,7 @@ void MainDBCtrl::UpdateNewPowerSchedule(const QVector<ScheduleJson::PowerSchedul
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -428,13 +441,14 @@ void MainDBCtrl::DeletePowerScheduleById(const QString& scheduleId)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -452,6 +466,7 @@ void MainDBCtrl::DeletePowerScheduleById(const QString& scheduleId)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -461,13 +476,14 @@ void MainDBCtrl::GetAllPowerScheduleList(ScheduleJson::PowerSchedule& dest)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -512,6 +528,7 @@ void MainDBCtrl::GetAllPowerScheduleList(ScheduleJson::PowerSchedule& dest)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -521,13 +538,14 @@ void MainDBCtrl::UpdatePlayingData(const int playDataId, const PlayJson::PlayDat
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -564,6 +582,7 @@ void MainDBCtrl::UpdatePlayingData(const int playDataId, const PlayJson::PlayDat
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -573,13 +592,14 @@ void MainDBCtrl::GetPlayingData(int& destId, PlayJson::PlayDataType& destType)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -608,6 +628,7 @@ void MainDBCtrl::GetPlayingData(int& destId, PlayJson::PlayDataType& destType)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -617,13 +638,14 @@ void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::CustomPlayDataJson& playData
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -652,6 +674,7 @@ void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::CustomPlayDataJson& playData
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -661,13 +684,14 @@ void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::FixedPlayDataJson& playData)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -696,6 +720,7 @@ void MainDBCtrl::AddNewPlayDataToDB(const PlayJson::FixedPlayDataJson& playData)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -706,13 +731,14 @@ void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType ty
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -743,6 +769,7 @@ void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType ty
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -753,13 +780,14 @@ void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType ty
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -790,6 +818,7 @@ void MainDBCtrl::GetPlayDataFromDB(const int id, const PlayJson::PlayDataType ty
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -800,13 +829,14 @@ void MainDBCtrl::GetAllPlayDataFromDB(QVector<PlayJson::CustomPlayDataJson>& cus
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -858,6 +888,7 @@ void MainDBCtrl::GetAllPlayDataFromDB(QVector<PlayJson::CustomPlayDataJson>& cus
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }
 
@@ -867,13 +898,14 @@ void MainDBCtrl::DeletePlayData(const int id, const PlayJson::PlayDataType type)
 {
     m_mutex->lock();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DB_CONN_NAME);
     db.setDatabaseName(SCHEDULE_DB);
     const bool bIsOpened = db.open();
     if(false == bIsOpened)
     {
         ELGO_MAIN_LOG("ERROR - DB Open: %s", SCHEDULE_DB);
         db.close();
+        db.removeDatabase(DB_CONN_NAME);
         m_mutex->unlock();
 
         return;
@@ -896,5 +928,6 @@ void MainDBCtrl::DeletePlayData(const int id, const PlayJson::PlayDataType type)
     }
 
     db.close();
+    db.removeDatabase(DB_CONN_NAME);
     m_mutex->unlock();
 }

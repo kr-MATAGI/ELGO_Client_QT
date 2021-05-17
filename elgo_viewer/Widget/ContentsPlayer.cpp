@@ -450,6 +450,8 @@ void ContentsPlayer::ExecPlayDataSlot(const PlayJson::PlayData& playData,
     m_playerTimer.start(990);
 }
 
+#include <QThread>
+
 //========================================================
 void ContentsPlayer::UpdatePlayerScene(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                        const bool bDelPrevData)

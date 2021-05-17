@@ -58,7 +58,7 @@ void VideoItem::SetVideoFile(const QString& path, const VideoInfo::MetaData& met
     m_mediaBuffer->open(QIODevice::ReadOnly);
     m_mediaBuffer->reset();
 
-    m_player->setMedia(QMediaContent(), m_mediaBuffer);
+    m_player->setMedia(QMediaContent(), m_mediaBuffer);\
 
     ELGO_VIEWER_LOG("Set Video File : %s", path.toUtf8().constData());
 }
