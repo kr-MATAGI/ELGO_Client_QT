@@ -809,8 +809,8 @@ void ContentsPlayer::MakeFileTypeContent(const PlayScheduleTimer::PlayingIndex& 
         metaData.duration.user = contentData.userDuration;
         metaData.duration.file = contentData.fileDuration;
 
-        newVideoItem->SetVideoFile(fullPath, metaData);
         newVideoItem->SetVideoPosAndSize(posSize);
+        newVideoItem->SetVideoFile(fullPath, metaData);
         newVideoItem->setZValue(contentData.zIndex);
 
         dest->addItem(newVideoItem);
