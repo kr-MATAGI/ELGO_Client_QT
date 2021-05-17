@@ -46,7 +46,7 @@ void SubtitleWidget::MakeSubTitleWidget(const PlayJson::SubtitleData& subtitleDa
 
     // Set Style Sheet
     StyleSheet::StyleInfo styleInfo;
-//    styleInfo.bTransparency = subtitleData. Not Existed
+    styleInfo.bTransparency = subtitleData.bBackgroundOpacity;
     styleInfo.backgroundColor = subtitleData.backgroundColor;
     styleInfo.fontColor = subtitleData.fontColor;
     styleInfo.fontSize = subtitleData.fontSize;
@@ -90,7 +90,16 @@ void SubtitleWidget::SetStyleSheet(const StyleSheet::StyleInfo& styleInfo)
     ELGO_VIEWER_LOG("Label StyleSheet : %s", labelStyleSheet.toStdString().c_str());
     ELGO_VIEWER_LOG("Label FontSize : %d", m_styleInfo.fontSize);
 
-    this->setStyleSheet(widgetStyleSheet);
+    if(true == m_styleInfo.bTransparency)
+    {
+        this->setAttribute(Qt::WA_TranslucentBackground, true);
+        ui->subtitleLabel->setAttribute(Qt::WA_TranslucentBackground, true);
+    }
+    else
+    {
+        this->setStyleSheet(widgetStyleSheet);
+    }
+
     ui->subtitleLabel->setStyleSheet(labelStyleSheet);
     ui->subtitleLabel->setFont(labelFont);
 }

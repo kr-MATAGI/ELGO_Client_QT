@@ -248,6 +248,7 @@ namespace PlayJson
             , width(0)
             , height(0)
             , fontSize(0)
+            , bBackgroundOpacity(false)
             , bIsFixed(true)
             , direction(AniFlowDirection::NONE_DIRECTION)
             , orientation(Orientation::NONE_ORIENTATION)
@@ -266,6 +267,7 @@ namespace PlayJson
         QString backgroundColor;
         QString fontColor;
         int fontSize;
+        bool bBackgroundOpacity;
 
         bool bIsFixed;
         AniFlowDirection direction;
