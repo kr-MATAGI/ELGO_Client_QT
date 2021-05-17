@@ -29,11 +29,11 @@ public:
     void ExecDownloadPowerSchedule();
 
     /** @brief */
-    void SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList);
+    bool SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList);
     /** @brief */
-    void SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList);
+    bool SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList);
     /** @brief */
-    void DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData);
+    bool DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData);
 
 
     /** @brief */

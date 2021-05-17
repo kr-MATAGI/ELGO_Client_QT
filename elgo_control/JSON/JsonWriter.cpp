@@ -348,7 +348,7 @@ void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJ
 
 //========================================================
 void JsonWriter::WriteContentServerErrorResponse(const ContentSchema::Summary& src, QString& dest,
-                                                 const bool bIsError, const QString& errorStr)
+                                                 const QString& errorStr)
 //========================================================
 {
     QJsonDocument jsonDoc;
@@ -361,7 +361,7 @@ void JsonWriter::WriteContentServerErrorResponse(const ContentSchema::Summary& s
 
     // playload
     QJsonObject payloadObj;
-    WriteContentServerPayload(src, payloadObj, bIsError, errorStr);
+    WriteContentServerPayload(src, payloadObj, true, errorStr);
     jsonObj["payload"] = payloadObj;
 
     jsonDoc.setObject(jsonObj);

@@ -159,6 +159,6 @@ void ControlThread::ExecResponseScreenCapture()
         {
             errorStr = "Failed Upload File";
         }
-        JsonWriter::WriteContentServerErrorResponse(response, sendJson, true, errorStr);
+        JsonWriter::WriteContentServerErrorResponse(response, sendJson, errorStr);
     }
 }

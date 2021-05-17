@@ -63,24 +63,6 @@ void DownloadThread::ExecDownloadSinglePlayData()
     const bool bIsResponse = CurlDownload::DownloadResourceList(resourceUrl, response);
     if(true == bIsResponse)
     {
-        // elgo_control -> elgo_main
-        /**
-         *  @note
-         *          ELGO_CONTROL -> ELGO_MAIN
-         *          Clear All Play Schedule List
-         *          Cause by single play event
-         *  @param
-         *          NONE
-         */
-        QByteArray mainBytes;
-        const bool bSendMain = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                   MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
-                                                   mainBytes);
-        if(false == bSendMain)
-        {
-            ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST);
-        }
-
         PlayJson::CustomPlayDataJson customPlayData;
         PlayJson::FixedPlayDataJson fixedPlayData;
         PlayJson::PlayData playData;
@@ -91,6 +73,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
         // video duration info
         QVector<QPair<QString, qint64>> videoInfoList;
 
+        bool bIsError = false;;
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
         {
@@ -112,14 +95,24 @@ void DownloadThread::ExecDownloadSinglePlayData()
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
 
-                        SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        const bool bIsDownloaded = SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        if(false == bIsDownloaded)
+                        {
+                            bIsError = true;
+                            break;
+                        }
                     }
                     else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
 
-                        SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        const bool bIsDownloaded = SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        if(false == bIsDownloaded)
+                        {
+                            bIsError = true;
+                            break;
+                        }
                     }
                     else
                     {
@@ -128,7 +121,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
                 }
                 else
                 {
+                    bIsError = true;
                     ELGO_CONTROL_LOG("Error - Failed Object Download : %s", url.toUtf8().constData());
+
+                    break;
                 }
             }
             else if(ResourceJson::ResourceType::DATA == resource[idx].type)
@@ -140,7 +136,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
                 const bool bIsDownload = CurlDownload::DownloadResourceData(resource[idx]);
                 if(false == bIsDownload)
                 {
+                    bIsError = true;
                     ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
+
+                    break;
                 }
                 else
                 {
@@ -153,109 +152,154 @@ void DownloadThread::ExecDownloadSinglePlayData()
             }
         }
 
-        // elgo_control -> elgo_viewer
-        if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
+        if(false == bIsError)
         {
-            // Get Video Duration
-            const int pageDataListSize = customPlayData.pageDataList.size();
-            for(int idx = 0; idx < pageDataListSize; idx++)
-            {
-                VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
-            }
-
-            /**
-             * @note
-             *       ELGO_CONTROL -> ELGO_VIEWER
-             *       Send custom play data information
-             * @param
-             *       CustomPlayDataJson customPlayData
-             */
-            QByteArray viewerBytes;
-            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
-            viewerStream << customPlayData;
-            const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
-                                                          viewerBytes);
-            if(false == bViewerEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
-            }
-
+            // elgo_control -> elgo_main
             /**
              *  @note
              *          ELGO_CONTROL -> ELGO_MAIN
-             *          Add PlayData to DB
+             *          Clear All Play Schedule List
              *          Cause by single play event
              *  @param
-             *          PlayJson::PlayDataType  playJson
-             *          [ CustomPlayDataJson  customPlayData ||
-             *            FixedPlayDataJson   fixedPlayData ]
+             *          NONE
              */
             QByteArray mainBytes;
-            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
-            mainStream << customPlayData.playData.playDataType;
-            mainStream << customPlayData;
-            const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                        MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
-                                                        mainBytes);
-            if(false == bMainEvent)
+            const bool bSendMain = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                       MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST,
+                                                       mainBytes);
+            if(false == bSendMain)
             {
-                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
-            }
-        }
-        else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
-        {
-            // Get Video Duration
-            VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
-
-            /**
-             * @note
-             *       ELGO_CONTROL -> ELGO_VIEWER
-             *       Send fixed play data information
-             * @param
-             *       FixedPlayDataJson customPlayData
-             */
-            QByteArray viewerBytes;
-            QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
-            viewerStream << fixedPlayData;
-            const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
-                                                          VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
-                                                          viewerBytes);
-            if(false == bViewerEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
+                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::CLEARE_ALL_PLAY_SCHEDULE_LIST);
             }
 
-            QByteArray mainBytes;
-            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
-            mainStream << fixedPlayData.playData.playDataType;
-            mainStream << fixedPlayData;
-            const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                        MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
-                                                        mainBytes);
-            if(false == bMainEvent)
+            // elgo_control -> elgo_viewer
+            if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
             {
-                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
+                // Get Video Duration
+                const int pageDataListSize = customPlayData.pageDataList.size();
+                for(int idx = 0; idx < pageDataListSize; idx++)
+                {
+                    VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
+                }
+
+                /**
+                 * @note
+                 *       ELGO_CONTROL -> ELGO_VIEWER
+                 *       Send custom play data information
+                 * @param
+                 *       CustomPlayDataJson customPlayData
+                 */
+                QByteArray viewerBytes;
+                QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+                viewerStream << customPlayData;
+                const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA,
+                                                              viewerBytes);
+                if(false == bViewerEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_CUSTOM_PLAY_DATA);
+                }
+
+                /**
+                 *  @note
+                 *          ELGO_CONTROL -> ELGO_MAIN
+                 *          Add PlayData to DB
+                 *          Cause by single play event
+                 *  @param
+                 *          PlayJson::PlayDataType  playJson
+                 *          [ CustomPlayDataJson  customPlayData ||
+                 *            FixedPlayDataJson   fixedPlayData ]
+                 */
+                QByteArray mainBytes;
+                QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+                mainStream << customPlayData.playData.playDataType;
+                mainStream << customPlayData;
+                const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                            MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
+                                                            mainBytes);
+                if(false == bMainEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
+                }
             }
+            else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
+            {
+                // Get Video Duration
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
+
+                /**
+                 * @note
+                 *       ELGO_CONTROL -> ELGO_VIEWER
+                 *       Send fixed play data information
+                 * @param
+                 *       FixedPlayDataJson customPlayData
+                 */
+                QByteArray viewerBytes;
+                QDataStream viewerStream(&viewerBytes, QIODevice::WriteOnly);
+                viewerStream << fixedPlayData;
+                const bool bViewerEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_VIEWER,
+                                                              VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA,
+                                                              viewerBytes);
+                if(false == bViewerEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event : %d", VIEWER_EVENT::Event::PLAY_FIXED_PLAY_DATA);
+                }
+
+                QByteArray mainBytes;
+                QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+                mainStream << fixedPlayData.playData.playDataType;
+                mainStream << fixedPlayData;
+                const bool bMainEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                            MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB,
+                                                            mainBytes);
+                if(false == bMainEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::ADD_PLAY_DATA_TO_DB);
+                }
+            }
+            else
+            {
+                ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
+            }
+
+            // Send Response
+            QString responseJson;
+            ContentSchema::Summary modifiedJson = m_serverJson;
+            modifiedJson.payload.src = m_serverJson.payload.dest;
+            modifiedJson.payload.dest = m_serverJson.payload.src;
+            modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
+
+            JsonWriter::WriteContentServerSinglePlayEvent(modifiedJson, responseJson);
+            NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
-        }
+            // Send Error Response
+            QString responseJson;
+            ContentSchema::Summary modifiedJson = m_serverJson;
+            modifiedJson.payload.src = m_serverJson.payload.dest;
+            modifiedJson.payload.dest = m_serverJson.payload.src;
+            modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-        // send response to content server
+            QString errorStr = "Failed - Download Resource";
+            JsonWriter::WriteContentServerErrorResponse(modifiedJson, responseJson, errorStr);
+            NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", resourceUrl.toStdString().c_str());
+
+        // Send Error Response
         QString responseJson;
         ContentSchema::Summary modifiedJson = m_serverJson;
         modifiedJson.payload.src = m_serverJson.payload.dest;
         modifiedJson.payload.dest = m_serverJson.payload.src;
         modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-        JsonWriter::WriteContentServerSinglePlayEvent(modifiedJson, responseJson);
+        QString errorStr = "Failed - Download Resource List";
+        JsonWriter::WriteContentServerErrorResponse(modifiedJson, responseJson, errorStr);
         NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
-    }
-    else
-    {
-        ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", resourceUrl.toStdString().c_str());
     }
 }
 
@@ -279,6 +323,8 @@ void DownloadThread::ExecDownloadPlaySchedule()
 
         QVector<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
+
+        bool bIsError = false;
         const int resourceSize = resource.size();
         for(int idx = 0; idx < resourceSize; idx++)
         {
@@ -299,14 +345,24 @@ void DownloadThread::ExecDownloadPlaySchedule()
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
 
-                        SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        const bool bIsDownload = SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        if(false == bIsDownload)
+                        {
+                            bIsError = true;
+                            break;
+                        }
                     }
                     else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
                     {
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
 
-                        SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        const bool bIsDownload = SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        if(false == bIsDownload)
+                        {
+                            bIsError = true;
+                            break;
+                        }
                     }
                     else
                     {
@@ -315,7 +371,10 @@ void DownloadThread::ExecDownloadPlaySchedule()
                 }
                 else
                 {
+                    bIsError = true;
                     ELGO_CONTROL_LOG("Error - Failed Object Download : %s", url.toUtf8().constData());
+
+                    break;
                 }
             }
             else if(ResourceJson::ResourceType::DATA == resource[idx].type)
@@ -332,7 +391,10 @@ void DownloadThread::ExecDownloadPlaySchedule()
                 }
                 else
                 {
+                    bIsError = true;
                     ELGO_CONTROL_LOG("Error - Failed Data Download : %s", url.toUtf8().constData());
+
+                    break;
                 }
             }
             else
@@ -340,7 +402,10 @@ void DownloadThread::ExecDownloadPlaySchedule()
                 const bool bIsDownload = CurlDownload::DownloadResourceData(resource[idx]);
                 if(false == bIsDownload)
                 {
+                    bIsError = true;
                     ELGO_CONTROL_LOG("Error - Failed Download : %s", resource[idx].name.toStdString().c_str());
+
+                    break;
                 }
                 else
                 {
@@ -353,87 +418,114 @@ void DownloadThread::ExecDownloadPlaySchedule()
             }
         }
 
-        // elgo_control -> elgo_viewer
-        if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
+        if(false == bIsError)
         {
-            // Get Video Duration
-            const int pageDataListSize = customPlayData.pageDataList.size();
-            for(int idx = 0; idx < pageDataListSize; idx++)
+            // elgo_control -> elgo_viewer
+            if(PlayJson::PlayDataType::CUSTOM == playData.playDataType)
             {
-                VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
+                // Get Video Duration
+                const int pageDataListSize = customPlayData.pageDataList.size();
+                for(int idx = 0; idx < pageDataListSize; idx++)
+                {
+                    VideoInfoHelper::MatchVideoDuration(videoInfoList, customPlayData.pageDataList[idx].layerDataList);
+                }
+
+                /**
+                 *  @note
+                 *          ELGO_CONTROL -> ELGO_MAIN
+                 *          For manage custom/fixed play schedule
+                 *  @param
+                 *          PlayDataType    playDataType
+                 *          [ CustomPlayDataJson  customPlayData ||
+                 *            FixedPlayDataJson   fixedPlayData ]
+                 *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+                 */
+                QByteArray mainBytes;
+                QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+                mainStream << customPlayData.playData.playDataType;
+                mainStream << customPlayData;
+                mainStream << playScheduleList;
+
+                const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
+                                                                MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
+                                                                mainBytes);
+                if(false == bMainSendEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
+                }
+            }
+            else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
+            {
+                // Get Video Duration
+                VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
+
+                /**
+                 *  @note
+                 *          ELGO_CONTROL -> ELGO_MAIN
+                 *          For manage custom/fixed play schedule
+                 *  @param
+                 *          PlayDataType    playDataType
+                 *          [ CustomPlayDataJson  customPlayData ||
+                 *            FixedPlayDataJson   fixedPlayData ]
+                 *          QVector<ScheduleJson::PlaySchedule> playScheduleList
+                 */
+                QByteArray mainBytes;
+                QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
+                mainStream << fixedPlayData.playData.playDataType;
+                mainStream << fixedPlayData;
+                mainStream << playScheduleList;
+
+                const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_MAIN,
+                                                                MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
+                                                                mainBytes);
+                if(false == bMainSendEvent)
+                {
+                    ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
+                }
+            }
+            else
+            {
+                ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
             }
 
-            /**
-             *  @note
-             *          ELGO_CONTROL -> ELGO_MAIN
-             *          For manage custom/fixed play schedule
-             *  @param
-             *          PlayDataType    playDataType
-             *          [ CustomPlayDataJson  customPlayData ||
-             *            FixedPlayDataJson   fixedPlayData ]
-             *          QVector<ScheduleJson::PlaySchedule> playScheduleList
-             */
-            QByteArray mainBytes;
-            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
-            mainStream << customPlayData.playData.playDataType;
-            mainStream << customPlayData;
-            mainStream << playScheduleList;
+            // Send Response
+            QString clientJsonStr;
+            ContentSchema::Summary modifiedJson = m_serverJson;
+            modifiedJson.payload.src = m_serverJson.payload.dest;
+            modifiedJson.payload.dest = m_serverJson.payload.src;
+            modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-            const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
-                                                            MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
-                                                            mainBytes);
-            if(false == bMainSendEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
-            }
-        }
-        else if(PlayJson::PlayDataType::FIXED == playData.playDataType)
-        {
-            // Get Video Duration
-            VideoInfoHelper::MatchVideoDuration(videoInfoList, fixedPlayData.layerDataList);
-
-            /**
-             *  @note
-             *          ELGO_CONTROL -> ELGO_MAIN
-             *          For manage custom/fixed play schedule
-             *  @param
-             *          PlayDataType    playDataType
-             *          [ CustomPlayDataJson  customPlayData ||
-             *            FixedPlayDataJson   fixedPlayData ]
-             *          QVector<ScheduleJson::PlaySchedule> playScheduleList
-             */
-            QByteArray mainBytes;
-            QDataStream mainStream(&mainBytes, QIODevice::WriteOnly);
-            mainStream << fixedPlayData.playData.playDataType;
-            mainStream << fixedPlayData;
-            mainStream << playScheduleList;
-
-            const bool bMainSendEvent = EFCEvent::SendEvent(ELGO_SYS::ELGO_MAIN,
-                                                            MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST,
-                                                            mainBytes);
-            if(false == bMainSendEvent)
-            {
-                ELGO_CONTROL_LOG("Error - Send Event: %d", MAIN_EVENT::Event::UPDATE_PLAY_SCHEDULE_LIST);
-            }
+            JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, clientJsonStr);
+            NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(clientJsonStr);
         }
         else
         {
-            ELGO_CONTROL_LOG("Error - Unknwon playDataType : %d", playData.playDataType);
-        }
+            // Send Error Response
+            QString responseJson;
+            ContentSchema::Summary modifiedJson = m_serverJson;
+            modifiedJson.payload.src = m_serverJson.payload.dest;
+            modifiedJson.payload.dest = m_serverJson.payload.src;
+            modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-        // send response to content server
-        QString clientJsonStr;
+            QString errorStr = "Failed - Download Resource";
+            JsonWriter::WriteContentServerErrorResponse(modifiedJson, responseJson, errorStr);
+            NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
+        }
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Error - Failed Download : %s", payloadUrl.toStdString().c_str());
+
+        // Send Error Response
+        QString responseJson;
         ContentSchema::Summary modifiedJson = m_serverJson;
         modifiedJson.payload.src = m_serverJson.payload.dest;
         modifiedJson.payload.dest = m_serverJson.payload.src;
         modifiedJson.payload.type = ContentSchema::PayloadType::RESPONSE;
 
-        JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, clientJsonStr);
-        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(clientJsonStr);
-    }
-    else
-    {
-        ELGO_CONTROL_LOG("Error - Failed Download : %s", payloadUrl.toStdString().c_str());
+        QString errorStr = "Failed - Download Resource List";
+        JsonWriter::WriteContentServerErrorResponse(modifiedJson, responseJson, errorStr);
+        NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
     }
 }
 
@@ -486,12 +578,18 @@ void DownloadThread::ExecDownloadPowerSchedule()
 }
 
 //========================================================
-void DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList)
+bool DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList)
 //========================================================
 {
+    bool retValue = true;
     QVector<PlayJson::PageData>::iterator pageIter = pageDataList.begin();
     for(; pageIter != pageDataList.end(); ++pageIter)
     {
+        if(false == retValue)
+        {
+            break;
+        }
+
         QVector<PlayJson::CustomLayerData>::iterator layerDataIter = pageIter->layerDataList.begin();
         for(; layerDataIter != pageIter->layerDataList.end(); ++layerDataIter)
         {
@@ -500,36 +598,58 @@ void DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pag
                 if( (PlayJson::MediaType::NEWS == layerDataIter->layerContent.contentInfo.mediaType) ||
                     (PlayJson::MediaType::WEATHER == layerDataIter->layerContent.contentInfo.mediaType) )
                 {
-                    DownloadAdditionalWidgetInfo(layerDataIter->layerContent);
+                    const bool bIsDownloaded = DownloadAdditionalWidgetInfo(layerDataIter->layerContent);
+                    if(false == bIsDownloaded)
+                    {
+                        retValue = false;
+                        break;
+                    }
                 }
             }
         }
     }
+
+    return retValue;
 }
 
 //========================================================
-void DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList)
+bool DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList)
 //========================================================
 {
+    bool retValue = true;
+
     QVector<PlayJson::FixedLayerData>::iterator layerDataIter = layerDataList.begin();
     for(; layerDataIter != layerDataList.end(); ++layerDataIter)
     {
+        if(false == retValue)
+        {
+            break;
+        }
+
         QVector<PlayJson::ContentData>::iterator contentIter = layerDataIter->contentDataList.begin();
         for(; contentIter != layerDataIter->contentDataList.end(); ++contentIter)
         {
             if( (PlayJson::MediaType::NEWS == contentIter->contentInfo.mediaType) ||
                 (PlayJson::MediaType::WEATHER == contentIter->contentInfo.mediaType) )
             {
-                DownloadAdditionalWidgetInfo(*contentIter);
+                const bool bIsDownloaded = DownloadAdditionalWidgetInfo(*contentIter);
+                if(false == bIsDownloaded)
+                {
+                    retValue = false;
+                    break;
+                }
             }
         }
     }
+
+    return retValue;
 }
 
 //========================================================
-void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData)
+bool DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData)
 //========================================================
 {
+    bool bIsDownloaded = true;
     if(PlayJson::MediaType::NEWS == contentData.contentInfo.mediaType)
     {
         QString recvJsonStr;
@@ -548,6 +668,7 @@ void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
         }
         else
         {
+            bIsDownloaded = false;
             ELGO_CONTROL_LOG("Error - Download Failed, category : %d", contentData.newsCategory);
         }
     }
@@ -577,6 +698,7 @@ void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
         }
         else
         {
+            bIsDownloaded = false;
             ELGO_CONTROL_LOG("Error - Weather Info Download Failed, {areaName : %s %s, nx: %d, ny: %d}",
                              contentData.metropolCityName.toStdString().c_str(), contentData.cityName.toStdString().c_str(),
                              contentData.nx, contentData.ny);
@@ -586,6 +708,8 @@ void DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
     {
         ELGO_CONTROL_LOG("Error - Media type : %d", contentData.contentInfo.mediaType);
     }
+
+    return bIsDownloaded;
 }
 
 //========================================================
