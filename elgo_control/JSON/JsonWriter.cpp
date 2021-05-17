@@ -371,6 +371,28 @@ void JsonWriter::WriteContentServerErrorResponse(const ContentSchema::Summary& s
 }
 
 //========================================================
+void JsonWriter::WriteContentServerProgressResponse(const ContentSchema::Summary& src, QString& dest)
+//========================================================
+{
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    // event
+    QString event;
+    JsonStringConverter::ContentServerEventEnumToString(src.event, event);
+    jsonObj["event"] = event;
+
+    // payload
+    QJsonObject payloadObj;
+    WriteContentServerPayload(src, payloadObj);
+    jsonObj["payload"] = payloadObj;
+
+    jsonDoc.setObject(jsonObj);
+    QByteArray compactBytes = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
+    dest = QString(compactBytes.toStdString().c_str());
+}
+
+//========================================================
 void JsonWriter::GetBeautifyUDID(const QString& src, QString& dest)
 //========================================================
 {

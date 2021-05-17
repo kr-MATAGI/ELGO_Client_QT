@@ -263,6 +263,8 @@ void DownloadThread::ExecDownloadSinglePlayData()
             }
 
             // Send Response
+            emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
             QString responseJson;
             ContentSchema::Summary modifiedJson = m_serverJson;
             modifiedJson.payload.src = m_serverJson.payload.dest;
@@ -275,6 +277,8 @@ void DownloadThread::ExecDownloadSinglePlayData()
         else
         {
             // Send Error Response
+            emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
             QString responseJson;
             ContentSchema::Summary modifiedJson = m_serverJson;
             modifiedJson.payload.src = m_serverJson.payload.dest;
@@ -284,6 +288,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
             QString errorStr = "Failed - Download Resource";
             JsonWriter::WriteContentServerErrorResponse(modifiedJson, responseJson, errorStr);
             NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
+
         }
     }
     else
@@ -291,6 +296,8 @@ void DownloadThread::ExecDownloadSinglePlayData()
         ELGO_CONTROL_LOG("Error - Failed Downloaded : %s", resourceUrl.toStdString().c_str());
 
         // Send Error Response
+        emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
         QString responseJson;
         ContentSchema::Summary modifiedJson = m_serverJson;
         modifiedJson.payload.src = m_serverJson.payload.dest;
@@ -489,6 +496,8 @@ void DownloadThread::ExecDownloadPlaySchedule()
             }
 
             // Send Response
+            emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
             QString clientJsonStr;
             ContentSchema::Summary modifiedJson = m_serverJson;
             modifiedJson.payload.src = m_serverJson.payload.dest;
@@ -501,6 +510,8 @@ void DownloadThread::ExecDownloadPlaySchedule()
         else
         {
             // Send Error Response
+            emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
             QString responseJson;
             ContentSchema::Summary modifiedJson = m_serverJson;
             modifiedJson.payload.src = m_serverJson.payload.dest;
@@ -517,6 +528,8 @@ void DownloadThread::ExecDownloadPlaySchedule()
         ELGO_CONTROL_LOG("Error - Failed Download : %s", payloadUrl.toStdString().c_str());
 
         // Send Error Response
+        emit NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().StopProgressTimerSignal();
+
         QString responseJson;
         ContentSchema::Summary modifiedJson = m_serverJson;
         modifiedJson.payload.src = m_serverJson.payload.dest;

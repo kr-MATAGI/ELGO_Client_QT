@@ -25,7 +25,11 @@ public:
     void SendTextMessageToServer(const QString& textMsg);
 
 signals:
+    /** @brief */
     void ConnectContentServerSignal();
+
+    /** @brief */
+    void StopProgressTimerSignal();
 
 private slots:
     /** @brief */
@@ -47,11 +51,18 @@ private slots:
     /** @brief */
     void ErrorTimeout();
 
+    /** @brief */
+    void ProgressTimeout();
+    /** @brief */
+    void StopProgressTimerSlot();
+
 private:
     QWebSocket *m_socket;
     ContentWebSocketHandler *m_handler;
 
     QTimer m_errorTimer;
+    QTimer m_progressTimer;
+    ContentSchema::Summary m_progressRes;
 };
 
 #endif // CONTENTWEBSOCKET_H

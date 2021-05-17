@@ -1,6 +1,7 @@
 
 // Control
 #include "JSON/JsonParser.h"
+#include "JSON/JsonWriter.h"
 #include "ContentWebSocket.h"
 #include "Logger/ControlLogger.h"
 #include "LocalSocketEvent/EFCEvent.h"
@@ -31,6 +32,11 @@ ContentWebSocket::ContentWebSocket(QObject *parent)
 
     connect(&m_errorTimer, &QTimer::timeout,
             this, &ContentWebSocket::ErrorTimeout);
+
+    connect(&m_progressTimer, &QTimer::timeout,
+            this, &ContentWebSocket::ProgressTimeout);
+    connect(this, &ContentWebSocket::StopProgressTimerSignal,
+            this, &ContentWebSocket::StopProgressTimerSlot);
 }
 
 //========================================================
@@ -135,6 +141,14 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
         const bool bIsParsing = JsonParser::ParseContentServerJsonResponse(message, response);
         if(true == bIsParsing)
         {
+            if( (ContentSchema::Event::SINGLE_PLAY == response.event) ||
+                (ContentSchema::Event::PLAY_SCHEDULE == response.event) )
+            {
+                m_progressRes = response;
+                m_progressTimer.setSingleShot(true);
+                m_progressTimer.start(CONN_TIMEOUT::PROGRESS_TIMEROUT);
+            }
+
             QString request;
             m_handler->RunEvent(response, request);
             if(0 < request.length())
@@ -172,7 +186,6 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
 void ContentWebSocket::BinaryMessageReceivedSlot(const QByteArray &message)
 //========================================================
 {
-    // TODO
     ELGO_CONTROL_LOG("");
 }
 
@@ -203,4 +216,33 @@ void ContentWebSocket::ErrorTimeout()
     }
 
     m_errorTimer.stop();
+}
+
+//========================================================
+void ContentWebSocket::ProgressTimeout()
+//========================================================
+{
+    QString progressJson;
+    ContentSchema::Summary modifiedJson = m_progressRes;
+    modifiedJson.payload.src = m_progressRes.payload.dest;
+    modifiedJson.payload.dest = m_progressRes.payload.src;
+    modifiedJson.payload.type = ContentSchema::PayloadType::PROGRESS;
+
+    JsonWriter::WriteContentServerProgressResponse(modifiedJson, progressJson);
+    SendTextMessageToServer(progressJson);
+}
+
+//========================================================
+void ContentWebSocket::StopProgressTimerSlot()
+//========================================================
+{
+    if(true == m_progressTimer.isActive())
+    {
+        m_progressTimer.stop();
+        m_progressRes = ContentSchema::Summary();
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("Progress Timer is NOT Active");
+    }
 }

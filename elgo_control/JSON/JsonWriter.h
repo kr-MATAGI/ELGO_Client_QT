@@ -49,6 +49,8 @@ namespace JsonWriter
     /** @brief */
     void WriteContentServerErrorResponse(const ContentSchema::Summary& src, QString& dest,
                                          const QString& errorStr);
+    /** @brief */
+    void WriteContentServerProgressResponse(const ContentSchema::Summary& src, QString& dest);
 
 
     /// elgo_remote <-> elgo_control

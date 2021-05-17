@@ -55,6 +55,10 @@ namespace ContentSchema
     /** @brief */
     struct Summary
     {
+        Summary()
+            : event(Event::NONE_EVENT)
+        {
+        }
         Event event;
         Payload payload;
     };
