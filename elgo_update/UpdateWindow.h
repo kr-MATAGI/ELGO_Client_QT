@@ -42,7 +42,7 @@ private:
     bool ParseLatestVersion(const QString& src, QString& dest);
 
     /** @brief */
-    void DecompressDownloadFile(const QString& path);
+    void DecompressDownloadFile(const QString& path, const QString& destPath);
 
 private slots:
     /** @brief */

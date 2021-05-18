@@ -1,4 +1,5 @@
 // QT
+#include <QProcess>
 #include <QScreen>
 #include <QNetworkReply>
 #include <QtXml>
@@ -377,8 +378,35 @@ bool UpdateManager::ParseLatestVersion(const QString& src, QString& dest)
 }
 
 //========================================================
-void UpdateManager::DecompressDownloadFile(const QString& path)
+void UpdateManager::DecompressDownloadFile(const QString& path,
+                                           const QString& destPath)
 //========================================================
 {
+    QProcess *newProcess = new QProcess;
 
+    QString cmd;
+    QStringList args;
+
+    QString os = QSysInfo::productType();
+    ELGO_UPDATE_LOG("os: %s, path: %s",
+                    os.toStdString().c_str(),
+                    path.toStdString().c_str());
+
+    if( (0 == strcmp(os.toStdString().c_str(), "linux")) ||
+        (0 == strcmp(os.toStdString().c_str(), "ubuntu")) )
+    {
+        cmd = "tar";
+        args << "-xvf";
+        args << path;
+        args << "-C";
+        args << destPath;
+    }
+    ELGO_UPDATE_LOG("cmd: %s", cmd.toStdString().c_str());
+
+    newProcess->start(cmd, args);
+    newProcess->waitForFinished();
+
+    qDebug() << newProcess->readAllStandardOutput();
+
+    newProcess->deleteLater();
 }
