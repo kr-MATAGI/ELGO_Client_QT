@@ -22,9 +22,9 @@ namespace DownloadDef
     /** @brief */
     enum CURL_TIMEOUT
     {
-        DEFAULT_TIME_OUT = 1 * 1000,
-        VIDEO_DOWNLOAD_TIME_OUT = 10 * 1000,
-        NEWS_FEED = 5 * 1000
+        DEFAULT_TIME_OUT = 10 * 1000,
+        VIDEO_DOWNLOAD_TIME_OUT = 30 * 1000,
+        NEWS_FEED = 20 * 1000
     };
 }
 

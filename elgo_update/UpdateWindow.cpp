@@ -109,7 +109,8 @@ void UpdateManager::CheckVersion()
     // Download New Binary
     if(true == bIsNeedNew)
     {
-        QVector<QString> procList = {"elgo_main", "elgo_control", "elgo_viewer"};
+        QVector<QString> procList = {"elgo_main", "elgo_control",
+                                     "elgo_viewer", "elgo_remote"};
 
         for(int idx = 0; idx < procList.size(); idx++)
         {
@@ -140,9 +141,9 @@ void UpdateManager::StartNextDownload()
     if(true == m_downloadQueue.isEmpty())
     {
         QString endLog;
-        if(3 == m_successCnt)
+        if(4 == m_successCnt)
         {
-            endLog = QString("업데이트를 완료하였습니다. (%1)/3")
+            endLog = QString("업데이트를 완료하였습니다. (%1/3)")
                                 .arg(QString::number(m_successCnt));
 
             // Update XML
@@ -163,8 +164,8 @@ void UpdateManager::StartNextDownload()
         m_startTimer.start(START_TIMEOUT);
     }
 
-    QUrl url =m_downloadQueue.dequeue();
-    QString fileName =url.toString().split("/").back();
+    QUrl url = m_downloadQueue.dequeue();
+    QString fileName = url.toString().split("/").back();
     m_outFile.setFileName(fileName);
     if(false == m_outFile.open(QIODevice::WriteOnly))
     {
@@ -339,8 +340,18 @@ void UpdateManager::DownloadFinished()
     }
     else
     {
+        m_successCnt++;
+
         QString successMsg = QString("%1 업데이트 완료").arg(m_outFile.fileName());
         ui->label->setText(successMsg);
+
+        QStringList fileNameSplit = m_outFile.fileName().split("/");
+        if(0 == strcmp(fileNameSplit.back().toStdString().c_str(),
+                       "elgo_update"))
+        {
+            // Decompression
+//            DecompressDownloadFile(m_outFile.fileName());
+        }
     }
 
     m_downloadReply->deleteLater();
@@ -363,4 +374,11 @@ bool UpdateManager::ParseLatestVersion(const QString& src, QString& dest)
     }
 
     return retValue;
+}
+
+//========================================================
+void UpdateManager::DecompressDownloadFile(const QString& path)
+//========================================================
+{
+
 }

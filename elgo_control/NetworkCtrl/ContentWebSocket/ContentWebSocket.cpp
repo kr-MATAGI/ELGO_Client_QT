@@ -58,8 +58,9 @@ void ContentWebSocket::SendTextMessageToServer(const QString& textMsg)
     {
         if(0 < textMsg.length())
         {
-            m_socket->sendTextMessage(textMsg);
-            ELGO_CONTROL_LOG("Send : %s", textMsg.toUtf8().constData());
+            const qint64 sendSize = m_socket->sendTextMessage(textMsg);
+            ELGO_CONTROL_LOG("Send (%lld): %s", sendSize,
+                             textMsg.toUtf8().constData());
         }
         else
         {
@@ -147,14 +148,16 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
                 m_progressRes = response;
                 m_progressTimer.setSingleShot(true);
                 m_progressTimer.start(CONN_TIMEOUT::PROGRESS_TIMEROUT);
+                ELGO_CONTROL_LOG("Progress Timer Start");
             }
 
             QString request;
             m_handler->RunEvent(response, request);
             if(0 < request.length())
             {
-                m_socket->sendTextMessage(request);
-                ELGO_CONTROL_LOG("Send Request : %s", request.toUtf8().constData());
+                const qint64 sendSize = m_socket->sendTextMessage(request);
+                ELGO_CONTROL_LOG("Send Request (%d) : %s", sendSize,
+                                 request.toUtf8().constData());
 
                 // Reboot Event
                 if(ContentSchema::Event::SYSTEM_REBOOT == response.event)
@@ -240,6 +243,7 @@ void ContentWebSocket::StopProgressTimerSlot()
     {
         m_progressTimer.stop();
         m_progressRes = ContentSchema::Summary();
+        ELGO_CONTROL_LOG("Progress Timer Stop");
     }
     else
     {

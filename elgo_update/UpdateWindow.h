@@ -41,6 +41,9 @@ private:
     /** @brief */
     bool ParseLatestVersion(const QString& src, QString& dest);
 
+    /** @brief */
+    void DecompressDownloadFile(const QString& path);
+
 private slots:
     /** @brief */
     void ReadyVersionRead();
