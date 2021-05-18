@@ -8,6 +8,9 @@
 #include <QFile>
 #include <QTimer>
 
+// Common
+#include "Common/Deifinition.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class UpdateWindow; }
 QT_END_NAMESPACE
@@ -64,14 +67,15 @@ private:
     Ui::UpdateWindow *ui;
     QRect m_screenRect;
 
+    ELGO_SYS::Proc m_currDownloadProc;
     QNetworkAccessManager m_netManager;
-    QQueue<QUrl> m_downloadQueue;
+    QQueue<ELGO_SYS::Proc> m_downloadQueue;
     QFile m_outFile;
     QNetworkReply *m_getVersionReply;
     QNetworkReply *m_downloadReply;
 
     int m_successCnt;
-    QVector<QString> m_failedList;
+    QVector<ELGO_SYS::Proc> m_failedList;
     QString m_serverVersion;
 
     QTimer m_startTimer;

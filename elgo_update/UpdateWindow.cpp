@@ -15,7 +15,9 @@
 
 #define CONFIG_XML   "/home/jaehoon/바탕화면/ELGO/config.xml"
 #define ELGO_MAIN_PATH  "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/elgo_main/elgo_main"
+
 #define ELGO_REMOTE_PATH    "/home/jaehoon/바탕화면/ELGO/ELGO_Remote/elgo_remote/build"
+#define ELGO_REMOTE_DECMP_PATH  ""
 
 #define START_TIMEOUT   3000
 
@@ -23,6 +25,7 @@
 UpdateManager::UpdateManager(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::UpdateWindow)
+    , m_currDownloadProc(ELGO_SYS::Proc::NONE_PROC)
     , m_successCnt(0)
 //========================================================
 {
@@ -85,19 +88,20 @@ void UpdateManager::CheckVersion()
     // Read Current Version From XML
     QString currVersion;
     const bool bIsParsing = GetCurrentVersion(currVersion);
-    if(true == bIsParsing)
+    if(true == bIsParsing && false == m_serverVersion.isEmpty())
     {
-        // Recv Latest Version
-        QString serverVersion = "1.0";
+        ELGO_UPDATE_LOG("version info - {local: %s, server: %s}",
+                        currVersion.toStdString().c_str(),
+                        m_serverVersion.toStdString().c_str());
 
         // Compare Version
         const double currVersionNum = std::stod(currVersion.toStdString());
-        const double serverVersionNum = std::stod(serverVersion.toStdString());
+        const double serverVersionNum = std::stod(m_serverVersion.toStdString());
         if(currVersionNum < serverVersionNum)
         {
             QString startMsg = QString("현재: %1, 최신: %2 - 업데이트를 시작합니다.")
                                     .arg(currVersion)
-                                    .arg(serverVersion);
+                                    .arg(m_serverVersion);
             ui->label->setText(startMsg);
             bIsNeedNew = true;
         }
@@ -110,17 +114,14 @@ void UpdateManager::CheckVersion()
     // Download New Binary
     if(true == bIsNeedNew)
     {
-        QVector<QString> procList = {"elgo_main", "elgo_control",
-                                     "elgo_viewer", "elgo_remote"};
+        QVector<ELGO_SYS::Proc> procList = { ELGO_SYS::Proc::ELGO_MAIN,
+                                             ELGO_SYS::Proc::ELGO_CONTROL,
+                                             ELGO_SYS::Proc::ELGO_VIEWER,
+                                             ELGO_SYS::Proc::ELGO_REMOTE };
 
         for(int idx = 0; idx < procList.size(); idx++)
         {
-            QString url = ELGO_UPDATE_URL;
-            url.append("/");
-            url.append(procList[idx]);
-            QUrl downloadUrl(url);
-
-            m_downloadQueue.enqueue(downloadUrl);
+            m_downloadQueue.enqueue(procList[idx]);
         }
 
         StartNextDownload();
@@ -153,9 +154,10 @@ void UpdateManager::StartNextDownload()
         else
         {
             endLog = QString("일부 파일의 업데이트가 실패 했습니다. -{ ");
-            foreach(auto item, m_failedList)
+            foreach(ELGO_SYS::Proc item, m_failedList)
             {
-                endLog.append(item + " ");
+                endLog.append(ELGO_SYS::ELGOProc_enum2str[item]);
+                endLog.append(" ");
             }
             endLog.append(" }");
         }
@@ -165,7 +167,14 @@ void UpdateManager::StartNextDownload()
         m_startTimer.start(START_TIMEOUT);
     }
 
-    QUrl url = m_downloadQueue.dequeue();
+    ELGO_SYS::Proc elgoProc = m_downloadQueue.dequeue();
+    m_currDownloadProc = elgoProc;
+
+    QString urlStr = ELGO_UPDATE_URL;
+    urlStr.append("/");
+    urlStr.append(elgoProc);
+
+    QUrl url = urlStr;
     QString fileName = url.toString().split("/").back();
     m_outFile.setFileName(fileName);
     if(false == m_outFile.open(QIODevice::WriteOnly))
@@ -301,9 +310,20 @@ void UpdateManager::ReadyVersionRead()
 //========================================================
 {
     QString recvJson = m_getVersionReply->readAll();
+    ELGO_UPDATE_LOG("recvJson: %s", recvJson.toStdString().c_str());
 
     // Parsing
-    ParseLatestVersion(recvJson, m_serverVersion);
+    const bool bIsParsed = ParseLatestVersion(recvJson, m_serverVersion);
+    if(true == bIsParsed)
+    {
+        ELGO_UPDATE_LOG("Server side - latest version: %s",
+                        m_serverVersion.toStdString().c_str());
+    }
+    else
+    {
+        ELGO_UPDATE_LOG("Not Parsed Json - %s",
+                        recvJson.toStdString().c_str());
+    }
 }
 
 //========================================================
@@ -346,12 +366,10 @@ void UpdateManager::DownloadFinished()
         QString successMsg = QString("%1 업데이트 완료").arg(m_outFile.fileName());
         ui->label->setText(successMsg);
 
-        QStringList fileNameSplit = m_outFile.fileName().split("/");
-        if(0 == strcmp(fileNameSplit.back().toStdString().c_str(),
-                       "elgo_update"))
+        if(ELGO_SYS::Proc::ELGO_REMOTE == m_currDownloadProc)
         {
             // Decompression
-//            DecompressDownloadFile(m_outFile.fileName());
+            DecompressDownloadFile(ELGO_REMOTE_PATH, ELGO_REMOTE_DECMP_PATH);
         }
     }
 
@@ -372,6 +390,10 @@ bool UpdateManager::ParseLatestVersion(const QString& src, QString& dest)
     {
         retValue = true;
         dest = jsonObj["version"].toString();
+    }
+    else
+    {
+        ELGO_UPDATE_LOG("Not Existed - version.object");
     }
 
     return retValue;
