@@ -36,7 +36,16 @@
   * Alt + F2
   * gnome-session-properties
     <br>만약 설치가 안되었다면 sudo apt install gnome-startup-applications
-  * 시작 프로그램에 'elgo_update' 바이너리 추가
+  * 시작 프로그램에 'elgo_update' 바이너리 추가 <br>
+  * 기존 설정을 실수로 지웠을 시 <br>
+   (기존 설정되어있는 값을 제거시 사용자에게 확인하는 절차가 없음) <br>
+   
+   - SSH Key Agent <br>
+   /usr/bin/gnome-keyring-daemon --start --components=ssh <br>
+   GNOME Keyring: SSH Agent <br>
+
+   - im-launch <br>
+   sh -c 'if [ "x$XDG_SESSION_TYPE" = "xwayland" ] ; then exec env IM_CONFIG_CHECK_ENV=1 im-launch true; fi'
 
 ## 자동 업데이트 끄기
  * https://hiseon.me/linux/ubuntu/ubuntu-disable-automatic-upgrades/ <br>
