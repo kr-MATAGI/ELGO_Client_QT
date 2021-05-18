@@ -23,7 +23,7 @@ namespace DB_Query
     // device table
     static const char* CREATE_TABLE_DEVICE = "CREATE TABLE device ( "
                                                     "id VARCHAR(30) DEFAULT 'root' NOT NULL,"
-                                                    "pw INTEGER DEFAULT 'root' NOT NULL,"
+                                                    "pw VARCHAR(30) DEFAULT 'root' NOT NULL,"
                                                     "name VARCHAR(30) DEFAULT 'ELGO');";
 
     static const char* INSERT_VALUES_DEVICE = "INSERT INTO device(id, pw, name)"
