@@ -32,7 +32,11 @@
   * 우분투 설정 - 키보드 바로가기
 
 ## 시작 프로그램 설정
-  * 쉘 스크립트 이용 필요
+  * http://choesin.com/ubuntu-linux%EC%97%90%EC%84%9C-%EC%8B%9C%EC%9E%91-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%9D%84-%EA%B4%80%EB%A6%AC%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95
+  * Alt + F2
+  * gnome-session-properties
+    <br>만약 설치가 안되었다면 sudo apt install gnome-startup-applications
+  * 시작 프로그램에 'elgo_update' 바이너리 추가
 
 ## 자동 업데이트 끄기
  * https://hiseon.me/linux/ubuntu/ubuntu-disable-automatic-upgrades/ <br>
