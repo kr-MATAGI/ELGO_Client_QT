@@ -1,10 +1,5 @@
 // QT
 #include <QApplication>
-#include <QQuickView>
-#include <QGuiApplication>
-
-// EFC
-#include "LocalSocketEvent/EFCEvent.h"
 
 // Viewer
 #include "MainWindow.h"
