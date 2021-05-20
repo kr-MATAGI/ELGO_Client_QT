@@ -56,13 +56,21 @@ private slots:
     /** @brief */
     void StopProgressTimerSlot();
 
+    /** @brief */
+    void ReConnectTimeout();
+
 private:
     QWebSocket *m_socket;
     ContentWebSocketHandler *m_handler;
 
     QTimer m_errorTimer;
+    bool m_initConnectError;
+
     QTimer m_progressTimer;
     ContentSchema::Summary m_progressRes;
+
+    QTimer m_reConnectTimer;
+    QString m_jwt;
 };
 
 #endif // CONTENTWEBSOCKET_H

@@ -9,6 +9,7 @@
 //========================================================
 ContentWebSocket::ContentWebSocket(QObject *parent)
     : QObject(parent)
+    , m_initConnectError(true)
 //========================================================
 {
     m_socket = new QWebSocket;
@@ -37,6 +38,9 @@ ContentWebSocket::ContentWebSocket(QObject *parent)
             this, &ContentWebSocket::ProgressTimeout);
     connect(this, &ContentWebSocket::StopProgressTimerSignal,
             this, &ContentWebSocket::StopProgressTimerSlot);
+
+    connect(&m_reConnectTimer, &QTimer::timeout,
+            this, &ContentWebSocket::ReConnectTimeout);
 }
 
 //========================================================
@@ -80,8 +84,8 @@ void ContentWebSocket::ConnectContentSocketSlot()
     QNetworkRequest netRequest;
     QUrl url(CONTENT_SERVER_URL);
     QByteArray jwtBytes;
-    QString jwt = NetworkController::GetInstance()->GetNetworkCtrl().GetJWTString();
-    jwtBytes.append(jwt.toUtf8());
+    m_jwt = NetworkController::GetInstance()->GetNetworkCtrl().GetJWTString();
+    jwtBytes.append(m_jwt.toUtf8());
 
     netRequest.setUrl(url);
     netRequest.setRawHeader("Authorization", jwtBytes);
@@ -98,6 +102,12 @@ void ContentWebSocket::ConnectedSocketSlot()
         const bool bIsValid = m_socket->isValid();
         ELGO_CONTROL_LOG("Content WebSocket Valid : %d, host : %s",
                          bIsValid, m_socket->peerAddress().toString().toUtf8().constData());
+
+        if(true == m_reConnectTimer.isActive())
+        {
+            ELGO_CONTROL_LOG("Stop - Re-Connect Timer");
+            m_reConnectTimer.stop();
+        }
     }
     else
     {
@@ -118,7 +128,18 @@ void ContentWebSocket::ErrorOccurredSocketSlot(QAbstractSocket::SocketError sock
 {
     ELGO_CONTROL_LOG("Error - socketError : %d", socketError);
 
-    m_errorTimer.start(100);
+    if(false == m_errorTimer.isActive() && true == m_initConnectError)
+    {
+        m_errorTimer.start(100);
+    }
+
+    m_jwt.clear();
+
+    if(false == m_reConnectTimer.isActive())
+    {
+        m_reConnectTimer.start(CONN_TIMEOUT::RECONNECT_TIMEOUT);
+        ELGO_CONTROL_LOG("Start - Re-Connect Timer");
+    }
 }
 
 //========================================================
@@ -204,6 +225,8 @@ void ContentWebSocket::ErrorTimeout()
      *       QString    ip
      *       QString    deviceName
      */
+    m_initConnectError = false;
+
     QByteArray bytes;
     QDataStream dataStream(&bytes, QIODevice::WriteOnly);
     const QString& ip = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().REMOTE_HOST;
@@ -248,5 +271,34 @@ void ContentWebSocket::StopProgressTimerSlot()
     else
     {
         ELGO_CONTROL_LOG("Progress Timer is NOT Active");
+    }
+}
+
+//========================================================
+void ContentWebSocket::ReConnectTimeout()
+//========================================================
+{
+    QString recvStr;
+    const bool bIsRecvJwt =
+            NetworkController::GetInstance()->GetNetworkCtrl().GetAccessibleJwtFromServer(recvStr);
+
+    if(true == bIsRecvJwt && false == recvStr.isEmpty())
+    {
+        JsonParser::ParseGetJwtResponse(recvStr, m_jwt);
+
+        QNetworkRequest netRequest;
+        QUrl url(CONTENT_SERVER_URL);
+        QByteArray jwtBytes;
+        jwtBytes.append(m_jwt.toUtf8());
+
+        netRequest.setUrl(url);
+        netRequest.setRawHeader("Authorization", jwtBytes);
+
+        m_socket->open(netRequest);
+    }
+    else
+    {
+        ELGO_CONTROL_LOG("ERROR - {isRecv: %d, isEmpty: %d}",
+                         bIsRecvJwt, m_jwt.isEmpty());
     }
 }
