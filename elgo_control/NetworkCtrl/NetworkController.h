@@ -1,9 +1,6 @@
 #ifndef NETWORKCONTROLLER_H
 #define NETWORKCONTROLLER_H
 
-//EFC
-#include "ShardMem/ShmCtrl.h"
-
 // Control
 #include "NetworkCtrl.h"
 #include "DB/NetworkDBCtrl.h"

@@ -1,12 +1,8 @@
-// QT
-#include <QDebug>
-
 // STL
 #include <unordered_map>
 
 // EFC
 #include "LocalSocketEvent/EFCEvent.h"
-#include "ShardMem/ShmCtrl.h"
 
 // Common
 #include "Common/CommonDef.h"

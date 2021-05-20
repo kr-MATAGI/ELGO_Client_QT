@@ -28,9 +28,7 @@ HEADERS += \
     LocalSocketEvent/EFCEvent.h \
     LocalSocketEvent/EventState.h \
     LocalSocketEvent/LocalSocketServer.h \
-    Logger/ELogger.h \
-    ShardMem/ShmCtrl.h \
-    ShardMem/ShmDefinition.h
+    Logger/ELogger.h
 
 
 SOURCES += \
@@ -38,5 +36,4 @@ SOURCES += \
     Common/Interface/ScheduleImpl.cpp \
     LocalSocketEvent/EFCEvent.cpp \
     LocalSocketEvent/LocalSocketServer.cpp \
-    Logger/ELogger.cpp \
-    ShardMem/ShmCtrl.cpp
+    Logger/ELogger.cpp

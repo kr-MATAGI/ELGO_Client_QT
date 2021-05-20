@@ -1,9 +1,6 @@
 #ifndef VIEWERCONTROLLER_H
 #define VIEWERCONTROLLER_H
 
-// EFC
-#include "ShardMem/ShmCtrl.h"
-
 // Viewer
 #include "ViewerCtrl.h"
 
