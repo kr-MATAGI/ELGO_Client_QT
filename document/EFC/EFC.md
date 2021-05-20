@@ -51,7 +51,7 @@
 ## Common
 ### Interface
  * Process간 Event를 주고 받을 때, QByteArray를 이용하여 주고받는다. 이를 위해 operator<<, operator>>를 정의를 포함한다.
- * 
+
 ### Event List
  * Process 마다 수신받을 수 있는 Event를 포함한다.
 
