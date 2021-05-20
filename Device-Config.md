@@ -57,7 +57,7 @@
    <br>enabled=1 > enabled=0 변경
  * sudo service apport stop
 
-### 바탕화면 Icon 숨기기
+## 바탕화면 Icon 숨기기
  * https://www.omgubuntu.co.uk/2020/03/remove-trash-from-desktop-ubuntu
  * GNOME Tweaks를 설치한다.
  * Alt + F2를 입력후 gnome-tweaks를 실행
