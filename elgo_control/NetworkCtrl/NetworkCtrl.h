@@ -3,8 +3,6 @@
 
 // QT
 #include <QObject>
-#include <QtCore>
-#include <QNetworkReply>
 
 // control
 #include "NetworkCtrl/Definition/ServerInfo.h"
