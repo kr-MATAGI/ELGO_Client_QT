@@ -6,7 +6,6 @@
 // QT
 #include <QThreadPool>
 #include <QByteArray>
-#include <QMap>
 
 // EFC
 #include "Common/EventList.h"
