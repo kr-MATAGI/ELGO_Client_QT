@@ -17,7 +17,6 @@ RemoteControlServer::RemoteControlServer(QObject *parent)
 {
     m_handler = new RemoteControlHandler;
     m_server = new QWebSocketServer("RemoteServer", QWebSocketServer::NonSecureMode, this);
-    m_server->setMaxPendingConnections(1); // recv only one elgo_remote
 
     // connect
     connect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
@@ -89,7 +88,6 @@ void RemoteControlServer::NewClientConnectedSlot()
         m_client = m_server->nextPendingConnection();
 
         // connect
-        connect(m_client, SIGNAL(connected()), this, SLOT(RemoteClientSocketConnectedSlot()));
         connect(m_client, SIGNAL(textMessageReceived(const QString&)),
                 this, SLOT(TextMsgRecvSlot(const QString&)));
         connect(m_client, SIGNAL(binaryMessageReceived(const QByteArray&)),
@@ -127,8 +125,12 @@ void RemoteControlServer::PeerVerifyErrorSlot(const QSslError& error)
 void RemoteControlServer::RemoteServerErrorSlot(QWebSocketProtocol::CloseCode closeCode)
 //========================================================
 {
-    ELGO_CONTROL_LOG("Error - RemoteServerError : %d", closeCode);
+    ELGO_CONTROL_LOG("Error - RemoteServerError(%d) - %s",
+                     closeCode, m_client->errorString().toStdString().c_str());
+
+    m_server->close();
     RemoteClientDisconnectedSlot();
+    TCPServerStartSlot();
 }
 
 //========================================================
@@ -139,14 +141,10 @@ void RemoteControlServer::RemoteClientDisconnectedSlot()
 
     if(NULL != m_client)
     {
-        m_client->close();
-        m_client->deleteLater();
+        m_client->disconnect();
         m_bIsConnected = false;
 
-        if(false == m_bIsConnected)
-        {
-            connect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
-        }
+        connect(m_server, SIGNAL(newConnection()), this, SLOT(NewClientConnectedSlot()));
     }
     else
     {
