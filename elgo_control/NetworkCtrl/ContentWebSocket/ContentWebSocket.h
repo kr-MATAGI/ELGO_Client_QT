@@ -4,6 +4,7 @@
 // QT
 #include <QWebSocket>
 #include <QObject>
+#include <QTimer>
 
 // Control
 #include "NetworkCtrl/NetworkController.h"

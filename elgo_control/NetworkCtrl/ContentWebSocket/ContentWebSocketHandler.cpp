@@ -1,4 +1,3 @@
-
 // EFC
 #include "LocalSocketEvent/EFCEvent.h"
 

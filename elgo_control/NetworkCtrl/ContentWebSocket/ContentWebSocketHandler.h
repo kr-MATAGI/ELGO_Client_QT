@@ -5,7 +5,6 @@
 
 // QT
 #include <QThreadPool>
-#include <QTimer>
 
 // Control
 #include "JSON/Schema/ContentServerSchema.h"
