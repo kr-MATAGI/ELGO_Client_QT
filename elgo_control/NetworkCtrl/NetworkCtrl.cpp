@@ -1,6 +1,4 @@
 // QT
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QByteArray>
 #include <QUuid>
 
