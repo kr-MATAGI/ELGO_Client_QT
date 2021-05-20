@@ -184,6 +184,13 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
                 if(ContentSchema::Event::SYSTEM_REBOOT == response.event)
                 {
                     // is need safe disconnect? (elgo_control, viewer)
+                    /**
+                     *  @note
+                     *          ELGO_CONTROL -> ELGO_MAIN
+                     *          System Reboot
+                     *  @param
+                     *          NONE
+                     */
                     QByteArray reBootBytes;
                     const int bSendEvent = EFCEvent::SendEvent(ELGO_SYS::Proc::ELGO_MAIN,
                                                                MAIN_EVENT::Event::SYSTEM_REBOOT_MAIN,

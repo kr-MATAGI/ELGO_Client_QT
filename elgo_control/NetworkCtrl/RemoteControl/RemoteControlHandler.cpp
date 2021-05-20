@@ -215,7 +215,9 @@ Remote::Result::Status RemoteControlHandler::RemoteUpdateDeviceOptions(const QSt
     if(true == bIsParsing)
     {
         /**
-         *  @brief  Change Device Options
+         *  @note
+         *          ELGO_CONTROL -> ELGO_MAIN
+         *          Change Device Options
          *  @param
          *          bool displaySleep
          *          bool deviceMute
