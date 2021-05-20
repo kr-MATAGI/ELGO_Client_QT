@@ -35,4 +35,4 @@
 
 ## 프로세스간 Event 처리
  * 아래를 기본으로 각 프로세스마다 State.cpp에 등록된 <Event, Method> 쌍을 이용해 Event를 처리한다. <br>
-<img src="/document/EFC/Flow-Char/Event-Process.jpg" width="1200px" height="1000px" alt="EventProcess"></img></br>
+<img src="/document/EFC/Flow-Chart/Event-Process.jpg" width="1200px" height="1000px" alt="EventProcess"></img></br>
