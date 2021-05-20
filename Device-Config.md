@@ -61,4 +61,4 @@
  * https://www.omgubuntu.co.uk/2020/03/remove-trash-from-desktop-ubuntu
  * GNOME Tweaks를 설치한다.
  * Alt + F2를 입력후 gnome-tweaks를 실행
- * 확장 탭을 클릭하면 Desktop Icons가 있다. on/off 옆 설정버튼을 누르고 휴지통을 비롯한 icon의 숨
+ * 확장 탭을 클릭하면 Desktop Icons가 있다. on/off 옆 설정버튼을 누르고 휴지통을 비롯한 icon의 숨길 수 있다.
