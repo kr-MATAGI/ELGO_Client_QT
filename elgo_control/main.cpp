@@ -1,6 +1,5 @@
 //QT
 #include <QCoreApplication>
-#include <QDataStream>
 
 // EFC
 #include "Common/Deifinition.h"
