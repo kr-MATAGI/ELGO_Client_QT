@@ -15,7 +15,7 @@
 #include "Definition/ServerInfo.h"
 
 // ext_libs
-#include "ext_libs/libcurl/include/curl/curl.h"
+#include <curl/curl.h>
 
 //========================================================
 NetworkCtrl::NetworkCtrl(QObject *parent)
