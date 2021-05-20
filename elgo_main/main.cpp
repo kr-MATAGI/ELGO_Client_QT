@@ -1,10 +1,6 @@
 // QT
 #include <QCoreApplication>
-#include <QByteArray>
-#include <QObject>
 #include <QProcess>
-
-#include <QNetworkAccessManager>
 
 // Main
 #include "MainCtrl/MainController.h"
