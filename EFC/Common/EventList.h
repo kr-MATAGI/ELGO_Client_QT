@@ -3,17 +3,6 @@
 
 #include <QDataStream>
 
-namespace COMM_EVENT
-{
-    enum Event
-    {
-        NONE_COMM_EVENT = 0,
-
-
-        MAX_COMM_EVENT = 255
-    };
-}
-
 namespace MAIN_EVENT
 {
     enum Event
