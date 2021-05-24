@@ -15,6 +15,7 @@ public:
     static bool SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src);
 
 private:
+    /** @brief */
     static bool SendMessage(QLocalSocket* socket, const quint16 event, const QByteArray &src);
 };
 

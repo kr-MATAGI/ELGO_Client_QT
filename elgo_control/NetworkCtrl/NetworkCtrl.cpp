@@ -61,7 +61,6 @@ void NetworkCtrl::SendControlIsReady()
     // Control -> Main : ReadyStatus
     QByteArray readyBytes;
     QDataStream readyStream(&readyBytes, QIODevice::WriteOnly);
-    readyStream.setVersion(QDataStream::Qt_5_12);
     readyStream << ELGO_SYS::Proc::ELGO_CONTROL;
 
     /**

@@ -11,6 +11,7 @@ template <class T>
 class EventState
 {
 public:
+    /** @brief */
     EventState()
     {
 

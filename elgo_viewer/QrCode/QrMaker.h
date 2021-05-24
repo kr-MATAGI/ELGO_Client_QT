@@ -13,7 +13,9 @@ class QrMaker
 {
 
 public :
+    /** @brief */
     explicit QrMaker();
+    /** @brief */
     virtual ~QrMaker();
 
 public:

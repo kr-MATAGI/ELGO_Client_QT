@@ -16,7 +16,7 @@ LocalSocketServer::LocalSocketServer(::ELGO_SYS::Proc proc, QObject *parent)
     m_server.removeServer(m_procName);
     if(m_server.listen(m_procName))
     {
-        qDebug() << m_procName <<"Socket is Listening...";
+        qDebug() << m_procName << "Socket is Listening...";
         connect(&m_server, SIGNAL(newConnection()), this, SLOT(ClientConnectionSlot()));
     }
     else

@@ -233,7 +233,7 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
     int downloadTimeout = DownloadDef::CURL_TIMEOUT::DEFAULT_TIME_OUT;
     if(ResourceJson::ResourceType::VIDEO == src.type)
     {
-        downloadTimeout = DownloadDef::CURL_TIMEOUT::VIDEO_DOWNLOAD_TIME_OUT;
+        downloadTimeout = DownloadDef::CURL_TIMEOUT::VIDEO_DOWNLOAD;
     }
 
     CURL *curl = curl_easy_init();

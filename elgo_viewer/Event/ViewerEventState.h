@@ -22,7 +22,9 @@ class MainWindow;
 class ViewerEventState
 {
 public:
+    /** @brief */
     ViewerEventState();
+    /** @brief */
     ~ViewerEventState();
 
 public:

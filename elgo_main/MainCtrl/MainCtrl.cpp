@@ -50,8 +50,9 @@ void MainCtrl::LoadCurrentDeviceInfo()
     const qint64 freeByte = storageInfo.bytesFree(); // unit : byte
     m_deviceInfo.storage.totalStorage = totalByte / 1024 / 1024; // MByte
     m_deviceInfo.storage.freeStorage = freeByte / 1024/ 1024; // MByte
-    ELGO_MAIN_LOG("Device - totalStorage : %d MB, freeStorage : %d MB",
-                  m_deviceInfo.storage.totalStorage, m_deviceInfo.storage.freeStorage);
+    ELGO_MAIN_LOG("Device - {totalStorage : %d MB, freeStorage : %d MB}",
+                  m_deviceInfo.storage.totalStorage,
+                  m_deviceInfo.storage.freeStorage);
 
     // Get Network Address Info
     QList<QHostAddress> allAddr = QNetworkInterface::allAddresses();
@@ -132,6 +133,7 @@ void MainCtrl::LoadConfigurationInfo()
 void MainCtrl::CheckInternetConnection()
 //========================================================
 {
+    // Just Check Internet Connection
     QNetworkAccessManager nam;
     QNetworkRequest req(QUrl("http://www.google.com"));
     QNetworkReply* reply = nam.get(req);
@@ -193,8 +195,9 @@ void MainCtrl::CheckDisplaySleepStatus()
     ELGO_MAIN_LOG("Error - Not supported OS");
 #endif
 
+    ELGO_MAIN_LOG("cmdStr : %s", cmdStr.toStdString().c_str());
+
     QProcess *process = new QProcess;
-    QObject::connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
 
     process->start(cmdStr, args);
     process->waitForFinished();
@@ -224,6 +227,8 @@ void MainCtrl::CheckDisplaySleepStatus()
     }
 
     ELGO_MAIN_LOG("IsDisplaySleep Status : %d", m_bDisplaySleep);
+
+    process->deleteLater();
 }
 
 //========================================================

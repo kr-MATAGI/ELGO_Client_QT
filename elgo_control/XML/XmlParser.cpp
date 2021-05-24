@@ -47,7 +47,7 @@ bool XmlParser::ParseRssNewsFeedResponse(const QString& src, const int newsCount
     if(true == xmlReader.hasError())
     {
         retValue = false;
-        ELGO_CONTROL_LOG("Error - %s", xmlReader.errorString().data());
+        ELGO_CONTROL_LOG("Error - %s", xmlReader.errorString().toStdString().c_str());
     }
     else
     {

@@ -8,6 +8,7 @@
 
 namespace DEVICE
 {
+    /** @brief */
     enum Architec
     {
         UNKOWN_ARCH = 0,
@@ -30,6 +31,7 @@ namespace DEVICE
                                            "x86_64", "another"};
     DEVICE::Architec ArchitecString2Enum(QString &str);
 
+    /** @brief */
     enum OS
     {
         UNKOWN_OS = 0,
@@ -52,18 +54,21 @@ namespace DEVICE
                                            "DarWin", "Ubuntu", "another" };
     DEVICE::OS OSString2Enum(QString &str);
 
+    /** @brief */
     struct Stroage
     {
         int totalStorage; // Mbyte
         int freeStorage; // Mbyte
     };
 
+    /** @brief */
     struct IPADDR
     {
         QString ip;
         QString mac;
     };
 
+    /** @brief */
     struct Info
     {
         Architec architec;
@@ -74,13 +79,14 @@ namespace DEVICE
         Stroage storage;
     }; 
 
-    // init configuration
+    /** @brief */
     struct InternetConfig
     {
         QString ssid;
         QString pw;
     };
 
+    /** @brief */
     struct ServerConfig
     {
         QString wasHost;
@@ -90,6 +96,7 @@ namespace DEVICE
         quint16 remoteTCPPort;;
     };
 
+    /** @brief */
     struct INIT_CONFIG
     {
         QString version;

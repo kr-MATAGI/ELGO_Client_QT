@@ -11,7 +11,9 @@ class ViewerController
 private:
     static ViewerController *pInstance;
 
+    /** @brief */
     ViewerController();
+    /** @brief */
     ~ViewerController();
 
 public:

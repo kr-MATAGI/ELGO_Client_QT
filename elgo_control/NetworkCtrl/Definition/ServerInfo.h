@@ -8,10 +8,11 @@
 #define CONTENT_SERVER_URL  "wss://demo.elgo.co.kr:4500"
 #define JWT_URL "/client/jwt/socket"
 
-
+/** @brief */
 struct CONNECT_INFO
 {
-    CONNECT_INFO(const QString &wasHost = NULL, const quint16 wasPort = 4500,
+    CONNECT_INFO(const QString &wasHost = NULL,
+                 const quint16 wasPort = 4500,
                  const QString &remoteTCPHost = NULL)
     {
         WAS_HOST = wasHost;

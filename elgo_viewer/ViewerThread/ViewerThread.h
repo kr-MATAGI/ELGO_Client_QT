@@ -20,7 +20,9 @@ class ContentsPlayer;
 class ViewerThread : public QRunnable
 {
 public:
+    /** @brief */
     ViewerThread();
+    /** @brief */
     ~ViewerThread();
 
 public:

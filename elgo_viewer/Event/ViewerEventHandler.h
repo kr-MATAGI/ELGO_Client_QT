@@ -8,10 +8,13 @@ class ViewerEventHandler : public LocalSocketServer
 {
 
 public:
+    /** @brief */
     ViewerEventHandler(ELGO_SYS::Proc name, QObject *parent = nullptr);
+    /** @brief */
     virtual ~ViewerEventHandler();
 
 private slots:
+    /** @brief */
     void ReadEventSlot() override;
 
 private:

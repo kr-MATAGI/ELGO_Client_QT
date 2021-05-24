@@ -2,6 +2,7 @@
 #define REMOTESCHEMA_H
 
 // QT
+#include <QVector>
 #include <QString>
 
 // Control
@@ -12,6 +13,7 @@ namespace Remote
     /** @brief */
     namespace Result
     {
+        /** @brief */
         enum Status
         {
             NONE_RESULT = 0,
@@ -31,6 +33,7 @@ namespace Remote
             USER_LOGIN_FAIL = 14
         };
 
+        /** @brief */
         struct Contents
         {
             Contents()

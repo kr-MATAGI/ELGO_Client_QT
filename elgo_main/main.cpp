@@ -38,10 +38,11 @@ void Initialize()
     g_MainController->GetInstance()->GetMainCtrl().LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainController->GetMainCtrl().GetDeviceInfo();
     ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
-           ::DEVICE::OS_enum2str[deviceInfo.os],
-            ::DEVICE::Arch_enum2str[deviceInfo.architec],
-            deviceInfo.hostName.toUtf8().constData(), deviceInfo.ipAddr.ip.toUtf8().constData(),
-            deviceInfo.ipAddr.mac.toUtf8().constData());
+                ::DEVICE::OS_enum2str[deviceInfo.os],
+                ::DEVICE::Arch_enum2str[deviceInfo.architec],
+                deviceInfo.hostName.toUtf8().constData(),
+                deviceInfo.ipAddr.ip.toUtf8().constData(),
+                deviceInfo.ipAddr.mac.toUtf8().constData());
 
     // Check Resource Folder
     g_MainController->GetInstance()->GetMainCtrl().CheckResourceFolder();
@@ -59,10 +60,9 @@ void Initialize()
     g_MainController->GetInstance()->GetMainCtrl().CheckDisplaySleepStatus();
 
     // Start Process
-    // TODO : except code about 'false' result and recv proc started results
     const bool bIsStaredControl = StartProcess(::ELGO_SYS::Proc::ELGO_CONTROL);
     const bool bIsStaredViewer = StartProcess(::ELGO_SYS::Proc::ELGO_VIEWER);
-    ELGO_MAIN_LOG("[elgo_main] StartProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+    ELGO_MAIN_LOG("StartProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
 }
 
 int main(int argc, char *argv[])
