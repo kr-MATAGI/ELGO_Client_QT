@@ -150,7 +150,7 @@ void MainCtrl::CheckInternetConnection()
         QString wlanName;
         WifiManager::GetWlanInterfaceName(m_deviceInfo.os, wlanName);
         WifiManager::WakeUpWirelessInterface(m_deviceInfo.os, wlanName);
-        WifiManager::ConnectNewWirelessInternet(m_deviceInfo.os, wlanName,
+        WifiManager::ConnectNewWirelessInternet(m_deviceInfo.os,
                                                 m_initConfig.internet.ssid,
                                                 m_initConfig.internet.pw,
                                                 true);

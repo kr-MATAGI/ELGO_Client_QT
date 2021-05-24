@@ -41,6 +41,11 @@ namespace ContentSchema
     /** @brief */
     struct Payload
     {
+        Payload()
+            : type(PayloadType::NONE_TYPE)
+            , displayPower(false)
+        {
+        }
         QString src;
         QString dest;
         QString message;
@@ -79,7 +84,7 @@ namespace ResourceJson
         VIDEO = 6,
         OBJECT = 7
     };
-    const static char* ResourceTypeEnumToStr[] = { "NONE", "js", "icon", "data",
+    const static QString ResourceTypeEnumToStr[] = { "NONE", "js", "icon", "data",
                                                    "page", "image", "video", "object" };
 
     /** @brief */

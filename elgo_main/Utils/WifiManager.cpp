@@ -112,7 +112,7 @@ void WifiManager::GetAcessibleWifiList(const DEVICE::OS os, const QString& wlanN
 }
 
 //========================================================
-bool WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
+bool WifiManager::ConnectNewWirelessInternet(const DEVICE::OS os, const QString& ssid,
                                              const QString& password, const bool enc)
 //========================================================
 {

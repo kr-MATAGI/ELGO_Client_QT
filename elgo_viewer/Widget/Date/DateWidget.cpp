@@ -143,7 +143,7 @@ void DateWidget::MakeDateLabelString()
     m_dateTime = QDateTime::currentDateTime();
 
     const QDate date = m_dateTime.date();
-    const int year = date.year(); // not using
+//    const int year = date.year(); // not using
     const int month = date.month();
     const int day = date.day();
     const int dayOfWeek = date.dayOfWeek();

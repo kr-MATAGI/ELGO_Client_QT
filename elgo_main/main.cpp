@@ -38,8 +38,8 @@ void Initialize()
     g_MainController->GetInstance()->GetMainCtrl().LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainController->GetMainCtrl().GetDeviceInfo();
     ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
-                ::DEVICE::OS_enum2str[deviceInfo.os],
-                ::DEVICE::Arch_enum2str[deviceInfo.architec],
+                ::DEVICE::OS_enum2str[deviceInfo.os].toStdString().c_str(),
+                ::DEVICE::Arch_enum2str[deviceInfo.architec].toStdString().c_str(),
                 deviceInfo.hostName.toUtf8().constData(),
                 deviceInfo.ipAddr.ip.toUtf8().constData(),
                 deviceInfo.ipAddr.mac.toUtf8().constData());

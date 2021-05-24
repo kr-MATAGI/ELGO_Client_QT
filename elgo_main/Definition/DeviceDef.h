@@ -25,7 +25,7 @@ namespace DEVICE
         X86_64 = 11,
         ANOTHER_ARCH = 255
     };
-    static const char *Arch_enum2str[] = { "unkown", "arm", "arm64",
+    static const QString Arch_enum2str[] = { "unkown", "arm", "arm64",
                                            "i386", "ia64", "mips", "mips64",
                                            "power", "power64", "sparc", "sparcv9",
                                            "x86_64", "another"};
@@ -48,7 +48,7 @@ namespace DEVICE
         UBUNTU = 11,
         ANOTHER_OS = 255
     };
-    static const char *OS_enum2str[] = { "UNKOWN", "Windows", "WinRT", "Linux",
+    static const QString OS_enum2str[] = { "UNKOWN", "Windows", "WinRT", "Linux",
                                            "Android", "Mac", "debian",
                                            "ios", "tvos", "watchos",
                                            "DarWin", "Ubuntu", "another" };

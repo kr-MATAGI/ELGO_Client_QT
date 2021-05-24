@@ -80,7 +80,8 @@ void MainThread::ExecRecvProcecssReady()
 
     ELGO_SYS::Proc proc = ELGO_SYS::Proc::NONE_PROC;
     out >> proc;
-    ELGO_MAIN_LOG("%s proccess is Ready !", ELGO_SYS::ELGOProc_enum2str[proc]);
+    ELGO_MAIN_LOG("%s proccess is Ready !",
+                  ELGO_SYS::ELGOProc_enum2str[proc].toStdString().c_str());
 
     if(ELGO_SYS::Proc::ELGO_CONTROL == proc)
     {
@@ -340,7 +341,8 @@ void MainThread::ExecSearchingWifiList()
      */
 
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
-    ELGO_MAIN_LOG("os: %s", DEVICE::OS_enum2str[os]);
+    ELGO_MAIN_LOG("os: %s",
+                  DEVICE::OS_enum2str[os].toStdString().c_str());
     QString wlanName;
 
     // wlan name
@@ -416,9 +418,7 @@ void MainThread::ExecConnectNewWifi()
                   ssid.toStdString().c_str(), password.toStdString().c_str(), bEnc);
 
     const DEVICE::OS os = MainController::GetInstance()->GetMainCtrl().GetDeviceInfo().os;
-    const QString& wlanName = MainController::GetInstance()->GetMainCtrl().GetDeviceWlanName();
-
-    const bool bIsConnect = WifiManager::ConnectNewWirelessInternet(os, wlanName, ssid, password, bEnc);
+    const bool bIsConnect = WifiManager::ConnectNewWirelessInternet(os, ssid, password, bEnc);
 
     QString newIP;
     WifiManager::GetDeviceLocalIP(newIP);

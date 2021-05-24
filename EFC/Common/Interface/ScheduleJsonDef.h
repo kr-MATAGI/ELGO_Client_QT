@@ -26,7 +26,7 @@ namespace ScheduleJson
         YEAR = 7
     };
 
-    static const char* CronFormatEnumToStr[] = {"none", "sec", "min", "hour",
+    static const QString CronFormatEnumToStr[] = {"none", "sec", "min", "hour",
                                                "day", "month", "DOW", "year"};
 
     /** @brief  Not Using */

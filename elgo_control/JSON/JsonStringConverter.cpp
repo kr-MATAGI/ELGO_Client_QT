@@ -1133,7 +1133,8 @@ void JsonStringConverter::GetCronCommandConvertedList(const QString& src, const 
         else
         {
             ELGO_CONTROL_LOG("Error - %s rule : %s",
-                             ScheduleJson::CronFormatEnumToStr[format], src.toUtf8().constData());
+                             ScheduleJson::CronFormatEnumToStr[format].toStdString().c_str(),
+                             src.toUtf8().constData());
         }
     }
 }

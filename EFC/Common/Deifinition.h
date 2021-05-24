@@ -15,7 +15,7 @@ namespace ELGO_SYS
         ELGO_REMOTE = 5, // React Web
         UNKOWN_PROC = 255
     };
-    static const char *ELGOProc_enum2str[] = { "none", "elgo_main", "elgo_control",
+    static const QString ELGOProc_enum2str[] = { "none", "elgo_main", "elgo_control",
                                                "elgo_viewer", "elgo_update", "elgo_remote",
                                                "unkown" };
 }

@@ -18,7 +18,7 @@ namespace WifiManager
 
     // Connect
     /** @brief */
-    bool ConnectNewWirelessInternet(const DEVICE::OS os, const QString& wlanName, const QString& ssid,
+    bool ConnectNewWirelessInternet(const DEVICE::OS os, const QString& ssid,
                                     const QString& password, const bool enc);
 
     // Wake up

@@ -28,7 +28,7 @@ bool CurlDownload::DownloadNewsFeedXml(PlayJson::NewsCategory category, QString&
         else
         {
             url.append("category/news/");
-            url.append(PlayJson::newscategoryEnumToStr[category]);
+            url.append(PlayJson::newscategoryEnumToStr[category].toStdString().c_str());
             url.append("/feed");
         }
         ELGO_CONTROL_LOG("URL - %s", url.c_str());
@@ -215,7 +215,7 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
 
     // save path
     std::string savePath = RESOURCE_SAVE_PATH;
-    savePath += ResourceJson::ResourceTypeEnumToStr[src.type];
+    savePath += ResourceJson::ResourceTypeEnumToStr[src.type].toStdString().c_str();
     savePath += "/";
     savePath += src.name.toStdString().c_str();
 

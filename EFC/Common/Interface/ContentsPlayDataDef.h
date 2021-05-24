@@ -98,7 +98,7 @@ namespace PlayJson
         NEWS_WEATHER = 10,
     };
 
-    static const char* newscategoryEnumToStr[] = { "none", "latest", "headline", "politics",
+    static const QString newscategoryEnumToStr[] = { "none", "latest", "headline", "politics",
                                                     "economy", "society", "local",
                                                     "international", "culture", "sports", "weather"};
 
