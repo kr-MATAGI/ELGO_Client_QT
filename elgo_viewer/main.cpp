@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
     g_EventHandler = new ViewerEventHandler(ELGO_SYS::Proc::ELGO_VIEWER);
 
     // Send proccess ready status to MAIN
-    // TODO : If socket is not opened, occured App crush.
     g_ViewerController->GetInstance()->GetViewerCtrl().SendViewerIsReady();
 
     // Contents Player Init

@@ -3,7 +3,9 @@
 #include <QDebug>
 #include <QDataStream>
 
+//========================================================
 bool EFCEvent::SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const QByteArray &src)
+//========================================================
 {
     bool retValue = true; // TODO : change to eunm of error (for details)
 
@@ -31,7 +33,9 @@ bool EFCEvent::SendEvent(const ELGO_SYS::Proc proc, const quint16 event, const Q
     return retValue;
 }
 
+//========================================================
 bool EFCEvent::SendMessage(QLocalSocket* socket, const quint16 event, const QByteArray &src)
+//========================================================
 {
     bool retValue = true;
 

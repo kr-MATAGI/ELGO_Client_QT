@@ -1,6 +1,7 @@
 #ifndef WIFIDEF_H
 #define WIFIDEF_H
 
+// QT
 #include <QString>
 
 struct WifiInfo

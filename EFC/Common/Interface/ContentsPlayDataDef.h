@@ -1,6 +1,7 @@
 #ifndef CONETNSPLAYDATADEF_H
 #define CONETNSPLAYDATADEF_H
 
+// QT
 #include <QString>
 #include <QVector>
 #include <QMetaType>
@@ -59,8 +60,8 @@ namespace PlayJson
     };
 
     /** @note
-     *          SUBTITLE is not included JSON data made by server
-     *          Just use ContentsPlayer.h,.cpp (for fixed play data's subtitle)
+     *          JSON data which made by server is not included SUBTITLE type.
+     *          Just using in ContentsPlayer.h,.cpp.
      */
     enum MediaType
     {
@@ -78,7 +79,7 @@ namespace PlayJson
     enum DateType
     {
         NONE_DATE_TYPE = 0,
-        YES =1,
+        YES = 1,
         NO = 2
     };
 
@@ -121,6 +122,7 @@ namespace PlayJson
         SNOW_DRIFT = 7
     };
 
+    /** @brief */
     enum SKY
     {
         SUNNY = 1,

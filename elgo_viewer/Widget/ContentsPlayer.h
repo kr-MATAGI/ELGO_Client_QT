@@ -99,7 +99,7 @@ private:
     void SearchContentAndAddToScene(const PlayScheduleTimer::PlayingIndex& playingIndex,
                                     QGraphicsScene* dest);
 
-    /** @brief  Make Countdown Info */
+    /** @brief  Make Page/Layer Countdown Info */
     void MakePlayDataCountdownInfo(const PlayScheduleTimer::PlayingIndex& playingIndex);
     /** @brief  */
     void GetSuitablePlayDataIndex(const PlayJson::PlayData& playData);

@@ -17,15 +17,17 @@ public:
 
     }
 
-    /** @brief */
+    //========================================================
     void RegisterEvent(quint16 keyEvent, std::function<void(T&, const QByteArray&)> linkedFunc)
+    //========================================================
     {
         std::pair<quint16, std::function<void(T&, const QByteArray&)>> eventCallBack(keyEvent, linkedFunc);
         m_eventList.insert(eventCallBack);
     }
 
-    /** @brief */
+    //========================================================
     void Exec(const quint16 keyEvent, const QByteArray& src)
+    //========================================================
     {
         if(m_eventList.end() == m_eventList.find(keyEvent))
         {

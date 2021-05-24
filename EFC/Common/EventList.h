@@ -195,7 +195,7 @@ namespace CONTROL_EVENT
         /**
          * @note
          *       ELGO_MAIN -> ELGO_CONTROL
-         *       Finish searching wifi, update list
+         *       Finish searching and update wifi list
          * @param
          *       int    wifiCnt
          *       [Loop]

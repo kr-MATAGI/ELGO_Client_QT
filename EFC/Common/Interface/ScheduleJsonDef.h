@@ -29,7 +29,7 @@ namespace ScheduleJson
     static const char* CronFormatEnumToStr[] = {"none", "sec", "min", "hour",
                                                "day", "month", "DOW", "year"};
 
-    /** @brief */
+    /** @brief  Not Using */
     struct CronOption
     {
         QVector<CronFormat> last;
@@ -51,6 +51,7 @@ namespace ScheduleJson
         QVector<int> dowList;
         QVector<int> yearList;
 
+        // Not Using
         CronOption options;
     };
 
@@ -60,7 +61,7 @@ namespace ScheduleJson
         QDateTime startTime;
         QDateTime endTime;
         Cron cron;
-        int playDataId; // name
+        int playDataId; // middle value of 'name' object
         PlayJson::PlayDataType type;
     };
 
@@ -80,6 +81,7 @@ namespace ScheduleJson
         POWER_OFF =2
     };
 
+    /** @brief */
     struct PowerScheduleData
     {
         QString id;
@@ -89,6 +91,7 @@ namespace ScheduleJson
         Cron cron;
     };
 
+    /** @brief */
     struct PowerSchedule
     {
         QVector<PowerScheduleData> scheduleList;
