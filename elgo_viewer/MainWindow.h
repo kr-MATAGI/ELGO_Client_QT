@@ -17,7 +17,7 @@
 class ViewerController;
 class ContentsPlayer;
 
-namespace Ui {e
+namespace Ui {
 class MainWindow;
 }
 
