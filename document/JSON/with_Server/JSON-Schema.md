@@ -123,7 +123,7 @@
      {
        "type": "widget/weather",
        "nx": Integer (for new open api),
-       "ny": Integer (for new open api,
+       "ny": Integer (for new open api),
        "area": String (value is Integer),
        "area_name": String,
        "area2": String (value is Integer),
