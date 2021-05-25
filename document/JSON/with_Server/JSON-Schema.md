@@ -10,6 +10,7 @@
   + Default
     <pre><code>
       {
+        "pld_type": String ( custom | fixed ),
         "pld_name": String,
         "pld_memo": String,
         "pld_width": Integer,
@@ -53,6 +54,7 @@
   + Default
     <pre><code>
      {
+       "pld_type": String ( custom | fixed ),
        "pld_name": String,
        "pld_memo": String,
        "pld_width": Integer,
@@ -91,20 +93,56 @@
     
 ---
 
-### Widget
+### Widget - Content Data 안에 설정되는 JSON Data.
+
   + Clock (Tab Name: 시계)
     <pre><code>
-    
+     {
+       "type": "widget/clock",
+       "hour_type": String ( 12h | 24h ),
+       "color": String (e.g. #ffffff),
+       "bg_color": String (e.g. #ffffff),
+       "bg_opacity": Boolean
+     }
     </code></pre>
     
   + DateTime (Tab Name: 날짜)
     <pre><code>
-    
+     {
+       "type": "widget/date",
+       "date_type": String ( yes | no ),
+       "color": String (e.g. #ffffff),
+       "bg_color": String (e.g. #ffffff),
+       "bg_opacity": Boolean
+     }
     </code></pre>
     
   + Weather (Tab Name: 날씨)
     <pre><code>
-    
+     {
+       "type": "widget/weather",
+       "nx": Integer (for new open api),
+       "ny": Integer (for new open api,
+       "area": String (value is Integer),
+       "area_name": String,
+       "area2": String (value is Integer),
+       "area2_name": String,
+       "color": String (e.g. #ffffff),
+       "bg_color": String (e.g. #ffffff),
+       "bg_opacity": Boolean
+     }
     </code></pre>
     
   + News (Tab Name: 뉴스)
+    <pre><code>
+      {
+        "type": "widget/news",
+        "category": String ( browse | headline | politics | economy | society | local | international | culture | sports | weather ),
+        "news_count": String (value is Integer),
+        "font_size": String (value is Integer),
+        "color": String (e.g. #ffffff),
+        "news_bg_color": String (e.g. #ffffff),
+        "news_bg_opacity": Boolean,
+        "bg_color": String (e.g. #ffffff),
+        "bg_opacity": Booelan
+    </code><pre>
