@@ -86,10 +86,14 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
 
     // icon svg widget
     const QPoint svgWidgetPos(widgetSize.width() * 0.1, widgetSize.height() * 0.1);
+
     const QSize svgWidgetSize(widgetSize.width() * 0.4, widgetSize.height() * 0.6);
+    const QSize iconWidgetSize(widgetSize.width() * 0.35, widgetSize.height() * 0.55);
+
+    const QRect iconWidgetRect(svgWidgetPos, iconWidgetSize);
     const QRect svgWidgetRect(svgWidgetPos, svgWidgetSize);
     ui->weatherIconView->setGeometry(svgWidgetRect);
-    m_iconWidget->setGeometry(svgWidgetRect);
+    m_iconWidget->setGeometry(iconWidgetRect);
     ELGO_VIEWER_LOG("svgWidget pos{x: %f, y: %f}, size{w: %d, h: %d}",
                     svgWidgetPos.x(), svgWidgetPos.y(), svgWidgetSize.width(), svgWidgetSize.height());
 
@@ -102,7 +106,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     cityLabelPos.x(), cityLabelPos.y(), cityLabelSize.width(), cityLabelSize.height());
 
     // dateTime label
-    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelPos.y() + cityLabelSize.height());
+    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelPos.y() * 1.1);
     const QSize dateTimeLabelSize(widgetSize.width(), cityLabelSize.height());
     const QRect dateTimeLabelRect(dateTimeLabelPos, dateTimeLabelSize);
     ui->dateTimeLabel->setGeometry(dateTimeLabelRect);
