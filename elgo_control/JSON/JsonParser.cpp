@@ -1048,6 +1048,7 @@ void JsonParser::ParseFixedLayerContentJson(const QJsonObject& layerContentObj, 
         {
             const QString& newsCountStr = layerContentObj["cd_news_count"].toString();
             const int newsCount = newsCountStr.toInt();
+            dest.newsCount = newsCount;
         }
 
         if(layerContentObj.end() != layerContentObj.find("cd_font_size"))
