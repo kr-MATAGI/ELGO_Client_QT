@@ -528,6 +528,7 @@ void DownloadThread::ExecDownloadPlaySchedule()
 
             // Start News / Weather Timer
             emit NetworkController::GetInstance()->GetUpdateWidgetTimer().AddWidgetInfoSignal(updateWidgetList);
+            emit NetworkController::GetInstance()->GetUpdateWidgetTimer().StartUpdateWidgetTimer();
         }
         else
         {
