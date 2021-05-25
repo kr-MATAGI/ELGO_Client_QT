@@ -106,7 +106,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     cityLabelPos.x(), cityLabelPos.y(), cityLabelSize.width(), cityLabelSize.height());
 
     // dateTime label
-    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelPos.y() * 1.1);
+    const QPoint dateTimeLabelPos(cityLabelPos.x(), cityLabelRect.bottom());
     const QSize dateTimeLabelSize(widgetSize.width(), cityLabelSize.height());
     const QRect dateTimeLabelRect(dateTimeLabelPos, dateTimeLabelSize);
     ui->dateTimeLabel->setGeometry(dateTimeLabelRect);
