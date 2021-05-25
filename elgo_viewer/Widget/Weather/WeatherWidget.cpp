@@ -99,7 +99,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
 
     // city label
     const QPoint cityLabelPos(svgWidgetPos.x(), svgWidgetSize.height() * 1.15);
-    const QSize cityLabelSize(svgWidgetSize.width(), widgetSize.height() * 0.13);
+    const QSize cityLabelSize(svgWidgetSize.width() * 1.1, widgetSize.height() * 0.13);
     const QRect cityLabelRect(cityLabelPos, cityLabelSize);
     ui->cityLabel->setGeometry(cityLabelRect);
     ELGO_VIEWER_LOG("cityLabel pos{x: %f, y: %f}, size{w: %d, h: %d}",
@@ -130,7 +130,7 @@ void WeatherWidget::SetPosSizeInfo(const StyleSheet::PosSizeInfo& posSizeInfo)
                     temperLabelPos.x(), temperLabelPos.y(), temperLabelSize.width(), temperLabelSize.height());
 
     QFont temperLabelFont;
-    const int temperLabelFontSize = temperLabelSize.height() * 0.6;
+    const int temperLabelFontSize = temperLabelSize.height() * 0.5;
     temperLabelFont.setBold(true);
     temperLabelFont.setPixelSize(temperLabelFontSize);
     ELGO_VIEWER_LOG("temperLabelFontSize : %d", temperLabelFontSize);
