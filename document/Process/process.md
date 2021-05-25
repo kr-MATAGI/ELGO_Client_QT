@@ -11,11 +11,11 @@
   * ELGO_Control과 ELGO_Viewer를 Start 하는 동작
   * OS Command Line을 실행 (e.g. Sleep Status, Search Wifi list, Internet connect, Rotate Display...)
   * PlaySchedule, PowerSchedule 에 대한 Timer를 가지고 있으며 이 Timer들은 각각의 Timeout() 함수를 통해 Schedule을 수행.
-  * schedule.db 에 있는 playData 등을 참고하여 offline 상태에서 재생할 play Data를 Viewer로 전달하여 재생한다.
+  * schedule.db 에 있는 playData 등을 참고하여 Offline mode에서 재생할 play Data를 Viewer로 전달하여 재생한다.
   * DB Table의 정보는 document-DB에서 참고.
   
 ## ELGO_Control
-  * Online Status 일 경우, 모든 동작은 ELGO_Control과 관련있다.
+  * Online Mode의 경우, 모든 동작은 ELGO_Control과 관련있다.
   * ELGO_Remote 및 Server 간 Web Socket 동작 수행.
   * libcurl 라이브러리를 이용해 각 Resource file 혹은 JSON Data를 Download 및 Parsing (JSON / XML Parser).
   * ffmpeg 라이브러리를 이용해 Video file이 Download 되었을 경우, 비디오 파일의 총 재생 길이를 구함.
