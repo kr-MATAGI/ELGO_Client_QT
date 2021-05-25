@@ -217,7 +217,7 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
 void ContentWebSocket::BinaryMessageReceivedSlot(const QByteArray &message)
 //========================================================
 {
-    ELGO_CONTROL_LOG("");
+    ELGO_CONTROL_LOG("ERROR - RECV Binary Message: %d !", message.size());
 }
 
 //========================================================
