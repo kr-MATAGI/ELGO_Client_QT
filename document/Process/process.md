@@ -17,7 +17,7 @@
 ## ELGO_Control
   * Online Mode의 경우, 모든 동작은 ELGO_Control과 관련있다.
   * ELGO_Remote 및 Server 간 Web Socket 동작 수행.
-  * libcurl 라이브러리를 이용해 각 Resource file 혹은 JSON Data를 Download 및 Parsing (JSON / XML Parser).
+  * libcurl 라이브러리를 이용해 각 Resource file 혹은 JSON / XML Data를 Download 및 Parsing (JSON / XML Parser).
   * ffmpeg 라이브러리를 이용해 Video file이 Download 되었을 경우, 비디오 파일의 총 재생 길이를 구함.
   * 위 총 재생길이는 Viewer에서 자연스러운 Play Back을 하기 위해 사용된다.
   * News나 Weather Type의 Widget이 Play Data에 포함되었을 경우, 이를 30분 주기로 Update 하기 위한 Timer 동작.
