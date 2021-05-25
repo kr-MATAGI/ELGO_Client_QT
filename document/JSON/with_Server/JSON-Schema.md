@@ -14,6 +14,7 @@
         "pld_name": String,
         "pld_memo": String,
         "pld_width": Integer,
+        "pld_height": Integer,
         "pld_orientation": String (landscape | portrait),
         "page_data": [{
           "pgd_duration": Integer (unit : sec),
