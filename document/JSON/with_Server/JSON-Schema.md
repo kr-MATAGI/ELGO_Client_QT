@@ -10,38 +10,38 @@
   + Default
     <pre><code>
       {
-        pld_name: String,
-        pld_memo: String,
-        pld_width: Integer,
-        pld_orientation: String (landscape | portrait),
-        page_data: [{
-          pgd_duration: Integer (unit : sec),
-          layer_data: [{
-            ld_top: Integer,
-            ld_left: Integer,
-            ld_width: Integer,
-            ld_height: Integer,
-            ld_content: {
-              type: String ( ( file | widget)/ (image | video | clock | date | weather | news) ),
-              name: String,
-              duration : float (type == video)
+        "pld_name": String,
+        "pld_memo": String,
+        "pld_width": Integer,
+        "pld_orientation": String (landscape | portrait),
+        "page_data": [{
+          "pgd_duration": Integer (unit : sec),
+          "layer_data": [{
+            "ld_top": Integer,
+            "ld_left": Integer,
+            "ld_width": Integer,
+            "ld_height": Integer,
+            "ld_content": {
+              "type": String ( ( file | widget)/ (image | video | clock | date | weather | news) ),
+              "name": String,
+              "duration": float (type == video)
             }
           }]
         }],
-        subtitle_data: [{
-          sd_top: Integer,
-          sd_left: Integer,
-          sd_width: Integer,
-          sd_height: Integer,
-          sd_text: String,
-          sd_fixed: Integer,
-          sd_direction: String ( left | right | up | down ),
-          sd_orientation: String ( landscape | portrait ),
-          sd_behavior: String ( scroll | alternate ),
-          sd_speed: Integer,
-          sd_background_color: String (e.g. #ffffff),
-          sd_font_color: String (e.g. #ffffff),
-          sd_font_size: Integer
+        "subtitle_data": [{
+          "sd_top": Integer,
+          "sd_left": Integer,
+          "sd_width": Integer,
+          "sd_height": Integer,
+          "sd_text": String,
+          "sd_fixed": Integer ( 0 | 1 ),
+          "sd_direction": String ( left | right | up | down ),
+          "sd_orientation": String ( landscape | portrait ),
+          "sd_behavior": String ( scroll | alternate ),
+          "sd_speed": Integer,
+          "sd_background_color": String (e.g. #ffffff),
+          "sd_font_color": String (e.g. #ffffff),
+          "sd_font_size": Integer
         }]
       }
     </code></pre>
@@ -52,6 +52,40 @@
 ### Fixed Play Data
   + Default
     <pre><code>
+     {
+       "pld_name": String,
+       "pld_memo": String,
+       "pld_width": Integer,
+       "pld_height": Integer,
+       "pld_orientation": String (landscape | portrait),
+       "layer_data": [{
+         "content_data": [{
+           "cd_type": String ( ( file | widget)/ (image | video | clock | date | weather | news) ),
+           "cd_name": String,
+           "cd_duration": Integer (unit : sec)
+         }],
+       "ld_left": Integer,
+       "ld_top": Integer,
+       "ld_width": Integer,
+       "ld_height": Integer
+       }],
+       "subtitle_data": [{
+         "subtitle_data_id": Integer (Not Using),
+         "sd_left": Integer,
+         "sd_top": Integer,
+         "sd_width": Integer,
+         "sd_height": Integer,
+         "sd_text": String,
+         "sd_fixed": Integer ( 0 | 1 ),
+         "sd_direction": String ( left | right | up | down ),
+         "sd_orientation": String ( landscape | portrait ),
+         "sd_behavior": String ( scroll | alternate ),
+         "sd_speed": Integer,
+         "sd_background_color": String (e.g. #ffffff),
+         "sd_font_color": String (e.g. #ffffff),
+         "sd_font_size": String
+       }]
+     }
 
     </code></pre>
     
