@@ -152,6 +152,32 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::SubtitleData& src)
     return ds;
 }
 
+//========================================================
+QDataStream &operator<<(QDataStream& ds, const PlayJson::UpdateWidgetInfo& src)
+//========================================================
+{
+    ds << src.playDataId;
+    ds << src.playType;
+    ds << src.mediaType;
+    ds << src.pageIndex;
+    ds << src.layerIndex;
+    ds << src.contentIndex;
+    ds << src.newsCategory;
+    ds << src.newsCount;
+    ds << src.newsFeedList;
+    ds << src.nx;
+    ds << src.ny;
+    ds << src.PTY;
+    ds << src.SKY;
+    ds << src.T1H;
+    ds << src.RN1;
+    ds << src.REH;
+    ds << src.VEC;
+    ds << src.WSD;
+    ds << src.LGT;
+
+    return ds;
+}
 
 //========================================================
 QDataStream &operator>>(QDataStream& ds, PlayJson::CustomPlayDataJson& dest)
@@ -299,6 +325,33 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentInfo& dest)
 {
     ds >> dest.contentType;
     ds >> dest.mediaType;
+
+    return ds;
+}
+
+//========================================================
+QDataStream &operator>>(QDataStream& ds, PlayJson::UpdateWidgetInfo& dest)
+//========================================================
+{
+    ds >> dest.playDataId;
+    ds >> dest.playType;
+    ds >> dest.mediaType;
+    ds >> dest.pageIndex;
+    ds >> dest.layerIndex;
+    ds >> dest.contentIndex;
+    ds >> dest.newsCategory;
+    ds >> dest.newsCount;
+    ds >> dest.newsFeedList;
+    ds >> dest.nx;
+    ds >> dest.ny;
+    ds >> dest.PTY;
+    ds >> dest.SKY;
+    ds >> dest.T1H;
+    ds >> dest.RN1;
+    ds >> dest.REH;
+    ds >> dest.VEC;
+    ds >> dest.WSD;
+    ds >> dest.LGT;
 
     return ds;
 }
@@ -508,6 +561,55 @@ bool PlayJson::operator==(const PlayJson::CustomLayerData& lhs, const PlayJson::
     if(!(lhs.height == rhs.height))
         return false;
     if(!(lhs.layerContent == rhs.layerContent))
+        return false;
+
+    return true;
+}
+
+//========================================================
+bool operator==(const PlayJson::UpdateWidgetInfo& lhs, const PlayJson::UpdateWidgetInfo& rhs)
+//========================================================
+{
+    if(!(lhs.playDataId == rhs.playDataId))
+        return false;
+    if(!(lhs.playType == rhs.playType))
+        return false;
+    if(!(lhs.mediaType == rhs.mediaType))
+        return false;
+    if(!(lhs.pageIndex == rhs.pageIndex))
+        return false;
+    if(!(lhs.layerIndex == rhs.layerIndex))
+        return false;
+    if(!(lhs.newsCategory == rhs.newsCategory))
+        return false;
+    if(!(lhs.newsCount == rhs.newsCount))
+        return false;
+
+    for(int idx = 0; idx < lhs.newsFeedList.size(); idx++)
+    {
+        if(!(lhs.newsFeedList.at(idx) == rhs.newsFeedList.at(idx)))
+            return false;
+    }
+
+    if(!(lhs.nx == rhs.nx))
+        return false;
+    if(!(lhs.ny == rhs.ny))
+        return false;
+    if(!(lhs.PTY == rhs.PTY))
+        return false;
+    if(!(lhs.SKY == rhs.SKY))
+        return false;
+    if(!(lhs.T1H == rhs.T1H))
+        return false;
+    if(!(lhs.RN1 == rhs.RN1))
+        return false;
+    if(!(lhs.REH == rhs.REH))
+        return false;
+    if(!(lhs.VEC == rhs.VEC))
+        return false;
+    if(!(lhs.WSD == rhs.WSD))
+        return false;
+    if(!(lhs.LGT == rhs.LGT))
         return false;
 
     return true;

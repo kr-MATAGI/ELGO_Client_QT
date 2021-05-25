@@ -12,7 +12,7 @@ namespace CurlDownload
     bool DownloadNewsFeedXml(PlayJson::NewsCategory category, QString& dest);
 
     /** @brief */
-    bool DownloadWeatherInfoJson(const PlayJson::ContentData& request, QString& dest);
+    bool DownloadWeatherInfoJson(const int nx, const int ny, QString& dest);
 
     /** @brief */
     bool DownloadResourceList(const QString& url, QString& dest);

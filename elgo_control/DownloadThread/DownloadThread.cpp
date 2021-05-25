@@ -67,6 +67,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
         PlayJson::FixedPlayDataJson fixedPlayData;
         PlayJson::PlayData playData;
 
+        QVector<PlayJson::UpdateWidgetInfo> updateWidgetList;
         QVector<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
 
@@ -95,7 +96,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
 
-                        const bool bIsDownloaded = SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        const bool bIsDownloaded = SearchCustomDataWidgetType(customPlayData.playData.id,
+                                                                              customPlayData.playData.playDataType,
+                                                                              customPlayData.pageDataList,
+                                                                              updateWidgetList);
                         if(false == bIsDownloaded)
                         {
                             bIsError = true;
@@ -107,7 +111,10 @@ void DownloadThread::ExecDownloadSinglePlayData()
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
 
-                        const bool bIsDownloaded = SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        const bool bIsDownloaded = SearchFixedDataWidgetType(fixedPlayData.playData.id,
+                                                                             fixedPlayData.playData.playDataType,
+                                                                             fixedPlayData.layerDataList,
+                                                                             updateWidgetList);
                         if(false == bIsDownloaded)
                         {
                             bIsError = true;
@@ -273,6 +280,11 @@ void DownloadThread::ExecDownloadSinglePlayData()
 
             JsonWriter::WriteContentServerSinglePlayEvent(modifiedJson, responseJson);
             NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(responseJson);
+
+            // Start News/Weather Timer
+            emit NetworkController::GetInstance()->GetUpdateWidgetTimer().CleaerUpdateWidgetListSignal();
+            emit NetworkController::GetInstance()->GetUpdateWidgetTimer().UpdateWidgetInfoSignal(updateWidgetList);
+            emit NetworkController::GetInstance()->GetUpdateWidgetTimer().StartUpdateWidgetTimer();
         }
         else
         {
@@ -328,6 +340,7 @@ void DownloadThread::ExecDownloadPlaySchedule()
         // video duration info
         QVector<QPair<QString, qint64>> videoInfoList;
 
+        QVector<PlayJson::UpdateWidgetInfo> updateWidgetList;
         QVector<ResourceJson::Resource> resource;
         JsonParser::ParseResourceResponse(response, resource);
 
@@ -352,7 +365,10 @@ void DownloadThread::ExecDownloadPlaySchedule()
                         customPlayData.playData = playData;
                         JsonParser::ParseCustomPlayDataJson(objectResponse, customPlayData);
 
-                        const bool bIsDownload = SearchCustomDataWidgetType(customPlayData.pageDataList);
+                        const bool bIsDownload = SearchCustomDataWidgetType(customPlayData.playData.id,
+                                                                            customPlayData.playData.playDataType,
+                                                                            customPlayData.pageDataList,
+                                                                            updateWidgetList);
                         if(false == bIsDownload)
                         {
                             bIsError = true;
@@ -364,7 +380,10 @@ void DownloadThread::ExecDownloadPlaySchedule()
                         fixedPlayData.playData = playData;
                         JsonParser::ParseFixedPlayDataJson(objectResponse, fixedPlayData);
 
-                        const bool bIsDownload = SearchFixedDataWidgetType(fixedPlayData.layerDataList);
+                        const bool bIsDownload = SearchFixedDataWidgetType(fixedPlayData.playData.id,
+                                                                           fixedPlayData.playData.playDataType,
+                                                                           fixedPlayData.layerDataList,
+                                                                           updateWidgetList);
                         if(false == bIsDownload)
                         {
                             bIsError = true;
@@ -506,6 +525,9 @@ void DownloadThread::ExecDownloadPlaySchedule()
 
             JsonWriter::WriteContentServerPlayScheduleEvent(modifiedJson, clientJsonStr);
             NetworkController::GetInstance()->GetNetworkCtrl().GetContentWebSocket().SendTextMessageToServer(clientJsonStr);
+
+            // Start News / Weather Timer
+            emit NetworkController::GetInstance()->GetUpdateWidgetTimer().AddWidgetInfoSignal(updateWidgetList);
         }
         else
         {
@@ -591,7 +613,9 @@ void DownloadThread::ExecDownloadPowerSchedule()
 }
 
 //========================================================
-bool DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList)
+bool DownloadThread::SearchCustomDataWidgetType(const int playDataId, const PlayJson::PlayDataType playType,
+                                                QVector<PlayJson::PageData>& pageDataList,
+                                                QVector<PlayJson::UpdateWidgetInfo>& updateWidgetList)
 //========================================================
 {
     bool retValue = true;
@@ -617,6 +641,27 @@ bool DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pag
                         retValue = false;
                         break;
                     }
+                    else
+                    {
+                        // Update timer after display viewer
+                        PlayJson::UpdateWidgetInfo widgetInfo;
+
+                        //id, playType
+                        widgetInfo.playDataId = playDataId;
+                        widgetInfo.playType = playType;
+                        widgetInfo.mediaType = layerDataIter->layerContent.contentInfo.mediaType;
+
+                        widgetInfo.newsCategory = layerDataIter->layerContent.newsCategory;
+                        widgetInfo.newsCount = layerDataIter->layerContent.newsCount;
+
+                        widgetInfo.nx = layerDataIter->layerContent.nx;
+                        widgetInfo.ny = layerDataIter->layerContent.ny;
+
+                        widgetInfo.pageIndex = pageIter - pageDataList.begin();
+                        widgetInfo.layerIndex = layerDataIter - pageIter->layerDataList.begin();
+
+                        updateWidgetList.push_back(widgetInfo);
+                    }
                 }
             }
         }
@@ -626,7 +671,9 @@ bool DownloadThread::SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pag
 }
 
 //========================================================
-bool DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList)
+bool DownloadThread::SearchFixedDataWidgetType(const int playDataId, const PlayJson::PlayDataType playType,
+                                               QVector<PlayJson::FixedLayerData>& layerDataList,
+                                               QVector<PlayJson::UpdateWidgetInfo>& updateWidgetList)
 //========================================================
 {
     bool retValue = true;
@@ -650,6 +697,27 @@ bool DownloadThread::SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>
                 {
                     retValue = false;
                     break;
+                }
+                else
+                {
+                    // Update timer after display viewer
+                    PlayJson::UpdateWidgetInfo widgetInfo;
+
+                    //id, playType
+                    widgetInfo.playDataId = playDataId;
+                    widgetInfo.playType = playType;
+                    widgetInfo.mediaType = contentIter->contentInfo.mediaType;
+
+                    widgetInfo.newsCategory = contentIter->newsCategory;
+                    widgetInfo.newsCount = contentIter->newsCount;
+
+                    widgetInfo.nx = contentIter->nx;
+                    widgetInfo.ny = contentIter->ny;
+
+                    widgetInfo.layerIndex = layerDataIter - layerDataList.begin();
+                    widgetInfo.contentIndex = contentIter - layerDataIter->contentDataList.begin();
+
+                    updateWidgetList.push_back(widgetInfo);
                 }
             }
         }
@@ -692,7 +760,7 @@ bool DownloadThread::DownloadAdditionalWidgetInfo(PlayJson::ContentData& content
         // TEST 96, 74 - sahagu
         contentData.nx = 96;
         contentData.ny = 74;
-        const bool bIsDownload = CurlDownload::DownloadWeatherInfoJson(contentData, recvJsonStr);
+        const bool bIsDownload = CurlDownload::DownloadWeatherInfoJson(contentData.nx, contentData.ny, recvJsonStr);
         if(true == bIsDownload)
         {
             const bool bIsParsed = JsonParser::ParseWeatherInfoJsonResponse(recvJsonStr, contentData);

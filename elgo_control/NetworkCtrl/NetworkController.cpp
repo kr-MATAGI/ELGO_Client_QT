@@ -9,6 +9,7 @@ NetworkController::NetworkController()
 {
     m_netCtrl = new NetworkCtrl;
     m_dbCtrl = new NetworkDBCtrl;
+    m_updateTimer = new UpdateWidgetTimer;
 }
 
 //========================================================
@@ -20,6 +21,9 @@ NetworkController::~NetworkController()
 
     delete m_dbCtrl;
     m_dbCtrl = NULL;
+
+    delete m_updateTimer;
+    m_updateTimer = NULL;
 }
 
 //========================================================
@@ -57,4 +61,11 @@ NetworkDBCtrl& NetworkController::GetDBCtrl()
 //========================================================
 {
     return *m_dbCtrl;
+}
+
+//========================================================
+UpdateWidgetTimer& NetworkController::GetUpdateWidgetTimer()
+//========================================================
+{
+    return *m_updateTimer;
 }

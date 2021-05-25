@@ -316,6 +316,16 @@ namespace VIEWER_EVENT
          */
         CLOSE_MAIN_WINDOW_BY_ERROR = 779,
 
+
+        /**
+         * @note
+         *       ELGO_CONTROL -> ELGO_VIEWER
+         *       Update News/Weather info by timer
+         * @param
+         *       QVector<UpdateWidget::Info> infoList
+         */
+        UPDATE_NEWS_WEATHER_INFO = 780,
+
         MAX_VIEWER_EVENT = 1023
     };
 }

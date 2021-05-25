@@ -43,6 +43,9 @@ ViewerEventState::ViewerEventState()
 
     m_state.RegisterEvent(VIEWER_EVENT::Event::CLOSE_MAIN_WINDOW_BY_ERROR,
                           &ViewerEventState::RecvCloseMainWindowByError);
+
+    m_state.RegisterEvent(VIEWER_EVENT::Event::UPDATE_NEWS_WEATHER_INFO,
+                          &ViewerEventState::RecvUpdateNewsWeatherWidget);
 }
 
 //========================================================
@@ -243,4 +246,24 @@ void ViewerEventState::RecvCloseMainWindowByError(const QByteArray& src)
      */
 
     emit MainWindow::GetInstance()->CloseMainWindowByError();
+}
+
+//========================================================
+void ViewerEventState::RecvUpdateNewsWeatherWidget(const QByteArray& src)
+//========================================================
+{
+    /**
+     * @note
+     *       ELGO_CONTROL -> ELGO_VIEWER
+     *       Update News/Weather info by timer
+     * @param
+     *       QVector<UpdateWidget::Info> infoList
+     */
+
+    QByteArray copyBytes = src;
+    QDataStream copyStream(&copyBytes, QIODevice::ReadOnly);
+    QVector<PlayJson::UpdateWidgetInfo> updateWidgetList;
+
+    copyStream >> updateWidgetList;
+    emit ContentsPlayer::GetInstance()->UpdateNewsWeatherInfoSignal(updateWidgetList);
 }

@@ -46,6 +46,7 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
     qRegisterMetaType<PlayJson::CustomPlayDataJson>("PlayJson::CustomPlayDataJson");
     qRegisterMetaType<PlayJson::FixedPlayDataJson>("PlayJson::FixedPlayDataJson");
     qRegisterMetaType<PlayJson::PlayData>("PlayJson::PlayData");
+    qRegisterMetaType<QVector<PlayJson::UpdateWidgetInfo>>("QVector<PlayJson::UpdateWidgetInfo>");
 
     // Connect Singal and Slot
     connect(this, &ContentsPlayer::StartContentsPlayerSignal,
@@ -64,6 +65,9 @@ ContentsPlayer::ContentsPlayer(QWidget *parent)
 
     connect(this, &ContentsPlayer::UpdatePlayerPauseSignal,
             this, &ContentsPlayer::UpdatePlayerPauseSlot);
+
+    connect(this, &ContentsPlayer::UpdateNewsWeatherInfoSignal,
+            this, &ContentsPlayer::UpdateNewsWeatherInfoSlot);
 
     // timer
     connect(&m_playerTimer, &QTimer::timeout,
@@ -418,6 +422,102 @@ void ContentsPlayer::UpdatePlayerPauseSlot(const bool bIsPause)
 
         m_playerTimer.start(990);
     }
+}
+
+//========================================================
+void ContentsPlayer::UpdateNewsWeatherInfoSlot(const QVector<PlayJson::UpdateWidgetInfo>& src)
+//========================================================
+{
+    m_playerTimer.stop();
+
+    QVector<PlayJson::UpdateWidgetInfo>::const_iterator srcIter = src.constBegin();
+    while(srcIter != src.constEnd())
+    {
+        if(PlayJson::PlayDataType::CUSTOM == srcIter->playType)
+        {
+            QVector<PlayJson::CustomPlayDataJson>::iterator customIter = m_customPlayDataList.begin();
+            while(customIter != m_customPlayDataList.end())
+            {
+                if(srcIter->playDataId == customIter->playData.id)
+                {
+                    PlayJson::PageData& pageData = customIter->pageDataList[srcIter->pageIndex];
+                    PlayJson::CustomLayerData& layerData = pageData.layerDataList[srcIter->layerIndex];
+                    PlayJson::ContentData& contentData = layerData.layerContent;
+
+                    if( (PlayJson::MediaType::NEWS == srcIter->mediaType) &&
+                        (srcIter->mediaType == contentData.contentInfo.mediaType) )
+                    {
+                        contentData.newsCount = srcIter->newsCount;
+                        contentData.newsFeedList = srcIter->newsFeedList;
+
+                        break;
+                    }
+                    else if( (PlayJson::WEATHER == srcIter->mediaType) &&
+                             (srcIter->mediaType == contentData.contentInfo.mediaType) )
+                    {
+                        contentData.PTY = srcIter->PTY;
+                        contentData.SKY = srcIter->SKY;
+                        contentData.T1H = srcIter->T1H;
+                        contentData.RN1 = srcIter->RN1;
+                        contentData.REH = srcIter->REH;
+                        contentData.VEC = srcIter->VEC;
+                        contentData.WSD = srcIter->WSD;
+                        contentData.LGT = srcIter->LGT;
+
+                        break;
+                    }
+                }
+
+                ++customIter;
+            }
+        }
+        else if(PlayJson::PlayDataType::FIXED == srcIter->playType)
+        {
+            QVector<PlayJson::FixedPlayDataJson>::iterator fixedIter = m_fixedPlayDataList.begin();
+            while(fixedIter != m_fixedPlayDataList.end())
+            {
+                if(srcIter->playDataId == fixedIter->playData.id)
+                {
+                    PlayJson::FixedLayerData& layerData = fixedIter->layerDataList[srcIter->layerIndex];
+                    PlayJson::ContentData& contentData = layerData.contentDataList[srcIter->contentIndex];
+
+                    if( (PlayJson::MediaType::NEWS == srcIter->mediaType) &&
+                        (srcIter->mediaType == contentData.contentInfo.mediaType) )
+                    {
+                        contentData.newsCount = srcIter->newsCount;
+                        contentData.newsFeedList = srcIter->newsFeedList;
+
+                        break;
+                    }
+                    else if( (PlayJson::WEATHER == srcIter->mediaType) &&
+                             (srcIter->mediaType == contentData.contentInfo.mediaType) )
+                    {
+                        contentData.PTY = srcIter->PTY;
+                        contentData.SKY = srcIter->SKY;
+                        contentData.T1H = srcIter->T1H;
+                        contentData.RN1 = srcIter->RN1;
+                        contentData.REH = srcIter->REH;
+                        contentData.VEC = srcIter->VEC;
+                        contentData.WSD = srcIter->WSD;
+                        contentData.LGT = srcIter->LGT;
+
+                        break;
+                    }
+                }
+
+                ++fixedIter;
+            }
+        }
+        else
+        {
+            ELGO_VIEWER_LOG("ERROR - Unknown Type: %d", srcIter->playType);
+        }
+
+        ++srcIter;
+    }
+
+    UpdatePlayerScene(m_playingIndex);
+    m_playerTimer.start(990);
 }
 
 //========================================================

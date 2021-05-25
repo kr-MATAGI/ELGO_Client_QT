@@ -5,10 +5,12 @@
 #include "NetworkCtrl.h"
 #include "DB/NetworkDBCtrl.h"
 #include "RemoteControl/RemoteControlServer.h"
+#include "Timer/UpdateWidgetTimer.h"
 
 class NetworkCtrl;
 class NetworkDBCtrl;
 class RemoteControlServer;
+class UpdateWidgetTimer;
 
 class NetworkController
 {
@@ -31,9 +33,14 @@ public:
     /** @brief */
     NetworkDBCtrl& GetDBCtrl();
 
+    /** @brief */
+    UpdateWidgetTimer& GetUpdateWidgetTimer();
+
 private:
     NetworkCtrl *m_netCtrl;
     NetworkDBCtrl *m_dbCtrl;
+
+    UpdateWidgetTimer *m_updateTimer;
 };
 
 #endif // NETWORKCONTROLLER_H

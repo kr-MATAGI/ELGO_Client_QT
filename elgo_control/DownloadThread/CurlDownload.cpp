@@ -64,7 +64,7 @@ bool CurlDownload::DownloadNewsFeedXml(PlayJson::NewsCategory category, QString&
 }
 
 //========================================================
-bool CurlDownload::DownloadWeatherInfoJson(const PlayJson::ContentData& request, QString& dest)
+bool CurlDownload::DownloadWeatherInfoJson(const int nx, const int ny, QString& dest)
 //========================================================
 {
     bool retValue = false;
@@ -82,9 +82,9 @@ bool CurlDownload::DownloadWeatherInfoJson(const PlayJson::ContentData& request,
         std::string url = WEATHER_BASE_URL;
         url.append(WEATHER_KEY);
         url.append("&numOfRows=200&pageNo=1&nx=");
-        url.append(QString::number(request.nx).toStdString());
+        url.append(QString::number(nx).toStdString());
         url.append("&ny=");
-        url.append(QString::number(request.ny).toStdString());
+        url.append(QString::number(ny).toStdString());
         url.append("&base_date=");
         url.append(baseDate.toStdString());
         url.append("&base_time=");

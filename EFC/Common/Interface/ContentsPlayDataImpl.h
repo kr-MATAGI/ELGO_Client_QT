@@ -32,6 +32,8 @@ QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentData& src);
 /** @brief */
 QDataStream &operator<<(QDataStream& ds, const PlayJson::ContentInfo& src);
 
+/** @brief */
+QDataStream &operator<<(QDataStream& ds, const PlayJson::UpdateWidgetInfo& src);
 
 /**
  *  @note   elgo_control <-> elgo_viewer, deserialize function
@@ -57,7 +59,8 @@ QDataStream &operator>>(QDataStream& ds, PlayJson::ContentData& dest);
 /** @brief */
 QDataStream &operator>>(QDataStream& ds, PlayJson::ContentInfo& dest);
 
-
+/** @brief */
+QDataStream &operator>>(QDataStream& ds, PlayJson::UpdateWidgetInfo& dest);
 
 
 

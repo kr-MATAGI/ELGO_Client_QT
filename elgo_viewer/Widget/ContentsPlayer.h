@@ -52,6 +52,9 @@ signals:
     /** @brief */
     void UpdatePlayerPauseSignal(const bool bIsPause);
 
+    /** @brief */
+    void UpdateNewsWeatherInfoSignal(const QVector<PlayJson::UpdateWidgetInfo>& src);
+
 private slots:
     /** @brief  Show Contents Player (Slot) */
     void StartContentsPlayerSlot();
@@ -71,6 +74,9 @@ private slots:
 
     /** @brief */
     void UpdatePlayerPauseSlot(const bool bIsPause);
+
+    /** @brief */
+    void UpdateNewsWeatherInfoSlot(const QVector<PlayJson::UpdateWidgetInfo>& src);
 
     /** @brief  Timer's timeout slot */
     void PlayerTimeout();

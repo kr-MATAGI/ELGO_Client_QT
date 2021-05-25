@@ -14,6 +14,7 @@ SOURCES += \
         DB/NetworkDBCtrl.cpp \
         DownloadThread/CurlDownload.cpp \
         DownloadThread/DownloadThread.cpp \
+        Timer/UpdateWidgetTimer.cpp \
         Utils/VideoInfoHelper.cpp \
         Event/ContorlEventHandler.cpp \
         Event/ControlEventState.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     DownloadThread/CurlDownload.h \
     DownloadThread/DownloadDef.h \
     DownloadThread/DownloadThread.h \
+    Timer/UpdateWidgetTimer.h \
     Utils/VideoInfoHelper.h \
     Event/ControlEventHandler.h \
     Event/ControlEventState.h \

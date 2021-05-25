@@ -4,6 +4,7 @@
 // QT
 #include <QString>
 
+/** @brief */
 struct WifiInfo
 {
     WifiInfo()

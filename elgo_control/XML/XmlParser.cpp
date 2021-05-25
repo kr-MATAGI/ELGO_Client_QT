@@ -18,7 +18,7 @@ bool XmlParser::ParseRssNewsFeedResponse(const QString& src, const int newsCount
     while(false == xmlReader.atEnd())
     {
         xmlReader.readNext();
-        if(xmlReader.isEndDocument())
+        if(xmlReader.isEndDocument() || newsCount <= dest.size())
         {
             break;
         }
@@ -35,11 +35,6 @@ bool XmlParser::ParseRssNewsFeedResponse(const QString& src, const int newsCount
                 QXmlStreamAttributes attributes = xmlReader.attributes();
                 QString readText = xmlReader.readElementText();
                 dest.push_back(readText);
-
-                if(newsCount == dest.size())
-                {
-                    break;
-                }
             }
         }
     }

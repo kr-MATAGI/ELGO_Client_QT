@@ -56,6 +56,9 @@ public:
     /** @brief */
     void RecvCloseMainWindowByError(const QByteArray& src);
 
+    /** @brief */
+    void RecvUpdateNewsWeatherWidget(const QByteArray& src);
+
 public:
     QThreadPool *m_threadPool;
     EventState<ViewerEventState> m_state;

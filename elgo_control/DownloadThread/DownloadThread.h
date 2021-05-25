@@ -29,9 +29,13 @@ public:
     void ExecDownloadPowerSchedule();
 
     /** @brief */
-    bool SearchCustomDataWidgetType(QVector<PlayJson::PageData>& pageDataList);
+    bool SearchCustomDataWidgetType(const int playDataId, const PlayJson::PlayDataType playType,
+                                    QVector<PlayJson::PageData>& pageDataList,
+                                    QVector<PlayJson::UpdateWidgetInfo>& updateWidgetList);
     /** @brief */
-    bool SearchFixedDataWidgetType(QVector<PlayJson::FixedLayerData>& layerDataList);
+    bool SearchFixedDataWidgetType(const int playDataId, const PlayJson::PlayDataType playType,
+                                   QVector<PlayJson::FixedLayerData>& layerDataList,
+                                   QVector<PlayJson::UpdateWidgetInfo>& updateWidgetList);
     /** @brief */
     bool DownloadAdditionalWidgetInfo(PlayJson::ContentData& contentData);
 

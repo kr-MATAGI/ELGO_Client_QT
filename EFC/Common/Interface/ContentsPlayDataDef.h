@@ -144,6 +144,7 @@ namespace PlayJson
             , PTY(NO_RAIN)
             , SKY(SUNNY)
             , LGT(false)
+            , newsCategory(NewsCategory::NONE_NEWS_CATEGORY)
             , newsCount(0)
             , newsfontSize(0)
             , bNewsBoxOpacity(false)
@@ -302,6 +303,70 @@ namespace PlayJson
     };
 
 
+    /** @brief */
+    struct UpdateWidgetInfo
+    {
+       UpdateWidgetInfo()
+           : playDataId(0)
+           , playType(PlayJson::PlayDataType::NONE_PLAY_DATA_TYPE)
+           , mediaType(PlayJson::MediaType::NONE_MEDIA)
+           , pageIndex(-1)
+           , layerIndex(-1)
+           , contentIndex(-1)
+           , newsCategory(PlayJson::NewsCategory::NONE_NEWS_CATEGORY)
+           , newsCount(0)
+           , nx(0)
+           , ny(0)
+           , PTY(PlayJson::PTY::NO_RAIN)
+           , SKY(PlayJson::SKY::SUNNY)
+           , LGT(false)
+       {
+       }
+
+       int playDataId;
+       PlayJson::PlayDataType playType;
+       PlayJson::MediaType mediaType;
+
+       // Custom
+       int pageIndex;
+
+       // Custom / Fixed
+       int layerIndex;
+
+       // Fixed
+       int contentIndex;
+
+       // news
+       PlayJson::NewsCategory newsCategory;
+       int newsCount;
+       QVector<QString> newsFeedList;
+
+       /**
+        *  @note
+        *          pty - precipitation form
+        *          sky - sky condition
+        *          t1h - temperature
+        *          rn1 - rainfall (1 hour)
+        *          reh - humidity
+        *          vec - direction of the wind
+        *          wsd - wind speed
+        *          lgt - falling of a thunderbolt
+        */
+
+       // weather
+       int nx;
+       int ny;
+
+       PlayJson::PTY PTY;
+       PlayJson::SKY SKY;
+       QString T1H;
+       int RN1;
+       int REH;
+       QString VEC;
+       QString WSD;
+       bool LGT;
+    };
+
     /**
      *  @note   operator ==
      */
@@ -324,6 +389,9 @@ namespace PlayJson
     bool operator==(const PlayJson::PageData& lhs, const PlayJson::PageData& rhs);
     /** @brief */
     bool operator==(const PlayJson::CustomLayerData& lhs, const PlayJson::CustomLayerData& rhs);
+
+    /** @brief */
+    bool operator==(const PlayJson::UpdateWidgetInfo& lhs, const PlayJson::UpdateWidgetInfo& rhs);
 }
 
 #endif // CONETNSPLAYDATADEF_H
