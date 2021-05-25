@@ -1,7 +1,7 @@
 # JSON Schema
 
 ## ELGO_Control <-> Server (Contents Server)
-  * 필요한 Schema는 [JohnnyJuheonShin/document](https://github.com/JohnnyJuheonShin/document) 혹은 구글 공유 드라이브에 대부분 있다.
+  * 필요한 Schema는 [JohnnyJuheonShin/document](https://github.com/JohnnyJuheonShin/document) 혹은 구글 공유 드라이브(에 대부분 있다.
   * 아래에 작성할 JSON Schema는 가장 데이터가 많은 Single Play / Play Schedule 로 전달되는 PlayData가 포함된 JSON의 Schema이다.
   * 주의 - JSON Parsing의 동작에서 아래의 Object tag name 혹은 value의 명칭이 완전히 일치하지 않는다.
 ---
