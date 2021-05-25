@@ -145,4 +145,5 @@
         "news_bg_opacity": Boolean,
         "bg_color": String (e.g. #ffffff),
         "bg_opacity": Booelan
+      }
     </code><pre>
