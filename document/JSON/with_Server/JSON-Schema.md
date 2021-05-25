@@ -24,7 +24,7 @@
             "ld_width": Integer,
             "ld_height": Integer,
             "ld_content": {
-              "type": String ( ( file | widget)/ (image | video | clock | date | weather | news) ),
+              "type": String ( ( file | widget) / (image | video | clock | date | weather | news) ),
               "name": String,
               "duration": float (type == video)
             }
@@ -63,7 +63,7 @@
        "pld_orientation": String (landscape | portrait),
        "layer_data": [{
          "content_data": [{
-           "cd_type": String ( ( file | widget)/ (image | video | clock | date | weather | news) ),
+           "cd_type": String ( ( file | widget) / (image | video | clock | date | weather | news) ),
            "cd_name": String,
            "cd_duration": Integer (unit : sec)
          }],
