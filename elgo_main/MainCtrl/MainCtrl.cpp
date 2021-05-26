@@ -264,7 +264,6 @@ const QString& MainCtrl::GetDeviceWlanName()
 QString MainCtrl::MakeProcessPath(::ELGO_SYS::Proc proc)
 //========================================================
 {
-    // TODO : load configuration path
     QString basePath = m_initConfig.binaryPath;
     if(0 >= basePath.size())
     {
