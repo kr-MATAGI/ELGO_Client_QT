@@ -183,9 +183,10 @@ const DEVICE::INIT_CONFIG& MainCtrl::GetInitConfig()
 void MainCtrl::CheckDisplaySleepStatus()
 //========================================================
 {
-#if defined(Q_OS_LINUX)
-    const QString cmdStr = "/usr/bin/xset";
+    QString cmdStr;
     QStringList args;
+#if defined(Q_OS_LINUX)
+    cmdStr = "/usr/bin/xset";
     args << "-q";
 #elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
 
