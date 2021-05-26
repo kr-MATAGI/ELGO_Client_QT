@@ -13,10 +13,10 @@
 #define ELGO_UPDATE_URL "http://cloud.elgo.co.kr/update/ubuntu"
 #define VERSION_CHECK_URL   ""
 
-#define CONFIG_XML   "/home/jaehoon/바탕화면/ELGO/config.xml"
-#define ELGO_MAIN_PATH  "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/elgo_main/elgo_main"
+#define CONFIG_XML   "/opt/ELGO/config.xml"
+#define ELGO_MAIN_PATH  "/opt/ELGO/elgo_main"
 
-#define ELGO_REMOTE_PATH    "/home/jaehoon/바탕화면/ELGO/ELGO_Remote/elgo_remote/build"
+#define ELGO_REMOTE_PATH    "/opt/ELGO/Remote/build"
 #define ELGO_REMOTE_DECMP_PATH  ""
 
 #define START_TIMEOUT   3000

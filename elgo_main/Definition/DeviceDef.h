@@ -4,7 +4,7 @@
 // QT
 #include <QString>
 
-#define INIT_CONFIG_FILE_PATH "/home/jaehoon/바탕화면/ELGO/config.xml"
+#define INIT_CONFIG_FILE_PATH "/opt/ELGO/config.xml"
 
 namespace DEVICE
 {

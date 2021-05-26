@@ -1,7 +1,7 @@
 #ifndef COMMONDEF_H
 #define COMMONDEF_H
 
-#define RESOURCE_SAVE_PATH  "/home/jaehoon/바탕화면/ELGO/resource/"
+#define RESOURCE_SAVE_PATH  "/opt/ELGO/resource/"
 
 
 #endif // COMMONDEF_H

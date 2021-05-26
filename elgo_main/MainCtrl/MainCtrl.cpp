@@ -269,15 +269,13 @@ QString MainCtrl::MakeProcessPath(::ELGO_SYS::Proc proc)
     {
         ELGO_MAIN_LOG("Not Loaded basepath, use the default path");
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-        basePath = "/home/jaehoon/바탕화면/ELGO/build-ELGO_Client-Desktop_Qt_5_15_2_GCC_64bit-Release/";
+        basePath = "/opt/ELGO/";
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
         basePath = "C:/Project/Qt/build-ELGO_Client-Desktop_Qt_5_15_2_MinGW_32_bit-Debug/";
 #endif
     }
 
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-    basePath += ::ELGO_SYS::ELGOProc_enum2str[proc];
-    basePath += "/";
     basePath += ::ELGO_SYS::ELGOProc_enum2str[proc];
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
     basePath += ::ELGO_PROC::ELGOProc_enum2str[proc];

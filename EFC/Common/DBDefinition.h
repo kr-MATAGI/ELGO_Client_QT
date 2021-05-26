@@ -5,8 +5,8 @@
 
 // for test
 #if defined (Q_OS_LINUX) || defined (Q_OS_UNIX)
-static const char DEVICE_DB[] = "/home/jaehoon/바탕화면/ELGO/device.db";
-static const char SCHEDULE_DB[] = "/home/jaehoon/바탕화면/ELGO/schedule.db";
+static const char DEVICE_DB[] = "/opt/ELGO/DB/device.db";
+static const char SCHEDULE_DB[] = "/opt/ELGO/DB/schedule.db";
 #elif defined (Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_WINRT)
 static const char* DEVICE_DB = "C:/Project/Qt/device.db";
 static const char* SCHEDULE_DB = "C:/Project/Qt/schedule.db";

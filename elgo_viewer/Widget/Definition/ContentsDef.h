@@ -1,7 +1,7 @@
 #ifndef CONTENTSDEF_H
 #define CONTENTSDEF_H
 
-#define CAPATURE_SAVE_PATH  "/home/jaehoon/바탕화면/ELGO/screenCapture.png"
+#define CAPATURE_SAVE_PATH  "/opt/ELGO/screenCapture.png"
 
 // QT
 #include <QInternal>
