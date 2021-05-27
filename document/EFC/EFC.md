@@ -25,10 +25,6 @@
     │  ├─Logger
     │  │   ├─ELogger.cpp
     │  │   ├─ELogger.h
-    │  ├─ShardMem (Not Using)
-    │  │   ├─ShmCtrl.cpp
-    │  │   ├─ShmCtrl.h
-    │  │   ├─ShmDefinition.h
 ```
 
 <hr />
