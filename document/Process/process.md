@@ -37,5 +37,5 @@
     - Weather
     
   * QR Code의 경우, QR Code generator library를 사용한다. (MIT License)
-  * Offline 모드의 경우, News / Weather의 Data는 업데이트 되지 않는다.
+  * Offline 모드의 경우, News / Weather의 Data는 UpdateTimer에 의한 업데이트 되지 않는다.
   
