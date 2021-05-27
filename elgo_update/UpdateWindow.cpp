@@ -43,11 +43,13 @@ UpdateManager::UpdateManager(QWidget *parent)
         m_screenRect = screenRect;
     }
 
+    // move center
     const QRect& windowRect = this->frameGeometry();
     const QPoint& center = m_screenRect.center();
     this->move( (center.x() - windowRect.width() / 2),
                 (center.y() - windowRect.height() / 2) );
 
+    // device label name
     QFont labelFont;
     labelFont.setPointSize(15);
     ui->label->setFont(labelFont);
