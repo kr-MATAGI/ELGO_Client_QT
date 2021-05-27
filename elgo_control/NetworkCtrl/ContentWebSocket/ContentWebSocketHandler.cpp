@@ -98,7 +98,15 @@ void ContentWebSocketHandler::ExecReadyEvent(const ContentSchema::Summary& serve
     modifiedResponse.payload.dest = serverJson.payload.src;
     modifiedResponse.event = ContentSchema::Event::ACCESS;
     modifiedResponse.payload.type = ContentSchema::PayloadType::ONCE;
-    modifiedResponse.payload.displayPower = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+    const bool bIsSleep = NetworkController::GetInstance()->GetNetworkCtrl().GetDisplaySleepStatus();
+    if(false == bIsSleep)
+    {
+        modifiedResponse.payload.displayPower = true;
+    }
+    else
+    {
+        modifiedResponse.payload.displayPower = false;
+    }
 
     JsonWriter::WriteContentServerAccessEvent(modifiedResponse, clientJson);
 }

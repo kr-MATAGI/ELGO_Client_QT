@@ -328,8 +328,14 @@ void JsonWriter::WriteContentServerPayload(const ContentSchema::Summary& src, QJ
         if(ContentSchema::Event::ACCESS == src.event)
         {
             bool displayPower = src.payload.displayPower;
-            QJsonValue displayPowerValue(displayPower);
-            jsonObj["displayPower"] = displayPowerValue.toInt();
+            if(true == displayPower)
+            {
+                jsonObj["displayPower"] = 1;
+            }
+            else
+            {
+                jsonObj["displayPower"] = 0;
+            }
         }
 
         // path - Required on Capture Event
