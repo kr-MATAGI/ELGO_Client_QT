@@ -511,7 +511,7 @@ void MainThread::CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJs
 
     // Local Resource Folder
     // image
-    QString imagePath = RESOURCE_SAVE_PATH;
+    QString imagePath = RESOURCE_DIR_PATH;
     imagePath += "image/";
     QDir imageDir(imagePath);
     const QStringList& imageFileList = imageDir.entryList();
@@ -535,7 +535,7 @@ void MainThread::CheckValidResourceFile(const QVector<PlayJson::CustomPlayDataJs
     }
 
     // video
-    QString videoPath = RESOURCE_SAVE_PATH;
+    QString videoPath = RESOURCE_DIR_PATH;
     videoPath += "video/";
     QDir videoDir(videoPath);
     const QStringList& videoFileList = videoDir.entryList();

@@ -45,7 +45,7 @@ void Initialize()
                 deviceInfo.ipAddr.mac.toUtf8().constData());
 
     // Check Resource Folder
-    g_MainController->GetInstance()->GetMainCtrl().CheckResourceFolder();
+    g_MainController->GetInstance()->GetMainCtrl().CheckDefaultFolder();
 
     // Get DB info
     g_MainController->GetInstance()->GetDBCtrl().InitializeDB();

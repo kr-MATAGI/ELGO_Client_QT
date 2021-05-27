@@ -872,7 +872,7 @@ void ContentsPlayer::MakeFileTypeContent(const PlayScheduleTimer::PlayingIndex& 
 //========================================================
 {
     // Make resource path
-    QString fullPath = RESOURCE_SAVE_PATH;
+    QString fullPath = RESOURCE_DIR_PATH;
     QString mediaTypeStr;
     ConvertMediaTypeEnumToString(contentData.contentInfo.mediaType, mediaTypeStr);
     if(0 >= mediaTypeStr.length())

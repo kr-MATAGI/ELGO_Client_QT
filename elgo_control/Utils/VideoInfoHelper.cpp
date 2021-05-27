@@ -12,7 +12,7 @@ qint64 VideoInfoHelper::GetVideoDuration(const QString& name)
 {
     qint64 retValue = 0;
 
-    std::string filePath = RESOURCE_SAVE_PATH;
+    std::string filePath = RESOURCE_DIR_PATH;
     filePath += "video/";
     filePath += name.toStdString().c_str();
 

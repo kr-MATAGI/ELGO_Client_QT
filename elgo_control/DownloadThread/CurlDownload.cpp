@@ -214,7 +214,7 @@ bool CurlDownload::DownloadResourceData(const ResourceJson::Resource& src)
     bool retValue = false;
 
     // save path
-    std::string savePath = RESOURCE_SAVE_PATH;
+    std::string savePath = RESOURCE_DIR_PATH;
     savePath += ResourceJson::ResourceTypeEnumToStr[src.type].toStdString().c_str();
     savePath += "/";
     savePath += src.name.toStdString().c_str();

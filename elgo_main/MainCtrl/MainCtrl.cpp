@@ -82,17 +82,26 @@ void MainCtrl::LoadCurrentDeviceInfo()
 }
 
 //========================================================
-void MainCtrl::CheckResourceFolder()
+void MainCtrl::CheckDefaultFolder()
 //========================================================
 {
-    if(false == QDir().exists(RESOURCE_SAVE_PATH))
+    // DB
+    if(false == QDir().exists(DB_DIR_PATH))
     {
-        ELGO_MAIN_LOG("Not existed resource folder: %s",
-                      RESOURCE_SAVE_PATH);
-        QDir().mkdir(RESOURCE_SAVE_PATH);
+        ELGO_MAIN_LOG("Not existed DB folder: %s",
+                      DB_DIR_PATH);
+        QDir().mkdir(DB_DIR_PATH);
     }
 
-    QString iconPath = RESOURCE_SAVE_PATH;
+    // Resource
+    if(false == QDir().exists(RESOURCE_DIR_PATH))
+    {
+        ELGO_MAIN_LOG("Not existed resource folder: %s",
+                      RESOURCE_DIR_PATH);
+        QDir().mkdir(RESOURCE_DIR_PATH);
+    }
+
+    QString iconPath = RESOURCE_DIR_PATH;
     iconPath.append("icon");
     if(false == QDir().exists(iconPath))
     {
@@ -101,7 +110,7 @@ void MainCtrl::CheckResourceFolder()
         QDir().mkdir(iconPath);
     }
 
-    QString videoPath = RESOURCE_SAVE_PATH;
+    QString videoPath = RESOURCE_DIR_PATH;
     videoPath.append("video");
     if(false == QDir().exists(videoPath))
     {
@@ -110,7 +119,7 @@ void MainCtrl::CheckResourceFolder()
         QDir().mkdir(videoPath);
     }
 
-    QString imagePath = RESOURCE_SAVE_PATH;
+    QString imagePath = RESOURCE_DIR_PATH;
     imagePath.append("image");
     if(false == QDir().exists(imagePath))
     {
