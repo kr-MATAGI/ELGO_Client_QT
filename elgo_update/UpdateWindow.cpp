@@ -289,20 +289,7 @@ void UpdateManager::StartElgoClient()
     mainProcess.startDetached(ELGO_MAIN_PATH, mainArgs);
     mainProcess.waitForFinished();
 
-    // ELGO_Remote
-    QProcess remoteProcess;
-    QStringList remoteArgs;
-    QString remoteCmd = "/bin/sh";
-    QString remoteExec = QString("cd %1 && npm start")
-            .arg(ELGO_REMOTE_PATH);
-    remoteArgs << "-c";
-    remoteArgs << remoteExec;
-
-    remoteProcess.start(remoteCmd, remoteArgs);
-    remoteProcess.waitForFinished();
-
     mainProcess.deleteLater();
-    remoteProcess.deleteLater();
 
     exit(0);
 }
