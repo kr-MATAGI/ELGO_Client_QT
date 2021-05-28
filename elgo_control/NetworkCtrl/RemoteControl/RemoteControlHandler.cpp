@@ -164,7 +164,7 @@ Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QStr
         /**
          * @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Exec Screen Rotation Command line
+         *          Rotate Screen using command line.
          * @param
          *          quint8  heading
          */
@@ -182,7 +182,7 @@ Remote::Result::Status RemoteControlHandler::RemoteRotateDeviceScreen(const QStr
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Rotate Display accroding to heading enum value.
+         *       Rotate screen accroding to param.
          * @param
          *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
          */
@@ -217,7 +217,7 @@ Remote::Result::Status RemoteControlHandler::RemoteUpdateDeviceOptions(const QSt
         /**
          *  @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Change Device Options
+         *          Change device behavior options
          *  @param
          *          bool displaySleep
          *          bool deviceMute

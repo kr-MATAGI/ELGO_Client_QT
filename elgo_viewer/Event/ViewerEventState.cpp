@@ -70,7 +70,7 @@ void ViewerEventState::RecvMakeQrCodeAndDisplay(const QByteArray &src)
     /**
      * @note
      *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Viewer will make qr code image and display.
+     *       make new qr code and display it.
      * @param
      *       QString    ip
      *       QString    deviceName
@@ -89,7 +89,7 @@ void ViewerEventState::RecvRotateDeviceDisplay(const QByteArray& src)
     /**
     * @note
     *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Rotate Display accroding to heading enum value.
+    *       Rotate screen accroding to param.
     * @param
     *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
     */
@@ -200,8 +200,9 @@ void ViewerEventState::RecvRequestScreenCapture(const QByteArray& src)
     /**
     * @note
     *       ELGO_CONTROL -> ELGO_VIEWER
-    *       current Screen capture on elgo_viewer
-    *       if capture is successed, response to elgo_control
+    *       capture current screen.
+    *       if capture is successed, response to elgo_control.
+    *       Response Event : RESPONSE_SCREEN_CAPTURE
     * @param
     *       QString payload.src
     *       QString payload.dest
@@ -220,7 +221,7 @@ void ViewerEventState::RecvUpdateContentsPlayerPause(const QByteArray& src)
     /**
      * @note
      *       ELGO_MAIN -> ELGO_VIEWER
-     *       Contents Player item pause or play
+     *       Contents Player items is paused or played.
      * @param
      *       bool isPause
      */
@@ -240,7 +241,7 @@ void ViewerEventState::RecvCloseMainWindowByError(const QByteArray& src)
     /**
      * @note
      *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Start Close Main Window Timer
+     *       Start Main Window Close Timer.
      * @param
      *       NONE
      */

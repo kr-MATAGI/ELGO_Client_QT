@@ -226,7 +226,7 @@ void ContentWebSocket::ErrorTimeout()
     /**
      * @note
      *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Viewer will make qr code image and display.
+     *       make new qr code and display it.
      * @param
      *       QString    ip
      *       QString    deviceName

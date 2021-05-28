@@ -54,7 +54,7 @@ void ControlEventState::RecvServerInfoFromMain(const QByteArray &src)
     /**
      *  @note
      *          ELGO_MAIN -> ELGO_CONTROL
-     *          receive WIFI information from main process
+     *          receive server connection information.
      *  @param
      *          QString wasHost,
      *          quint16 wasHostPort,
@@ -105,7 +105,7 @@ void ControlEventState::RecvResponseScreenCapture(const QByteArray& src)
     /**
      * @note
      *       ELGO_VIEWER -> ELGO_CONTORL
-     *       Receive screen capture response from elgo_viewer
+     *       Receive screen capture response.
      * @param
      *       QString payload.src
      *       QString payload.dest
@@ -126,7 +126,7 @@ void ControlEventState::RecvUpdateWifiList(const QByteArray& src)
     /**
      * @note
      *       ELGO_MAIN -> ELGO_CONTROL
-     *       Finish searching and update wifi list
+     *       Finish searching wifi list.
      * @param
      *       int    wifiCnt
      *       [Loop]
@@ -205,7 +205,7 @@ void ControlEventState::RecvWifiConnectionResult(const QByteArray& src)
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Viewer will make qr code image and display.
+         *       make new qr code and display it.
          * @param
          *       QString    ip
          *       QString    deviceName

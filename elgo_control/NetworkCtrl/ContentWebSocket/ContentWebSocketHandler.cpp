@@ -122,7 +122,7 @@ void ContentWebSocketHandler::ExecRenameEvent(const ContentSchema::Summary& serv
     /**
      * @note
      *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Viewer will make qr code image and display.
+     *       make new qr code and display it.
      * @param
      *       QString    ip
      *       QString    deviceName
@@ -242,8 +242,9 @@ void ContentWebSocketHandler::ExecScreenCaptureEvent(const ContentSchema::Summar
     /**
     * @note
     *       ELGO_CONTROL -> ELGO_VIEWER
-    *       current Screen capture on elgo_viewer
-    *       if capture is successed, response to elgo_control
+    *       capture current screen.
+    *       if capture is successed, response to elgo_control.
+    *       Response Event : RESPONSE_SCREEN_CAPTURE
     * @param
     *       QString payload.src
     *       QString payload.dest

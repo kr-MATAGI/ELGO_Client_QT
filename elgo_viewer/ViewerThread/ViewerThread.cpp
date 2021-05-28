@@ -79,7 +79,7 @@ void ViewerThread::ExecMakeQrCodeThread()
     /**
      * @note
      *       ELGO_CONTROL -> ELGO_VIEWER
-     *       Viewer will make qr code image and display.
+     *       make new qr code and display it.
      * @param
      *       QString    ip
      *       QString    deviceName
@@ -127,7 +127,7 @@ void ViewerThread::ExecPlayCustomPlayData()
     /**
      *  @note
      *          ELGO_VIEWER -> ELGO_MAIN
-     *          Save Current Playing PlayData to DB
+     *          Save Current Playing Data to DB
      *  @param
      *          int playDataId
      *          PlayJson::PlayDataType type
@@ -173,7 +173,7 @@ void ViewerThread::ExecPlayFixedPlayData()
     /**
      *  @note
      *          ELGO_VIEWER -> ELGO_MAIN
-     *          Save Current Playing PlayData to DB
+     *          Save Current Playing Data to DB
      *  @param
      *          int playDataId
      *          PlayJson::PlayDataType type
@@ -199,8 +199,8 @@ void ViewerThread::ExecScreenCapture()
     /**
     * @note
     *       ELGO_CONTROL -> ELGO_VIEWER
-    *       current Screen capture on elgo_viewer
-    *       if capture is successed, response to elgo_control
+    *       capture current screen.
+    *       if capture is successed, response to elgo_control.
     *       Response Event : RESPONSE_SCREEN_CAPTURE
     * @param
     *       QString payload.src
@@ -228,7 +228,7 @@ void ViewerThread::ExecScreenCapture()
     /**
      * @note
      *       ELGO_VIEWER -> ELGO_CONTORL
-     *       Receive screen capture response from elgo_viewer
+     *       Receive screen capture response.
      * @param
      *       QString payload.src
      *       QString payload.dest

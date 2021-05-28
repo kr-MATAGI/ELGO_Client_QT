@@ -95,7 +95,7 @@ void MainEventState::RecvUpdateDeviceOptions(const QByteArray& src)
     /**
      *  @note
      *          ELGO_CONTROL -> ELGO_MAIN
-     *          Change Device Options
+     *          Change device behavior options
      *  @param
      *          bool displaySleep
      *          bool deviceMute
@@ -228,6 +228,9 @@ void MainEventState::RecvUpdatePlaySchedule(const QByteArray& src)
      *          ELGO_CONTROL -> ELGO_MAIN
      *          For manage custom/fixed play schedule
      *  @param
+     *          PlayDataType    playDataType
+     *          [ CustomPlayDataJson  customPlayData ||
+     *            FixedPlayDataJson   fixedPlayData ]
      *          QVector<ScheduleJson::PlaySchedule> playScheduleList
      */
 
@@ -273,7 +276,7 @@ void MainEventState::RecvClearAllPlaySchedule(const QByteArray& src)
      *  @note
      *          ELGO_CONTROL -> ELGO_MAIN
      *          Clear All Play Schedule List
-     *          Cause by single play event
+     *          (Cause by receving single play event)
      *  @param
      *          NONE
      */
@@ -311,8 +314,7 @@ void MainEventState::RecvAddPlayDataToDB(const QByteArray& src)
     /**
      *  @note
      *          ELGO_CONTROL -> ELGO_MAIN
-     *          Add PlayData to DB
-     *          Cause by single play event
+     *          Add PlayData to DB by single play event
      *  @param
      *          PlayJson::PlayDataType  playJson
      *          [ CustomPlayDataJson  customPlayData ||
@@ -355,7 +357,7 @@ void MainEventState::RecvSavePlayingDataToDB(const QByteArray& src)
     /**
      *  @note
      *          ELGO_VIEWER -> ELGO_MAIN
-     *          Save Current Playing PlayData to DB
+     *          Save Current Playing Data to DB
      *  @param
      *          int playDataId
      *          PlayJson::PlayDataType type
@@ -428,7 +430,7 @@ void MainEventState::RecvRotateScreen(const QByteArray& src)
     /**
      * @note
      *          ELGO_CONTROL -> ELGO_MAIN
-     *          Exec Screen Rotation Command line
+     *          Rotate Screen using command line.
      * @param
      *          quint8  heading
      */

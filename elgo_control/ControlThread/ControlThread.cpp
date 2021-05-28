@@ -66,7 +66,7 @@ void ControlThread::ExecRecvServerInfoFromMain()
     /**
      *  @note
      *          ELGO_MAIN -> ELGO_CONTROL
-     *          receive WIFI information from main process
+     *          receive server connection information.
      *  @param
      *          QString wasHost,
      *          quint16 wasHostPort,
@@ -109,7 +109,7 @@ void ControlThread::ExecResponseScreenCapture()
     /**
     * @note
     *       ELGO_CONTROL -> ELGO_VIEWER
-    *       Receive screen capture response from elgo_viewer
+    *       Receive screen capture response.
     * @param
     *       QString payload.src
     *       QString payload.dest

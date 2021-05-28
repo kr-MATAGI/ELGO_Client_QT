@@ -89,7 +89,7 @@ void MainThread::ExecRecvProcecssReady()
         /**
          *  @note
          *          ELGO_MAIN -> ELGO_CONTROL
-         *          receive WIFI information from main process
+         *          receive server connection information.
          *  @param
          *          QString wasHost,
          *          quint16 wasHostPort,
@@ -361,7 +361,7 @@ void MainThread::ExecSearchingWifiList()
     /**
      * @note
      *       ELGO_MAIN -> ELGO_CONTROL
-     *       Finish searching and update wifi list
+     *       Finish searching wifi list.
      * @param
      *       int    wifiCnt
      *       [Loop]

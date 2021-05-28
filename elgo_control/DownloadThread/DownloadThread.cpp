@@ -166,7 +166,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
              *  @note
              *          ELGO_CONTROL -> ELGO_MAIN
              *          Clear All Play Schedule List
-             *          Cause by single play event
+             *          (Cause by receving single play event)
              *  @param
              *          NONE
              */
@@ -210,8 +210,7 @@ void DownloadThread::ExecDownloadSinglePlayData()
                 /**
                  *  @note
                  *          ELGO_CONTROL -> ELGO_MAIN
-                 *          Add PlayData to DB
-                 *          Cause by single play event
+                 *          Add PlayData to DB by single play event
                  *  @param
                  *          PlayJson::PlayDataType  playJson
                  *          [ CustomPlayDataJson  customPlayData ||

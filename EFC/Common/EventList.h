@@ -21,7 +21,7 @@ namespace MAIN_EVENT
         /**
          *  @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Change Device Options
+         *          Change device behavior options
          *  @param
          *          bool displaySleep
          *          bool deviceMute
@@ -83,7 +83,7 @@ namespace MAIN_EVENT
          *  @note
          *          ELGO_CONTROL -> ELGO_MAIN
          *          Clear All Play Schedule List
-         *          Cause by single play event
+         *          (Cause by receving single play event)
          *  @param
          *          NONE
          */
@@ -101,8 +101,7 @@ namespace MAIN_EVENT
         /**
          *  @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Add PlayData to DB
-         *          Cause by single play event
+         *          Add PlayData to DB by single play event
          *  @param
          *          PlayJson::PlayDataType  playJson
          *          [ CustomPlayDataJson  customPlayData ||
@@ -133,7 +132,7 @@ namespace MAIN_EVENT
         /**
          *  @note
          *          ELGO_VIEWER -> ELGO_MAIN
-         *          Save Current Playing PlayData to DB
+         *          Save Current Playing Data to DB
          *  @param
          *          int playDataId
          *          PlayJson::PlayDataType type
@@ -143,7 +142,7 @@ namespace MAIN_EVENT
         /**
          * @note
          *          ELGO_CONTROL -> ELGO_MAIN
-         *          Screen Rotation Command line
+         *          Rotate Screen using command line.
          * @param
          *          quint8  heading
          */
@@ -162,7 +161,7 @@ namespace CONTROL_EVENT
         /**
          *  @note
          *          ELGO_MAIN -> ELGO_CONTROL
-         *          receive WIFI information from main process
+         *          receive server connection information.
          *  @param
          *          QString wasHost,
          *          quint16 wasHostPort,
@@ -183,7 +182,7 @@ namespace CONTROL_EVENT
         /**
          * @note
          *       ELGO_VIEWER -> ELGO_CONTORL
-         *       Receive screen capture response from elgo_viewer
+         *       Receive screen capture response.
          * @param
          *       QString payload.src
          *       QString payload.dest
@@ -195,7 +194,7 @@ namespace CONTROL_EVENT
         /**
          * @note
          *       ELGO_MAIN -> ELGO_CONTROL
-         *       Finish searching and update wifi list
+         *       Finish searching wifi list.
          * @param
          *       int    wifiCnt
          *       [Loop]
@@ -231,7 +230,7 @@ namespace VIEWER_EVENT
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Viewer will make qr code image and display.
+         *       make new qr code and display it.
          * @param
          *       QString    ip
          *       QString    deviceName
@@ -241,7 +240,7 @@ namespace VIEWER_EVENT
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Rotate Display accroding to heading enum value.
+         *       Rotate screen accroding to param.
          * @param
          *      quint8   heading (top : 1, right : 2, bottom : 3, left : 4)
          */
@@ -268,8 +267,8 @@ namespace VIEWER_EVENT
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       current Screen capture on elgo_viewer
-         *       if capture is successed, response to elgo_control
+         *       capture current screen.
+         *       if capture is successed, response to elgo_control.
          *       Response Event : RESPONSE_SCREEN_CAPTURE
          * @param
          *       QString payload.src
@@ -300,7 +299,7 @@ namespace VIEWER_EVENT
         /**
          * @note
          *       ELGO_MAIN -> ELGO_VIEWER
-         *       Contents Player item pause or play
+         *       Contents Player items is paused or played.
          * @param
          *       bool isPause
          */
@@ -310,7 +309,7 @@ namespace VIEWER_EVENT
         /**
          * @note
          *       ELGO_CONTROL -> ELGO_VIEWER
-         *       Start Close Main Window Timer
+         *       Start Main Window Close Timer.
          * @param
          *       NONE
          */
