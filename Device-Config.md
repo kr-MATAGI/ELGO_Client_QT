@@ -1,8 +1,8 @@
 # 기기 설정 방법
 * 아래에서는 ELGO 디지털 사이니지 솔루션을 위한 기기 설정 방법을 설명한다.
 * 사용되는 Directory Path
-  - DB : /opt/ELGO/DB
-  - Resource : /opt/ELGO/resource
+  - DB : /opt/ELGO/DB (없으면 자동 생성)
+  - Resource : /opt/ELGO/resource (없으면 자동 생성)
   - ELGO_Remote : /opt/ELGO/Remote/build
 
 ## 검은 배경화면
