@@ -72,6 +72,7 @@
  * 상업용 라이센스는 잠시 찾아보면 개발자당 부과하며 연간 요금을 부과하는 것으로 보인다.
  * 따라서 LGPL 라이센스를 따라야하며 배포시 같이 *.so 파일들을 배포한다.
  * https://jacking75.github.io/Linux_lib_setting/
+ * https://blog.kesuskim.com/2018/06/spl-cpp-3/
  * ldd 명령어로 각 실행파일마다 필요한 so파일들을 확인하고
  * /etc/ld.so.conf 에 동적 라이브러리 정보를 설정 후 ldconfig 명령어를 사용해 /etc/ld.so.cache 파일로 만들어 주거나
  * 리눅스 커널 2.6 이후부터는 /etc/ld.so.conf.d 폴더에 'xxx.conf'로 설정할 수 있다.
