@@ -27,6 +27,7 @@ bool StartProcess(::ELGO_SYS::Proc proc)
     ELGO_MAIN_LOG("procPath : %s", program.toUtf8().constData());
     retValue = process.startDetached(program, args);
     process.waitForStarted();
+    process.waitForFinished();
 
     return retValue;
 }

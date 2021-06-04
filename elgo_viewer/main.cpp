@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     g_ContentsPlayer->showFullScreen();
 
     g_MainWindow->showFullScreen();
+    emit g_MainWindow->GetInstance()->CloseMainWindowByError();
 
     return app.exec();
 }
