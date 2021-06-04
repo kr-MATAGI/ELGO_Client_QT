@@ -163,6 +163,8 @@ void MainCtrl::CheckInternetConnection()
                                                 m_initConfig.internet.ssid,
                                                 m_initConfig.internet.pw,
                                                 true);
+
+        LoadCurrentDeviceInfo();
     }
     ELGO_MAIN_LOG("Internet Connection - %d", bIsConn);
 }
