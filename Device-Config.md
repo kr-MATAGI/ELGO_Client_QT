@@ -72,8 +72,7 @@
   
   * https://askubuntu.com/questions/67500/how-to-disable-notification-from-network-manager
   <code><pre>
-  gsettings set org.gnome.nm-applet disable-disconnected-notifications "true"
-  gsettings set org.gnome.nm-applet disable-connected-notifications "true"
+      TODO....
   </code></pre>
 
 ## 중요 - 동적 링크
