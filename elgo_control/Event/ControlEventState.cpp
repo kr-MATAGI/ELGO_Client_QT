@@ -192,7 +192,9 @@ void ControlEventState::RecvWifiConnectionResult(const QByteArray& src)
     {
         contents.status = Remote::Result::Status::CONNECT_WIFI_OK;
 
-        NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(newIP);
+        CONNECT_INFO connectInfo = NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo();
+        connectInfo.REMOTE_HOST = newIP;
+        NetworkController::GetInstance()->GetNetworkCtrl().SetConnectInfo(connectInfo);
         const QString& deviceName = NetworkController::GetInstance()->GetNetworkCtrl().GetDeviceName();
         emit RemoteControlServer::GetInstance()->RemoteClientDisconnect();
 

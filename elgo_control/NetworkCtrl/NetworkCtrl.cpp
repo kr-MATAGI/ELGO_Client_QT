@@ -136,7 +136,8 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
         else
         {
             QString errorStr = curl_easy_strerror(curlCode);
-            ELGO_CONTROL_LOG("Error - resCode : %ld , str : %s, errorBuf : %s", resCode, errorStr.toUtf8().constData(), errorBuffer);
+            ELGO_CONTROL_LOG("Error - resCode : %ld , str : %s, errorBuf : %s",
+                             resCode, errorStr.toUtf8().constData(), errorBuffer);
         }
         curl_slist_free_all(headers);
     }
