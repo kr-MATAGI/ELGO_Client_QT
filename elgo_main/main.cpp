@@ -29,6 +29,8 @@ bool StartProcess(::ELGO_SYS::Proc proc)
     process.waitForStarted();
     process.waitForFinished();
 
+    process.deleteLater();
+
     return retValue;
 }
 
