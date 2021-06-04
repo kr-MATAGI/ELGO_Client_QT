@@ -34,7 +34,6 @@ bool StartProcess(::ELGO_SYS::Proc proc)
 void Initialize()
 {
     // Get This Device Info
-    // to do : save ip to shared mem, checking network connection
     g_MainController->GetInstance()->GetMainCtrl().LoadCurrentDeviceInfo();
     ::DEVICE::Info deviceInfo = g_MainController->GetMainCtrl().GetDeviceInfo();
     ELGO_MAIN_LOG("OS : %s, Arch : %s, name : %s, ip : %s, mac : %s",
