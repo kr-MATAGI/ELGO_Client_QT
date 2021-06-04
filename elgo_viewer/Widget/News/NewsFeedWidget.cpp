@@ -244,8 +244,8 @@ QString NewsFeedWidget::ConvertCategoryEnumToKrStr(const PlayJson::NewsCategory 
 {
     const char* krStrArray[] = {"NONE", "최신", "헤드라인",
                                 "정치", "경제", "사회",
-                                "스포츠", "문화연예", "지역",
-                                "세계", "날씨"};
+                                "지역", "세계", "문화연예",
+                                "스포츠", "날씨"};
 
     return krStrArray[category];
 }
