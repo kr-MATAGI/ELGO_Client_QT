@@ -67,6 +67,15 @@
  * Alt + F2를 입력후 gnome-tweaks를 실행
  * 확장 탭을 클릭하면 Desktop Icons가 있다. on/off 옆 설정버튼을 누르고 휴지통을 비롯한 icon의 숨길 수 있다.
 
+## Wifi 연결 과정에서 아래와 같은 pop-up을 방지
+![image](https://user-images.githubusercontent.com/30927066/120747099-6bf6a280-c53b-11eb-8e52-a2f82c7c26ca.png)
+  
+  * https://askubuntu.com/questions/67500/how-to-disable-notification-from-network-manager
+  <code><pre>
+  gsettings set org.gnome.nm-applet disable-disconnected-notifications "true"
+  gsettings set org.gnome.nm-applet disable-connected-notifications "true"
+  </code></pre>
+
 ## 중요 - 동적 링크
  * QT를 상업용으로 배포할려면 상업용 라이센스를 구매하거나 LGPL 라이센스의 제약을 따라야한다.
  * 상업용 라이센스는 잠시 찾아보면 개발자당 부과하며 연간 요금을 부과하는 것으로 보인다.
