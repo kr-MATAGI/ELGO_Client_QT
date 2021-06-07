@@ -18,23 +18,6 @@
 static MainController *g_MainController = MainController::GetInstance();
 static MainEventHandler *g_EventHandler = NULL;
 
-bool StartProcess(::ELGO_SYS::Proc proc)
-{
-    bool retValue = false;
-
-    QProcess process;
-    QStringList args;
-    QString program = g_MainController->GetMainCtrl().MakeProcessPath(proc);
-    ELGO_MAIN_LOG("procPath : %s", program.toUtf8().constData());
-    retValue = process.startDetached(program, args);
-    process.waitForStarted();
-    process.waitForFinished();
-
-    process.deleteLater();
-
-    return retValue;
-}
-
 void Initialize()
 {
     // Get This Device Info
@@ -65,8 +48,7 @@ void Initialize()
     // Start Process
     const QString& viewerPath = g_MainController->GetMainCtrl().MakeProcessPath(::ELGO_SYS::Proc::ELGO_VIEWER);
     const bool bIsStartedViewer = DeviceManager::StartProcess(viewerPath);
-//    const bool bIsStaredControl = StartProcess(::ELGO_SYS::Proc::ELGO_CONTROL);
-    ELGO_MAIN_LOG("StartProccess - { viewer : %d }", bIsStartedViewer);
+    ELGO_MAIN_LOG("StartProccess - { viewer: %d }", bIsStartedViewer);
 }
 
 int main(int argc, char *argv[])
