@@ -8,6 +8,7 @@
 #include "MainCtrl/MainCtrl.h"
 #include "DB/MainDBCtrl.h"
 #include "Logger/MainLogger.h"
+#include "Utils/DeviceManager.h"
 
 // EFC
 #include "Logger/ELogger.h"
@@ -62,9 +63,10 @@ void Initialize()
     g_MainController->GetInstance()->GetMainCtrl().CheckDisplaySleepStatus();
 
     // Start Process
-    const bool bIsStaredControl = StartProcess(::ELGO_SYS::Proc::ELGO_CONTROL);
-    const bool bIsStaredViewer = StartProcess(::ELGO_SYS::Proc::ELGO_VIEWER);
-    ELGO_MAIN_LOG("StartProccess { contorl : %d, viewer : %d }", bIsStaredControl, bIsStaredViewer);
+    const QString& viewerPath = g_MainController->GetMainCtrl().MakeProcessPath(::ELGO_SYS::Proc::ELGO_VIEWER);
+    const bool bIsStartedViewer = DeviceManager::StartProcess(viewerPath);
+//    const bool bIsStaredControl = StartProcess(::ELGO_SYS::Proc::ELGO_CONTROL);
+    ELGO_MAIN_LOG("StartProccess - { viewer : %d }", bIsStartedViewer);
 }
 
 int main(int argc, char *argv[])

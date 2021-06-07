@@ -165,3 +165,22 @@ void DeviceManager::RotateScreen(const DEVICE::OS os, quint8 heading)
 
     process->deleteLater();
 }
+
+//========================================================
+bool DeviceManager::StartProcess(const QString& procPath)
+//========================================================
+{
+    bool retValue = false;
+
+    QProcess *newProcess = new QProcess;
+    QString cmd = procPath;
+    QStringList args;
+    ELGO_MAIN_LOG("Process Path: %s", procPath.toStdString().c_str());
+    retValue = newProcess->startDetached(cmd, args);
+    newProcess->waitForStarted();
+    newProcess->waitForFinished();
+
+    newProcess->deleteLater();
+
+    return retValue;
+}

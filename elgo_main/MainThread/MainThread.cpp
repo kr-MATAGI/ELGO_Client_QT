@@ -13,6 +13,7 @@
 #include "MainThread.h"
 #include "Logger/MainLogger.h"
 #include "Utils/WifiManager.h"
+#include "Utils/DeviceManager.h"
 
 //========================================================
 MainThread::MainThread()
@@ -118,6 +119,12 @@ void MainThread::ExecRecvProcecssReady()
     }
     else if(ELGO_SYS::Proc::ELGO_VIEWER == proc)
     {
+        // Start ELGO_Control
+        const QString& controlPath =
+                MainController::GetInstance()->GetMainCtrl().MakeProcessPath(::ELGO_SYS::Proc::ELGO_CONTROL);
+        const bool bIsControlStarted = DeviceManager::StartProcess(controlPath);
+        ELGO_MAIN_LOG("Process Started - { control: %d }", bIsControlStarted);
+
         /**
          *  @note
          *          ELGO_CONTROL -> ELGO_MAIN

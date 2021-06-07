@@ -9,21 +9,20 @@
 
 namespace DeviceManager
 {
-    // Display
-    /** @brief */
+    /** @brief  Sleep */
     void UpdateSleepStatus(const DEVICE::OS os, const bool isSleep);
 
-    // Reboot
-    /** @brief */
+    /** @brief  Reboot */
     void SystemReboot(const DEVICE::OS os);
 
-    // Mute
-    /** @brief */
+    /** @brief  Mute */
     void DeviceMute(const DEVICE::OS os, const bool bIsMute);
 
-    // Rotation
-    /** @brief */
+    /** @brief  Rotation */
     void RotateScreen(const DEVICE::OS os, quint8 heading);
+
+    /** @brief  StartProcess */
+    bool StartProcess(const QString& procPath);
 }
 
 #endif // DEVICEMANAGER_H
