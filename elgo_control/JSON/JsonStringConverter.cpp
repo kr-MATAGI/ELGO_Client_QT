@@ -848,7 +848,8 @@ void JsonStringConverter::RemoteActionEnumToString(const Remote::Action type, QS
 }
 
 //========================================================
-void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest)
+void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest,
+                                                            const bool bIsEndTime)
 //========================================================
 {
     const QStringList dateTimeSplit = src.split("T");
@@ -866,8 +867,21 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
     // time
     QTime time;
     const QStringList timeSplit = timeStr.split(":");
-    const int hour = timeSplit[0].toInt();
-    const int min = timeSplit[1].toInt();
+    int hour = timeSplit[0].toInt();
+    int min = timeSplit[1].toInt();
+    if(true == bIsEndTime)
+    {
+        min += 1;
+        if(60 == min)
+        {
+            min = 0;
+            hour +=1;
+        }
+        if(24 == hour)
+        {
+            hour = 0;
+        }
+    }
 
     const QString secMsecStr = timeSplit[2];
     const QStringList secMsecSplit = secMsecStr.split(".");

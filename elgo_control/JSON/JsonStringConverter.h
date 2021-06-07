@@ -90,7 +90,8 @@ namespace JsonStringConverter
 
     // elgo_control <-> contents server
     /** @brief */
-    void ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest);
+    void ScheduleDateTimeStringToQDateTime(const QString& src, QDateTime &dest,
+                                           const bool bIsEndTime = false);
 
     /** @brief */
     void CronCommandStringToTimeRepeat(const QString& src, ScheduleJson::Cron& dest);

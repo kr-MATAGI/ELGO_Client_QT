@@ -451,7 +451,7 @@ bool JsonParser::ParseSchedulesResponse(const QString& src, QVector<ScheduleJson
                 {
                     const QString& endStr = arrObj["end"].toString();
                     QDateTime endDateTime;
-                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endStr, endDateTime);
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endStr, endDateTime, true);
                     scheduleData.endTime = endDateTime;
                 }
                 else
@@ -1217,7 +1217,7 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                 {
                     QDateTime endTime;
                     const QString& endTimeStr = scheduleDataObj["end"].toString();
-                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime);
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime, true);
                     powerSchedule.endTime = endTime;
                 }
 
@@ -1271,7 +1271,7 @@ void JsonParser::ParsePowerSchedulesJson(const QString& src, ScheduleJson::Power
                 {
                     QDateTime endTime;
                     const QString& endTimeStr = scheduleDataObj["end"].toString();
-                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime);
+                    JsonStringConverter::ScheduleDateTimeStringToQDateTime(endTimeStr, endTime, true);
                     powerSchedule.endTime = endTime;
                 }
 
