@@ -885,8 +885,13 @@ void JsonStringConverter::ScheduleDateTimeStringToQDateTime(const QString& src, 
 
     const QString secMsecStr = timeSplit[2];
     const QStringList secMsecSplit = secMsecStr.split(".");
-    const int sec = secMsecSplit[0].toInt();
+    int sec = secMsecSplit[0].toInt();
     const int msec = secMsecSplit[1].split("Z")[0].toInt();
+    if(true == bIsEndTime)
+    {
+        sec = 59;
+    }
+
     time.setHMS(hour, min, sec, msec);
 
     dest.setTime(time);
