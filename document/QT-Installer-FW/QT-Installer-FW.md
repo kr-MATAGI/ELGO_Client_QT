@@ -25,3 +25,4 @@ ___
   * tutorial/packages 내 com.vendor.product의 폴더명은 변경해도 된다. (e.g. com.elgo.client)
   * installer를 생성하는 과정 중 어느 경로에라도 '한글'이 포함된 경로가 있으면 오류를 유발하기 쉽다.
   * packages/data 폴더에 config.xml(설정 정보) 파일을 같이 넣어주면 /opt/ELGO 에 같이 설치된다.
+  * ELGO_Remote의 build 폴더 또한 함께 packages/data 폴더 내에 넣어주면 같이 설치된다.
