@@ -214,6 +214,8 @@ void PlayScheduleTimer::PlayScheduleTimeout()
             // Check Expired
             if(currSecEpoch >= dataIter->endTime.toSecsSinceEpoch())
             {
+                bIsMatched = false;
+
                 ELGO_MAIN_LOG("Expired - {id: %s, start: %s, end: %s}",
                               scheduleIter->id.toStdString().c_str(),
                               ConvertDateTimeToString(dataIter->startTime).toStdString().c_str(),
