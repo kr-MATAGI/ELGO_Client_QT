@@ -17,6 +17,7 @@
 <img src="/document/ReadMe-Flow-Chart/Main_Initialize.jpg" width="300px" height="800px" alt="Main_Init"></img></br>
 
 ## Start process
+  * Start Proccess 시퀀스의 경우 Viewer 가 Process Ready를 Main에 보낸 후 Control을 StartProcess() 하도록 변경하였음.
 <img src="/document/ReadMe-Flow-Chart/Start_Client.jpg" width="1200px" height="1000px" alt="Start Flow"></img></br>
 
 
