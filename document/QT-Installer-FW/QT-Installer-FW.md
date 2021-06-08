@@ -9,7 +9,7 @@ ___
   3) 생성 후 QT-Installer-FW가 설치된 폴더에서 examples/tutorial 폴더를 복사 한다. (/home/[user]/Qt/QtIFW-4.1.1/examples/tutorial)
   4) tutorial 폴더 내 config/config.xml 파일에서 Name, Version, Title, Publisher는 적당히 변경하고 <br> 
   TargetDir의 경우 Installer의 결과물이 생성될 경로를 입력한다.(기본경로, Installer 에서 변경 가능)
-  5) tutorial 폴더 내 packages/com.vendor.product/meta/package.xml 파일에서 <Script>, <UserInterface> 부분을 제거한다. <br>
+  5) tutorial 폴더 내 packages/com.vendor.product/meta/package.xml 파일에서 Script, UserInterface 부분을 제거한다. <br>
   그 다음 Default의 value를 true로 바꿔준다. <br>
   DisplayName, Description, Version, ReleaseDate는 적당히 변경한다. <br>
   Lincense의 경우 license.txt의 내용을 읽어 생성될 Installer에서 표시해준다. <br>
