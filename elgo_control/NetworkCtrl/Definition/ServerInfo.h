@@ -5,7 +5,6 @@
 #include <QString>
 
 #define REMOTE_TCP_PORT 9412
-#define CONTENT_SERVER_URL  "wss://demo.elgo.co.kr:4500"
 #define JWT_URL "/client/jwt/socket"
 
 /** @brief */

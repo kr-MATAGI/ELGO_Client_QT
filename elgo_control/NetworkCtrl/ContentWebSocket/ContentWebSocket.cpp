@@ -82,7 +82,14 @@ void ContentWebSocket::ConnectContentSocketSlot()
 //========================================================
 {
     QNetworkRequest netRequest;
-    QUrl url(CONTENT_SERVER_URL);
+    // e.g "wss://app.elgo.co.kr:4500"
+    QString wasUrl = "wss://";
+    wasUrl += NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().WAS_HOST;
+    wasUrl += ":";
+    wasUrl += QString::number(NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().WAS_PORT);
+    ELGO_CONTROL_LOG("WAS Url: %s", wasUrl.toStdString().c_str());
+
+    QUrl url(wasUrl);
     QByteArray jwtBytes;
     m_jwt = NetworkController::GetInstance()->GetNetworkCtrl().GetJWTString();
     jwtBytes.append(m_jwt.toUtf8());
@@ -293,7 +300,12 @@ void ContentWebSocket::ReConnectTimeout()
         JsonParser::ParseGetJwtResponse(recvStr, m_jwt);
 
         QNetworkRequest netRequest;
-        QUrl url(CONTENT_SERVER_URL);
+        QString wasUrl = "wss://";
+        wasUrl += NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().WAS_HOST;
+        wasUrl += ":";
+        wasUrl += QString::number(NetworkController::GetInstance()->GetNetworkCtrl().GetConnectInfo().WAS_PORT);
+        ELGO_CONTROL_LOG("WAS Url: %s", wasUrl.toStdString().c_str())
+        QUrl url(wasUrl);
         QByteArray jwtBytes;
         jwtBytes.append(m_jwt.toUtf8());
 

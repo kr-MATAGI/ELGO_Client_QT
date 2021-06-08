@@ -87,8 +87,7 @@ bool NetworkCtrl::GetAccessibleJwtFromServer(QString& dest)
     std::string sendJson;
 
     // for test - "d335fd2a4-88b4-9dba-bbdf-2dc416a3018";
-//    QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
-    QString udid = "31cff00de26944aa90ce09cced252f97";
+    QString udid = QSysInfo::machineUniqueId().toStdString().c_str();
 
     QString os = QSysInfo::productType();
     JsonWriter::WriteGetJwtRequest(udid, os, sendJson);
