@@ -85,9 +85,7 @@
  * /etc/ld.so.conf 에 동적 라이브러리 정보를 설정 후 ldconfig 명령어를 사용해 /etc/ld.so.cache 파일로 만들어 주거나
  * 리눅스 커널 2.6 이후부터는 /etc/ld.so.conf.d 폴더에 'xxx.conf'로 설정할 수 있다.
  * 보통  캐시로 설정하는 것이 빠르다고 한다.
- * 아래의 주소들에서 간단히 deploy 하는 방법이 있다.
- <pre><code>
- https://yonglimlee.tistory.com/entry/QT-linux-deploy-%EC%9A%B0%EB%B6%84%ED%88%AC%EC%97%90%EC%84%9C-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0-2004LTS-64bit
- https://github.com/QuasarApp/CQtDeployer/wiki/Build-and-Install
- </code></pre>
+ * 아래의 주소들에서 간단히 deploy 하는 방법이 있다. <br>
+  [Blog](https://yonglimlee.tistory.com/entry/QT-linux-deploy-%EC%9A%B0%EB%B6%84%ED%88%AC%EC%97%90%EC%84%9C-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0-2004LTS-64bit) <br>
+  [git-release](https://github.com/QuasarApp/CQtDeployer/wiki/Build-and-Install) <br>
  
