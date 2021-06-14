@@ -174,7 +174,6 @@ void ContentWebSocket::TextMessageReceivedSlot(const QString &message)
                 (ContentSchema::Event::PLAY_SCHEDULE == response.event) )
             {
                 m_progressRes = response;
-                m_progressTimer.setSingleShot(true);
                 m_progressTimer.start(CONN_TIMEOUT::PROGRESS_TIMEROUT);
                 ELGO_CONTROL_LOG("Progress Timer Start");
             }
