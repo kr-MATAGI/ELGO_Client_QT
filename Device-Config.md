@@ -91,6 +91,10 @@
  
 ## 오류 대응
   * 만약 *.so도 다 추가하고 sqlite 관련 에러가 발생할 경우
-  <code><pre>
+  <pre><code>
     sudo apt install libqt5sql5-sqlite
+  </pre></code>
+  * plugins 대응
+  <pre><code>
+  https://forum.qt.io/topic/111553/solved-qt-qpa-plugin-could-not-find-the-qt-platform-plugin-xcb-in/15
   </code></pre>
