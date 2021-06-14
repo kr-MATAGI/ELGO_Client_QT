@@ -89,3 +89,8 @@
   [Blog](https://yonglimlee.tistory.com/entry/QT-linux-deploy-%EC%9A%B0%EB%B6%84%ED%88%AC%EC%97%90%EC%84%9C-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0-2004LTS-64bit) <br>
   [git-release](https://github.com/QuasarApp/CQtDeployer/wiki/Build-and-Install) <br>
  
+## 오류 대응
+  * 만약 *.so도 다 추가하고 sqlite 관련 에러가 발생할 경우
+  <code><pre>
+    sudo apt install libqt5sql5-sqlite
+  </code></pre>
