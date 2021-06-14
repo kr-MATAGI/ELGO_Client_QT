@@ -14,7 +14,7 @@ VideoItem::VideoItem(QGraphicsItem *parent)
     // init
     m_player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     m_player->setVideoOutput(this);
-    m_player->setNotifyInterval(100);
+    m_player->setNotifyInterval(50);
 
     this->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
@@ -270,12 +270,12 @@ void VideoItem::CheckStateChanged(QMediaPlayer::State state)
 void VideoItem::CheckPositionChanged(qint64 pos)
 //========================================================
 {
-    const qint64 secUnit = 1000 * (m_videoInfo.duration.file / 1000);
+    const qint64 secUnit = 1000 * (m_videoInfo.duration.file / 1000) * 0.95;
     if(pos >= secUnit)
     {
-        ELGO_VIEWER_LOG("Replay - %s (0:%lld) ",
+        ELGO_VIEWER_LOG("Replay - %s (%lld:%lld)",
                         m_videoInfo.fileName.toStdString().c_str(),
-                        secUnit)
+                        pos, secUnit)
         m_player->setPosition(0);
     }
 }
