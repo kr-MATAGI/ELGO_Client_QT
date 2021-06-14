@@ -4,20 +4,26 @@
 #include <QNetworkReply>
 #include <QtXml>
 
+#include <curl/curl.h>
+
 // Update
 #include "UpdateWindow.h"
 #include "ui_UpdateWindow.h"
 #include "Logger/UpdateLogger.h"
 
 // Define
-#define ELGO_UPDATE_URL "http://cloud.elgo.co.kr/update/ubuntu"
-#define VERSION_CHECK_URL   ""
+#define ELGO_Client_URL "https://elgo-common.s3.ap-northeast-2.amazonaws.com/update/ubuntu/elgo_client.tar"
+#define ELGO_Remote_URL "https://cloud.elgo.co.kr/update/ubuntu/elgo_remote.tar"
+#define VERSION_CHECK_URL   "https://demo.elgo.co.kr/client/version/ubuntu/main"
 
 #define CONFIG_XML   "/opt/ELGO/config.xml"
-#define ELGO_MAIN_PATH  "/opt/ELGO/elgo_main"
+#define ELGO_Client_PATH    "/opt/ELGO/elgo_client.tar"
+#define ELGO_Remote_PATH    "/opt/ELGO/elgo_remote.tar"
 
-#define ELGO_REMOTE_PATH    "/opt/ELGO/Remote/build"
-#define ELGO_REMOTE_DECMP_PATH  ""
+#define ELGO_Remote_DECMP_PATH  "/opt/ELGO/Remote/build/"
+#define ELGO_Client_DECMP_PATH  "/opt/ELGO/"
+
+#define ELGO_MAIN_PROC  "/opt/ELGO/elgo_main"
 
 #define START_TIMEOUT   3000
 
@@ -25,14 +31,13 @@
 UpdateManager::UpdateManager(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::UpdateWindow)
-    , m_currDownloadProc(ELGO_SYS::Proc::NONE_PROC)
-    , m_successCnt(0)
 //========================================================
 {
     ui->setupUi(this);
 
     // init
     this->setWindowTitle("ELGO Update Manager");
+    ui->progressBar->hide();
 
     QList<QScreen *> screens = QApplication::screens();
     if(0 < screens.size())
@@ -70,7 +75,7 @@ UpdateManager::~UpdateManager()
 void UpdateManager::GetLatestVersion()
 //========================================================
 {
-    QUrl url;
+    QUrl url(VERSION_CHECK_URL);
     QNetworkRequest request(url);
     m_getVersionReply = m_netManager.get(request);
 
@@ -106,6 +111,7 @@ void UpdateManager::CheckVersion()
                                     .arg(m_serverVersion);
             ui->label->setText(startMsg);
             bIsNeedNew = true;
+            ELGO_UPDATE_LOG("Updating Start !");
         }
     }
     else
@@ -116,22 +122,28 @@ void UpdateManager::CheckVersion()
     // Download New Binary
     if(true == bIsNeedNew)
     {
-        QVector<ELGO_SYS::Proc> procList = { ELGO_SYS::Proc::ELGO_MAIN,
-                                             ELGO_SYS::Proc::ELGO_CONTROL,
-                                             ELGO_SYS::Proc::ELGO_VIEWER,
-                                             ELGO_SYS::Proc::ELGO_REMOTE };
-
-        for(int idx = 0; idx < procList.size(); idx++)
+        const bool bIsClientDownload = StartNextDownload(ELGO_Client_URL, ELGO_Client_PATH);
+        const bool bIsRemoteDownload = StartNextDownload(ELGO_Remote_URL, ELGO_Remote_PATH);
+        ELGO_UPDATE_LOG("Download Results - {client: %d, remote: %d}",
+                        bIsClientDownload, bIsRemoteDownload);
+        if(true == bIsClientDownload && true == bIsRemoteDownload)
         {
-            m_downloadQueue.enqueue(procList[idx]);
+            DecompressDownloadFile(ELGO_Client_PATH, ELGO_Client_DECMP_PATH);
+            DecompressDownloadFile(ELGO_Remote_PATH, ELGO_Remote_DECMP_PATH);
+
+            UpdateXmlVersion();
+            ui->label->setText("업데이트 완료 - Signage를 시작합니다.");
+
+            m_startTimer.setSingleShot(true);
+            m_startTimer.start(START_TIMEOUT);
         }
 
-        StartNextDownload();
+        QFile::remove(ELGO_Client_PATH);
+        QFile::remove(ELGO_Remote_PATH);
     }
     else
     {
         ui->label->setText("모든 프로그램이 최신 버전입니다.");
-        ui->progressBar->hide();
 
         m_startTimer.setSingleShot(true);
         m_startTimer.start(START_TIMEOUT);
@@ -139,67 +151,45 @@ void UpdateManager::CheckVersion()
 }
 
 //========================================================
-void UpdateManager::StartNextDownload()
+bool UpdateManager::StartNextDownload(const std::string url, const std::string savePath)
 //========================================================
 {
-    if(true == m_downloadQueue.isEmpty())
-    {
-        QString endLog;
-        if(4 == m_successCnt)
-        {
-            endLog = QString("업데이트를 완료하였습니다. (%1/3)")
-                                .arg(QString::number(m_successCnt));
+    bool retValue = false;
 
-            // Update XML
-            UpdateXmlVersion();
+    CURL *curl = curl_easy_init();
+    if(curl)
+    {
+        FILE *file = std::fopen(savePath.c_str(), "wb");
+
+        char errorBuffer[CURL_ERROR_SIZE] = {'\0', };
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 10000);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &WirteFileFunction);
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
+
+        // for debug
+        long resCode;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resCode);
+
+        CURLcode curlCode = curl_easy_perform(curl);
+        if(CURLE_OK == curlCode)
+        {
+            retValue = true;
+            ELGO_UPDATE_LOG("Downloaded - %s", savePath.c_str());
         }
         else
         {
-            endLog = QString("일부 파일의 업데이트가 실패 했습니다. -{ ");
-            foreach(ELGO_SYS::Proc item, m_failedList)
-            {
-                endLog.append(ELGO_SYS::ELGOProc_enum2str[item]);
-                endLog.append(" ");
-            }
-            endLog.append(" }");
+            QString errorStr = curl_easy_strerror(curlCode);
+            ELGO_UPDATE_LOG("Error - %s : {%s}, {%s}", url.c_str(), errorStr.toUtf8().constData(), errorBuffer);
         }
-        ui->label->setText(endLog);
 
-        m_startTimer.setSingleShot(true);
-        m_startTimer.start(START_TIMEOUT);
+        fclose(file);
     }
+    curl_easy_cleanup(curl);
 
-    ELGO_SYS::Proc elgoProc = m_downloadQueue.dequeue();
-    m_currDownloadProc = elgoProc;
-
-    QString urlStr = ELGO_UPDATE_URL;
-    urlStr.append("/");
-    urlStr.append(elgoProc);
-
-    QUrl url = urlStr;
-    QString fileName = url.toString().split("/").back();
-    m_outFile.setFileName(fileName);
-    if(false == m_outFile.open(QIODevice::WriteOnly))
-    {
-        QString errMsg = QString("%1 파일 열기 실패").arg(fileName);
-        ui->label->setText(errMsg);
-        StartNextDownload();
-
-        return;
-    }
-
-    QNetworkRequest request(url);
-    m_downloadReply = m_netManager.get(request);
-    QString downloadMsg = QString("%1 을 업데이트하고 있습니다.").arg(fileName);
-    ui->label->setText(downloadMsg);
-
-    //connect
-    connect(m_downloadReply, &QNetworkReply::downloadProgress,
-            this, &UpdateManager::DownloadProgress);
-    connect(m_downloadReply, &QNetworkReply::finished,
-            this, &UpdateManager::DownloadFinished);
-    connect(m_downloadReply, &QNetworkReply::readyRead,
-            this, &UpdateManager::DonwloadReadyToRead);
+    return retValue;
 }
 
 //========================================================
@@ -212,11 +202,13 @@ bool UpdateManager::GetCurrentVersion(QString& currVersion)
     QFile xmlFile(CONFIG_XML);
     if(false == xmlFile.open(QIODevice::ReadOnly))
     {
+        ELGO_UPDATE_LOG("ERROR - XML Open !");
         return retValue;
     }
 
     if(false == xmlDoc.setContent(&xmlFile))
     {
+        ELGO_UPDATE_LOG("ERROR - setContent()");
         return retValue;
     }
 
@@ -233,8 +225,24 @@ bool UpdateManager::GetCurrentVersion(QString& currVersion)
                     retValue = true;
                     currVersion = root.firstChild().toText().data();
                 }
+                else
+                {
+                    ELGO_UPDATE_LOG("ERROR - root is NULL");
+                }
+            }
+            else
+            {
+                ELGO_UPDATE_LOG("ERROR - 'version' is not existed");
             }
         }
+        else
+        {
+            ELGO_UPDATE_LOG("ERROR - root is NULL");
+        }
+    }
+    else
+    {
+        ELGO_UPDATE_LOG("ERROR - Not Existed 'configuration'");
     }
 
     xmlFile.close();
@@ -283,10 +291,12 @@ void UpdateManager::UpdateXmlVersion()
 void UpdateManager::StartElgoClient()
 //========================================================
 {
+    ELGO_UPDATE_LOG("Start Client");
+
     // ELGO_Main
     QProcess mainProcess;
     QStringList mainArgs;
-    mainProcess.startDetached(ELGO_MAIN_PATH, mainArgs);
+    mainProcess.startDetached(ELGO_MAIN_PROC, mainArgs);
     mainProcess.waitForFinished();
 
     mainProcess.deleteLater();
@@ -320,50 +330,8 @@ void UpdateManager::ReadVersionFinish()
 //========================================================
 {
     m_getVersionReply->deleteLater();
-}
 
-//========================================================
-void UpdateManager::DownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
-//========================================================
-{
-    int percentVal = (bytesTotal / bytesReceived) * 100;
-    ui->progressBar->setValue(percentVal);
-}
-
-//========================================================
-void UpdateManager::DonwloadReadyToRead()
-//========================================================
-{
-    m_outFile.write(m_downloadReply->readAll());
-}
-
-//========================================================
-void UpdateManager::DownloadFinished()
-//========================================================
-{
-    m_outFile.close();
-
-    if(m_downloadReply->error())
-    {
-        ui->label->setText(m_downloadReply->errorString());
-        m_outFile.remove();
-    }
-    else
-    {
-        m_successCnt++;
-
-        QString successMsg = QString("%1 업데이트 완료").arg(m_outFile.fileName());
-        ui->label->setText(successMsg);
-
-        if(ELGO_SYS::Proc::ELGO_REMOTE == m_currDownloadProc)
-        {
-            // Decompression
-            DecompressDownloadFile(ELGO_REMOTE_PATH, ELGO_REMOTE_DECMP_PATH);
-        }
-    }
-
-    m_downloadReply->deleteLater();
-    StartNextDownload();
+    CheckVersion();
 }
 
 //========================================================
@@ -420,4 +388,13 @@ void UpdateManager::DecompressDownloadFile(const QString& path,
     qDebug() << newProcess->readAllStandardOutput();
 
     newProcess->deleteLater();
+}
+
+//========================================================
+size_t UpdateManager::WirteFileFunction(void *ptr, size_t size, size_t nmemb, FILE *stream)
+//========================================================
+{
+    size_t written = fwrite(ptr, size, nmemb, stream);
+
+    return written;
 }

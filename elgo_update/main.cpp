@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     updateManager.show();
 
     updateManager.GetLatestVersion();
-    updateManager.CheckVersion();
 
     return a.exec();
 }

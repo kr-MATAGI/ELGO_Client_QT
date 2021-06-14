@@ -2,6 +2,7 @@
 #define UPDATEMANAGER_H
 
 // QT
+#include <QNetworkReply>
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 #include <QQueue>
@@ -33,7 +34,7 @@ public:
 
 private:
     /** @brief */
-    void StartNextDownload();
+    bool StartNextDownload(const std::string url, const std::string savePath);
 
     /** @brief */
     bool GetCurrentVersion(QString& currVersion);
@@ -47,18 +48,14 @@ private:
     /** @brief */
     void DecompressDownloadFile(const QString& path, const QString& destPath);
 
+    /** @brief */
+    static size_t WirteFileFunction(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
 private slots:
     /** @brief */
     void ReadyVersionRead();
     /** @brief */
     void ReadVersionFinish();
-
-    /** @brief */
-    void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    /** @brief */
-    void DonwloadReadyToRead();
-    /** @brief */
-    void DownloadFinished();
 
     /** @brief */
     void StartElgoClient();
@@ -67,17 +64,10 @@ private:
     Ui::UpdateWindow *ui;
     QRect m_screenRect;
 
-    ELGO_SYS::Proc m_currDownloadProc;
     QNetworkAccessManager m_netManager;
-    QQueue<ELGO_SYS::Proc> m_downloadQueue;
-    QFile m_outFile;
     QNetworkReply *m_getVersionReply;
-    QNetworkReply *m_downloadReply;
 
-    int m_successCnt;
-    QVector<ELGO_SYS::Proc> m_failedList;
     QString m_serverVersion;
-
     QTimer m_startTimer;
 };
 #endif // UPDATEMANAGER_H
