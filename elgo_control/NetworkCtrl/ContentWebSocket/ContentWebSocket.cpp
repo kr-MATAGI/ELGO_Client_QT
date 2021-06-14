@@ -144,6 +144,7 @@ void ContentWebSocket::ErrorOccurredSocketSlot(QAbstractSocket::SocketError sock
 
     if(false == m_reConnectTimer.isActive())
     {
+        StopProgressTimerSlot();
         m_reConnectTimer.start(CONN_TIMEOUT::RECONNECT_TIMEOUT);
         ELGO_CONTROL_LOG("Start - Re-Connect Timer");
     }
