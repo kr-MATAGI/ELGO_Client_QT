@@ -97,4 +97,8 @@
   * plugins 대응
   <pre><code>
   https://forum.qt.io/topic/111553/solved-qt-qpa-plugin-could-not-find-the-qt-platform-plugin-xcb-in/15
+  LD_LIBRARY_PATH=/usr/local/lib/Qt
+  export LD_LIBRARY_PATH=/usr/local/lib/Qt
+  QT_PLUGIN_PATH=/usr/local/lib/Qt/plugins
+  export QT_PLUGIN_PATH=/usr/local/lib/Qt/plugins
   </code></pre>
