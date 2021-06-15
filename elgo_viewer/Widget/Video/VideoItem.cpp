@@ -14,7 +14,7 @@ VideoItem::VideoItem(QGraphicsItem *parent)
     // init
     m_player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     m_player->setVideoOutput(this);
-    m_player->setNotifyInterval(50);
+    m_player->setNotifyInterval(100);
 
     this->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
