@@ -273,11 +273,9 @@ void VideoItem::CheckPositionChanged(qint64 pos)
     const qint64 secUnit = (1000 * (m_videoInfo.duration.file / 1000)) * 0.98;
     if(pos >= secUnit)
     {
-        m_player->stop();
         ELGO_VIEWER_LOG("Replay - %s (%lld:%lld)",
                         m_videoInfo.fileName.toStdString().c_str(),
-                        pos, secUnit)
+                        pos, secUnit);
         m_player->setPosition(0);
-        m_player->play();
     }
 }
