@@ -37,7 +37,7 @@ UpdateManager::UpdateManager(QWidget *parent)
 
     // init
     this->setWindowTitle("ELGO Update Manager");
-    ui->progressBar->hide();
+    ui->progressBar->hide(); // Not need progress bar
 
     QList<QScreen *> screens = QApplication::screens();
     if(0 < screens.size())
