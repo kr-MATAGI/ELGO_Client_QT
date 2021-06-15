@@ -102,7 +102,8 @@
   QT_PLUGIN_PATH=/usr/local/lib/Qt/plugins
   export QT_PLUGIN_PATH=/usr/local/lib/Qt/plugins
   </code></pre>
-  * 위 환경변수를 /etc/bash.bashrc 파일 마지막에 넣어준다.
+  * 위 환경변수를 /etc/bash.bashrc 파일 마지막에 넣어준다. <br>
+   그래야 시스템 재시작 후에도 환경변수가 적용된다.
   <pre><code>
   export LD_LIBRARY_PATH=/usr/local/lib/Qt
   export QT_PLUGIN_PATH=/usr/local/lib/Qt/plugins
