@@ -9,8 +9,11 @@
 
   2. elgo_update 실행시 config.xml에서 읽었던 version 과 비교한다. <br>
     서버 및 config.xml의 version 데이터는 무조건 소수형태여야 한다.
-  3. 만약 서버 버전이 더 높아 업데이트가 필요하다면, https://cloud.elgo.co.kr/ubuntu/[elgo_client.tar | elgo_remote.tar] 각 각 다운로드 한다.
-  4. 다운로드가 다되면 폴더에 tar 압축 파일이 2개 생기고 QProcess 명령어를 통해 압축을 해제하고 기존 바이너리 파일이 교체된다.
+  3. 만약 서버 버전이 더 높아 업데이트가 필요하다면 아래 주소에서 각각 다운로드한다.
+   <pre><code>
+    https://cloud.elgo.co.kr/ubuntu/[elgo_client.tar | elgo_remote.tar]
+   </code></pre>
+  5. 다운로드가 다되면 폴더에 tar 압축 파일이 2개 생기고 QProcess 명령어를 통해 압축을 해제하고 기존 바이너리 파일이 교체된다.
 
 ### 서버에 바이너리 압축파일을 업로드 하는 과정
   * 아래 주소에 있는 가이드를 참조한다. <br>
