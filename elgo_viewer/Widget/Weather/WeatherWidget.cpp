@@ -253,7 +253,8 @@ QString WeatherWidget::MakeWeatherIconFilePath(const WeatherInfo::DisplayValue& 
     {
         retValue += "/cloud_1_sunny.svg";
     }
-    else if(PlayJson::SKY::CLOUDY == displayValue.sky)
+    else if(PlayJson::SKY::CLOUDY == displayValue.sky ||
+            PlayJson::SKY::GRAY == displayValue.sky)
     {
         retValue += "/cloud.svg";
     }
