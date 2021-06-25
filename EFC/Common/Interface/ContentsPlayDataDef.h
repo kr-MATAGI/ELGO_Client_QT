@@ -127,7 +127,8 @@ namespace PlayJson
     {
         SUNNY = 1,
         MUCH_CLOUDY = 2,
-        CLOUDY = 3
+        CLOUDY = 3,
+        GRAY = 4,
     };
 
 

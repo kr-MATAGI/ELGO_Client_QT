@@ -890,6 +890,18 @@ void JsonParser::ParseCustomLayerContentJson(const QJsonObject& layerContentObj,
             const QString& cityNameStr = layerContentObj["area2_name"].toString();
             dest.cityName = cityNameStr;
         }
+
+        if(layerContentObj.end() != layerContentObj.find("nx"))
+        {
+            const int nx = layerContentObj["nx"].toInt();
+            dest.nx = nx;
+        }
+
+        if(layerContentObj.end() != layerContentObj.find("ny"))
+        {
+            const int ny = layerContentObj["ny"].toInt();
+            dest.ny = ny;
+        }
     }
 
     // news

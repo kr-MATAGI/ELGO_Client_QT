@@ -331,9 +331,13 @@ QString WeatherWidget::MakeStatusLabelString(const WeatherInfo::DisplayValue& di
     }
     else if(PlayJson::SKY::MUCH_CLOUDY == displayValue.sky)
     {
-        retValue = "구름 많음";
+        retValue = "구름 조금";
     }
     else if(PlayJson::SKY::CLOUDY == displayValue.sky)
+    {
+        retValue = "구름 많음";
+    }
+    else if(PlayJson::SKY::GRAY == displayValue.sky)
     {
         retValue = "흐림";
     }
