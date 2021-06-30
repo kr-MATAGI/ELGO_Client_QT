@@ -1,7 +1,7 @@
 # ELGO_Client_QT의 Sequence Diagram
 * 아래는 핵심이 되는 기능들의 Sequence Diagram 이다.
 * 주의 - 상용을 위한 Binary 만들기 전, DownloadAdditionalWidgetInfo() 와 UpdateWidgetTimeout() 에서 nx, ny의 hard coding을 제거
-* 
+* 기기의 Root Password는 elgo2580* 으로 설정해야한다.
 
 ## 포함된 프로세스
 * ELGO_Main
