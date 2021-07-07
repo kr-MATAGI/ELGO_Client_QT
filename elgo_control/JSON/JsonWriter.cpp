@@ -402,7 +402,7 @@ void JsonWriter::WriteContentServerProgressResponse(const ContentSchema::Summary
 void JsonWriter::GetBeautifyUDID(const QString& src, QString& dest)
 //========================================================
 {
-    const int hyphenIdx[] = {8,12,16,20};
+    const int hyphenIdx[] = {7,11,15,19};
     int cnt = 0;
     for(int idx = 0; idx < src.length(); idx++)
     {
